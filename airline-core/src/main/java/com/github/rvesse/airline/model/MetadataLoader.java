@@ -52,7 +52,6 @@ import javax.inject.Inject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import com.github.rvesse.airline.utils.StringUtils;
 
 import java.io.File;
@@ -718,7 +717,7 @@ public class MetadataLoader {
             indices = new HashSet<>();
             partials.put(partial.restriction(), indices);
         }
-        indices.addAll(AirlineUtils.arrayToList(ArrayUtils.toObject(partial.appliesTo())));
+        indices.addAll(AirlineUtils.arrayToList(AirlineUtils.toObject(partial.appliesTo())));
     }
 
     private static List<OptionMetadata> mergeOptionSet(List<OptionMetadata> options) {
