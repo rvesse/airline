@@ -19,7 +19,6 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Stack;
 
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Printer class for generating Troff output
@@ -127,10 +126,10 @@ public class TroffPrinter {
     }
 
     public void print(String value) {
-        if (StringUtils.isEmpty(value))
+        if (value == null || value.isEmpty())
             return;
 
-        String[] lines = StringUtils.split(value, '\n');
+        String[] lines = value.split(value, '\n');
         if (lines.length == 0)
             return;
         if (lines.length == 1) {
@@ -181,7 +180,7 @@ public class TroffPrinter {
     }
 
     private void appendLine(String line) {
-        if (StringUtils.isEmpty(line)) {
+        if (line == null || line.isEmpty()) {
             writer.println();
             newline = true;
         }
@@ -338,7 +337,7 @@ public class TroffPrinter {
             throw new IllegalStateException("Cannot start a new titled list item when not currently in a list");
         }
 
-        if (!StringUtils.isEmpty(title)) {
+        if ( title == null || title.isEmpty()) {
             writer.println(escape(title));
             writer.println(REQUEST_BREAK);
         }
@@ -474,7 +473,7 @@ public class TroffPrinter {
     }
 
     private String escape(String line) {
-        if (StringUtils.isEmpty(line))
+        if (line == null || line.isEmpty())
             return "";
 
         // A leading . must be escaped

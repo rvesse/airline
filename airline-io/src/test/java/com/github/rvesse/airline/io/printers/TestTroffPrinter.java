@@ -20,7 +20,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -47,7 +46,7 @@ public class TestTroffPrinter {
         printer.finish();
         
         //@formatter:off
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 ".TH \"Test\" \"1\" \"\" \"\" \"\"",
                 "" 
             }, '\n');
@@ -64,7 +63,7 @@ public class TestTroffPrinter {
         printer.finish();
         
         //@formatter:off
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 ".TH \"Test Quotes\" \"1\" \"\" \"\" \"\"",
                 "" 
             }, '\n');
@@ -82,7 +81,7 @@ public class TestTroffPrinter {
         printer.finish();
         
         //@formatter:off
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 ".",
                 "This is a line", 
                 ".", 
@@ -109,7 +108,7 @@ public class TestTroffPrinter {
         printer.finish();
         
         //@formatter:off
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 BULLET,
                 "A", 
                 BULLET, 
@@ -138,7 +137,7 @@ public class TestTroffPrinter {
         printer.finish();
         
         //@formatter:off
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 PLAIN,
                 "A", 
                 PLAIN, 
@@ -167,7 +166,7 @@ public class TestTroffPrinter {
         printer.finish();
         
         //@formatter:off
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 NUMBER_REG,
                 NUMBER_BULLET_FIRST,
                 "A", 
@@ -202,7 +201,7 @@ public class TestTroffPrinter {
         // - A
         //   - B
         // - C
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 BULLET,
                 "A", 
                 ".RS",
@@ -236,7 +235,7 @@ public class TestTroffPrinter {
         // - A
         //   - B
         // C
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 BULLET,
                 "A", 
                 ".RS",
@@ -271,7 +270,7 @@ public class TestTroffPrinter {
         // - A
         //   B
         // - C
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 BULLET,
                 "A", 
                 ".RS",
@@ -306,7 +305,7 @@ public class TestTroffPrinter {
         // 1. A
         //   1. B
         // 2. C
-        String expected = StringUtils.join(new String[] {
+        String expected = join(new String[] {
                 NUMBER_REG,
                 NUMBER_BULLET_FIRST,
                 "A", 
@@ -343,7 +342,7 @@ public class TestTroffPrinter {
         //   Item A
         // - B
         //   Item B
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 TITLED_BULLET,
                 "A", 
                 BREAK,
@@ -378,7 +377,7 @@ public class TestTroffPrinter {
         //   Item A
         // - B
         //   Item B
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 TITLED_BULLET,
                 "A", 
                 BREAK,
@@ -413,7 +412,7 @@ public class TestTroffPrinter {
         //   Item A
         // - B
         //   Item B
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 TITLED_BULLET,
                 "\\fBA\\fR", 
                 BREAK,
@@ -446,7 +445,7 @@ public class TestTroffPrinter {
         printer.printTable(rows, true);
         
         //@formatter:off
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 TABLE_START,
                 "box;", 
                 "cb | cb",
@@ -475,7 +474,7 @@ public class TestTroffPrinter {
         printer.printTable(rows, true);
         
         //@formatter:off
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 TABLE_START,
                 "box;", 
                 "cb | cb .",
@@ -501,7 +500,7 @@ public class TestTroffPrinter {
         printer.printTable(rows, true);
         
         //@formatter:off
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 TABLE_START,
                 "box;", 
                 "cb | cb .",
@@ -541,7 +540,7 @@ public class TestTroffPrinter {
         printer.printTable(rows, true);
         
         //@formatter:off
-        String expected = StringUtils.join(new String[] { 
+        String expected = join(new String[] { 
                 TABLE_START,
                 "box;", 
                 "cb | cb | cb",
@@ -583,5 +582,9 @@ public class TestTroffPrinter {
         
         printer.startTitledList();
         printer.nextBulletedListItem();
+    }
+    
+    public static String join(String[] s, char c) {
+    	return String.join(""+c, s);
     }
 }

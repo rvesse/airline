@@ -20,7 +20,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 
 import com.github.rvesse.airline.HelpOption;
 import com.github.rvesse.airline.annotations.Arguments;

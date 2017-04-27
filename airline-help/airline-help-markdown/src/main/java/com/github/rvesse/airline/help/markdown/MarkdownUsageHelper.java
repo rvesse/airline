@@ -21,7 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 
 import com.github.rvesse.airline.help.UsageHelper;
 import com.github.rvesse.airline.help.common.AbstractUsageGenerator;
