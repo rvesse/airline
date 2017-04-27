@@ -18,9 +18,9 @@ package com.github.rvesse.airline.restrictions.common;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
@@ -48,7 +48,7 @@ public class OccurrencesRestriction extends AbstractCommonRestriction implements
         if (occurrences <= 0)
             return;
 
-        Collection<Pair<OptionMetadata, Object>> parsedOptions = CollectionUtils.select(state.getParsedOptions(),
+        Collection<Map.Entry<OptionMetadata, Object>> parsedOptions = CollectionUtils.select(state.getParsedOptions(),
                 new ParsedOptionFinder(option));
 
         if (maximum && parsedOptions.size() > this.occurrences) {

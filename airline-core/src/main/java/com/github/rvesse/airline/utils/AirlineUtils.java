@@ -247,4 +247,31 @@ public class AirlineUtils {
         }
         return result;
     }
+    
+    private static class ImmutableEntry<K,V> implements Map.Entry<K, V> {
+        private final K key;
+        private final V value;
+        
+        public ImmutableEntry(K key, V value) {
+            super();
+            this.key = key;
+            this.value = value;
+        }
+        
+        @Override
+        public K getKey() {
+            return key;
+        }
+        @Override
+        public V getValue() {
+            return value;
+        }
+        @Override
+        public V setValue(V value) {
+            throw new UnsupportedOperationException("setValue is not yet supported");
+        }
+    }
+    public static <K,V> Map.Entry<K, V> pairOf(K k, V v) {
+        return new ImmutableEntry<K,V>(k, v);
+    }
 }

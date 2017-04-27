@@ -15,6 +15,12 @@
  */
 package com.github.rvesse.airline.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections4.ListUtils;
+
 import com.github.rvesse.airline.Accessor;
 import com.github.rvesse.airline.CommandFactory;
 import com.github.rvesse.airline.DefaultCommandFactory;
@@ -22,14 +28,6 @@ import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.errors.ParseException;
 import com.github.rvesse.airline.utils.AirlineUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class ParserUtil {
 
@@ -45,21 +43,21 @@ public class ParserUtil {
     }
 
     public static <T> T createInstance(Class<?> type, Iterable<OptionMetadata> options,
-            List<Pair<OptionMetadata, Object>> parsedOptions, ArgumentsMetadata arguments,
+            List<Map.Entry<OptionMetadata, Object>> parsedOptions, ArgumentsMetadata arguments,
             Iterable<Object> parsedArguments, Iterable<Accessor> metadataInjection, Map<Class<?>, Object> bindings) {
         return createInstance(type, options, parsedOptions, arguments, parsedArguments, metadataInjection, bindings,
                 new DefaultCommandFactory<T>());
     }
 
     public static <T> T injectOptions(T commandInstance, Iterable<OptionMetadata> options,
-            List<Pair<OptionMetadata, Object>> parsedOptions, ArgumentsMetadata arguments,
+            List<Map.Entry<OptionMetadata, Object>> parsedOptions, ArgumentsMetadata arguments,
             Iterable<Object> parsedArguments, Iterable<Accessor> metadataInjection, Map<Class<?>, Object> bindings) {
         // inject options
         for (OptionMetadata option : options) {
             List<Object> values = new ArrayList<>();
-            for (Pair<OptionMetadata, Object> parsedOption : parsedOptions) {
-                if (option.equals(parsedOption.getLeft()))
-                    values.add(parsedOption.getRight());
+            for (Map.Entry<OptionMetadata, Object> parsedOption : parsedOptions) {
+                if (option.equals(parsedOption.getKey()))
+                    values.add(parsedOption.getValue());
             }
             if (values != null && !values.isEmpty()) {
                 for (Accessor accessor : option.getAccessors()) {
@@ -87,7 +85,7 @@ public class ParserUtil {
     }
 
     public static <T> T createInstance(Class<?> type, Iterable<OptionMetadata> options,
-            List<Pair<OptionMetadata, Object>> parsedOptions, ArgumentsMetadata arguments,
+            List<Map.Entry<OptionMetadata, Object>> parsedOptions, ArgumentsMetadata arguments,
             Iterable<Object> parsedArguments, Iterable<Accessor> metadataInjection, Map<Class<?>, Object> bindings,
             CommandFactory<T> commandFactory) {
         // create the command instance
