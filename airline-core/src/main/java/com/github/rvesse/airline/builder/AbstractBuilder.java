@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline.builder;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 
 /**
  * Abstract base class for builders

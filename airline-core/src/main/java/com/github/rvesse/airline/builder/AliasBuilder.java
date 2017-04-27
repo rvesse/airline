@@ -18,7 +18,7 @@ package com.github.rvesse.airline.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 
 import com.github.rvesse.airline.model.AliasMetadata;
 

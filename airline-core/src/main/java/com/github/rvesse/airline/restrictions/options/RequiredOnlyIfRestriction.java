@@ -20,7 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.github.rvesse.airline.help.sections.HelpFormat;

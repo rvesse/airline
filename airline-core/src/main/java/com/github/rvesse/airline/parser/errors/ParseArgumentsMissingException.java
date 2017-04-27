@@ -17,7 +17,7 @@ package com.github.rvesse.airline.parser.errors;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 
 /**
  * Exception thrown when required arguments are missing

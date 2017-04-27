@@ -17,7 +17,7 @@ package com.github.rvesse.airline.restrictions.common;
 
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 
 import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;

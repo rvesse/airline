@@ -30,7 +30,7 @@ import com.github.rvesse.airline.utils.AirlineUtils;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

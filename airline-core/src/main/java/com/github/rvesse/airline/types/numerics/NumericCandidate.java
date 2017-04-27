@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline.types.numerics;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 
 public class NumericCandidate {
 

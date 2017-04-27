@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

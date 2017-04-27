@@ -63,6 +63,10 @@ public class StringUtils {
         return cs == null || cs.length() == 0;
     }
     
+    public static boolean isNotEmpty(final CharSequence cs) {
+        return !isEmpty(cs);
+    }
+    
     /**
      * <p>Checks if a CharSequence is not empty (""), not null and not whitespace only.</p>
      * 
@@ -203,6 +207,13 @@ public class StringUtils {
         }
         return join(iterable.iterator(), separator);
     }
+    
+    public static String join(final Iterable<?> iterable, final String separator) {
+        if (iterable == null) {
+            return null;
+        }
+        return join(iterable.iterator(), separator);
+    }
 
     /**
      * <p>Joins the elements of the provided {@code Iterator} into
@@ -250,6 +261,75 @@ public class StringUtils {
         return buf.toString();
     }
     
+    public static String join(final Iterator<?> iterator, final String separator) {
+
+        // handle null, zero and one elements before building a buffer
+        if (iterator == null) {
+            return null;
+        }
+        if (!iterator.hasNext()) {
+            return "";
+        }
+        final Object first = iterator.next();
+        if (!iterator.hasNext()) {
+            final String result = Objects.toString(first, "");
+            return result;
+        }
+
+        // two or more elements
+        final StringBuilder buf = new StringBuilder(256); // Java default is 16, probably too small
+        if (first != null) {
+            buf.append(first);
+        }
+
+        while (iterator.hasNext()) {
+            if (separator != null) {
+                buf.append(separator);
+            }
+            final Object obj = iterator.next();
+            if (obj != null) {
+                buf.append(obj);
+            }
+        }
+        return buf.toString();
+    }
+    
+    public static String join(final Object[] array, final String separator) {
+        if (array == null) {
+            return null;
+        }
+        return join(array, separator, 0, array.length);
+    }
+    
+    public static String join(final Object[] array, String separator, final int startIndex, final int endIndex) {
+        if (array == null) {
+            return null;
+        }
+        if (separator == null) {
+            separator = "";
+        }
+
+        // endIndex - startIndex > 0:   Len = NofStrings *(len(firstString) + len(separator))
+        //           (Assuming that all Strings are roughly equally long)
+        final int noOfItems = endIndex - startIndex;
+        if (noOfItems <= 0) {
+            return "";
+        }
+
+        final StringBuilder buf = new StringBuilder(noOfItems * 16);
+
+        for (int i = startIndex; i < endIndex; i++) {
+            if (i > startIndex) {
+                buf.append(separator);
+            }
+            if (array[i] != null) {
+                buf.append(array[i]);
+            }
+        }
+        return buf.toString();
+    }
+
+    
     /**
      * <p>Check whether the given CharSequence contains any whitespace characters.</p>
      * 
@@ -274,8 +354,56 @@ public class StringUtils {
         return false;
     }
     
+    public static boolean startsWith(String s, String prefix) {
+        if (s == null && prefix == null) return true;
+        if (s == null || prefix == null) return false;
+        return s.startsWith(prefix);
+    }
+    
     public static String[] split(String s) {
         return splitWorker(s, null, -1, false);
+    }
+
+    public static String[] split(final String str, final char separatorChar) {
+        return splitWorker(str, separatorChar, false);
+    }
+    
+    public static String[] split(final String str, final String separatorChars, final int max) {
+        return splitWorker(str, separatorChars, max, false);
+    }
+    
+    private static String[] splitWorker(final String str, final char separatorChar, final boolean preserveAllTokens) {
+        // Performance tuned for 2.0 (JDK1.4)
+
+        if (str == null) {
+            return null;
+        }
+        final int len = str.length();
+        if (len == 0) {
+            return new String[] {};
+        }
+        final List<String> list = new ArrayList<>();
+        int i = 0, start = 0;
+        boolean match = false;
+        boolean lastMatch = false;
+        while (i < len) {
+            if (str.charAt(i) == separatorChar) {
+                if (match || preserveAllTokens) {
+                    list.add(str.substring(start, i));
+                    match = false;
+                    lastMatch = true;
+                }
+                start = ++i;
+                continue;
+            }
+            lastMatch = false;
+            match = true;
+            i++;
+        }
+        if (match || preserveAllTokens && lastMatch) {
+            list.add(str.substring(start, i));
+        }
+        return list.toArray(new String[list.size()]);
     }
     
     private static String[] splitWorker(final String str, final String separatorChars, final int max, final boolean preserveAllTokens) {
