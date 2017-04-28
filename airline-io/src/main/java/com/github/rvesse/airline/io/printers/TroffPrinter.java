@@ -129,7 +129,7 @@ public class TroffPrinter {
         if (value == null || value.isEmpty())
             return;
 
-        String[] lines = value.split(value, '\n');
+        String[] lines = value.split("\n");
         if (lines.length == 0)
             return;
         if (lines.length == 1) {
@@ -337,7 +337,7 @@ public class TroffPrinter {
             throw new IllegalStateException("Cannot start a new titled list item when not currently in a list");
         }
 
-        if ( title == null || title.isEmpty()) {
+        if ( ! (title == null || title.isEmpty())) {
             writer.println(escape(title));
             writer.println(REQUEST_BREAK);
         }

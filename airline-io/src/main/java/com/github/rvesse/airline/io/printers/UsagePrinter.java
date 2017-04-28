@@ -146,7 +146,7 @@ public class UsagePrinter {
         if (avoidNewlines) {
             return appendWords(arrayToList(value.split("\\s+")), avoidNewlines);
         } else {
-            return appendLines(arrayToList(value.split(value, '\n')), avoidNewlines);
+            return appendLines(arrayToList(value.split("\n")), avoidNewlines);
         }
     }
 
