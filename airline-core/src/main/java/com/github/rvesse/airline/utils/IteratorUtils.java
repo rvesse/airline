@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline.utils.predicates.parser;
+package com.github.rvesse.airline.utils;
 
-import com.github.rvesse.airline.utils.Predicate;
-import com.github.rvesse.airline.utils.StringUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
-import com.github.rvesse.airline.model.AliasMetadata;
-
-public class AliasFinder implements Predicate<AliasMetadata> {
+public class IteratorUtils {
     
-    private final String name;
-    
-    public AliasFinder(String name) {
-        this.name = name;
+    @SafeVarargs
+    public static <E> Iterator<E> arrayIterator(final E... array) {
+        return Arrays.asList(array).iterator();
     }
-
-    @Override
-    public boolean evaluate(AliasMetadata alias) {
-        return alias != null && StringUtils.equals(this.name, alias.getName());
+    
+    public static <E> List<E> toList(final Iterator<? extends E> iterator) {
+        List<E> list = new ArrayList<E>();
+        while(iterator.hasNext()) {
+            list.add(iterator.next());
+        }
+        return list;
     }
 
 }

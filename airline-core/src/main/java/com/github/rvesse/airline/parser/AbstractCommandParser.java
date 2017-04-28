@@ -32,9 +32,9 @@ import com.github.rvesse.airline.utils.predicates.parser.GroupFinder;
 
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
-import org.apache.commons.collections4.iterators.PeekingIterator;
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.Predicate;
+import com.github.rvesse.airline.utils.PeekingIterator;
 
 /**
  * Abstract implementation of a parser for commands that can cope with both CLI

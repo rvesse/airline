@@ -51,7 +51,7 @@ import com.github.rvesse.airline.parser.options.StandardOptionParser;
 import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 
-import org.apache.commons.collections4.CollectionUtils;
+import com.github.rvesse.airline.utils.CollectionUtils;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

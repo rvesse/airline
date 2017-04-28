@@ -17,7 +17,7 @@ package com.github.rvesse.airline.utils.predicates.parser;
 
 import java.util.Map;
 
-import org.apache.commons.collections4.Predicate;
+import com.github.rvesse.airline.utils.Predicate;
 
 import com.github.rvesse.airline.model.OptionMetadata;
 

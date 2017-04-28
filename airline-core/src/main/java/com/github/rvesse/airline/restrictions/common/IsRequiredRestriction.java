@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline.restrictions.common;
 
-import org.apache.commons.collections4.CollectionUtils;
+import com.github.rvesse.airline.utils.CollectionUtils;
 
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;

@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections4.IteratorUtils;
+import com.github.rvesse.airline.utils.IteratorUtils;
 import com.github.rvesse.airline.utils.StringUtils;
 
 import com.github.rvesse.airline.model.CommandGroupMetadata;

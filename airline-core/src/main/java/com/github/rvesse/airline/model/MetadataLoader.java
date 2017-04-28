@@ -49,9 +49,9 @@ import com.github.rvesse.airline.utils.predicates.parser.GroupFinder;
 
 import javax.inject.Inject;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.IteratorUtils;
+import com.github.rvesse.airline.utils.ListUtils;
 import com.github.rvesse.airline.utils.StringUtils;
 
 import java.io.File;

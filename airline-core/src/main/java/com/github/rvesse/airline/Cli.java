@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline;
 
-import org.apache.commons.collections4.ListUtils;
+import com.github.rvesse.airline.utils.ListUtils;
 
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.model.GlobalMetadata;

@@ -19,7 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.apache.commons.collections4.CollectionUtils;
+import com.github.rvesse.airline.utils.CollectionUtils;
 import com.github.rvesse.airline.utils.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;

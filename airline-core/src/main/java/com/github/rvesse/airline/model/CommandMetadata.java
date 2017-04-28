@@ -23,7 +23,7 @@ import com.github.rvesse.airline.utils.AirlineUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections4.ListUtils;
+import com.github.rvesse.airline.utils.ListUtils;
 import com.github.rvesse.airline.utils.StringUtils;
 
 public class CommandMetadata {

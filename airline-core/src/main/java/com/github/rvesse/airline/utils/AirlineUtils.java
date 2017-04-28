@@ -16,6 +16,7 @@
 package com.github.rvesse.airline.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,15 +28,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.collections4.Predicate;
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.IteratorUtils;
+import com.github.rvesse.airline.utils.ListUtils;
+import com.github.rvesse.airline.utils.Predicate;
 
 public class AirlineUtils {
 
     public static <T> List<T> arrayToList(T[] array) {
-        return IteratorUtils.toList(IteratorUtils.arrayIterator(array));
+        List<T> list = Arrays.asList(array);
+        //It is unclear whether the list actually needs to be resizable
+        return new ArrayList<T>(list);
     }
 
     public static <T> T first(Iterable<T> iterable) {

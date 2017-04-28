@@ -17,7 +17,7 @@ package com.github.rvesse.airline.restrictions.common;
 
 import java.util.Locale;
 
-import org.apache.commons.collections4.CollectionUtils;
+import com.github.rvesse.airline.utils.CollectionUtils;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;

@@ -17,8 +17,8 @@ package com.github.rvesse.airline.utils.predicates.restrictions;
 
 import java.util.Map;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.Predicate;
 
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.restrictions.OptionRestriction;

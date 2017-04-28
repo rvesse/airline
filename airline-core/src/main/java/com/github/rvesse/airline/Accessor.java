@@ -33,9 +33,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.IteratorUtils;
+import com.github.rvesse.airline.utils.ListUtils;
 
 public class Accessor
 {

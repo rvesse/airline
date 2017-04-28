@@ -17,7 +17,7 @@ package com.github.rvesse.airline.parser.command;
 
 import java.util.List;
 
-import org.apache.commons.collections4.IteratorUtils;
+import com.github.rvesse.airline.utils.IteratorUtils;
 
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections4.ListUtils;
+import com.github.rvesse.airline.utils.ListUtils;
 
 import com.github.rvesse.airline.Accessor;
 import com.github.rvesse.airline.CommandFactory;
