@@ -585,6 +585,17 @@ public class TestTroffPrinter {
     }
     
     public static String join(String[] s, char c) {
-    	return String.join(""+c, s);
+    	StringBuilder sb = new StringBuilder();
+    	boolean first = true;
+    	for (String t : s) {
+    		if (first) {
+    			first = false;
+    		}
+    		else {
+    			sb.append(c);
+    		}
+    		sb.append(t);
+    	}
+    	return sb.toString();
     }
 }
