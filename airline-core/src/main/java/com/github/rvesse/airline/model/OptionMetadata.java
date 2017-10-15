@@ -29,8 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.SetUtils;
+import com.github.rvesse.airline.utils.CollectionUtils;
 
 public class OptionMetadata {
     private final OptionType optionType;
@@ -76,7 +75,7 @@ public class OptionMetadata {
         this.provider = typeConverterProvider != null ? typeConverterProvider : new DefaultTypeConverterProvider();
 
         if (path != null) {
-            this.accessors = SetUtils.unmodifiableSet(AirlineUtils.singletonSet(new Accessor(path)));
+            this.accessors = Collections.unmodifiableSet(AirlineUtils.singletonSet(new Accessor(path)));
         }
     }
 
@@ -107,7 +106,7 @@ public class OptionMetadata {
 
             accessors.addAll(other.getAccessors());
         }
-        this.accessors = SetUtils.unmodifiableSet(accessors);
+        this.accessors = Collections.unmodifiableSet(accessors);
     }
 
     public OptionType getOptionType() {

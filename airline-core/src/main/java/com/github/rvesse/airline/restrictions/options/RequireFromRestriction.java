@@ -19,9 +19,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import com.github.rvesse.airline.utils.CollectionUtils;
 
 import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
@@ -46,7 +46,7 @@ public class RequireFromRestriction implements OptionRestriction, HelpHint {
 
     @Override
     public <T> void finalValidate(ParseState<T> state, OptionMetadata option) {
-        Collection<Pair<OptionMetadata, Object>> parsedOptions = CollectionUtils.select(state.getParsedOptions(),
+        Collection<Map.Entry<OptionMetadata, Object>> parsedOptions = CollectionUtils.select(state.getParsedOptions(),
                 new ParsedOptionFinder(option));
 
         Collection<OptionRestriction> restrictions = CollectionUtils.select(option.getRestrictions(),
@@ -55,7 +55,7 @@ public class RequireFromRestriction implements OptionRestriction, HelpHint {
         for (@SuppressWarnings("unused")
         OptionRestriction restriction : restrictions) {
             // Find other parsed options which have the same tag
-            Collection<Pair<OptionMetadata, Object>> otherParsedOptions = CollectionUtils
+            Collection<Map.Entry<OptionMetadata, Object>> otherParsedOptions = CollectionUtils
                     .select(state.getParsedOptions(), new RequiredTagParsedOptionFinder(this.tag));
 
             // There are some parsed options but ONLY for this option

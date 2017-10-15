@@ -15,12 +15,13 @@
  */
 package com.github.rvesse.airline.utils.predicates.parser;
 
-import org.apache.commons.collections4.Predicate;
-import org.apache.commons.lang3.tuple.Pair;
+import java.util.Map;
+
+import com.github.rvesse.airline.utils.Predicate;
 
 import com.github.rvesse.airline.model.OptionMetadata;
 
-public class ParsedOptionFinder implements Predicate<Pair<OptionMetadata, Object>> {
+public class ParsedOptionFinder implements Predicate<Map.Entry<OptionMetadata, Object>> {
     
     private final OptionMetadata opt;
     
@@ -29,11 +30,11 @@ public class ParsedOptionFinder implements Predicate<Pair<OptionMetadata, Object
     }
 
     @Override
-    public boolean evaluate(Pair<OptionMetadata, Object> parsedOption) {
+    public boolean evaluate(Map.Entry<OptionMetadata, Object> parsedOption) {
         if (parsedOption == null) return false;
         if (this.opt == null) return false;
         
-        return this.opt.equals(parsedOption.getLeft());
+        return this.opt.equals(parsedOption.getKey());
     }
 
 }

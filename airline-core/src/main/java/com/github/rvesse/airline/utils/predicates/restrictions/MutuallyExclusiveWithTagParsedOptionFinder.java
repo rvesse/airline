@@ -15,13 +15,14 @@
  */
 package com.github.rvesse.airline.utils.predicates.restrictions;
 
-import org.apache.commons.collections4.Predicate;
-import org.apache.commons.lang3.tuple.Pair;
+import java.util.Map;
+
+import com.github.rvesse.airline.utils.Predicate;
 
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
 
-public class MutuallyExclusiveWithTagParsedOptionFinder extends AbstractParsedOptionRestrictionBasedFinder implements Predicate<Pair<OptionMetadata, Object>> {
+public class MutuallyExclusiveWithTagParsedOptionFinder extends AbstractParsedOptionRestrictionBasedFinder implements Predicate<Map.Entry<OptionMetadata, Object>> {
     
     private final String tag;
     

@@ -18,10 +18,10 @@ package com.github.rvesse.airline.restrictions.options;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.Map;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 
 import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
@@ -45,7 +45,7 @@ public class RequiredOnlyIfRestriction implements OptionRestriction, HelpHint {
         if (this.names.isEmpty())
             return;
 
-        Collection<Pair<OptionMetadata, Object>> parsedOptions = CollectionUtils.select(state.getParsedOptions(),
+        Collection<Map.Entry<OptionMetadata, Object>> parsedOptions = CollectionUtils.select(state.getParsedOptions(),
                 new ParsedOptionFinder(option));
 
         // If this option was seen then the required criteria has been fulfilled
@@ -56,12 +56,12 @@ public class RequiredOnlyIfRestriction implements OptionRestriction, HelpHint {
 
         // Were any of the options that would trigger the required restriction
         // present?
-        for (Pair<OptionMetadata, Object> otherOption : state.getParsedOptions()) {
-            if (otherOption.getLeft().equals(option))
+        for (Map.Entry<OptionMetadata, Object> otherOption : state.getParsedOptions()) {
+            if (otherOption.getKey().equals(option))
                 continue;
 
             for (String name : this.names) {
-                if (otherOption.getLeft().getOptions().contains(name))
+                if (otherOption.getKey().getOptions().contains(name))
                     throw new ParseOptionMissingException(option.getTitle());
             }
         }

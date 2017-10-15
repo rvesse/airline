@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
-import org.apache.commons.collections4.iterators.PeekingIterator;
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.Predicate;
+import com.github.rvesse.airline.utils.PeekingIterator;
 
 import com.github.rvesse.airline.model.AliasMetadata;
 import com.github.rvesse.airline.model.CommandGroupMetadata;

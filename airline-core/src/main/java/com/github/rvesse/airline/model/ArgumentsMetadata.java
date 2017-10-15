@@ -28,11 +28,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.collections4.SetUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.IteratorUtils;
+import com.github.rvesse.airline.utils.ListUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 
 public class ArgumentsMetadata {
     private final List<String> titles;
@@ -60,7 +59,7 @@ public class ArgumentsMetadata {
         this.restrictions = restrictions != null ? AirlineUtils.unmodifiableListCopy(restrictions)
                 : Collections.<ArgumentsRestriction> emptyList();
         this.provider = typeConverterProvider != null ? typeConverterProvider : new DefaultTypeConverterProvider();
-        this.accessors = SetUtils.unmodifiableSet(AirlineUtils.singletonSet(new Accessor(path)));
+        this.accessors = Collections.unmodifiableSet(AirlineUtils.singletonSet(new Accessor(path)));
     }
 
     public ArgumentsMetadata(Iterable<ArgumentsMetadata> arguments) {
@@ -84,7 +83,7 @@ public class ArgumentsMetadata {
 
             accessors.addAll(other.getAccessors());
         }
-        this.accessors = SetUtils.unmodifiableSet(accessors);
+        this.accessors = Collections.unmodifiableSet(accessors);
     }
 
     public List<String> getTitle() {

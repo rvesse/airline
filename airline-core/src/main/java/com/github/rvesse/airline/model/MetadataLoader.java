@@ -49,11 +49,10 @@ import com.github.rvesse.airline.utils.predicates.parser.GroupFinder;
 
 import javax.inject.Inject;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.IteratorUtils;
+import com.github.rvesse.airline.utils.ListUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -719,7 +718,7 @@ public class MetadataLoader {
             indices = new HashSet<>();
             partials.put(partial.restriction(), indices);
         }
-        indices.addAll(AirlineUtils.arrayToList(ArrayUtils.toObject(partial.appliesTo())));
+        indices.addAll(AirlineUtils.arrayToList(AirlineUtils.toObject(partial.appliesTo())));
     }
 
     private static List<OptionMetadata> mergeOptionSet(List<OptionMetadata> options) {
@@ -941,7 +940,7 @@ public class MetadataLoader {
                     if (StringUtils.containsWhitespace(groupAnno.name())) {
                         // Is this a sub-group we've already seen?
                         // Make sure to normalize white space in the path
-                        subGroupPath = StringUtils.join(StringUtils.split(groupAnno.name()), " ");
+                        subGroupPath = StringUtils.join(StringUtils.split(groupAnno.name()), ' ');
                         groupMetadata = subGroups.get(subGroupPath);
                     }
 

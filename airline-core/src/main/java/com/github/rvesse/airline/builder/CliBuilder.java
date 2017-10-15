@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
+import com.github.rvesse.airline.utils.IteratorUtils;
+import com.github.rvesse.airline.utils.ListUtils;
 
 import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.model.CommandGroupMetadata;

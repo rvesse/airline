@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Helper for printing out usage information
@@ -113,7 +112,7 @@ public class UsagePrinter {
     }
 
     public static String trimEnd(final String str) {
-        if (StringUtils.isEmpty(str)) {
+        if (str == null || str.isEmpty()) {
             return str;
         }
 
@@ -147,7 +146,7 @@ public class UsagePrinter {
         if (avoidNewlines) {
             return appendWords(arrayToList(value.split("\\s+")), avoidNewlines);
         } else {
-            return appendLines(arrayToList(StringUtils.split(value, '\n')), avoidNewlines);
+            return appendLines(arrayToList(value.split("\n")), avoidNewlines);
         }
     }
 

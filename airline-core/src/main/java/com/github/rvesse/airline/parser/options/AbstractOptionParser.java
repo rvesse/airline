@@ -18,7 +18,7 @@ package com.github.rvesse.airline.parser.options;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections4.Predicate;
+import com.github.rvesse.airline.utils.Predicate;
 
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.AbstractParser;

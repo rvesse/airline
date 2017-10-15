@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.collections4.Predicate;
+import com.github.rvesse.airline.utils.Predicate;
 
 public abstract class AbstractAbbreviationFinder<T> implements Predicate<T> {
 

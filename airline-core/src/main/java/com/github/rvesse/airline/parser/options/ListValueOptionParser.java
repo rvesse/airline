@@ -16,8 +16,8 @@
 package com.github.rvesse.airline.parser.options;
 
 import java.util.List;
-import org.apache.commons.collections4.iterators.PeekingIterator;
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.PeekingIterator;
+import com.github.rvesse.airline.utils.StringUtils;
 
 import com.github.rvesse.airline.Context;
 import com.github.rvesse.airline.model.OptionMetadata;

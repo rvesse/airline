@@ -25,7 +25,7 @@ import com.github.rvesse.airline.model.ParserMetadata;
 
 import javax.inject.Inject;
 
-import org.apache.commons.collections4.ListUtils;
+import com.github.rvesse.airline.utils.ListUtils;
 
 public class CommandSuggester
         implements Suggester

@@ -39,7 +39,7 @@ import com.github.rvesse.airline.args.ArgsVersionMissing;
 import com.github.rvesse.airline.args.ArgsVersionMissingSuppressed;
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.help.Help;
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

@@ -32,8 +32,7 @@ import com.github.rvesse.airline.utils.AirlineUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
+import java.util.Map;
 
 public class ParseState<T> {
     private final List<Context> locationStack;
@@ -41,13 +40,13 @@ public class ParseState<T> {
     private final ParserMetadata<T> parserConfig;
     private final CommandGroupMetadata group;
     private final CommandMetadata command;
-    private final List<Pair<OptionMetadata, Object>> parsedOptions;
+    private final List<Map.Entry<OptionMetadata, Object>> parsedOptions;
     private final List<Object> parsedArguments;
     private final OptionMetadata currentOption;
     private final List<String> unparsedInput;
 
     ParseState(GlobalMetadata<T> global, ParserMetadata<T> parserConfig, CommandGroupMetadata group,
-            CommandMetadata command, List<Pair<OptionMetadata, Object>> parsedOptions, List<Context> locationStack,
+            CommandMetadata command, List<Map.Entry<OptionMetadata, Object>> parsedOptions, List<Context> locationStack,
             List<Object> parsedArguments, OptionMetadata currentOption, List<String> unparsedInput) {
         this.global = global;
         if (global != null) {
@@ -67,7 +66,7 @@ public class ParseState<T> {
     }
 
     public static <T> ParseState<T> newInstance() {
-        return new ParseState<T>(null, null, null, null, new ArrayList<Pair<OptionMetadata, Object>>(),
+        return new ParseState<T>(null, null, null, null, new ArrayList<Map.Entry<OptionMetadata, Object>>(),
                 Collections.<Context> emptyList(), Collections.<Object> emptyList(), null,
                 Collections.<String> emptyList());
     }
@@ -111,8 +110,8 @@ public class ParseState<T> {
                 }
             }
 
-            List<Pair<OptionMetadata, Object>> newOptions = AirlineUtils.listCopy(parsedOptions);
-            newOptions.add(Pair.of(option, value));
+            List<Map.Entry<OptionMetadata, Object>> newOptions = AirlineUtils.listCopy(parsedOptions);
+            newOptions.add(AirlineUtils.pairOf(option, value));
 
             return new ParseState<T>(global, parserConfig, group, command, newOptions, locationStack, parsedArguments,
                     currentOption, unparsedInput);
@@ -231,7 +230,7 @@ public class ParseState<T> {
         return currentOption;
     }
 
-    public List<Pair<OptionMetadata, Object>> getParsedOptions() {
+    public List<Map.Entry<OptionMetadata, Object>> getParsedOptions() {
         return parsedOptions;
     }
 

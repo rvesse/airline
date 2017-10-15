@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 import org.testng.annotations.Test;
 
 public class TestGit

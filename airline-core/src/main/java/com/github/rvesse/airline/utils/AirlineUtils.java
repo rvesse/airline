@@ -16,6 +16,7 @@
 package com.github.rvesse.airline.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,15 +28,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.collections4.Predicate;
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.IteratorUtils;
+import com.github.rvesse.airline.utils.ListUtils;
+import com.github.rvesse.airline.utils.Predicate;
 
 public class AirlineUtils {
 
     public static <T> List<T> arrayToList(T[] array) {
-        return IteratorUtils.toList(IteratorUtils.arrayIterator(array));
+        List<T> list = Arrays.asList(array);
+        //It is unclear whether the list actually needs to be resizable
+        return new ArrayList<T>(list);
     }
 
     public static <T> T first(Iterable<T> iterable) {
@@ -233,5 +236,45 @@ public class AirlineUtils {
         }
         
         return builder.toString();
+    }
+    
+    public static Integer[] toObject(final int[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return new Integer[] {};
+        }
+        final Integer[] result = new Integer[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = Integer.valueOf(array[i]);
+        }
+        return result;
+    }
+    
+    private static class ImmutableEntry<K,V> implements Map.Entry<K, V> {
+        private final K key;
+        private final V value;
+        
+        public ImmutableEntry(K key, V value) {
+            super();
+            this.key = key;
+            this.value = value;
+        }
+        
+        @Override
+        public K getKey() {
+            return key;
+        }
+        @Override
+        public V getValue() {
+            return value;
+        }
+        @Override
+        public V setValue(V value) {
+            throw new UnsupportedOperationException("setValue is not yet supported");
+        }
+    }
+    public static <K,V> Map.Entry<K, V> pairOf(K k, V v) {
+        return new ImmutableEntry<K,V>(k, v);
     }
 }

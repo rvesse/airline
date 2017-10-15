@@ -27,8 +27,8 @@ import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.utils.AirlineTestUtils;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

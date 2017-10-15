@@ -82,13 +82,11 @@
         <artifactId>javax.inject</artifactId>
         <version>${dependency.javax-inject}</version>
       </dependency>
-
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${dependency.commons-lang3}</version>
       </dependency>
-
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>

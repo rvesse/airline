@@ -15,14 +15,15 @@
  */
 package com.github.rvesse.airline.utils.predicates.restrictions;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
-import org.apache.commons.lang3.tuple.Pair;
+import java.util.Map;
+
+import com.github.rvesse.airline.utils.CollectionUtils;
+import com.github.rvesse.airline.utils.Predicate;
 
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
 
-public abstract class AbstractParsedOptionRestrictionBasedFinder implements Predicate<Pair<OptionMetadata, Object>> {
+public abstract class AbstractParsedOptionRestrictionBasedFinder implements Predicate<Map.Entry<OptionMetadata, Object>> {
 
     public AbstractParsedOptionRestrictionBasedFinder() {
         super();
@@ -31,8 +32,8 @@ public abstract class AbstractParsedOptionRestrictionBasedFinder implements Pred
     protected abstract Predicate<OptionRestriction> getRestrictionPredicate();
 
     @Override
-    public boolean evaluate(Pair<OptionMetadata, Object> parsedOption) {
-        return CollectionUtils.exists(parsedOption.getLeft().getRestrictions(), getRestrictionPredicate());
+    public boolean evaluate(Map.Entry<OptionMetadata, Object> parsedOption) {
+        return CollectionUtils.exists(parsedOption.getKey().getRestrictions(), getRestrictionPredicate());
     }
 
 }
