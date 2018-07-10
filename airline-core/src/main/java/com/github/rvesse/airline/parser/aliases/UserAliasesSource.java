@@ -43,7 +43,7 @@ import com.github.rvesse.airline.parser.resources.WorkingDirectoryLocator;
  *            Command type
  */
 public class UserAliasesSource<C> {
-    
+
     //@formatter:off
     /**
      * Default user alias source locators
@@ -69,8 +69,7 @@ public class UserAliasesSource<C> {
         this.filename = filename;
         this.prefix = prefix;
         this.searchLocations = Collections.unmodifiableList(searchLocations);
-        this.locators = locators == null ? Arrays.asList(DEFAULT_LOCATORS)
-                : Collections.unmodifiableList(locators);
+        this.locators = locators == null ? Arrays.asList(DEFAULT_LOCATORS) : Collections.unmodifiableList(locators);
 
         if (StringUtils.isBlank(this.filename)) {
             throw new IllegalArgumentException("Filename cannot be null/empty/blank");
@@ -190,7 +189,7 @@ public class UserAliasesSource<C> {
 
             String value = properties.getProperty(key.toString());
             if (StringUtils.isEmpty(value)) {
-                aliases.add(new AliasMetadata(name, Collections.<String>emptyList()));
+                aliases.add(new AliasMetadata(name, Collections.<String> emptyList()));
                 continue;
             }
 

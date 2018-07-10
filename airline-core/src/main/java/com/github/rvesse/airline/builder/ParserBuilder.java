@@ -49,6 +49,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
     protected final Map<String, AliasBuilder<C>> aliases = new HashMap<>();
     protected CommandFactory<C> commandFactory = new DefaultCommandFactory<C>();
     protected boolean allowAbbreviatedCommands, allowAbbreviatedOptions, aliasesOverrideBuiltIns, aliasesMayChain;
+    private char forceBuiltInPrefix = '!';
     protected final List<OptionParser<C>> optionParsers = new ArrayList<>();
     protected String argsSeparator, flagNegationPrefix;
     protected UserAliasSourceBuilder<C> userAliasesBuilder = new UserAliasSourceBuilder<>(this);
@@ -119,6 +120,19 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
             throw new IllegalArgumentException(String.format("Alias %s has not been declared", name));
 
         return aliases.get(name);
+    }
+
+    /**
+     * Sets a prefix character used in alias definitions to force use of a
+     * built-in as opposed to a chained alias
+     * 
+     * @param prefix
+     *            Prefic character
+     * @return Parser build
+     */
+    public ParserBuilder<C> withAliasForceBuiltInPrefix(char prefix) {
+        this.forceBuiltInPrefix = prefix;
+        return this;
     }
 
     /**
@@ -591,6 +605,6 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
         return new ParserMetadata<C>(commandFactory, optionParsers, typeConverter, errorHandler,
                 allowAbbreviatedCommands, allowAbbreviatedOptions, aliasData, userAliases, aliasesOverrideBuiltIns,
-                aliasesMayChain, argsSeparator, flagNegationPrefix);
+                aliasesMayChain, forceBuiltInPrefix, argsSeparator, flagNegationPrefix);
     }
 }

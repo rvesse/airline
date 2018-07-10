@@ -63,8 +63,19 @@ public class AliasResolver<T> extends AbstractParser<T> {
                     new AliasFinder(tokens.peek()));
 
             // Nothing further to do if no aliases found
-            if (alias == null)
+            if (alias == null) {
+                // Has the user provided a prefix to force a built-in?
+                if (tokens.peek().startsWith(new String(new char[] { state.getParserConfiguration().getAliasForceBuiltInPrefix() }))) {
+                    String nextToken = tokens.next().substring(1);
+                    List<String> newTokens = new ArrayList<>();
+                    newTokens.add(nextToken);
+                    while (tokens.hasNext()) {
+                        newTokens.add(tokens.next());
+                    }
+                    return new PeekingIterator<String>(newTokens.iterator());
+                }
                 return tokens;
+            }
 
             // Check for circular references
             if (!aliasesSeen.add(alias.getName())) {
