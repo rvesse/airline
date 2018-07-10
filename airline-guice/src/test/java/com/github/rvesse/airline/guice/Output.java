@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline;
+package com.github.rvesse.airline.guice;
 
-/**
- * Interface for command factories
- *
- * @param <T>
- *            Command type
- */
-public interface CommandFactory<T> {
-    /**
-     * Creates an instance of the given type
-     *
-     * @param context context of command to be instantiated
-     * @param type
-     *            Type
-     * @return Instance
-     */
-    public abstract T createInstance(CommandContext<T> context, Class<?> type);
+import java.util.ArrayList;
+import java.util.List;
+
+public class Output {
+
+    private List<String> lines = new ArrayList<>();
+
+    public void println(String line) {
+        lines.add(line);
+    }
+
+    public List<String> getLines() {
+        return lines;
+    }
+
 }

@@ -75,10 +75,13 @@
     <dependency.testng>6.8.8</dependency.testng>
     <dependency.commons-lang3>3.3.2</dependency.commons-lang3>
     <dependency.commons-collections4>4.0</dependency.commons-collections4>
+    <dependency.guice>4.1.0</dependency.guice>
+    <dependency.jsr305>3.0.2</dependency.jsr305>
   </properties>
 
   <modules>
     <module>airline-core</module>
+    <module>airline-guice</module>
     <module>airline-examples</module>
     <module>airline-io</module>
     <module>airline-help</module>
@@ -104,6 +107,18 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
         <version>${dependency.commons-collections4}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>${dependency.jsr305}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${dependency.guice}</version>
       </dependency>
 
       <!-- for testing -->
@@ -295,7 +310,7 @@
     <!-- M2E Configuration -->
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
+        <!--This plugin's configuration is used to store Eclipse m2e settings
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>

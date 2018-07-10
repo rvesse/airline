@@ -21,8 +21,12 @@ public class DefaultCommandFactory<T> implements CommandFactory<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public T createInstance(Class<?> type) {
-        return (T) ParserUtil.createInstance(type);
+    public T createInstance(CommandContext<T> context, Class<?> type) {
+        T instance = (T) ParserUtil.createInstance(type);
+        context.processArguments(instance);
+        context.processOptions(instance);
+        context.processInjections(instance);
+        return instance;
     }
 
 }

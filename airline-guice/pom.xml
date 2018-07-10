@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>airline-parent</artifactId>
+        <groupId>com.github.rvesse</groupId>
+        <version>3.0.0-alpha-1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>airline-guice</artifactId>
+    <name>Airline - Guice</name>
+    <description>Provides Guice support for airline</description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>airline</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <properties>
+        <license.header.path>${project.parent.basedir}</license.header.path>
+        <coveralls.skip>true</coveralls.skip>
+    </properties>
+
+</project>

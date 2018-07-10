@@ -16,20 +16,17 @@
 package com.github.rvesse.airline.parser;
 
 import com.github.rvesse.airline.Accessor;
+import com.github.rvesse.airline.CommandContext;
 import com.github.rvesse.airline.CommandFactory;
 import com.github.rvesse.airline.DefaultCommandFactory;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.errors.ParseException;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class ParserUtil {
 
@@ -51,52 +48,16 @@ public class ParserUtil {
                 new DefaultCommandFactory<T>());
     }
 
-    public static <T> T injectOptions(T commandInstance, Iterable<OptionMetadata> options,
-            List<Pair<OptionMetadata, Object>> parsedOptions, ArgumentsMetadata arguments,
-            Iterable<Object> parsedArguments, Iterable<Accessor> metadataInjection, Map<Class<?>, Object> bindings) {
-        // inject options
-        for (OptionMetadata option : options) {
-            List<Object> values = new ArrayList<>();
-            for (Pair<OptionMetadata, Object> parsedOption : parsedOptions) {
-                if (option.equals(parsedOption.getLeft()))
-                    values.add(parsedOption.getRight());
-            }
-            if (values != null && !values.isEmpty()) {
-                for (Accessor accessor : option.getAccessors()) {
-                    accessor.addValues(commandInstance, values);
-                }
-            }
-        }
-
-        // inject args
-        if (arguments != null && parsedArguments != null) {
-            for (Accessor accessor : arguments.getAccessors()) {
-                accessor.addValues(commandInstance, parsedArguments);
-            }
-        }
-
-        for (Accessor accessor : metadataInjection) {
-            Object injectee = bindings.get(accessor.getJavaType());
-
-            if (injectee != null) {
-                accessor.addValues(commandInstance, ListUtils.unmodifiableList(Collections.singletonList(injectee)));
-            }
-        }
-
-        return commandInstance;
-    }
 
     public static <T> T createInstance(Class<?> type, Iterable<OptionMetadata> options,
             List<Pair<OptionMetadata, Object>> parsedOptions, ArgumentsMetadata arguments,
             Iterable<Object> parsedArguments, Iterable<Accessor> metadataInjection, Map<Class<?>, Object> bindings,
             CommandFactory<T> commandFactory) {
-        // create the command instance
-        T commandInstance = (T) commandFactory.createInstance(type);
 
-        return injectOptions(commandInstance, options, parsedOptions, arguments, parsedArguments, metadataInjection,
-                bindings);
+        CommandContext<T> context = new DefaultCommandContext<>(options, parsedOptions, arguments, parsedArguments, metadataInjection, bindings);
+        return commandFactory.createInstance(context, type);
     }
-    
+
     public static ResourceLocator[] createResourceLocators(Class<? extends ResourceLocator>[] locatorClasses) {
         ResourceLocator[] locators = new ResourceLocator[locatorClasses.length];
         int i = 0;

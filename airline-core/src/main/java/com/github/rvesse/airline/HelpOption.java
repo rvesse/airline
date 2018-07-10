@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import com.github.rvesse.airline.annotations.Option;
@@ -38,9 +39,11 @@ import com.github.rvesse.airline.parser.errors.ParseException;
  */
 public class HelpOption<C> {
     @Inject
+    @Nullable // required for guice module, can occur with single command
     private GlobalMetadata<C> globalMetadata;
 
     @Inject
+    @Nullable // require for the guice module
     private CommandGroupMetadata groupMetadata;
 
     @Inject
@@ -54,7 +57,7 @@ public class HelpOption<C> {
     /**
      * Shows help if user requested it and it hasn't already been shown using
      * the default {@link CliCommandUsageGenerator}
-     * 
+     *
      * @return True if help was requested by the user
      */
     public boolean showHelpIfRequested() {
@@ -63,7 +66,7 @@ public class HelpOption<C> {
 
     /**
      * Shows help if user requested it and it hasn't already been shown
-     * 
+     *
      * @param generator
      *            Usage generator
      * @return True if help was requested by the user
@@ -79,7 +82,7 @@ public class HelpOption<C> {
     /**
      * Shows help if any parsing errors were detected. If errors were detected
      * the error messages are printed prior to the help
-     * 
+     *
      * @param result
      *            Parsing result, if {@code null} then this method does nothing
      * @param <T>
@@ -92,7 +95,7 @@ public class HelpOption<C> {
 
     /**
      * Shows help if any parsing errors were detected
-     * 
+     *
      * @param result
      *            Parsing result, if {@code null} then this method does nothing
      * @param printErrors
@@ -108,7 +111,7 @@ public class HelpOption<C> {
 
     /**
      * Shows help if any parsing errors were detected
-     * 
+     *
      * @param result
      *            Parsing result, if {@code null} then this method does nothing
      * @param printErrors
@@ -154,7 +157,7 @@ public class HelpOption<C> {
 
     /**
      * Shows help using the given usage generator
-     * 
+     *
      * @param generator
      *            Usage generator
      */

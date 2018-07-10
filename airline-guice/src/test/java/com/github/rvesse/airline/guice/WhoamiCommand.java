@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline;
+package com.github.rvesse.airline.guice;
 
-/**
- * Interface for command factories
- *
- * @param <T>
- *            Command type
- */
-public interface CommandFactory<T> {
-    /**
-     * Creates an instance of the given type
-     *
-     * @param context context of command to be instantiated
-     * @param type
-     *            Type
-     * @return Instance
-     */
-    public abstract T createInstance(CommandContext<T> context, Class<?> type);
+import com.github.rvesse.airline.annotations.Command;
+
+import javax.inject.Inject;
+
+@Command(name = "whoami")
+public class WhoamiCommand implements Runnable {
+
+    private final Output output;
+
+    @Inject
+    public WhoamiCommand(Output output) {
+        this.output = output;
+    }
+
+    @Override
+    public void run() {
+        output.println("=> root");
+    }
 }
