@@ -166,9 +166,9 @@ public @interface Parser {
      * original built-in. This defaults to {@code !}
      * </p>
      * 
-     * @return User aliases force built-in prefix character
+     * @return Aliases force built-in prefix character
      */
-    char userAliasesForceBuiltIn() default '!';
+    char aliasesForceBuiltInPrefix() default '!';
 
     /**
      * Sets whether to use the default user alias locators (default true)

@@ -52,8 +52,8 @@ public class ParserMetadata<T> {
     public ParserMetadata(CommandFactory<T> commandFactory, List<OptionParser<T>> optionParsers,
             TypeConverter typeConverter, ParserErrorHandler errorHandler, boolean allowAbbreviateCommands,
             boolean allowAbbreviatedOptions, List<AliasMetadata> aliases, UserAliasesSource<T> userAliases,
-            boolean aliasesOverrideBuiltIns, boolean aliasesMayChain, char forceBuiltInPrefix, String argumentsSeparator,
-            String flagNegationPrefix) {
+            boolean aliasesOverrideBuiltIns, boolean aliasesMayChain, char forceBuiltInPrefix,
+            String argumentsSeparator, String flagNegationPrefix) {
         if (optionParsers == null)
             throw new NullPointerException("optionParsers cannot be null");
         if (aliases == null)
@@ -154,11 +154,11 @@ public class ParserMetadata<T> {
     public boolean aliasesMayChain() {
         return aliasesMayChain;
     }
-    
+
     /**
      * Gets the prefix character used in alias definitions to indicate that when
-     * resolving an alias that forces the built-in to be called even if there is
-     * an alias and built-in overriding is enabled
+     * resolving an alias that it should force the built-in to be called even if
+     * there is an alias of that name and built-in overriding is enabled
      * 
      * @return Force built in prefix character
      */
