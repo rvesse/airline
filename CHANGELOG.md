@@ -1,5 +1,19 @@
 # Airline - Change Log
 
+# 3.x Releases
+
+API refactoring based on several years of deployed production usage and community feedback
+
+## 3.0.0 Alpha
+
+
+
+---
+
+# 2.x Releases
+
+Major refactoring and functionality enhancements
+
 ## 2.5.1
 
 - Core Improvements
@@ -204,6 +218,10 @@
     - More advanced and flexible formatting of extra help hints and sections in all existing generators
     - Help supports providing help for sub-groups, help for groups will include information about available sub-groups
 
+# 1.x Releases
+
+Repackaged under the `com.github.rvesse.airline` package
+
 ## 1.0.2
 
 - Various minor improvements from Christian Raedel
@@ -251,6 +269,8 @@
         - 256 Colors (Basic ANSI Colors plus 3 colour palettes plus grayscale palette) - See [color chart](https://camo.githubusercontent.com/6378594a85c578517c5a4e494789bd4d66c9e46b/68747470733a2f2f7261772e6769746875622e636f6d2f666f697a652f676f2e7367722f6d61737465722f787465726d5f636f6c6f725f63686172742e706e67) for more detail
         - True Color (24 bit colour i.e. 16 million colours) - Many terminals may not support this mode
         - Includes basic text decorations e.g. bold, underline
+
+# 0.x Releases
 
 ## 0.9.2
 

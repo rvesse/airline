@@ -1,3 +1,7 @@
+# Migration to Airline 3 from Airline 2.x
+
+TODO - Migration information will be added as breaking API changes are made
+
 # Migration to Airline 2.2 from Airline 2.1
 
 Airline 2.2 has some minor breaking changes versus Airline 2.1

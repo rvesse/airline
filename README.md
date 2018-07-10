@@ -1,4 +1,8 @@
-# Airline 2
+# Airline 3 (Alpha)
+
+**WARNING** - This is the Airline 3 Alpha branch, this is a WIP that introduces some breaking API changes to clean up the API based on several years of production usage and community feedback.  This branch should be considered unstable for the time being!
+
+---
 
 Airline is a Java library providing an annotation-based framework for parsing command line interfaces.
 
@@ -92,6 +96,8 @@ Use the following maven dependency declaration:
 
 Snapshot artifacts of the latest source are also available using the version `2.5.1-SNAPSHOT` from the [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
 
+For 3.x Alpha artifacts use the version `3.0.0-alpha-1-SNAPSHOT` from the same SNAPSHOT repositories
+
 ## Build Status
 
 CI builds are run on [Travis CI](http://travis-ci.org/) ![Build Status](https://travis-ci.org/rvesse/airline.png), see build information and history at https://travis-ci.org/rvesse/airline
@@ -99,6 +105,10 @@ CI builds are run on [Travis CI](http://travis-ci.org/) ![Build Status](https://
 # Historical Information
 
 This is a substantially rewritten fork of the original [airline library](https://github.com/airlift/airline) created based on improvements predominantly developed by myself plus some minor improvements taken from the [Clark & Parsia](https://github.com/clarkparsia/airline) fork.  It has significantly deviated from the original library and gained many powerful features that differentiate it from both the original and other libraries with similar goals.
+
+## Breaking Changes versus 2.x
+
+Airline 3 contains some more minor breaking changes that will mostly affect advanced users.  However given its long availability it was preferred to start a 3.x branch rather than break existing usages.  Again please see [Migrating.md](Migrating.md) for details of any necessary migrations.
 
 ## Breaking Changes versus 1.x
 
