@@ -4,6 +4,7 @@
 
 - Core Improvements
     - Allow creating a `Cli` instance with an explicit `ParserMetadata` for situations where parser configuration cannot be specified via annotation e.g. using dynamically determined paths for user aliases
+    - Abstract direct usage of `System.out` via `Channels` factory interface to allow the library to be used in environments that are not consoles (#78) - Thanks to [sdorra](http://github.com/sdorra/)
 - Parser Improvements
     - Allow `./` as a user alias search location resolved as the current working directory
     - Allow extending how user alias search locations are resolved to support custom behaviours via new `ResourceLocator` interface
