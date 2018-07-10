@@ -1107,4 +1107,52 @@ public class TestAliases {
         args = cli.parse("!Args1");
         Assert.assertFalse(args.debug);
     }
+    
+    @Test(expectedExceptions = ParseAliasCircularReferenceException.class)
+    public void user_aliases_force_builtin_05() throws IOException {
+        prepareConfig(f, "logs=logs --format Json", "xml=logs --format Xml", "json=logs --format Json");
+        
+        //@formatter:off
+        CliBuilder<Logs> builder = Cli.<Logs>builder("test")
+                                       .withCommand(Logs.class);
+        builder.withParser()
+               .withAliasesOverridingBuiltIns()
+               .withAliasesChaining()
+               .withUserAliases()
+                   .withProgramName("test")
+                   .withSearchLocation("target/");
+        Cli<Logs> cli = builder.build();
+        //@formatter:on
+        
+        cli.parse("logs");
+    }
+    
+    @Test
+    public void user_aliases_force_builtin_06() throws IOException {
+        prepareConfig(f, "logs=!logs --format Json", "xml=!logs --format Xml", "json=!logs --format Json");
+        
+        //@formatter:off
+        CliBuilder<Logs> builder = Cli.<Logs>builder("test")
+                                       .withCommand(Logs.class);
+        builder.withParser()
+               .withAliasesOverridingBuiltIns()
+               .withAliasesChaining()
+               .withUserAliases()
+                   .withProgramName("test")
+                   .withSearchLocation("target/");
+        Cli<Logs> cli = builder.build();
+        //@formatter:on
+        
+        Logs logs = cli.parse("logs");
+        Assert.assertEquals(logs.format, Logs.Format.Json);
+        
+        logs = cli.parse("json");
+        Assert.assertEquals(logs.format, Logs.Format.Json);
+        
+        logs = cli.parse("xml");
+        Assert.assertEquals(logs.format, Logs.Format.Xml);
+        
+        logs = cli.parse("logs", "--format", "Text");
+        Assert.assertEquals(logs.format, Logs.Format.Text);
+    }
 }
