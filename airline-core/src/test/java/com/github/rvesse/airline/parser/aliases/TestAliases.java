@@ -1014,7 +1014,7 @@ public class TestAliases {
     }
     
     @Test
-    public void user_aliases_chained_05() throws IOException {
+    public void user_aliases_force_builtin_01() throws IOException {
         // Override a built-in but break the circular reference with the ! specifier
         prepareConfig(f, "Args1=a", "a=b", "b=!Args1 -debug");
 
@@ -1036,7 +1036,7 @@ public class TestAliases {
     }
     
     @Test(expectedExceptions = ParseCommandUnrecognizedException.class)
-    public void user_aliases_chained_06() throws IOException {
+    public void user_aliases_force_builtin_02() throws IOException {
         // Override a built-in but break the circular reference with the force specifier
         // however specifier is configured so still fails with a command not found instead
         prepareConfig(f, "Args1=a", "a=b", "b=!Args1 -debug");
@@ -1060,7 +1060,7 @@ public class TestAliases {
     }
     
     @Test
-    public void user_aliases_chained_07() throws IOException {
+    public void user_aliases_force_builtin_03() throws IOException {
         // Override a built-in but break the circular reference with the force specifier
         // however specifier is configured so still fails with a command not found instead
         prepareConfig(f, "Args1=a", "a=b", "b=@Args1 -debug");
@@ -1081,5 +1081,30 @@ public class TestAliases {
         // Check parsing
         Args1 args = cli.parse("Args1");
         Assert.assertTrue(args.debug);
+    }
+    
+    @Test
+    public void user_aliases_force_builtin_04() throws IOException {
+        prepareConfig(f, "Args1=!Args1 -debug");
+
+        //@formatter:off
+        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                                       .withCommand(Args1.class);
+        builder.withParser()
+               .withAliasesOverridingBuiltIns()
+               .withAliasesChaining()
+               .withUserAliases()
+                   .withProgramName("test")
+                   .withSearchLocation("target/");
+        Cli<Args1> cli = builder.build();
+        //@formatter:on
+
+        // Check parsing
+        Args1 args = cli.parse("Args1");
+        Assert.assertTrue(args.debug);
+        
+        // Check forcing built-in
+        args = cli.parse("!Args1");
+        Assert.assertFalse(args.debug);
     }
 }
