@@ -22,6 +22,7 @@ import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.args.Args1;
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.parser.errors.ParseAliasCircularReferenceException;
+import com.github.rvesse.airline.parser.errors.ParseOptionConversionException;
 
 public class TestAliasResolver {
     
@@ -88,6 +89,71 @@ public class TestAliasResolver {
         Args1 cmd = builder.build().parse("a", "3", "6");
         Assert.assertEquals(cmd.verbose.intValue(), 6);
         Assert.assertEquals(cmd.l, 3l);
+    }
+    
+    @Test
+    public void alias_resolution_positional_03() {
+        //@formatter:off
+        CliBuilder<Args1> builder = prepareBuilder();
+        builder.withParser()
+               .withAlias("a")
+               .withArguments("-verbose", "${1:-14}");
+        //@formatter:on
+        
+        Args1 cmd = builder.build().parse("a");
+        Assert.assertEquals(cmd.verbose.intValue(), 14);
+    }
+    
+    @Test(expectedExceptions = ParseOptionConversionException.class)
+    public void alias_resolution_positional_04() {
+        //@formatter:off
+        CliBuilder<Args1> builder = prepareBuilder();
+        builder.withParser()
+               .withAlias("a")
+               .withArguments("-verbose", "${1:14}"); // Wrong syntax for defaults
+        //@formatter:on
+        
+        Args1 cmd = builder.build().parse("a");
+        Assert.assertNotEquals(cmd.verbose.intValue(), 14);
+    }
+    
+    @Test
+    public void alias_resolution_positional_05() {
+        //@formatter:off
+        CliBuilder<Args1> builder = prepareBuilder();
+        builder.withParser()
+               .withAlias("a")
+               .withArguments("${1:14}"); // Wrong syntax for default
+        //@formatter:on
+        
+        Args1 cmd = builder.build().parse("a");
+        Assert.assertTrue(cmd.parameters.contains("${1:14}"));
+    }
+    
+    @Test
+    public void alias_resolution_positional_06() {
+        //@formatter:off
+        CliBuilder<Args1> builder = prepareBuilder();
+        builder.withParser()
+               .withAlias("a")
+               .withArguments("$1");
+        //@formatter:on
+        
+        Args1 cmd = builder.build().parse("a");
+        Assert.assertTrue(cmd.parameters.contains("$1"));
+    }
+    
+    @Test
+    public void alias_resolution_positional_07() {
+        //@formatter:off
+        CliBuilder<Args1> builder = prepareBuilder();
+        builder.withParser()
+               .withAlias("a")
+               .withArguments("-verbose", "${1}");
+        //@formatter:on
+        
+        Args1 cmd = builder.build().parse("a", "9");
+        Assert.assertEquals(cmd.verbose.intValue(), 9);
     }
     
     @Test

@@ -65,7 +65,8 @@ public class AliasResolver<T> extends AbstractParser<T> {
             // Nothing further to do if no aliases found
             if (alias == null) {
                 // Has the user provided a prefix to force a built-in?
-                if (tokens.peek().startsWith(new String(new char[] { state.getParserConfiguration().getAliasForceBuiltInPrefix() }))) {
+                if (tokens.peek().startsWith(
+                        new String(new char[] { state.getParserConfiguration().getAliasForceBuiltInPrefix() }))) {
                     String nextToken = tokens.next().substring(1);
                     List<String> newTokens = new ArrayList<>();
                     newTokens.add(nextToken);
@@ -115,19 +116,53 @@ public class AliasResolver<T> extends AbstractParser<T> {
             for (String arg : alias.getArguments()) {
                 if (arg.startsWith("$")) {
                     // May be a positional parameter
+                    Integer num = null;
+                    String defaultValue = null;
                     try {
-                        int num = Integer.parseInt(arg.substring(1));
+                        num = Integer.parseInt(arg.substring(1));
                         num--;
+                    } catch (NumberFormatException e) {
+                        try {
+                            // The number was invalid
+                            // May be an expansion with a default i.e.
+                            // ${1:-default}
+                            if (arg.startsWith("${") && arg.endsWith("}")) {
+                                if (arg.indexOf(":-") > 2) {
+                                    // Has a default value
+                                    num = Integer.parseInt(arg.substring(2, arg.indexOf(":-")));
+                                    num--;
+                                    defaultValue = arg.substring(arg.indexOf(":-") + 2, arg.length() - 1);
+                                } else {
+                                    // No default value, maybe just a number?
+                                    num = Integer.parseInt(arg.substring(2, arg.length() - 1));
+                                    num--;
+                                }
+                            }
+                        } catch (NumberFormatException e2) {
+                            // Invalid number, ignore
+                        }
+                    }
 
-                        if (num >= 0 && num < remainingParams.size()) {
-                            // Valid positional parameter
+                    if (num != null && num >= 0) {
+                        // Valid number, determine how to apply
+                        
+                        if (num < remainingParams.size()) {
+                            // Valid positional parameter with user input
+                            // supplied
                             newParams.add(remainingParams.get(num));
                             used.add(num);
                             continue;
+                        } else if (defaultValue != null) {
+                            // Valid positional parameter, no user input to
+                            // substitute but a default was supplied
+                            newParams.add(defaultValue);
+                            // No need to update used in this case
+                            continue;
+                        } else {
+                            // Positional parameter but no user input or default
+                            // value to substitute so fall through to just
+                            // passing this on as is
                         }
-                    } catch (NumberFormatException e) {
-                        // Ignore - the number was invalid so we'll
-                        // treat it as an ordinary parameter
                     }
                 }
 
