@@ -17,6 +17,7 @@ package com.github.rvesse.airline.help;
 
 import javax.inject.Inject;
 
+import com.github.rvesse.airline.Channels;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 
@@ -69,30 +70,30 @@ public class Help<T> implements Runnable, Callable<Void> {
 
     /**
      * Displays plain text format help for the given command to standard out
-     * 
+     *
      * @param command
      *            Command
      * @throws IOException
      */
     public static void help(CommandMetadata command) throws IOException {
-        help(command, System.out);
+        help(command, Channels.output());
     }
 
     /**
      * Displays plain text format help for the given command to standard out
-     * 
+     *
      * @param command
      *            Command
      * @throws IOException
      */
     public static void help(CommandMetadata command, boolean includeHidden) throws IOException {
-        help(command, includeHidden, System.out);
+        help(command, includeHidden, Channels.output());
     }
 
     /**
      * Displays plain text format help or the given command to the given output
      * stream
-     * 
+     *
      * @param command
      *            Command
      * @param out
@@ -106,7 +107,7 @@ public class Help<T> implements Runnable, Callable<Void> {
     /**
      * Displays plain text format help or the given command to the given output
      * stream
-     * 
+     *
      * @param command
      *            Command
      * @param out
@@ -119,7 +120,7 @@ public class Help<T> implements Runnable, Callable<Void> {
 
     /**
      * Displays plain text format program help to standard out
-     * 
+     *
      * @param global
      *            Program metadata
      * @param commandNames
@@ -127,12 +128,12 @@ public class Help<T> implements Runnable, Callable<Void> {
      * @throws IOException
      */
     public static <T> void help(GlobalMetadata<T> global, List<String> commandNames) throws IOException {
-        help(global, commandNames, false, System.out);
+        help(global, commandNames, false, Channels.output());
     }
 
     /**
      * Displays plain text format program help to standard out
-     * 
+     *
      * @param global
      *            Program metadata
      * @param commandNames
@@ -143,12 +144,12 @@ public class Help<T> implements Runnable, Callable<Void> {
      */
     public static <T> void help(GlobalMetadata<T> global, List<String> commandNames, boolean includeHidden)
             throws IOException {
-        help(global, commandNames, includeHidden, System.out);
+        help(global, commandNames, includeHidden, Channels.output());
     }
 
     /**
      * Displays plain text format program help to the given output stream
-     * 
+     *
      * @param global
      *            Program meta-data
      * @param commandNames
@@ -164,7 +165,7 @@ public class Help<T> implements Runnable, Callable<Void> {
 
     /**
      * Displays plain text format program help to the given output stream
-     * 
+     *
      * @param global
      *            Program meta-data
      * @param commandNames
@@ -193,8 +194,8 @@ public class Help<T> implements Runnable, Callable<Void> {
         Predicate<CommandGroupMetadata> findGroupPredicate;
         Predicate<CommandMetadata> findCommandPredicate;
         //@formatter:off
-        findGroupPredicate = global.getParserConfiguration().allowsAbbreviatedCommands() 
-                             ? new AbbreviatedGroupFinder(name, global.getCommandGroups()) 
+        findGroupPredicate = global.getParserConfiguration().allowsAbbreviatedCommands()
+                             ? new AbbreviatedGroupFinder(name, global.getCommandGroups())
                              : new GroupFinder(name);
         //@formatter:on
 
@@ -220,8 +221,8 @@ public class Help<T> implements Runnable, Callable<Void> {
                     commandOrSubGroupName = commandNames.get(i);
 
                     //@formatter:off
-                    findGroupPredicate = global.getParserConfiguration().allowsAbbreviatedCommands() 
-                                         ? new AbbreviatedGroupFinder(commandOrSubGroupName, group.getSubGroups()) 
+                    findGroupPredicate = global.getParserConfiguration().allowsAbbreviatedCommands()
+                                         ? new AbbreviatedGroupFinder(commandOrSubGroupName, group.getSubGroups())
                                          : new GroupFinder(commandOrSubGroupName);
                     //@formatter:on
                     CommandGroupMetadata subGroup = CollectionUtils.find(group.getSubGroups(), findGroupPredicate);
@@ -246,7 +247,7 @@ public class Help<T> implements Runnable, Callable<Void> {
                 commandOrSubGroupName = commandNames.get(i);
 
                 //@formatter:off
-                findCommandPredicate = global.getParserConfiguration().allowsAbbreviatedCommands() 
+                findCommandPredicate = global.getParserConfiguration().allowsAbbreviatedCommands()
                                        ? new AbbreviatedCommandFinder(commandOrSubGroupName, group.getCommands())
                                        : new CommandFinder(commandOrSubGroupName);
                 //@formatter:on
@@ -259,17 +260,17 @@ public class Help<T> implements Runnable, Callable<Void> {
 
                 // Didn't find an appropriate command
                 if (global.getParserConfiguration().allowsAbbreviatedCommands()) {
-                    System.out.println(
+                    Channels.output().println(
                             "Unknown command " + name + " " + commandOrSubGroupName + " or an ambiguous abbreviation");
                 } else {
-                    System.out.println("Unknown command " + name + " " + commandOrSubGroupName);
+                    Channels.output().println("Unknown command " + name + " " + commandOrSubGroupName);
                 }
             }
         }
 
         // A command in the default group?
         //@formatter:off
-        findCommandPredicate = global.getParserConfiguration().allowsAbbreviatedCommands() 
+        findCommandPredicate = global.getParserConfiguration().allowsAbbreviatedCommands()
                                ? new AbbreviatedCommandFinder(name, global.getDefaultGroupCommands())
                                : new CommandFinder(name);
         //@formatter:on
@@ -283,9 +284,9 @@ public class Help<T> implements Runnable, Callable<Void> {
 
         // Didn't find an appropriate group
         if (global.getParserConfiguration().allowsAbbreviatedCommands()) {
-            System.out.println("Unknown command " + name + " or an ambiguous abbreviation");
+            Channels.output().println("Unknown command " + name + " or an ambiguous abbreviation");
         } else {
-            System.out.println("Unknown command " + name);
+            Channels.output().println("Unknown command " + name);
         }
     }
 }

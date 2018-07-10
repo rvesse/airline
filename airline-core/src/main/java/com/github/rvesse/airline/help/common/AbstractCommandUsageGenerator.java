@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.github.rvesse.airline.Channels;
 import com.github.rvesse.airline.help.CommandUsageGenerator;
 import com.github.rvesse.airline.help.UsageHelper;
 import com.github.rvesse.airline.help.sections.HelpHint;
@@ -34,7 +35,7 @@ import com.github.rvesse.airline.utils.comparators.HelpSectionComparator;
 
 /**
  * Abstract command usage generator
- * 
+ *
  */
 public abstract class AbstractCommandUsageGenerator extends AbstractUsageGenerator implements CommandUsageGenerator {
 
@@ -68,7 +69,7 @@ public abstract class AbstractCommandUsageGenerator extends AbstractUsageGenerat
     @Override
     public <T> void usage(String programName, String[] groupNames, String commandName, CommandMetadata command,
             ParserMetadata<T> parserConfig) throws IOException {
-        usage(programName, groupNames, commandName, command, parserConfig, System.out);
+        usage(programName, groupNames, commandName, command, parserConfig, Channels.output());
     }
 
     /**
@@ -79,7 +80,7 @@ public abstract class AbstractCommandUsageGenerator extends AbstractUsageGenerat
     @Deprecated
     public void usage(String programName, String[] groupNames, String commandName, CommandMetadata command)
             throws IOException {
-        usage(programName, groupNames, commandName, command, null, System.out);
+        usage(programName, groupNames, commandName, command, null, Channels.output());
     }
 
     /**
@@ -96,7 +97,7 @@ public abstract class AbstractCommandUsageGenerator extends AbstractUsageGenerat
     /**
      * Sorts the exit codes assuming a non-null comparator was provided at
      * instantiation time
-     * 
+     *
      * @param exitCodes
      *            Exit codes
      * @return Sorted exit codes
@@ -111,7 +112,7 @@ public abstract class AbstractCommandUsageGenerator extends AbstractUsageGenerat
 
     /**
      * Finds the help sections
-     * 
+     *
      * @param command
      *            Command meta-data
      * @param preSections

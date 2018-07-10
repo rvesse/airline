@@ -18,6 +18,7 @@ package com.github.rvesse.airline.help.common;
 import java.io.IOException;
 import java.util.Comparator;
 
+import com.github.rvesse.airline.Channels;
 import com.github.rvesse.airline.help.CommandGroupUsageGenerator;
 import com.github.rvesse.airline.help.UsageHelper;
 import com.github.rvesse.airline.help.sections.HelpHint;
@@ -45,6 +46,6 @@ public abstract class AbstractCommandGroupUsageGenerator<T> extends AbstractUsag
 
     @Override
     public void usage(GlobalMetadata<T> global, CommandGroupMetadata[] groups) throws IOException {
-        usage(global, groups, System.out);
+        usage(global, groups, Channels.output());
     }
 }

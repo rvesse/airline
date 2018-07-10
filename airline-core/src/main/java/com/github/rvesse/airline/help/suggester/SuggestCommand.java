@@ -15,6 +15,7 @@
  */
 package com.github.rvesse.airline.help.suggester;
 
+import com.github.rvesse.airline.Channels;
 import com.github.rvesse.airline.Context;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
@@ -90,7 +91,7 @@ public class SuggestCommand<T> implements Runnable, Callable<Void> {
 
     @Override
     public void run() {
-        System.out.println(StringUtils.join(generateSuggestions(), '\n'));
+        Channels.output().println(StringUtils.join(generateSuggestions(), '\n'));
     }
 
     @Override

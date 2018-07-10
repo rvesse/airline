@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.github.rvesse.airline.Channels;
 import com.github.rvesse.airline.help.GlobalUsageGenerator;
 import com.github.rvesse.airline.help.UsageHelper;
 import com.github.rvesse.airline.help.sections.HelpHint;
@@ -56,13 +57,13 @@ public abstract class AbstractGlobalUsageGenerator<T> extends AbstractUsageGener
 
     @Override
     public void usage(GlobalMetadata<T> global) throws IOException {
-        usage(global, System.out);
+        usage(global, Channels.output());
     }
 
     /**
      * Sorts the command groups assumign a non-null comparator was provided at
      * instantiation time
-     * 
+     *
      * @param groups
      *            Command groups
      * @return Sorted command groups
