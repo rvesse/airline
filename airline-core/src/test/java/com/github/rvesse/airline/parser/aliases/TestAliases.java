@@ -1154,5 +1154,8 @@ public class TestAliases {
         
         logs = cli.parse("logs", "--format", "Text");
         Assert.assertEquals(logs.format, Logs.Format.Text);
+        
+        logs = cli.parse("!logs");
+        Assert.assertEquals(logs.format, Logs.Format.Text);
     }
 }
