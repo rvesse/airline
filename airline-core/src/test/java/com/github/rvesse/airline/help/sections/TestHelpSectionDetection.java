@@ -24,6 +24,7 @@ import org.testng.annotations.Test;
 import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.args.Args1;
 import com.github.rvesse.airline.builder.CliBuilder;
+import com.github.rvesse.airline.help.sections.common.BasicSection;
 import com.github.rvesse.airline.help.sections.common.DiscussionSection;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
@@ -95,5 +96,24 @@ public class TestHelpSectionDetection {
         Assert.assertEquals(paragraphs.length, 2);
         Assert.assertEquals(paragraphs[0], "A");
         Assert.assertEquals(paragraphs[1], "B");
+    }
+    
+    @Test
+    public void help_section_cli_builder_02() {
+        //@formatter:off
+        Cli<Object> cli = new CliBuilder<>("test")
+                .withHelpSection(new DiscussionSection(new String[] { "A", "B" }))
+                .withCommand(Args1HidesDiscussion.class)
+                .build();
+        //@formatter:on
+        CommandFinder finder = new CommandFinder("Args1");
+        CommandMetadata cmd = CollectionUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
+        Assert.assertNotNull(cmd);
+        Assert.assertEquals(cmd.getHelpSections().size(), 1);
+        HelpSection section = CollectionUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
+        Assert.assertTrue(section instanceof BasicSection);
+        BasicSection basic = (BasicSection) section;
+        Assert.assertEquals(basic.getTitle(), "Discussion");
+        Assert.assertEquals(basic.getFormat(), HelpFormat.NONE_PRINTABLE);
     }
 }

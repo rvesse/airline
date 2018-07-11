@@ -14,6 +14,7 @@
     - Allow specifying global restriction annotations directly on classes used with `SingleCommand`
     - `@Unrestricted` can now be applied directly to classes to specify no global restrictions on single commands and CLIs
     - `@Version` can now use `ResourceLocator` to modify search locations
+    - Help Sections annotations can now be placed onto `@Cli` annotated classes and will be inherited by all commands defined for the CLI
 
 ## 2.5.0
 
@@ -32,7 +33,6 @@
     - Removed some unnecessary helper methods from `AirlineUtils` in favour of JDK built-ins (#64)
 - Help Improvements
     - Fixed some issues with UsagePrinter not correctly respecting configured column limits in some cases
-    - New `airline-maven-plugin` that can be used to generate help for your Airline powered CLIs directly in your Maven build (#45)
 
 ## 2.4.0
 
