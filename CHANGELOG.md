@@ -9,6 +9,7 @@
     - Allow `./` as a user alias search location resolved as the current working directory
     - Allow extending how user alias search locations are resolved to support custom behaviours via new `ResourceLocator` interface
     - Add ability to specify a force prefix for aliases which allows alias definitions to override built-ins while still being able to invoke those built-ins (#72)
+    - Add ability to specify default values for positional parameters in alias definitions (#69)
 - Annotation Improvements
     - Allow specifying global restriction annotations directly on classes used with `SingleCommand`
     - `@Unrestricted` can now be applied directly to classes to specify no global restrictions on single commands and CLIs
