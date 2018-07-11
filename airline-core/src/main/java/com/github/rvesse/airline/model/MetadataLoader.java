@@ -128,7 +128,7 @@ public class MetadataLoader {
             UserAliasSourceBuilder<C> userAliasBuilder = builder.withUserAliases();
             userAliasBuilder.withFilename(parserConfig.userAliasesFile());
             userAliasBuilder.withPrefix(parserConfig.userAliasesPrefix());
-            
+
             // Determine the search locations that are in use
             if (parserConfig.userAliasesSearchLocation().length > 0) {
                 userAliasBuilder.withSearchLocations(parserConfig.userAliasesSearchLocation());
@@ -136,7 +136,7 @@ public class MetadataLoader {
                 // Use the working directory as no search location specified
                 userAliasBuilder.withSearchLocation("." + File.separator);
             }
-            
+
             // Determine the locators that are in use
             if (parserConfig.useDefaultAliasLocators() && parserConfig.defaultAliasLocatorsFirst()) {
                 userAliasBuilder.withDefaultLocators();
@@ -194,14 +194,18 @@ public class MetadataLoader {
 
         com.github.rvesse.airline.annotations.Cli cliConfig = (com.github.rvesse.airline.annotations.Cli) annotation;
 
+        // Find help sections defined at the CLI level
+        Map<String, HelpSection> baseHelpSections = loadHelpSections(cliClass,
+                Collections.<String, HelpSection> emptyMap());
+
         // Prepare commands
         CommandMetadata defaultCommand = null;
         if (!cliConfig.defaultCommand().equals(com.github.rvesse.airline.annotations.Cli.NO_DEFAULT.class)) {
-            defaultCommand = loadCommand(cliConfig.defaultCommand());
+            defaultCommand = loadCommand(cliConfig.defaultCommand(), new HashMap<>(baseHelpSections));
         }
         List<CommandMetadata> defaultGroupCommands = new ArrayList<CommandMetadata>();
         for (Class<?> cls : cliConfig.commands()) {
-            defaultGroupCommands.add(loadCommand(cls));
+            defaultGroupCommands.add(loadCommand(cls, new HashMap<>(baseHelpSections)));
         }
 
         // Prepare parser configuration
@@ -257,7 +261,7 @@ public class MetadataLoader {
 
             List<CommandMetadata> groupCommands = new ArrayList<CommandMetadata>();
             for (Class<?> cls : groupAnno.commands()) {
-                groupCommands.add(loadCommand(cls));
+                groupCommands.add(loadCommand(cls, new HashMap<>(baseHelpSections)));
             }
 
             if (group == null) {
@@ -267,7 +271,7 @@ public class MetadataLoader {
                                          groupAnno.description(),
                                          groupAnno.hidden(),
                                          Collections.<CommandGroupMetadata>emptyList(),
-                                         !groupAnno.defaultCommand().equals(Group.NO_DEFAULT.class) ? loadCommand(groupAnno.defaultCommand()) : null, 
+                                         !groupAnno.defaultCommand().equals(Group.NO_DEFAULT.class) ? loadCommand(groupAnno.defaultCommand(), baseHelpSections) : null, 
                                          groupCommands);
                 //@formatter:on
                 if (subGroupPath == null) {
@@ -309,7 +313,7 @@ public class MetadataLoader {
         }
 
         // Post-process to find possible further group assignments
-        loadCommandsIntoGroupsByAnnotation(allCommands, groups, defaultGroupCommands);
+        loadCommandsIntoGroupsByAnnotation(allCommands, groups, defaultGroupCommands, baseHelpSections);
 
         return loadGlobal(cliConfig.name(), cliConfig.description(), defaultCommand, defaultGroupCommands, groups,
                 restrictions, parserConfig);
@@ -424,12 +428,24 @@ public class MetadataLoader {
      * @return Command meta-data
      */
     public static CommandMetadata loadCommand(Class<?> commandType) {
+        return loadCommand(commandType, new HashMap<String, HelpSection>());
+    }
+
+    /**
+     * Loads command meta-data
+     * 
+     * @param commandType
+     *            Command Type
+     * @param baseHelpSections
+     *            Base set of help sections
+     * @return Command meta-data
+     */
+    public static CommandMetadata loadCommand(Class<?> commandType, Map<String, HelpSection> baseHelpSections) {
         if (commandType == null) {
             return null;
         }
         Command command = null;
         List<Group> groups = new ArrayList<>();
-        Map<String, HelpSection> helpSections = new HashMap<>();
 
         for (Class<?> cls = commandType; command == null && !Object.class.equals(cls); cls = cls.getSuperclass()) {
             command = cls.getAnnotation(Command.class);
@@ -447,24 +463,7 @@ public class MetadataLoader {
                     String.format("Command %s is not annotated with @Command", commandType.getName()));
 
         // Find help sections
-        for (Class<?> cls = commandType; !Object.class.equals(cls); cls = cls.getSuperclass()) {
-            for (Class<? extends Annotation> helpAnnotationClass : HelpSectionRegistry.getAnnotationClasses()) {
-                Annotation annotation = cls.getAnnotation(helpAnnotationClass);
-                if (annotation == null)
-                    continue;
-                HelpSection section = HelpSectionRegistry.getHelpSection(helpAnnotationClass, annotation);
-                if (section == null)
-                    continue;
-
-                // Because we're going up the class hierarchy the titled section
-                // lowest down the hierarchy should win so if we've already seen
-                // a section with this title ignore it
-                if (helpSections.containsKey(section.getTitle().toLowerCase(Locale.ENGLISH)))
-                    continue;
-
-                helpSections.put(section.getTitle().toLowerCase(Locale.ENGLISH), section);
-            }
-        }
+        Map<String, HelpSection> helpSections = loadHelpSections(commandType, baseHelpSections);
 
         String name = command.name();
         String description = command.description().isEmpty() ? null : command.description();
@@ -490,6 +489,46 @@ public class MetadataLoader {
         //@formatter:on
 
         return commandMetadata;
+    }
+
+    protected static Map<String, HelpSection> loadHelpSections(Class<?> sourceClass,
+            Map<String, HelpSection> baseHelpSections) {
+        Map<String, HelpSection> helpSections = new HashMap<>();
+
+        // Search for help section annotations in the class hierarchy
+        for (Class<?> cls = sourceClass; !Object.class.equals(cls); cls = cls.getSuperclass()) {
+            for (Class<? extends Annotation> helpAnnotationClass : HelpSectionRegistry.getAnnotationClasses()) {
+                Annotation annotation = cls.getAnnotation(helpAnnotationClass);
+                if (annotation == null)
+                    continue;
+                HelpSection section = HelpSectionRegistry.getHelpSection(helpAnnotationClass, annotation);
+                if (section == null)
+                    continue;
+
+                // Because we're going up the class hierarchy the titled section
+                // lowest down the hierarchy should win so if we've already seen
+                // a section with this title ignore it
+                if (helpSections.containsKey(section.getTitle().toLowerCase(Locale.ENGLISH)))
+                    continue;
+
+                helpSections.put(section.getTitle().toLowerCase(Locale.ENGLISH), section);
+            }
+        }
+
+        // Add in base sections (if any)
+        // Need to do this afterwards as anything defined in the class hierarchy
+        // will override any base definitions
+        if (baseHelpSections.isEmpty())
+            return helpSections;
+
+        for (String key : baseHelpSections.keySet()) {
+            if (helpSections.containsKey(key.toLowerCase(Locale.ENGLISH)))
+                continue;
+            helpSections.put(key.toLowerCase(Locale.ENGLISH), baseHelpSections.get(key));
+        }
+
+        return helpSections;
+
     }
 
     /**
@@ -862,11 +901,12 @@ public class MetadataLoader {
     }
 
     public static void loadCommandsIntoGroupsByAnnotation(List<CommandMetadata> allCommands,
-            List<CommandGroupMetadata> commandGroups, List<CommandMetadata> defaultCommandGroup) {
+            List<CommandGroupMetadata> commandGroups, List<CommandMetadata> defaultCommandGroup,
+            Map<String, HelpSection> baseHelpSections) {
         List<CommandMetadata> newCommands = new ArrayList<CommandMetadata>();
 
         // first, create any groups explicitly annotated
-        createGroupsFromAnnotations(allCommands, newCommands, commandGroups, defaultCommandGroup);
+        createGroupsFromAnnotations(allCommands, newCommands, commandGroups, defaultCommandGroup, baseHelpSections);
 
         for (CommandMetadata command : allCommands) {
             boolean addedToGroup = false;
@@ -935,7 +975,7 @@ public class MetadataLoader {
     @SuppressWarnings("rawtypes")
     private static void createGroupsFromAnnotations(List<CommandMetadata> allCommands,
             List<CommandMetadata> newCommands, List<CommandGroupMetadata> commandGroups,
-            List<CommandMetadata> defaultCommandGroup) {
+            List<CommandMetadata> defaultCommandGroup, Map<String, HelpSection> baseHelpSections) {
 
         // We sort sub-groups by name length then lexically
         // This means that when we build the groups hierarchy we'll ensure we
@@ -955,7 +995,7 @@ public class MetadataLoader {
                     defaultCommandClass = groupAnno.defaultCommand();
                     defaultCommand = CollectionUtils.find(allCommands, new CommandTypeFinder(defaultCommandClass));
                     if (null == defaultCommand) {
-                        defaultCommand = loadCommand(defaultCommandClass);
+                        defaultCommand = loadCommand(defaultCommandClass, baseHelpSections);
                         newCommands.add(defaultCommand);
                     }
                 }
@@ -966,7 +1006,7 @@ public class MetadataLoader {
                 for (Class commandClass : groupAnno.commands()) {
                     groupCommand = CollectionUtils.find(allCommands, new CommandTypeFinder(commandClass));
                     if (null == groupCommand) {
-                        groupCommand = loadCommand(commandClass);
+                        groupCommand = loadCommand(commandClass, baseHelpSections);
                         newCommands.add(groupCommand);
                         groupCommands.add(groupCommand);
                     }
