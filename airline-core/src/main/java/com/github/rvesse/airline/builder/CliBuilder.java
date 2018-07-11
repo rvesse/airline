@@ -17,10 +17,10 @@ package com.github.rvesse.airline.builder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
 
@@ -52,6 +52,7 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
     protected final Map<String, GroupBuilder<C>> groups = new HashMap<>();
     protected final List<GlobalRestriction> restrictions = new ArrayList<>();
     protected final ParserBuilder<C> parserBuilder = new ParserBuilder<C>();
+    protected final Map<String, HelpSection> baseHelpSections = new HashMap<>();
 
     public CliBuilder(String name) {
         checkNotBlank(name, "Program name");
@@ -142,16 +143,23 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
         return parserBuilder;
     }
 
+    public CliBuilder<C> withHelpSection(HelpSection section) {
+        if (section == null)
+            return this;
+        baseHelpSections.put(section.getTitle().toLowerCase(Locale.ENGLISH), section);
+        return this;
+    }
+
     @Override
     public Cli<C> build() {
         CommandMetadata defaultCommandMetadata = null;
         List<CommandMetadata> allCommands = new ArrayList<CommandMetadata>();
         if (defaultCommand != null) {
-            defaultCommandMetadata = MetadataLoader.loadCommand(defaultCommand);
+            defaultCommandMetadata = MetadataLoader.loadCommand(defaultCommand, baseHelpSections);
         }
 
         List<CommandMetadata> defaultCommandGroup = defaultCommandGroupCommands != null
-                ? MetadataLoader.loadCommands(defaultCommandGroupCommands)
+                ? MetadataLoader.loadCommands(defaultCommandGroupCommands, baseHelpSections)
                 : new ArrayList<CommandMetadata>();
 
         allCommands.addAll(defaultCommandGroup);
@@ -193,7 +201,7 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
         // rather than change the entire way metadata is loaded, I figured just
         // post-processing was an easier, yet uglier, way to go
         MetadataLoader.loadCommandsIntoGroupsByAnnotation(allCommands, commandGroups, defaultCommandGroup,
-                Collections.<String, HelpSection> emptyMap());
+                baseHelpSections);
 
         // Build restrictions
         // Use defaults if none specified

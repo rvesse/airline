@@ -411,11 +411,11 @@ public class MetadataLoader {
      *            Default command classes
      * @return Command meta-data
      */
-    public static <T> List<CommandMetadata> loadCommands(Iterable<Class<? extends T>> defaultCommands) {
+    public static <T> List<CommandMetadata> loadCommands(Iterable<Class<? extends T>> defaultCommands, Map<String, HelpSection> baseHelpSections) {
         List<CommandMetadata> commandMetadata = new ArrayList<CommandMetadata>();
         Iterator<Class<? extends T>> iter = defaultCommands.iterator();
         while (iter.hasNext()) {
-            commandMetadata.add(loadCommand(iter.next()));
+            commandMetadata.add(loadCommand(iter.next(), baseHelpSections));
         }
         return commandMetadata;
     }
