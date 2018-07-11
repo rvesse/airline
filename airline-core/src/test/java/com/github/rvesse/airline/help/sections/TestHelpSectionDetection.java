@@ -16,6 +16,8 @@
 package com.github.rvesse.airline.help.sections;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Predicate;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -27,6 +29,19 @@ import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 
 public class TestHelpSectionDetection {
+    
+    private static class HelpSectionFinder implements Predicate<HelpSection> {
+        private final String title;
+        
+        public HelpSectionFinder(String title) {
+            this.title = title;
+        }
+
+        @Override
+        public boolean evaluate(HelpSection section) {
+            return StringUtils.equals(section.getTitle(), this.title);
+        }
+    }
 
     @Test
     public void help_section_cli_01() {
@@ -36,7 +51,7 @@ public class TestHelpSectionDetection {
         Assert.assertNotNull(cmd);
         
         Assert.assertEquals(cmd.getHelpSections().size(), 1);
-        HelpSection section = cmd.getHelpSections().get(0);
+        HelpSection section = CollectionUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
         Assert.assertTrue(section instanceof DiscussionSection);
         DiscussionSection discussion = (DiscussionSection) section;
         String[] paragraphs = discussion.getContentBlock(0);
@@ -53,7 +68,7 @@ public class TestHelpSectionDetection {
         Assert.assertNotNull(cmd);
         
         Assert.assertEquals(cmd.getHelpSections().size(), 2);
-        HelpSection section = cmd.getHelpSections().get(0);
+        HelpSection section = CollectionUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
         Assert.assertTrue(section instanceof DiscussionSection);
         DiscussionSection discussion = (DiscussionSection) section;
         String[] paragraphs = discussion.getContentBlock(0);
@@ -73,7 +88,7 @@ public class TestHelpSectionDetection {
         Assert.assertNotNull(cmd);
         
         Assert.assertEquals(cmd.getHelpSections().size(), 1);
-        HelpSection section = cmd.getHelpSections().get(0);
+        HelpSection section = CollectionUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
         Assert.assertTrue(section instanceof DiscussionSection);
         DiscussionSection discussion = (DiscussionSection) section;
         String[] paragraphs = discussion.getContentBlock(0);
