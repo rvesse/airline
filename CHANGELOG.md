@@ -14,7 +14,7 @@
     - Allow specifying global restriction annotations directly on classes used with `SingleCommand`
     - `@Unrestricted` can now be applied directly to classes to specify no global restrictions on single commands and CLIs
     - `@Version` can now use `ResourceLocator` to modify search locations
-    - Help Sections annotations can now be placed onto `@Cli` annotated classes and will be inherited by all commands defined for the CLI
+    - Help Sections annotations can now be placed onto `@Cli` annotated classes and will be inherited by all commands defined for the CLI.  Commands can still override help sections as desired.
 
 ## 2.5.0
 
