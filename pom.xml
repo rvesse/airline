@@ -68,6 +68,7 @@
     <plugin.release>2.5.3</plugin.release>
     <plugin.gpg>1.6</plugin.gpg>
     <plugin.shade>3.1.1</plugin.shade>
+    <plugin.surefire>2.22.0</plugin.surefire>
 
     <!-- Dependency Versions -->
     <dependency.javax-inject>1</dependency.javax-inject>
@@ -128,6 +129,13 @@
           <target>${jdk.target}</target>
           <encoding>UTF-8</encoding>
         </configuration>
+      </plugin>
+      
+      <!-- Surefire Plugin -->
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${plugin.surefire}</version>
       </plugin>
 
       <!-- JAR Plugin -->
