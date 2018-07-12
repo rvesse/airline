@@ -316,7 +316,7 @@ public class MetadataLoader {
         loadCommandsIntoGroupsByAnnotation(allCommands, groups, defaultGroupCommands, baseHelpSections);
 
         return loadGlobal(cliConfig.name(), cliConfig.description(), defaultCommand, defaultGroupCommands, groups,
-                restrictions, parserConfig);
+                restrictions, baseHelpSections.values(), parserConfig);
     }
 
     /**
@@ -336,11 +336,14 @@ public class MetadataLoader {
      *            Parser Configuration
      * @param restrictions
      *            Restrictions
+     * @param baseHelpSections
+     *            Base help sections
      * @return Global meta-data
      */
     public static <C> GlobalMetadata<C> loadGlobal(String name, String description, CommandMetadata defaultCommand,
             Iterable<CommandMetadata> defaultGroupCommands, Iterable<CommandGroupMetadata> groups,
-            Iterable<GlobalRestriction> restrictions, ParserMetadata<C> parserConfig) {
+            Iterable<GlobalRestriction> restrictions, Iterable<HelpSection> baseHelpSections,
+            ParserMetadata<C> parserConfig) {
         List<OptionMetadata> globalOptions = new ArrayList<>();
         if (defaultCommand != null) {
             globalOptions.addAll(defaultCommand.getGlobalOptions());
@@ -366,7 +369,7 @@ public class MetadataLoader {
         }
         globalOptions = ListUtils.unmodifiableList(mergeOptionSet(globalOptions));
         return new GlobalMetadata<C>(name, description, globalOptions, defaultCommand, defaultGroupCommands, groups,
-                restrictions, parserConfig);
+                restrictions, baseHelpSections, parserConfig);
     }
 
     /**
@@ -411,7 +414,8 @@ public class MetadataLoader {
      *            Default command classes
      * @return Command meta-data
      */
-    public static <T> List<CommandMetadata> loadCommands(Iterable<Class<? extends T>> defaultCommands, Map<String, HelpSection> baseHelpSections) {
+    public static <T> List<CommandMetadata> loadCommands(Iterable<Class<? extends T>> defaultCommands,
+            Map<String, HelpSection> baseHelpSections) {
         List<CommandMetadata> commandMetadata = new ArrayList<CommandMetadata>();
         Iterator<Class<? extends T>> iter = defaultCommands.iterator();
         while (iter.hasNext()) {

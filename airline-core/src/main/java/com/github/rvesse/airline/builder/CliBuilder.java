@@ -17,6 +17,7 @@ package com.github.rvesse.airline.builder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -214,7 +215,8 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
         // Build metadata objects
         GlobalMetadata<C> metadata = MetadataLoader.<C> loadGlobal(name, description, defaultCommandMetadata,
                 ListUtils.unmodifiableList(defaultCommandGroup), ListUtils.unmodifiableList(commandGroups),
-                ListUtils.unmodifiableList(restrictions), this.parserBuilder.build());
+                ListUtils.unmodifiableList(restrictions), Collections.unmodifiableCollection(baseHelpSections.values()),
+                this.parserBuilder.build());
 
         return new Cli<C>(metadata);
     }

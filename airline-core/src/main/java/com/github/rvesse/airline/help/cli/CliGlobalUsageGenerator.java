@@ -16,6 +16,7 @@
 package com.github.rvesse.airline.help.cli;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.rvesse.airline.help.UsageHelper;
 import com.github.rvesse.airline.help.common.AbstractPrintedGlobalUsageGenerator;
 import com.github.rvesse.airline.help.sections.HelpHint;
+import com.github.rvesse.airline.help.sections.HelpSection;
 import com.github.rvesse.airline.io.printers.UsagePrinter;
 import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
@@ -72,6 +74,16 @@ public class CliGlobalUsageGenerator<T> extends AbstractPrintedGlobalUsageGenera
     protected void usage(GlobalMetadata<T> global, UsagePrinter out) throws IOException {
         // Name and description
         outputDescription(out, global);
+        
+        // Find the help sections
+        List<HelpSection> preSections = new ArrayList<HelpSection>();
+        List<HelpSection> postSections = new ArrayList<HelpSection>();
+        findHelpSections(global, preSections, postSections);
+
+        // Output pre help sections
+        for (HelpSection section : preSections) {
+            helper.outputHelpSection(out, section);
+        }
 
         // Synopsis
         outputSynopsis(out, global);
@@ -88,6 +100,11 @@ public class CliGlobalUsageGenerator<T> extends AbstractPrintedGlobalUsageGenera
         // Aliases
         if (global.getParserConfiguration().getUserAliasesSource() != null) {
             outputUserAliases(out, global, global.getParserConfiguration().getUserAliasesSource());
+        }
+        
+        // Output post help sections
+        for (HelpSection section : postSections) {
+            helper.outputHelpSection(out, section);
         }
     }
 

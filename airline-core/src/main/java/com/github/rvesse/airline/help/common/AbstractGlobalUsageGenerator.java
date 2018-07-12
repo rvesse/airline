@@ -25,10 +25,12 @@ import com.github.rvesse.airline.Channels;
 import com.github.rvesse.airline.help.GlobalUsageGenerator;
 import com.github.rvesse.airline.help.UsageHelper;
 import com.github.rvesse.airline.help.sections.HelpHint;
+import com.github.rvesse.airline.help.sections.HelpSection;
 import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.utils.comparators.HelpSectionComparator;
 
 /**
  * Abstract global usage generator
@@ -74,5 +76,29 @@ public abstract class AbstractGlobalUsageGenerator<T> extends AbstractUsageGener
             Collections.sort(groups, this.commandGroupComparator);
         }
         return groups;
+    }
+    
+    /**
+     * Finds the help sections
+     *
+     * @param command
+     *            Command meta-data
+     * @param preSections
+     *            Sections that should be placed before base content
+     * @param postSections
+     *            Sections that should be placed after base content
+     */
+    protected void findHelpSections(GlobalMetadata<T> global, List<HelpSection> preSections,
+            List<HelpSection> postSections) {
+        for (HelpSection section : global.getBaseHelpSections()) {
+            if (section.suggestedOrder() < 0) {
+                preSections.add(section);
+            } else {
+                postSections.add(section);
+            }
+        }
+        HelpSectionComparator comparator = new HelpSectionComparator();
+        Collections.sort(preSections, comparator);
+        Collections.sort(postSections, comparator);
     }
 }
