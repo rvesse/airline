@@ -479,7 +479,9 @@
               <encoding>UTF-8</encoding>
               <charset>UTF-8</charset>
               <docencoding>UTF-8</docencoding>
-              <additionalparam>-Xdoclint:none</additionalparam>
+              <additionalOptions>
+                <option>-Xdoclint:none</option>
+              </additionalOptions>
             </configuration>
           </plugin>
         </plugins>
@@ -512,7 +514,9 @@
               <encoding>UTF-8</encoding>
               <charset>UTF-8</charset>
               <docencoding>UTF-8</docencoding>
-              <additionalparam>-Xdoclint:none</additionalparam>
+              <additionalOptions>
+                <option>-Xdoclint:none</option>
+              </additionalOptions>
             </configuration>
           </plugin>
         </plugins>
