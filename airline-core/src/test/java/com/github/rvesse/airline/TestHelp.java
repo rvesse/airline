@@ -17,7 +17,6 @@ package com.github.rvesse.airline;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1088,6 +1087,40 @@ public class TestHelp {
     }
     
     @Test
+    public void testVersionCli2() throws IOException {
+        //@formatter:off
+        Cli<Args1> cli = new CliBuilder<Args1>("test")
+                            .withCommand(Args1.class)
+                            .withHelpSection(new VersionSection(new String[] { "/test.version" }, 
+                                                                new ResourceLocator[] { new ClasspathLocator() }, 
+                                                                "component",
+                                                                "version", 
+                                                                "build", 
+                                                                "buildDate", 
+                                                                new String[0], 
+                                                                new String[0], 
+                                                                false, 
+                                                                false))
+                            .build();
+    
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        new CliGlobalUsageSummaryGenerator<Args1>().usage(cli.getMetadata(), out);
+        testStringAssert(new String(out.toByteArray(), utf8),
+                "usage: test <command> [ <args> ]\n" + 
+                "\n" + 
+                "Commands are:\n" + 
+                "    Args1   args1 description\n" + 
+                "\n" + 
+                "See 'test help <command>' for more information on a specific command.\n" +
+                "\n" +
+                "VERSION\n" +
+                "            Component: Airline Test\n" +
+                "            Version: 1.2.3\n" +
+                "            Build: 12345abcde\n");
+        //@formatter:on
+    }
+    
+    @Test
     public void testVersionComponents() throws IOException {
         //@formatter:off
         SingleCommand<ArgsVersion2> command = singleCommand(ArgsVersion2.class);
@@ -1222,6 +1255,31 @@ public class TestHelp {
                 "\n" + 
                 "        remove\n" + 
                 "            Remove file contents to the index\n" + 
+                "\n" + 
+                "DISCUSSION\n" + 
+                "        Foo\n" + 
+                "\n" + 
+                "        Bar\n" +
+                "\n");
+        //@formatter:on
+    }
+    
+    @Test
+    public void testCliSectionsAnnotated2() throws IOException {
+        Cli<Object> cli = new Cli<>(CliWithSections.class);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        new CliGlobalUsageSummaryGenerator<Object>().usage(cli.getMetadata(), out);
+        //@formatter:off
+        testStringAssert(new String(out.toByteArray(), utf8),
+                "usage: test [ -v ] <command> [ <args> ]\n" + 
+                "\n" + 
+                "Commands are:\n" + 
+                "    Args1    args1 description\n" + 
+                "    help     Display help information\n" + 
+                "    remove   Remove file contents to the index\n" + 
+                "\n" + 
+                "See 'test help <command>' for more information on a specific command.\n" +
                 "\n" + 
                 "DISCUSSION\n" + 
                 "        Foo\n" + 

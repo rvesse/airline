@@ -18,6 +18,7 @@ package com.github.rvesse.airline.help.cli;
 import com.github.rvesse.airline.help.UsageHelper;
 import com.github.rvesse.airline.help.common.AbstractPrintedGlobalUsageGenerator;
 import com.github.rvesse.airline.help.sections.HelpHint;
+import com.github.rvesse.airline.help.sections.HelpSection;
 import com.github.rvesse.airline.io.printers.UsagePrinter;
 import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
@@ -33,6 +34,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class CliGlobalUsageSummaryGenerator<T> extends AbstractPrintedGlobalUsageGenerator<T> {
+    
+    private final CliUsageHelper helper;
 
     public CliGlobalUsageSummaryGenerator() {
         this(DEFAULT_COLUMNS, UsageHelper.DEFAULT_HINT_COMPARATOR, UsageHelper.DEFAULT_OPTION_COMPARATOR,
@@ -58,6 +61,11 @@ public class CliGlobalUsageSummaryGenerator<T> extends AbstractPrintedGlobalUsag
             Comparator<? super OptionMetadata> optionComparator, Comparator<? super CommandMetadata> commandComparator,
             Comparator<? super CommandGroupMetadata> commandGroupComparator, boolean includeHidden) {
         super(columnSize, hintComparator, optionComparator, commandComparator, commandGroupComparator, includeHidden);
+        helper = createHelper(optionComparator, includeHidden);
+    }
+
+    protected CliUsageHelper createHelper(Comparator<? super OptionMetadata> optionComparator, boolean includeHidden) {
+        return new CliUsageHelper(optionComparator, includeHidden);
     }
 
     public void usage(GlobalMetadata<T> global, UsagePrinter out) throws IOException {
@@ -69,6 +77,23 @@ public class CliGlobalUsageSummaryGenerator<T> extends AbstractPrintedGlobalUsag
 
         // Notes on how to get more help
         outputFooter(out, global);
+               
+        // Find the help sections
+        List<HelpSection> preSections = new ArrayList<HelpSection>();
+        List<HelpSection> postSections = new ArrayList<HelpSection>();
+        findHelpSections(global, preSections, postSections);
+        
+        if (preSections.size() > 0 || postSections.size() > 0) {
+            out.newline();
+        }
+
+        // Output help sections
+        for (HelpSection section : preSections) {
+            helper.outputHelpSection(out, section);
+        }
+        for (HelpSection section : postSections) {
+            helper.outputHelpSection(out, section);
+        }
     }
 
     /**
