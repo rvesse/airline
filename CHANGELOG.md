@@ -14,7 +14,8 @@
     - Allow specifying global restriction annotations directly on classes used with `SingleCommand`
     - `@Unrestricted` can now be applied directly to classes to specify no global restrictions on single commands and CLIs
     - `@Version` can now use `ResourceLocator` to modify search locations
-    - Help Sections annotations can now be placed onto `@Cli` annotated classes and will be inherited by all commands defined for the CLI.  Commands can still override help sections as desired.
+    - Help Sections annotations can now be placed onto `@Cli` annotated classes and will be inherited by all commands defined for the CLI.  Commands can still override help sections as desired. (#59)
+        - CLI defined help sections are included by CLI help generators (#57)
 - Build Improvements
     - Now possible to build with JDK 9 and JDK 10.  Note that we still compile for JDK 7 compatibility
 
