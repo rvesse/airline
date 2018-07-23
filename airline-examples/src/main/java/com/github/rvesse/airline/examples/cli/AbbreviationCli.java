@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline.examples.cli;
 
-import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.examples.ExampleExecutor;
 import com.github.rvesse.airline.examples.ExampleRunnable;
@@ -50,7 +50,7 @@ public class AbbreviationCli {
     public static void main(String[] args) {
         //@formatter:off
         // The program name is cli
-        CliBuilder<ExampleRunnable> builder = Cli.<ExampleRunnable>builder("cli")
+        CliBuilder<ExampleRunnable> builder = CommandLineInterface.<ExampleRunnable>builder("cli")
                                                  // Add a description
                                                  .withDescription("A simple CLI with several commands available in groups");
         

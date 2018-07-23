@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.SingleCommand;
 import com.github.rvesse.airline.builder.CliBuilder;
@@ -182,7 +181,7 @@ public class TestHelpMarkdown {
 
     public void testMarkdown() throws IOException {
         //@formatter:off
-        CliBuilder<Runnable> builder = Cli.<Runnable>builder("git")
+        CliBuilder<Runnable> builder = CommandLineInterface.<Runnable>builder("git")
                 .withDescription("the stupid content tracker")
                 .withDefaultCommand(Help.class)
                 .withCommand(Help.class)
@@ -194,7 +193,7 @@ public class TestHelpMarkdown {
                 .withCommand(RemoteShow.class)
                 .withCommand(RemoteAdd.class);
 
-        CommandLineInterface<C> gitParser = builder.build();
+        CommandLineInterface<Runnable> gitParser = builder.build();
         
         MarkdownGlobalUsageGenerator<Runnable> generator = new MarkdownGlobalUsageGenerator<Runnable>();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -346,7 +345,7 @@ public class TestHelpMarkdown {
 
     public void testMarkdownMultiPage() throws IOException {
         //@formatter:off
-        CliBuilder<Runnable> builder = Cli.<Runnable>builder("git")
+        CliBuilder<Runnable> builder = CommandLineInterface.<Runnable>builder("git")
                 .withDescription("the stupid content tracker")
                 .withDefaultCommand(Help.class)
                 .withCommand(Help.class)
@@ -358,7 +357,7 @@ public class TestHelpMarkdown {
                 .withCommand(RemoteShow.class)
                 .withCommand(RemoteAdd.class);
 
-        CommandLineInterface<C> gitParser = builder.build();
+        CommandLineInterface<Runnable> gitParser = builder.build();
         
         MarkdownMultiPageGlobalUsageGenerator<Runnable> generator = new MarkdownMultiPageGlobalUsageGenerator<Runnable>();
         FileOutputStream out = new FileOutputStream("target/git.md");
@@ -569,11 +568,14 @@ public class TestHelpMarkdown {
         TestAliases.prepareConfig(f, "a.foo=Args1 bar", "b.foo=Args1 faz");
 
         //@formatter:off
-        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+        CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                                        .withCommand(Args1.class);
         builder.withParser()
-               .withUserAliases(f.getName(), "b.", "target/");
-        CommandLineInterface<C> cli = builder.build();
+               .withUserAliases()
+                   .withFilename(f.getName())
+                   .withPrefix("b.")
+                   .withSearchLocation("target/");
+        CommandLineInterface<Args1> cli = builder.build();
         //@formatter:on
 
         // Alias Help

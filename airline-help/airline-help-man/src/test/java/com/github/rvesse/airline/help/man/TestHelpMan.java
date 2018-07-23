@@ -23,7 +23,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.Git.Add;
 import com.github.rvesse.airline.Git.RemoteAdd;
@@ -207,7 +206,7 @@ public class TestHelpMan {
 
     public void testMan() throws IOException {
         //@formatter:off
-        CliBuilder<Runnable> builder = Cli.<Runnable>builder("git")
+        CliBuilder<Runnable> builder = CommandLineInterface.<Runnable>builder("git")
                 .withDescription("the stupid content tracker")
                 .withDefaultCommand(Help.class)
                 .withCommand(Help.class)
@@ -219,7 +218,7 @@ public class TestHelpMan {
                 .withCommand(RemoteShow.class)
                 .withCommand(RemoteAdd.class);
 
-        CommandLineInterface<C> gitParser = builder.build();
+        CommandLineInterface<Runnable> gitParser = builder.build();
         
         ManGlobalUsageGenerator<Runnable> generator = new ManGlobalUsageGenerator<Runnable>();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -415,7 +414,7 @@ public class TestHelpMan {
 
     public void testManMultiPage() throws IOException {
         //@formatter:off
-        CliBuilder<Runnable> builder = Cli.<Runnable>builder("git")
+        CliBuilder<Runnable> builder = CommandLineInterface.<Runnable>builder("git")
                 .withDescription("the stupid content tracker")
                 .withDefaultCommand(Help.class)
                 .withCommand(Help.class)
@@ -427,7 +426,7 @@ public class TestHelpMan {
                 .withCommand(RemoteShow.class)
                 .withCommand(RemoteAdd.class);
 
-        CommandLineInterface<C> gitParser = builder.build();
+        CommandLineInterface<Runnable> gitParser = builder.build();
         
         ManGlobalUsageGenerator<Runnable> generator = new ManMultiPageGlobalUsageGenerator<Runnable>();
         FileOutputStream out = new FileOutputStream("target/git.1");
@@ -665,7 +664,7 @@ public class TestHelpMan {
         CliBuilder<Object> builder = new CliBuilder<Object>("multi-page")
                 .withDefaultCommand(Args1.class)
                 .withCommands(Args1.class, ArgsVersion.class);
-        CommandLineInterface<C> cli = builder.build();
+        CommandLineInterface<Object> cli = builder.build();
         
         ManMultiPageGlobalUsageGenerator<Object> generator = new ManMultiPageGlobalUsageGenerator<>(ManSections.GENERAL_COMMANDS, false, new File("target/"));
         FileOutputStream mainFile = new FileOutputStream("target/multi-page.1");

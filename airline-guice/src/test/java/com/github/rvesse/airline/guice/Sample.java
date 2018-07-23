@@ -15,8 +15,8 @@
  */
 package com.github.rvesse.airline.guice;
 
-import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.CommandFactory;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.HelpOption;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
@@ -38,11 +38,12 @@ import java.util.List;
 
 public class Sample {
 
+    @SuppressWarnings("unchecked")
     public static void main(Output output, String... args) {
         Injector injector = Guice.createInjector(new SampleModule(output));
         CommandFactory<Runnable> commandFactory = new GuiceCommandFactory<>(Runnable.class, injector);
 
-        CliBuilder<Runnable> builder = Cli.<Runnable>builder("sample")
+        CliBuilder<Runnable> builder = CommandLineInterface.<Runnable>builder("sample")
                 .withDescription("sample application")
                 .withDefaultCommand(Help.class)
                 .withCommand(ApplicationName.class)
@@ -51,7 +52,7 @@ public class Sample {
         builder.withParser()
                 .withCommandFactory(commandFactory);
 
-        Cli<Runnable> sampleParser = builder.build();
+        CommandLineInterface<Runnable> sampleParser = builder.build();
 
         sampleParser.parse(args).run();
     }
