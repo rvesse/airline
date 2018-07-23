@@ -52,11 +52,12 @@ import com.github.rvesse.airline.args.CommandHidden;
 import com.github.rvesse.airline.args.GlobalOptionsHidden;
 import com.github.rvesse.airline.args.OptionsHidden;
 import com.github.rvesse.airline.args.OptionsRequired;
+import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.command.CommandRemove;
 import com.github.rvesse.airline.help.Help;
 import com.github.rvesse.airline.help.UsageHelper;
-import com.github.rvesse.airline.help.cli.CommandLineInterfaceommandUsageGenerator;
-import com.github.rvesse.airline.help.cli.CommandLineInterfacelobalUsageSummaryGenerator;
+import com.github.rvesse.airline.help.cli.CliCommandUsageGenerator;
+import com.github.rvesse.airline.help.cli.CliGlobalUsageSummaryGenerator;
 import com.github.rvesse.airline.help.common.AbstractCommandUsageGenerator;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.restrictions.partial.PartialAnnotated;
@@ -271,7 +272,7 @@ public class TestHelp {
 
     public void testGit() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Runnable> builder = CommandLineInterface<Runnable>builder("git")
+        CliBuilder<Runnable> builder = CommandLineInterface.<Runnable>builder("git")
                 .withDescription("the stupid content tracker")
                 .withDefaultCommand(Help.class)
                 .withCommand(Help.class)
@@ -377,7 +378,7 @@ public class TestHelp {
     @Test
     public void testArgs1() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withDefaultCommand(Help.class)
                 .withCommands(Help.class,
@@ -435,7 +436,7 @@ public class TestHelp {
     @Test
     public void testArgs2() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withDefaultCommand(Help.class)
                 .withCommands(Help.class,
@@ -483,7 +484,7 @@ public class TestHelp {
         SingleCommand<ArgsAllowedValues> command = singleCommand(ArgsAllowedValues.class);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new CommandLineInterfaceommandUsageGenerator().usage("test", null, command.getCommandMetadata().getName(), command.getCommandMetadata(), null, out);
+        new CliCommandUsageGenerator().usage("test", null, command.getCommandMetadata().getName(), command.getCommandMetadata(), null, out);
         assertEquals(new String(out.toByteArray(), utf8),
                 "NAME\n" +
                 "        test ArgsAllowedValues - ArgsAllowedValues description\n" +
@@ -510,7 +511,7 @@ public class TestHelp {
         SingleCommand<PartialAnnotated> command = singleCommand(PartialAnnotated.class);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new CommandLineInterfaceommandUsageGenerator().usage("test", null, command.getCommandMetadata().getName(), command.getCommandMetadata(), null, out);
+        new CliCommandUsageGenerator().usage("test", null, command.getCommandMetadata().getName(), command.getCommandMetadata(), null, out);
         assertEquals(new String(out.toByteArray()), StringUtils.join(new String[] {
                 "NAME",
                 "        test partial -",
@@ -542,7 +543,7 @@ public class TestHelp {
     @Test
     public void testArgsAritySting() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withDefaultCommand(Help.class)
                 .withCommands(Help.class,
@@ -577,7 +578,7 @@ public class TestHelp {
     @Test
     public void testArgsBooleanArity() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withDefaultCommand(Help.class)
                 .withCommands(Help.class,
@@ -604,7 +605,7 @@ public class TestHelp {
     @Test
     public void testArgsInherited() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withDefaultCommand(Help.class)
                 .withCommands(Help.class,
@@ -651,7 +652,7 @@ public class TestHelp {
     @Test
     public void testArgsRequired() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withDefaultCommand(Help.class)
                 .withCommands(Help.class,
@@ -683,7 +684,7 @@ public class TestHelp {
     @Test
     public void testOptionsRequired() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withDefaultCommand(Help.class)
                 .withCommands(Help.class,
@@ -714,7 +715,7 @@ public class TestHelp {
     @Test
     public void testOptionsHidden01() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withDefaultCommand(Help.class)
                 .withCommands(Help.class,
@@ -741,7 +742,7 @@ public class TestHelp {
     @Test
     public void testOptionsHidden02() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withDefaultCommand(Help.class)
                 .withCommands(Help.class,
@@ -750,7 +751,7 @@ public class TestHelp {
         CommandLineInterface<Object> parser = builder.build();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        AbstractCommandUsageGenerator generator = new CommandLineInterfaceommandUsageGenerator(true);
+        AbstractCommandUsageGenerator generator = new CliCommandUsageGenerator(true);
         CommandMetadata metadata = CollectionUtils.find(parser.getMetadata().getDefaultGroupCommands(), new CommandFinder("OptionsHidden"));
         Assert.assertNotNull(metadata);
         generator.usage("test", null, "OptionsHidden", metadata, null, out);
@@ -775,7 +776,7 @@ public class TestHelp {
     @Test
     public void testGlobalOptionsHidden() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withDefaultCommand(Help.class)
                 .withCommands(Help.class,
@@ -802,7 +803,7 @@ public class TestHelp {
     @Test
     public void testCommandHidden() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withDefaultCommand(Help.class)
                 .withCommands(Help.class,
@@ -840,7 +841,7 @@ public class TestHelp {
     @Test
     public void testGroups() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withCommand(Help.class);
         builder.withGroup("visible")
@@ -865,7 +866,7 @@ public class TestHelp {
     @Test
     public void testGroupsHidden01() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withCommand(Help.class);
         builder.withGroup("visible")
@@ -894,7 +895,7 @@ public class TestHelp {
     @Test
     public void testGroupsHidden02() throws IOException {
         //@formatter:off
-        CommandLineInterface.builder<Object> builder = CommandLineInterfacebuilder("test")
+        CliBuilder<Object> builder = CommandLineInterface.builder("test")
                 .withDescription("Test commandline")
                 .withCommand(Help.class);
         builder.withGroup("visible")
@@ -908,7 +909,7 @@ public class TestHelp {
         CommandLineInterface<Object> parser = builder.build();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        CommandLineInterfacelobalUsageSummaryGenerator<Object> generator = new CommandLineInterfacelobalUsageSummaryGenerator<Object>(true);
+        CliGlobalUsageSummaryGenerator<Object> generator = new CliGlobalUsageSummaryGenerator<Object>(true);
         generator.usage(parser.getMetadata(), out);
         assertEquals(new String(out.toByteArray(), utf8),
                 "usage: test <command> [ <args> ]\n" +
@@ -925,7 +926,7 @@ public class TestHelp {
     @Test
     public void testExamplesAndDiscussion() throws IOException {
         //@formatter:off
-        CommandLineInterface<Object> parser = CommandLineInterfacebuilder("git")
+        CommandLineInterface<Object> parser = CommandLineInterface.builder("git")
             .withCommand(CommandRemove.class)
             .build();
 
@@ -953,7 +954,7 @@ public class TestHelp {
         SingleCommand<Args1> command = singleCommand(Args1.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new CommandLineInterfaceommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
+        new CliCommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
         assertEquals(new String(out.toByteArray(), utf8),
                 "NAME\n" +
                 "        test - args1 description\n" +
@@ -1005,7 +1006,7 @@ public class TestHelp {
         SingleCommand<ArgsExitCodes> command = singleCommand(ArgsExitCodes.class);
     
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new CommandLineInterfaceommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
+        new CliCommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
         testStringAssert(new String(out.toByteArray(), utf8),
                 "NAME\n" +
                 "        test - ArgsExitCodes description\n" +
@@ -1028,7 +1029,7 @@ public class TestHelp {
         SingleCommand<ArgsVersion> command = singleCommand(ArgsVersion.class);
     
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new CommandLineInterfaceommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
+        new CliCommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
         testStringAssert(new String(out.toByteArray(), utf8),
                 "NAME\n" +
                 "        test - ArgsVersion description\n" +
@@ -1049,7 +1050,7 @@ public class TestHelp {
         SingleCommand<ArgsVersion2> command = singleCommand(ArgsVersion2.class);
     
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new CommandLineInterfaceommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
+        new CliCommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
         testStringAssert(new String(out.toByteArray(), utf8),
                 "NAME\n" +
                 "        test - Multiple component versions\n" +
@@ -1080,7 +1081,7 @@ public class TestHelp {
         SingleCommand<ArgsVersion3> command = singleCommand(ArgsVersion3.class);
     
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new CommandLineInterfaceommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
+        new CliCommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
         testStringAssert(new String(out.toByteArray(), utf8),
                 "NAME\n" +
                 "        test - Multiple component versions\n" +
@@ -1107,7 +1108,7 @@ public class TestHelp {
         SingleCommand<ArgsVersionMissingSuppressed> command = singleCommand(ArgsVersionMissingSuppressed.class);
     
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new CommandLineInterfaceommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
+        new CliCommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
         testStringAssert(new String(out.toByteArray(), utf8),
                 "NAME\n" +
                 "        test - Missing version information\n" +
@@ -1121,7 +1122,7 @@ public class TestHelp {
     @Test
     public void testCommandSorting() {
         //@formatter:off
-        CommandLineInterface.builder<Runnable> builder = CommandLineInterface<Runnable>builder("git")
+        CliBuilder<Runnable> builder = CommandLineInterface.<Runnable>builder("git")
                 .withDescription("the stupid content tracker")
                 .withDefaultCommand(Help.class)
                 .withCommand(Help.class)
@@ -1133,7 +1134,7 @@ public class TestHelp {
                 .withCommand(RemoteShow.class)
                 .withCommand(RemoteAdd.class);
 
-        CommandLineInterface<Object> gitParser = builder.build();
+        CommandLineInterface<Runnable> gitParser = builder.build();
         
         List<CommandMetadata> defCommands = new ArrayList<>(gitParser.getMetadata().getDefaultGroupCommands());
         Collections.sort(defCommands, UsageHelper.DEFAULT_COMMAND_COMPARATOR);

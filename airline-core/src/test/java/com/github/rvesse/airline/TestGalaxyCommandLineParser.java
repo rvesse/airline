@@ -15,7 +15,6 @@
  */
 package com.github.rvesse.airline;
 
-import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;

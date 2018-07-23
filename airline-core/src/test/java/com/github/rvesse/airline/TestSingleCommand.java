@@ -374,11 +374,11 @@ public class TestSingleCommand {
     }
 
     private void verifyCommandOrdering(String[] commandNames, Class<?>... commands) {
-        CliBuilder<Object> builder = Cli.builder("foo");
+        CliBuilder<Object> builder = CommandLineInterface.builder("foo");
         for (Class<?> command : commands) {
             builder = builder.withCommand(command);
         }
-        CommandLineInterface<C> parser = builder.build();
+        CommandLineInterface<Object> parser = builder.build();
 
         final List<CommandMetadata> commandParsers = parser.getMetadata().getDefaultGroupCommands();
         assertEquals(commandParsers.size(), commands.length);

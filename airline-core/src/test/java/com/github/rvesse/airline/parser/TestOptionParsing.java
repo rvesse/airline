@@ -21,7 +21,6 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;

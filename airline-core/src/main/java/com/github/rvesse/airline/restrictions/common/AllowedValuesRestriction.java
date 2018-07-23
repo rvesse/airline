@@ -27,7 +27,6 @@ import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
 import com.github.rvesse.airline.parser.errors.ParseOptionIllegalValueException;
 import com.github.rvesse.airline.types.DefaultTypeConverter;
 import com.github.rvesse.airline.types.TypeConverter;
-import com.github.rvesse.airline.utils.AirlineUtils;
 
 public class AllowedValuesRestriction extends AbstractAllowedValuesRestriction {
 
