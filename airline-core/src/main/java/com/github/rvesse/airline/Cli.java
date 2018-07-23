@@ -15,16 +15,10 @@
  */
 package com.github.rvesse.airline;
 
-import java.util.Arrays;
-
-import org.apache.commons.collections4.ListUtils;
-
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.model.ParserMetadata;
-import com.github.rvesse.airline.parser.ParseResult;
-import com.github.rvesse.airline.parser.command.CliParser;
 
 /**
  * Class for encapsulating and parsing CLIs
@@ -33,8 +27,12 @@ import com.github.rvesse.airline.parser.command.CliParser;
  *
  * @param <C>
  *            Command type
+ * @deprecated Renamed to {@link CommandLineInterface} to avoid ambiguity with
+ *             {@link com.github.rvesse.airline.annotations.Cli} annotation
  */
-public class Cli<C> {
+@Deprecated
+public class Cli<C> extends CommandLineInterface<C> {
+
     /**
      * Creates a builder for specifying a command line in fluent style
      * 
@@ -43,14 +41,16 @@ public class Cli<C> {
      * @param <T>
      *            Command type to be built
      * @return CLI Builder
+     * @deprecated Renamed to {@link CommandLineInterface} to avoid ambiguity
+     *             with {@link com.github.rvesse.airline.annotations.Cli}
+     *             annotation
      */
+    @Deprecated
     public static <T> CliBuilder<T> builder(String name) {
         if (name == null)
             throw new NullPointerException("name cannot be null");
         return new CliBuilder<T>(name);
     }
-
-    private final GlobalMetadata<C> metadata;
 
     /**
      * Creates a new CLI from a class annotated with the
@@ -58,7 +58,11 @@ public class Cli<C> {
      * 
      * @param cliClass
      *            CLI class
+     * @deprecated Renamed to {@link CommandLineInterface} to avoid ambiguity
+     *             with {@link com.github.rvesse.airline.annotations.Cli}
+     *             annotation
      */
+    @Deprecated
     public Cli(Class<?> cliClass) {
         this(MetadataLoader.<C> loadGlobal(cliClass));
     }
@@ -74,7 +78,11 @@ public class Cli<C> {
      *            specified by the
      *            {@link com.github.rvesse.airline.annotations.Cli#parserConfiguration()}
      *            field
+     * @deprecated Renamed to {@link CommandLineInterface} to avoid ambiguity
+     *             with {@link com.github.rvesse.airline.annotations.Cli}
+     *             annotation
      */
+    @Deprecated
     public Cli(Class<?> cliClass, ParserMetadata<C> parserConfig) {
         this(MetadataLoader.<C> loadGlobal(cliClass, parserConfig));
     }
@@ -84,77 +92,12 @@ public class Cli<C> {
      * 
      * @param metadata
      *            Metadata
+     * @deprecated Renamed to {@link CommandLineInterface} to avoid ambiguity
+     *             with {@link com.github.rvesse.airline.annotations.Cli}
+     *             annotation
      */
+    @Deprecated
     public Cli(GlobalMetadata<C> metadata) {
-        if (metadata == null)
-            throw new NullPointerException("metadata cannot be null");
-        this.metadata = metadata;
-    }
-
-    /**
-     * Gets the global meta-data
-     * 
-     * @return Meta-data
-     */
-    public GlobalMetadata<C> getMetadata() {
-        return metadata;
-    }
-
-    /**
-     * Parses the arguments to produce a command instance, this may be
-     * {@code null} if the arguments don't identify a command and there was no
-     * appropriate default command configured
-     * 
-     * @param args
-     *            Arguments
-     * @return Command instance
-     */
-    public C parse(String... args) {
-        return parse(ListUtils.unmodifiableList(Arrays.asList(args)));
-    }
-
-    /**
-     * Parses the arguments to produce a command instance, this may be
-     * {@code null} if the arguments don't identify a command and there was no
-     * appropriate default command configured
-     * 
-     * @param args
-     *            Arguments
-     * @return Command instance
-     */
-    private C parse(Iterable<String> args) {
-        CliParser<C> parser = new CliParser<C>();
-        return parser.parse(metadata, args);
-    }
-
-    /**
-     * Parses the arguments to produce a result. The result can be inspected to
-     * see errors (assuming a suitable error handler was used e.g.
-     * {@code CollectAll}) and to get a command instance. This may be
-     * {@code null} if the arguments don't identify a command and there was no
-     * appropriate default command configured
-     * 
-     * @param args
-     *            Arguments
-     * @return Parse result
-     */
-    public ParseResult<C> parseWithResult(String... args) {
-        return parseWithResult(Arrays.asList(args));
-    }
-
-    /**
-     * Parses the arguments to produce a result. The result can be inspected to
-     * see errors (assuming a suitable error handler was used e.g.
-     * {@code CollectAll}) and to get a command instance. This may be
-     * {@code null} if the arguments don't identify a command and there was no
-     * appropriate default command configured
-     * 
-     * @param args
-     *            Arguments
-     * @return Parse result
-     */
-    public ParseResult<C> parseWithResult(Iterable<String> args) {
-        CliParser<C> parser = new CliParser<C>();
-        return parser.parseWithResult(metadata, args);
+        super(metadata);
     }
 }

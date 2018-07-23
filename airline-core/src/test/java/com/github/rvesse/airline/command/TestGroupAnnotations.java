@@ -21,6 +21,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
@@ -33,7 +34,7 @@ public class TestGroupAnnotations {
      */
     @Test
     public void groupIsCreatedFromGroupsAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithGroupsAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithGroupsAnnotation.class).build();
         
         GlobalMetadata<?> global = parser.getMetadata();
         Assert.assertEquals(global.getCommandGroups().size(), 1);
@@ -48,7 +49,7 @@ public class TestGroupAnnotations {
     
     @Test
     public void subGroupIsCreatedFromGroupsAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithSubGroupsAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithSubGroupsAnnotation.class).build();
         
         GlobalMetadata<?> global = parser.getMetadata();
         Assert.assertEquals(global.getCommandGroups().size(), 1);
@@ -65,7 +66,7 @@ public class TestGroupAnnotations {
 
     @Test
     public void extraCommandsAreAddedFromGroupsAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithGroupsAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithGroupsAnnotation.class).build();
 
         Object command = parser.parse("groupInsideOfGroups", "add", "-i", "A.java");
         Assert.assertNotNull(command, "command is null");
@@ -77,7 +78,7 @@ public class TestGroupAnnotations {
     
     @Test
     public void extraCommandsAreAddedFromSubGroupsAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithSubGroupsAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithSubGroupsAnnotation.class).build();
 
         Object command = parser.parse("groupInsideOfGroups", "subGroup", "add", "-i", "A.java");
         Assert.assertNotNull(command, "command is null");
@@ -89,14 +90,14 @@ public class TestGroupAnnotations {
 
     @Test(expectedExceptions = ParseCommandUnrecognizedException.class)
     public void commandRemovedFromDefaultGroupWithGroupsAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithGroupsAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithGroupsAnnotation.class).build();
 
         parser.parse("commandWithGroupsAnno", "-i", "A.java");
     }
     
     @Test(expectedExceptions = ParseCommandUnrecognizedException.class)
     public void commandRemovedFromDefaultGroupWithSubGroupsAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithSubGroupsAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithSubGroupsAnnotation.class).build();
 
         parser.parse("commandWithSubGroupsAnno", "-i", "A.java");
     }
@@ -106,7 +107,7 @@ public class TestGroupAnnotations {
      */
     @Test
     public void groupOptionsAreAddedFromGroupsAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithGroupsAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithGroupsAnnotation.class).build();
         Assert.assertEquals(parser.getMetadata().getCommandGroups().size(), 1);
         CommandGroupMetadata group = parser.getMetadata().getCommandGroups().get(0);
         Assert.assertEquals(group.getOptions().size(), 1);
@@ -116,7 +117,7 @@ public class TestGroupAnnotations {
     
     @Test
     public void groupOptionsAreAddedFromSubGroupsAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithSubGroupsAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithSubGroupsAnnotation.class).build();
         Assert.assertEquals(parser.getMetadata().getCommandGroups().size(), 1);
         CommandGroupMetadata group = parser.getMetadata().getCommandGroups().get(0);
         
@@ -135,7 +136,7 @@ public class TestGroupAnnotations {
 
     @Test
     public void defaultCommandIsAddedFromGroupsAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithGroupsAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithGroupsAnnotation.class).build();
 
         Object command = parser.parse("groupInsideOfGroups", "-i", "A.java");
         Assert.assertNotNull(command, "command is null");
@@ -147,7 +148,7 @@ public class TestGroupAnnotations {
     
     @Test
     public void defaultCommandIsAddedFromSubGroupsAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithSubGroupsAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithSubGroupsAnnotation.class).build();
 
         Object command = parser.parse("groupInsideOfGroups", "subGroup", "-i", "A.java");
         Assert.assertNotNull(command, "command is null");
@@ -162,7 +163,7 @@ public class TestGroupAnnotations {
      */
     @Test
     public void groupIsCreatedFromGroupAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithGroupAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithGroupAnnotation.class).build();
 
         Object command = parser.parse("singleGroup", "commandWithGroup", "-i", "A.java");
         Assert.assertNotNull(command, "command is null");
@@ -174,7 +175,7 @@ public class TestGroupAnnotations {
     
     @Test
     public void groupIsCreatedFromSubGroupAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithSubGroupAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithSubGroupAnnotation.class).build();
 
         Object command = parser.parse("singleGroup", "subGroup", "commandWithGroup", "-i", "A.java");
         Assert.assertNotNull(command, "command is null");
@@ -186,7 +187,7 @@ public class TestGroupAnnotations {
 
     @Test
     public void extraCommandsAreAddedFromGroupAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithGroupAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithGroupAnnotation.class).build();
 
         Object command = parser.parse("singleGroup", "add", "-i", "A.java");
         Assert.assertNotNull(command, "command is null");
@@ -198,7 +199,7 @@ public class TestGroupAnnotations {
     
     @Test
     public void extraCommandsAreAddedFromSubGroupAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithSubGroupAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithSubGroupAnnotation.class).build();
 
         Object command = parser.parse("singleGroup", "subGroup", "add", "-i", "A.java");
         Assert.assertNotNull(command, "command is null");
@@ -210,21 +211,21 @@ public class TestGroupAnnotations {
 
     @Test(expectedExceptions = ParseCommandUnrecognizedException.class)
     public void commandRemovedFromDefaultGroupWithGroupAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithGroupAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithGroupAnnotation.class).build();
 
         parser.parse("commandWithGroup", "-i", "A.java");
     }
     
     @Test(expectedExceptions = ParseCommandUnrecognizedException.class)
     public void commandRemovedFromDefaultGroupWithSubGroupAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithSubGroupAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithSubGroupAnnotation.class).build();
 
         parser.parse("commandWithGroup", "-i", "A.java");
     }
 
     @Test
     public void defaultCommandIsAddedFromGroupAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithGroupAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithGroupAnnotation.class).build();
 
         Object command = parser.parse("singleGroup", "-i", "A.java");
         Assert.assertNotNull(command, "command is null");
@@ -236,7 +237,7 @@ public class TestGroupAnnotations {
     
     @Test
     public void defaultCommandIsAddedFromSubGroupAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithSubGroupAnnotation.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithSubGroupAnnotation.class).build();
 
         Object command = parser.parse("singleGroup", "subGroup", "-i", "A.java");
         Assert.assertNotNull(command, "command is null");
@@ -252,7 +253,7 @@ public class TestGroupAnnotations {
     @SuppressWarnings("unchecked")
     @Test
     public void addedToGroupFromGroupAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommands(CommandWithGroupAnnotation.class, CommandWithGroupNames.class)
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommands(CommandWithGroupAnnotation.class, CommandWithGroupNames.class)
                 .build();
 
         Object command = parser.parse("singleGroup", "commandWithGroupNames", "-i", "A.java");
@@ -274,7 +275,7 @@ public class TestGroupAnnotations {
     @SuppressWarnings("unchecked")
     @Test
     public void addedToGroupFromSubGroupAnnotation() {
-        Cli<?> parser = Cli.builder("junk").withCommands(CommandWithGroupAnnotation.class, CommandWithSubGroupNames.class)
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommands(CommandWithGroupAnnotation.class, CommandWithSubGroupNames.class)
                 .build();
 
         Object command = parser.parse("singleGroup", "commandWithGroupNames", "-i", "A.java");
@@ -295,14 +296,14 @@ public class TestGroupAnnotations {
 
     @Test(expectedExceptions = ParseCommandUnrecognizedException.class)
     public void commandRemovedFromDefaultGroupWithGroupNames() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithGroupNames.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithGroupNames.class).build();
 
         parser.parse("commandWithGroupNames", "-i", "A.java");
     }
     
     @Test(expectedExceptions = ParseCommandUnrecognizedException.class)
     public void commandRemovedFromDefaultGroupWithSubGroupNames() {
-        Cli<?> parser = Cli.builder("junk").withCommand(CommandWithSubGroupNames.class).build();
+        CommandLineInterface<C> parser = Cli.builder("junk").withCommand(CommandWithSubGroupNames.class).build();
 
         parser.parse("commandWithSubGroupNames", "-i", "A.java");
     }

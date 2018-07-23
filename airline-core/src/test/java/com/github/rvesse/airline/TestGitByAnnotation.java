@@ -70,7 +70,7 @@ public class TestGitByAnnotation {
         gitOverridden(parserConfig, "remote", "sh");
 
         // This returns help because the alias definition from the base config is overridden by the provided parser config
-        com.github.rvesse.airline.Cli<Runnable> gitParser = new com.github.rvesse.airline.Cli<Runnable>(
+        CommandLineInterface<Runnable> gitParser = new CommandLineInterface<Runnable>(
                 GitWithCliAnnotation2.class, parserConfig);
         Runnable cmd = gitParser.parse("foo");
         Assert.assertEquals(cmd.getClass(), Help.class);
@@ -84,7 +84,7 @@ public class TestGitByAnnotation {
 
     private void git(ParserMetadata<Runnable> parserConfig, String... args) {
         System.out.println("$ git " + StringUtils.join(args, ' '));
-        com.github.rvesse.airline.Cli<Runnable> gitParser = new com.github.rvesse.airline.Cli<Runnable>(
+        CommandLineInterface<Runnable> gitParser = new CommandLineInterface<Runnable>(
                 GitWithCliAnnotation.class, parserConfig);
 
         gitParser.parse(args).run();
@@ -93,7 +93,7 @@ public class TestGitByAnnotation {
 
     private void gitOverridden(ParserMetadata<Runnable> parserConfig, String... args) {
         System.out.println("$ git " + StringUtils.join(args, ' '));
-        com.github.rvesse.airline.Cli<Runnable> gitParser = new com.github.rvesse.airline.Cli<Runnable>(
+        CommandLineInterface<Runnable> gitParser = new CommandLineInterface<Runnable>(
                 GitWithCliAnnotation2.class, parserConfig);
 
         gitParser.parse(args).run();

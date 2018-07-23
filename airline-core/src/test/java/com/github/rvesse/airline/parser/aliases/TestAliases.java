@@ -34,6 +34,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.args.Args1;
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.help.cli.CliGlobalUsageGenerator;
@@ -114,7 +115,7 @@ public class TestAliases {
                .withUserAliases()
                    .withProgramName("test")
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -144,7 +145,7 @@ public class TestAliases {
         builder.withParser()
                .withUserAliases()
                    .withProgramName("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -163,7 +164,7 @@ public class TestAliases {
                .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -195,7 +196,7 @@ public class TestAliases {
                    .withFilename(f.getName())
                    .withPrefix("b.")
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -226,7 +227,7 @@ public class TestAliases {
                .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocations("~/", "~\\");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -258,7 +259,7 @@ public class TestAliases {
                    .withFilename(f.getName())
                    .withPrefix("b.")
                    .withSearchLocations("~/", "~\\");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -290,7 +291,7 @@ public class TestAliases {
                .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocations("~/", "~\\");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -312,7 +313,7 @@ public class TestAliases {
                    .withUserAliases()
                        .withFilename(config.getName())
                        .withSearchLocations("./", ".\\");
-            Cli<Args1> cli = builder.build();
+            CommandLineInterface<C> cli = builder.build();
             //@formatter:on
 
             // Check definition
@@ -350,7 +351,7 @@ public class TestAliases {
                    .withUserAliases()
                        .withFilename(config.getName())
                        .withSearchLocations("./", ".\\");
-            Cli<Args1> cli = builder.build();
+            CommandLineInterface<C> cli = builder.build();
             //@formatter:on
 
             // Check definition
@@ -377,7 +378,7 @@ public class TestAliases {
                    .withFilename(f.getName())
                    .withSearchLocation("${FOO}/")
                    .withLocator(new EnvVarLocator());
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -414,7 +415,7 @@ public class TestAliases {
                    .withFilename(f.getName())
                    .withSearchLocation("${FOO/")
                    .withLocator(new EnvVarLocator());
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -439,7 +440,7 @@ public class TestAliases {
                    .withFilename(f.getName())
                    .withSearchLocation("${FOO}/${BAR}/")
                    .withLocator(new EnvVarLocator());
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -472,7 +473,7 @@ public class TestAliases {
                    .withFilename(f.getName())
                    .withSearchLocation("${FOO}/")
                    .withLocator(new JvmSystemPropertyLocator());
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -506,7 +507,7 @@ public class TestAliases {
                    .withFilename(f.getName())
                    .withSearchLocation("${FOO/")
                    .withLocator(new JvmSystemPropertyLocator());
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -528,7 +529,7 @@ public class TestAliases {
                    .withFilename(f.getName())
                    .withSearchLocation("${FOO}/${BAR}/")
                    .withLocator(new JvmSystemPropertyLocator());
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -558,7 +559,7 @@ public class TestAliases {
                    .withFilename("aliases.config")
                    .withSearchLocation("/")
                    .withLocator(new ClasspathLocator());
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -588,7 +589,7 @@ public class TestAliases {
                    .withFilename("aliases.config")
                    .withSearchLocation("classpath:/")
                    .withLocator(new ClasspathLocator());
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -619,7 +620,7 @@ public class TestAliases {
                .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -652,7 +653,7 @@ public class TestAliases {
                .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -681,7 +682,7 @@ public class TestAliases {
         builder.withParser()
                .withAlias("foo")
                .withArguments("Args1", "-long", "$1", "-float", "$3");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check parsing
@@ -701,7 +702,7 @@ public class TestAliases {
         builder.withParser()
                .withAlias("foo")
                .withArguments("Args1", "-long", "$1", "-float", "$5");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check parsing
@@ -726,7 +727,7 @@ public class TestAliases {
                .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -758,7 +759,7 @@ public class TestAliases {
                .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -791,7 +792,7 @@ public class TestAliases {
                .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check definition
@@ -821,7 +822,7 @@ public class TestAliases {
                    .withFilename(f.getName())
                    .withPrefix("b.")
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Alias Help
@@ -890,7 +891,7 @@ public class TestAliases {
                .withUserAliases()
                     .withProgramName("test")
                     .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check parsing
@@ -911,7 +912,7 @@ public class TestAliases {
                    .withUserAliases()
                        .withProgramName("test")
                        .withSearchLocation("target/");
-            Cli<Args1> cli = builder.build();
+            CommandLineInterface<C> cli = builder.build();
             //@formatter:on
 
             // Check parsing
@@ -934,7 +935,7 @@ public class TestAliases {
                .withUserAliases()
                    .withProgramName("test")
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check parsing
@@ -955,7 +956,7 @@ public class TestAliases {
                    .withUserAliases()
                        .withProgramName("test")
                        .withSearchLocation("target/");
-            Cli<Args1> cli = builder.build();
+            CommandLineInterface<C> cli = builder.build();
             //@formatter:on
 
             // Check parsing
@@ -984,7 +985,7 @@ public class TestAliases {
                .withUserAliases()
                    .withProgramName("test")
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check parsing
@@ -1005,7 +1006,7 @@ public class TestAliases {
                .withUserAliases()
                    .withProgramName("test")
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Check parsing

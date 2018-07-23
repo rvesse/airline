@@ -99,7 +99,7 @@ public class TestGalaxyCommandLineParser
     
     @Test
     public void test_metadata() {
-        Cli<GalaxyCommand> cli = createParser();
+        CommandLineInterface<GalaxyCommand> cli = createParser();
         
         GlobalMetadata<GalaxyCommand> global = cli.getMetadata();
         Assert.assertEquals(global.getOptions().size(), 2);
@@ -110,9 +110,9 @@ public class TestGalaxyCommandLineParser
         Assert.assertEquals(show.getAllOptions().size(), 8);
     }
 
-    protected Cli<GalaxyCommand> createParser()
+    protected CommandLineInterface<GalaxyCommand> createParser()
     {
-        CliBuilder<GalaxyCommand> builder = Cli.<GalaxyCommand>builder("galaxy")
+        CliBuilder<GalaxyCommand> builder = CommandLineInterface.<GalaxyCommand>builder("galaxy")
                 .withDescription("cloud management system")
                 .withDefaultCommand(HelpCommand.class)
                 .withCommand(HelpCommand.class)

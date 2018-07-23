@@ -53,7 +53,7 @@ public class TestSubGroups {
                .withDefaultCommand(Help.class);
         //@formatter:on
         
-        Cli<Object> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         GlobalMetadata<Object> global = cli.getMetadata();
         Assert.assertEquals(global.getDefaultGroupCommands().size(), 0);
         Assert.assertEquals(global.getCommandGroups().size(), 1);
@@ -83,7 +83,7 @@ public class TestSubGroups {
         fooBuilder.withSubGroup("baz");
         //@formatter:on
         
-        Cli<Object> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         GlobalMetadata<Object> global = cli.getMetadata();
         Assert.assertEquals(global.getDefaultGroupCommands().size(), 0);
         Assert.assertEquals(global.getCommandGroups().size(), 1);
@@ -230,7 +230,7 @@ public class TestSubGroups {
     
     @Test
     public void sub_groups_cli_annotation_01() {
-        Cli<Object> cli = new Cli<Object>(SubGroupsCli01.class);
+        CommandLineInterface<C> cli = new Cli<Object>(SubGroupsCli01.class);
         GlobalMetadata<Object> global = cli.getMetadata();
         Assert.assertEquals(global.getDefaultGroupCommands().size(), 0);
         Assert.assertEquals(global.getCommandGroups().size(), 1);
@@ -256,7 +256,7 @@ public class TestSubGroups {
     
     @Test
     public void sub_groups_cli_annotation_02() {
-        Cli<Object> cli = new Cli<Object>(SubGroupsCli02.class);
+        CommandLineInterface<C> cli = new Cli<Object>(SubGroupsCli02.class);
         GlobalMetadata<Object> global = cli.getMetadata();
         Assert.assertEquals(global.getDefaultGroupCommands().size(), 0);
         Assert.assertEquals(global.getCommandGroups().size(), 1);
@@ -287,7 +287,7 @@ public class TestSubGroups {
     
     @Test(expectedExceptions = ParseCommandMissingException.class)
     public void sub_groups_cli_annotation_03() {
-        Cli<Object> cli = new Cli<Object>(SubGroupsCli02.class);
+        CommandLineInterface<C> cli = new Cli<Object>(SubGroupsCli02.class);
         cli.parse("foo", "baz");
     }
     
@@ -302,7 +302,7 @@ public class TestSubGroups {
                .withDefaultCommand(Help.class);
         //@formatter:on
         
-        Cli<Object> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         GlobalMetadata<Object> global = cli.getMetadata();
         Assert.assertEquals(global.getDefaultGroupCommands().size(), 0);
         Assert.assertEquals(global.getCommandGroups().size(), 1);
@@ -332,7 +332,7 @@ public class TestSubGroups {
                .withDefaultCommand(Help.class);
         //@formatter:on
         
-        Cli<Object> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         GlobalMetadata<Object> global = cli.getMetadata();
         Assert.assertEquals(global.getDefaultGroupCommands().size(), 0);
         Assert.assertEquals(global.getCommandGroups().size(), 1);
@@ -362,7 +362,7 @@ public class TestSubGroups {
                .withDefaultCommand(Help.class);
         //@formatter:on
         
-        Cli<Object> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         GlobalMetadata<Object> global = cli.getMetadata();
         Assert.assertEquals(global.getDefaultGroupCommands().size(), 0);
         Assert.assertEquals(global.getCommandGroups().size(), 1);
@@ -393,7 +393,7 @@ public class TestSubGroups {
                .withDefaultCommand(Help.class);
         //@formatter:on
         
-        Cli<Object> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         GlobalMetadata<Object> global = cli.getMetadata();
         Assert.assertEquals(global.getDefaultGroupCommands().size(), 0);
         Assert.assertEquals(global.getCommandGroups().size(), 1);

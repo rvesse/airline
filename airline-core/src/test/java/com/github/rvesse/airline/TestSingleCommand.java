@@ -378,7 +378,7 @@ public class TestSingleCommand {
         for (Class<?> command : commands) {
             builder = builder.withCommand(command);
         }
-        Cli<?> parser = builder.build();
+        CommandLineInterface<C> parser = builder.build();
 
         final List<CommandMetadata> commandParsers = parser.getMetadata().getDefaultGroupCommands();
         assertEquals(commandParsers.size(), commands.length);

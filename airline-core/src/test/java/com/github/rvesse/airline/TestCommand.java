@@ -15,7 +15,6 @@
  */
 package com.github.rvesse.airline;
 
-import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
@@ -319,11 +318,11 @@ public class TestCommand
 
     private void verifyCommandOrdering(String[] commandNames, Class<?>... commands)
     {
-        CliBuilder<Object> builder = Cli.builder("foo");
+        CliBuilder<Object> builder = CommandLineInterface.builder("foo");
         for (Class<?> command : commands) {
             builder = builder.withCommand(command);
         }
-        Cli<?> parser = builder.build();
+        CommandLineInterface<Object> parser = builder.build();
 
         final List<CommandMetadata> commandParsers = parser.getMetadata().getDefaultGroupCommands();
         assertEquals(commandParsers.size(), commands.length);

@@ -22,6 +22,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.builder.CliBuilder;
@@ -50,25 +51,25 @@ public class TestOptionParsing {
         private List<String> charlie = new ArrayList<String>();
     }
 
-    private <T> T testParsing(Cli<T> parser, String... args) {
+    private <T> T testParsing(CommandLineInterface<T> parser, String... args) {
         return parser.parse(args);
     }
 
     @Test(expectedExceptions = ParseOptionMissingValueException.class)
     public void option_parsing_default_01() {
-        Cli<OptionParsing> parser = createDefaultParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createDefaultParser(OptionParsing.class);
         testParsing(parser, "OptionParsing1", "-c");
     }
 
     @Test(expectedExceptions = ParseOptionMissingValueException.class)
     public void option_parsing_default_02() {
-        Cli<OptionParsing> parser = createDefaultParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createDefaultParser(OptionParsing.class);
         testParsing(parser, "OptionParsing1", "-c", "one");
     }
 
     @Test
     public void option_parsing_default_03() {
-        Cli<OptionParsing> parser = createDefaultParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createDefaultParser(OptionParsing.class);
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two");
 
         Assert.assertEquals(cmd.charlie.size(), 2);
@@ -76,9 +77,9 @@ public class TestOptionParsing {
         Assert.assertEquals(cmd.charlie.get(1), "two");
     }
 
-    private final <T> Cli<T> createDefaultParser(Class<? extends T> cls) {
+    private final <T> CommandLineInterface<T> createDefaultParser(Class<? extends T> cls) {
         //@formatter:off
-        CliBuilder<T> builder = Cli.<T>builder("test")
+        CliBuilder<T> builder = CommandLineInterface.<T>builder("test")
                                    .withCommand(cls);
         builder.withParser()
                .withDefaultOptionParsers();
@@ -88,7 +89,7 @@ public class TestOptionParsing {
 
     @Test
     public void option_parsing_standard_01() {
-        Cli<OptionParsing> parser = createStandardParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createStandardParser(OptionParsing.class);
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-a", "--beta", "foo");
 
         Assert.assertTrue(cmd.alpha);
@@ -97,13 +98,13 @@ public class TestOptionParsing {
 
     @Test(expectedExceptions = ParseOptionMissingValueException.class)
     public void option_parsing_standard_02() {
-        Cli<OptionParsing> parser = createStandardParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createStandardParser(OptionParsing.class);
         testParsing(parser, "OptionParsing1", "-a", "--beta");
     }
 
-    private <T> Cli<T> createStandardParser(Class<? extends T> cls) {
+    private <T> CommandLineInterface<T> createStandardParser(Class<? extends T> cls) {
         //@formatter:off
-        CliBuilder<T> builder = Cli.<T>builder("test")
+        CliBuilder<T> builder = CommandLineInterface.<T>builder("test")
                                 .withCommand(cls);
         builder.withParser()
                .withOptionParser(new StandardOptionParser<T>());
@@ -113,7 +114,7 @@ public class TestOptionParsing {
 
     @Test
     public void option_parsing_classic_getopt_01() {
-        Cli<OptionParsing> parser = createClassicGetOptParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createClassicGetOptParser(OptionParsing.class);
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-abfoo");
 
         Assert.assertTrue(cmd.alpha);
@@ -122,7 +123,7 @@ public class TestOptionParsing {
 
     @Test
     public void option_parsing_classic_getopt_02() {
-        Cli<OptionParsing> parser = createClassicGetOptParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createClassicGetOptParser(OptionParsing.class);
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-bfooa");
 
         Assert.assertFalse(cmd.alpha);
@@ -131,7 +132,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_classic_getopt_03() {
-        Cli<OptionParsing> parser = createClassicGetOptParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createClassicGetOptParser(OptionParsing.class);
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-b", "foo");
 
         Assert.assertEquals(cmd.beta, "foo");
@@ -139,7 +140,7 @@ public class TestOptionParsing {
 
     @Test(expectedExceptions = ParseOptionUnexpectedException.class)
     public void option_parsing_classic_getopt_04() {
-        Cli<OptionParsing> parser = createClassicGetOptParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createClassicGetOptParser(OptionParsing.class);
         // This should error because classic get-opt style can only be used with
         // arity 0/1 arguments
         testParsing(parser, "OptionParsing1", "-ac");
@@ -147,7 +148,7 @@ public class TestOptionParsing {
 
     @Test(expectedExceptions = ParseArgumentsUnexpectedException.class)
     public void option_parsing_classic_getopt_05() {
-        Cli<OptionParsing> parser = createClassicGetOptParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createClassicGetOptParser(OptionParsing.class);
         // This should error because classic get-opt style can only be used with
         // arity 0/1 arguments
         // The error in this case is different because since this is the first
@@ -156,9 +157,9 @@ public class TestOptionParsing {
         testParsing(parser, "OptionParsing1", "-c");
     }
 
-    private <T> Cli<T> createClassicGetOptParser(Class<? extends T> cls) {
+    private <T> CommandLineInterface<T> createClassicGetOptParser(Class<? extends T> cls) {
         //@formatter:off
-        CliBuilder<T> builder = Cli.<T>builder("test")
+        CliBuilder<T> builder = CommandLineInterface.<T>builder("test")
                                    .withCommand(cls);
         builder.withParser()
                .withOptionParser(new ClassicGetOptParser<T>());
@@ -168,7 +169,7 @@ public class TestOptionParsing {
 
     @Test
     public void option_parsing_long_getopt_01() {
-        Cli<OptionParsing> parser = createLongGetOptParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createLongGetOptParser(OptionParsing.class);
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-b=foo");
 
         Assert.assertEquals(cmd.beta, "foo");
@@ -176,7 +177,7 @@ public class TestOptionParsing {
 
     @Test
     public void option_parsing_long_getopt_02() {
-        Cli<OptionParsing> parser = createLongGetOptParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createLongGetOptParser(OptionParsing.class);
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "--beta=foo");
 
         Assert.assertEquals(cmd.beta, "foo");
@@ -184,19 +185,19 @@ public class TestOptionParsing {
 
     @Test(expectedExceptions = ParseArgumentsUnexpectedException.class)
     public void option_parsing_long_getopt_03() {
-        Cli<OptionParsing> parser = createLongGetOptParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createLongGetOptParser(OptionParsing.class);
         testParsing(parser, "OptionParsing1", "--beta", "foo");
     }
     
     @Test(expectedExceptions = ParseArgumentsUnexpectedException.class)
     public void option_parsing_long_getopt_04() {
-        Cli<OptionParsing> parser = createLongGetOptParser(OptionParsing.class);
+        CommandLineInterface<OptionParsing> parser = createLongGetOptParser(OptionParsing.class);
         testParsing(parser, "OptionParsing1", "--charlie=foo");
     }
 
-    private <T> Cli<T> createLongGetOptParser(Class<? extends T> cls) {
+    private <T> CommandLineInterface<T> createLongGetOptParser(Class<? extends T> cls) {
         //@formatter:off
-        CliBuilder<T> builder = Cli.<T>builder("test")
+        CliBuilder<T> builder = CommandLineInterface.<T>builder("test")
                                    .withCommand(cls);
         builder.withParser()
                .withOptionParser(new LongGetOptParser<T>());
@@ -206,7 +207,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_key_value_01() {
-        Cli<OptionParsing> parser = createKeyValueParser(OptionParsing.class, ':');
+        CommandLineInterface<OptionParsing> parser = createKeyValueParser(OptionParsing.class, ':');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-b:foo");
 
         Assert.assertEquals(cmd.beta, "foo");
@@ -214,7 +215,7 @@ public class TestOptionParsing {
 
     @Test
     public void option_parsing_key_value_02() {
-        Cli<OptionParsing> parser = createKeyValueParser(OptionParsing.class, ':');
+        CommandLineInterface<OptionParsing> parser = createKeyValueParser(OptionParsing.class, ':');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "--beta:foo");
 
         Assert.assertEquals(cmd.beta, "foo");
@@ -222,7 +223,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_key_value_03() {
-        Cli<OptionParsing> parser = createKeyValueParser(OptionParsing.class, ';');
+        CommandLineInterface<OptionParsing> parser = createKeyValueParser(OptionParsing.class, ';');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-b;foo");
 
         Assert.assertEquals(cmd.beta, "foo");
@@ -230,7 +231,7 @@ public class TestOptionParsing {
 
     @Test
     public void option_parsing_key_value_04() {
-        Cli<OptionParsing> parser = createKeyValueParser(OptionParsing.class, ';');
+        CommandLineInterface<OptionParsing> parser = createKeyValueParser(OptionParsing.class, ';');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "--beta;foo");
 
         Assert.assertEquals(cmd.beta, "foo");
@@ -238,13 +239,13 @@ public class TestOptionParsing {
 
     @Test(expectedExceptions = ParseArgumentsUnexpectedException.class)
     public void option_parsing_key_value_05() {
-        Cli<OptionParsing> parser = createKeyValueParser(OptionParsing.class, ':');
+        CommandLineInterface<OptionParsing> parser = createKeyValueParser(OptionParsing.class, ':');
         testParsing(parser, "OptionParsing1", "--beta", "foo");
     }
 
-    private <T> Cli<T> createKeyValueParser(Class<? extends T> cls, char separator) {
+    private <T> CommandLineInterface<T> createKeyValueParser(Class<? extends T> cls, char separator) {
         //@formatter:off
-        CliBuilder<T> builder = Cli.<T>builder("test")
+        CliBuilder<T> builder = CommandLineInterface.<T>builder("test")
                                 .withCommand(cls);
         builder.withParser()
                .withOptionParser(new KeyValueOptionParser<T>(separator));
@@ -261,37 +262,37 @@ public class TestOptionParsing {
     
     @Test(expectedExceptions = ParseOptionMissingValueException.class, expectedExceptionsMessageRegExp = "Required values.*")
     public void option_parsing_list_value_bad_01() {
-        Cli<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-c");
     }
 
     @Test(expectedExceptions = ParseOptionMissingValueException.class, expectedExceptionsMessageRegExp = "Too few.*")
     public void option_parsing_list_value_bad_02() {
-        Cli<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-c", "one");
     }
     
     @Test(expectedExceptions = ParseOptionUnexpectedException.class, expectedExceptionsMessageRegExp = "Too many.*")
     public void option_parsing_list_value_bad_03() {
-        Cli<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-c", "one,two,three");
     }
     
     @Test(expectedExceptions = ParseOptionMissingValueException.class, expectedExceptionsMessageRegExp = "Too few.*")
     public void option_parsing_list_value_bad_04() {
-        Cli<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-cone");
     }
     
     @Test(expectedExceptions = ParseOptionUnexpectedException.class, expectedExceptionsMessageRegExp = "Too many.*")
     public void option_parsing_list_value_bad_05() {
-        Cli<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-cone,two,three");
     }
     
     @Test
     public void option_parsing_list_value_01() {
-        Cli<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-b", "foo");
 
         Assert.assertEquals(cmd.beta, "foo");
@@ -299,7 +300,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_list_value_02() {
-        Cli<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-bfoo");
 
         Assert.assertEquals(cmd.beta, "foo");
@@ -307,7 +308,7 @@ public class TestOptionParsing {
 
     @Test
     public void option_parsing_list_value_03() {
-        Cli<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one,two");
 
         Assert.assertEquals(cmd.charlie.size(), 2);
@@ -317,7 +318,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_list_value_04() {
-        Cli<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-cone,two");
 
         Assert.assertEquals(cmd.charlie.size(), 2);
@@ -327,7 +328,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_list_value_05() {
-        Cli<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-b", "foo,bar");
 
         Assert.assertEquals(cmd.beta, "bar");
@@ -335,7 +336,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_list_value_06() {
-        Cli<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-cone,two,three,four");
 
         Assert.assertEquals(cmd.charlie.size(), 4);
@@ -345,9 +346,9 @@ public class TestOptionParsing {
         Assert.assertEquals(cmd.charlie.get(3), "four");
     }
     
-    private <T> Cli<T> createListValueParser(Class<? extends T> cls, char listSeparator) {
+    private <T> CommandLineInterface<T> createListValueParser(Class<? extends T> cls, char listSeparator) {
         //@formatter:off
-        CliBuilder<T> builder = Cli.<T>builder("test")
+        CliBuilder<T> builder = CommandLineInterface.<T>builder("test")
                                    .withCommand(cls);
         builder.withParser()
                .withOptionParser(new ListValueOptionParser<T>(listSeparator));
@@ -357,7 +358,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_maybe_pair_value_01() {
-        Cli<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
+        CommandLineInterface<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-c", "foo", "bar");
 
         Assert.assertEquals(cmd.charlie.get(0), "foo");
@@ -366,7 +367,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_maybe_pair_value_02() {
-        Cli<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
+        CommandLineInterface<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-c", "foo=bar");
 
         Assert.assertEquals(cmd.charlie.get(0), "foo");
@@ -375,7 +376,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_maybe_pair_value_03() {
-        Cli<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
+        CommandLineInterface<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-cfoo", "bar");
 
         Assert.assertEquals(cmd.charlie.get(0), "foo");
@@ -384,7 +385,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_maybe_pair_value_04() {
-        Cli<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
+        CommandLineInterface<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-cfoo=bar");
 
         Assert.assertEquals(cmd.charlie.get(0), "foo");
@@ -393,19 +394,19 @@ public class TestOptionParsing {
     
     @Test(expectedExceptions = ParseOptionMissingValueException.class)
     public void option_parsing_maybe_pair_value_bad_01() {
-        Cli<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
+        CommandLineInterface<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
         testParsing(parser, "OptionParsing1", "-c", "foo");
     }
     
     @Test(expectedExceptions = ParseOptionMissingValueException.class)
     public void option_parsing_maybe_pair_value_bad_02() {
-        Cli<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
+        CommandLineInterface<OptionParsing> parser = createMaybePairValueParser(OptionParsing.class, '=');
         testParsing(parser, "OptionParsing1", "-cfoo");
     }
     
-    private <T> Cli<T> createMaybePairValueParser(Class<? extends T> cls, char pairSeparator) {
+    private <T> CommandLineInterface<T> createMaybePairValueParser(Class<? extends T> cls, char pairSeparator) {
         //@formatter:off
-        CliBuilder<T> builder = Cli.<T>builder("test")
+        CliBuilder<T> builder = CommandLineInterface.<T>builder("test")
                                    .withCommand(cls);
         builder.withParser()
                .withOptionParser(new MaybePairValueOptionParser<T>(pairSeparator));

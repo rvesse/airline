@@ -64,8 +64,8 @@ import com.github.rvesse.airline.annotations.Group;
 public class TestGalaxyCommandLineParserByAnnotation extends TestGalaxyCommandLineParser {
 
     @Override
-    protected Cli<GalaxyCommand> createParser() {
-        return new Cli<GalaxyCommand>(TestGalaxyCommandLineParserByAnnotation.class);
+    protected CommandLineInterface<GalaxyCommand> createParser() {
+        return new CommandLineInterface<GalaxyCommand>(TestGalaxyCommandLineParserByAnnotation.class);
     }
 
 }

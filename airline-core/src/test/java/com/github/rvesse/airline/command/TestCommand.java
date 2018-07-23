@@ -16,6 +16,7 @@
 package com.github.rvesse.airline.command;
 
 import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpSection;
@@ -41,7 +42,7 @@ public class TestCommand {
     @Test
     public void namedCommandTest1() {
         //@formatter:off
-        Cli<?> parser = Cli.builder("git")
+        CommandLineInterface<C> parser = Cli.builder("git")
                            .withCommand(CommandAdd.class)
                            .withCommand(CommandCommit.class)
                            .build();
@@ -63,7 +64,7 @@ public class TestCommand {
     @Test
     public void commandTest2() {
         //@formatter:off
-        Cli<?> parser = Cli.builder("git")
+        CommandLineInterface<C> parser = Cli.builder("git")
                            .withCommand(CommandAdd.class)
                            .withCommand(CommandCommit.class)
                            .build();
@@ -91,7 +92,7 @@ public class TestCommand {
     @Test
     public void testExample() {
         //@formatter:off
-        Cli<?> parser = Cli.builder("git")
+        CommandLineInterface<C> parser = Cli.builder("git")
                            .withCommand(CommandRemove.class)
                            .build();
         //@formatter:on
@@ -117,7 +118,7 @@ public class TestCommand {
     @Test
     public void testDiscussion() {
         //@formatter:off
-        Cli<?> parser = Cli.builder("git")
+        CommandLineInterface<C> parser = Cli.builder("git")
                            .withCommand(CommandRemove.class)
                            .build();
         //@formatter:on
@@ -141,7 +142,7 @@ public class TestCommand {
     @Test
     public void testDefaultCommandInGroup() {
         //@formatter:off
-        Cli<?> parser = Cli.builder("git")
+        CommandLineInterface<C> parser = Cli.builder("git")
                            .withCommand(CommandAdd.class)
                            .withCommand(CommandCommit.class)
                            .withDefaultCommand(CommandAdd.class)
@@ -160,7 +161,7 @@ public class TestCommand {
     @Test
     public void testCommandWithArgsSeparator() {
         //@formatter:off
-        Cli<?> parser = Cli.builder("git")
+        CommandLineInterface<C> parser = Cli.builder("git")
                            .withCommand(CommandHighArityOption.class)
                            .build();
         //@formatter:on
@@ -179,7 +180,7 @@ public class TestCommand {
     @Test
     public void testCommandHighArityOptionNoSeparator() {
         //@formatter:off
-        Cli<?> parser = Cli.builder("git")
+        CommandLineInterface<C> parser = Cli.builder("git")
                            .withCommand(CommandHighArityOption.class)
                            .build();
         //@formatter:on
@@ -208,7 +209,7 @@ public class TestCommand {
         builder.withParser()
                .withCommandAbbreviation();
         //@formatter:on
-        Cli<?> parser = builder.build();
+        CommandLineInterface<C> parser = builder.build();
 
         Object command = parser.parse("ad", "-i", "A.java");
 
@@ -228,7 +229,7 @@ public class TestCommand {
         builder.withParser()
                .withCommandAbbreviation();
         //@formatter:on
-        Cli<?> parser = builder.build();
+        CommandLineInterface<C> parser = builder.build();
 
         // Expect this to error as abbreviation is ambiguous
         parser.parse("rem");
@@ -243,7 +244,7 @@ public class TestCommand {
         builder.withParser()
                .withCommandAbbreviation();
         //@formatter:on
-        Cli<?> parser = builder.build();
+        CommandLineInterface<C> parser = builder.build();
 
         // Abbreviation is non-ambigious
         Object command = parser.parse("remot");
@@ -261,7 +262,7 @@ public class TestCommand {
         builder.withParser()
                .withCommandAbbreviation();
         //@formatter:on
-        Cli<?> parser = builder.build();
+        CommandLineInterface<C> parser = builder.build();
 
         // Abbreviation is non-ambigious
         Object command = parser.parse("remov");
@@ -279,7 +280,7 @@ public class TestCommand {
         builder.withParser()
                .withCommandAbbreviation();
         //@formatter:on
-        Cli<?> parser = builder.build();
+        CommandLineInterface<C> parser = builder.build();
 
         // Command name which is also an abbreviation of another command name
         Object command = parser.parse("remote");
@@ -296,7 +297,7 @@ public class TestCommand {
         builder.withParser()
                .withOptionAbbreviation();
         //@formatter:on
-        Cli<?> parser = builder.build();
+        CommandLineInterface<C> parser = builder.build();
 
         // Non-ambigious abbreviation of an option
         Object command = parser.parse("commit", "--am");
@@ -316,7 +317,7 @@ public class TestCommand {
         builder.withParser()
                .withOptionAbbreviation();
         //@formatter:on
-        Cli<?> parser = builder.build();
+        CommandLineInterface<C> parser = builder.build();
 
         // Will parse but as abbreviation is ambigious will be treated as an
         // argument and not an option
@@ -336,7 +337,7 @@ public class TestCommand {
         builder.withParser()
                .withOptionAbbreviation();
         //@formatter:on
-        Cli<?> parser = builder.build();
+        CommandLineInterface<C> parser = builder.build();
 
         // Option name which is also an abbreviation of another option name
         Object command = parser.parse("commits", "--author", "test");
@@ -355,7 +356,7 @@ public class TestCommand {
         builder.withParser()
                .withOptionAbbreviation();
         //@formatter:on
-        Cli<?> parser = builder.build();
+        CommandLineInterface<C> parser = builder.build();
 
         // Option name which is also an abbreviation of another option name
         Object command = parser.parse("commits", "--author", "test");
@@ -374,7 +375,7 @@ public class TestCommand {
         builder.withParser()
                .withOptionAbbreviation();
         //@formatter:on
-        Cli<?> parser = builder.build();
+        CommandLineInterface<C> parser = builder.build();
 
         // Option name whose name is a super string of another option name
         Object command = parser.parse("commits", "--authors", "test");

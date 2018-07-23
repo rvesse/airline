@@ -25,6 +25,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.SingleCommand;
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.Git.Add;
@@ -193,7 +194,7 @@ public class TestHelpMarkdown {
                 .withCommand(RemoteShow.class)
                 .withCommand(RemoteAdd.class);
 
-        Cli<Runnable> gitParser = builder.build();
+        CommandLineInterface<C> gitParser = builder.build();
         
         MarkdownGlobalUsageGenerator<Runnable> generator = new MarkdownGlobalUsageGenerator<Runnable>();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -357,7 +358,7 @@ public class TestHelpMarkdown {
                 .withCommand(RemoteShow.class)
                 .withCommand(RemoteAdd.class);
 
-        Cli<Runnable> gitParser = builder.build();
+        CommandLineInterface<C> gitParser = builder.build();
         
         MarkdownMultiPageGlobalUsageGenerator<Runnable> generator = new MarkdownMultiPageGlobalUsageGenerator<Runnable>();
         FileOutputStream out = new FileOutputStream("target/git.md");
@@ -572,7 +573,7 @@ public class TestHelpMarkdown {
                                        .withCommand(Args1.class);
         builder.withParser()
                .withUserAliases(f.getName(), "b.", "target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         //@formatter:on
 
         // Alias Help

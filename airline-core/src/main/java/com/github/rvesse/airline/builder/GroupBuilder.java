@@ -24,12 +24,21 @@ import java.util.Map;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 
-public class GroupBuilder<C> extends AbstractChildBuilder<CommandGroupMetadata, Cli<C>, CliBuilder<C>> {
+/**
+ * Fluent builder for command groups
+ * 
+ * @author rvesse
+ *
+ * @param <C>
+ *            Command type
+ */
+public class GroupBuilder<C>
+        extends AbstractChildBuilder<CommandGroupMetadata, CommandLineInterface<C>, CliBuilder<C>> {
 
     private final String name;
     private String description = null;

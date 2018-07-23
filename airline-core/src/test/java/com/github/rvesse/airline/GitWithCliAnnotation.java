@@ -20,7 +20,6 @@ import com.github.rvesse.airline.Git.RemoteAdd;
 import com.github.rvesse.airline.Git.RemoteShow;
 import com.github.rvesse.airline.annotations.Cli;
 import com.github.rvesse.airline.annotations.Group;
-import com.github.rvesse.airline.annotations.Parser;
 import com.github.rvesse.airline.help.Help;
 
 //@formatter:off
@@ -39,7 +38,7 @@ import com.github.rvesse.airline.help.Help;
 public class GitWithCliAnnotation extends Git {
 
     public static void run(String[] args) {
-        com.github.rvesse.airline.Cli<Runnable> gitParser = new com.github.rvesse.airline.Cli<Runnable>(
+        CommandLineInterface<Runnable> gitParser = new CommandLineInterface<Runnable>(
                 GitWithCliAnnotation.class);
 
         gitParser.parse(args).run();

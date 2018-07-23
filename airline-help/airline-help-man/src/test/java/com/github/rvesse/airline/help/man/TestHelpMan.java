@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.Git.Add;
 import com.github.rvesse.airline.Git.RemoteAdd;
 import com.github.rvesse.airline.Git.RemoteShow;
@@ -218,7 +219,7 @@ public class TestHelpMan {
                 .withCommand(RemoteShow.class)
                 .withCommand(RemoteAdd.class);
 
-        Cli<Runnable> gitParser = builder.build();
+        CommandLineInterface<C> gitParser = builder.build();
         
         ManGlobalUsageGenerator<Runnable> generator = new ManGlobalUsageGenerator<Runnable>();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -426,7 +427,7 @@ public class TestHelpMan {
                 .withCommand(RemoteShow.class)
                 .withCommand(RemoteAdd.class);
 
-        Cli<Runnable> gitParser = builder.build();
+        CommandLineInterface<C> gitParser = builder.build();
         
         ManGlobalUsageGenerator<Runnable> generator = new ManMultiPageGlobalUsageGenerator<Runnable>();
         FileOutputStream out = new FileOutputStream("target/git.1");
@@ -664,7 +665,7 @@ public class TestHelpMan {
         CliBuilder<Object> builder = new CliBuilder<Object>("multi-page")
                 .withDefaultCommand(Args1.class)
                 .withCommands(Args1.class, ArgsVersion.class);
-        Cli<Object> cli = builder.build();
+        CommandLineInterface<C> cli = builder.build();
         
         ManMultiPageGlobalUsageGenerator<Object> generator = new ManMultiPageGlobalUsageGenerator<>(ManSections.GENERAL_COMMANDS, false, new File("target/"));
         FileOutputStream mainFile = new FileOutputStream("target/multi-page.1");

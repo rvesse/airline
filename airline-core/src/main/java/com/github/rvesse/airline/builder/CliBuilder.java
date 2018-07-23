@@ -26,7 +26,7 @@ import java.util.Queue;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.ListUtils;
 
-import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
@@ -40,7 +40,7 @@ import com.github.rvesse.airline.restrictions.None;
  * @param <C>
  *            Command type
  */
-public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
+public class CliBuilder<C> extends AbstractBuilder<CommandLineInterface<C>> {
 
     protected final String name;
     protected String description;
@@ -141,7 +141,7 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
     }
 
     @Override
-    public Cli<C> build() {
+    public CommandLineInterface<C> build() {
         CommandMetadata defaultCommandMetadata = null;
         List<CommandMetadata> allCommands = new ArrayList<CommandMetadata>();
         if (defaultCommand != null) {
@@ -204,6 +204,6 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
                 ListUtils.unmodifiableList(defaultCommandGroup), ListUtils.unmodifiableList(commandGroups),
                 ListUtils.unmodifiableList(restrictions), this.parserBuilder.build());
 
-        return new Cli<C>(metadata);
+        return new CommandLineInterface<C>(metadata);
     }
 }

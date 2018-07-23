@@ -17,7 +17,6 @@ package com.github.rvesse.airline;
 
 import java.util.List;
 
-import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
@@ -31,7 +30,7 @@ public class Git
     public static void main(String... args)
     {
         //@formatter:off
-        CliBuilder<Runnable> builder = Cli.<Runnable>builder("git")
+        CliBuilder<Runnable> builder = CommandLineInterface.<Runnable>builder("git")
                 .withDescription("the stupid content tracker")
                 .withDefaultCommand(Help.class)
                 .withCommand(Help.class)
@@ -44,7 +43,7 @@ public class Git
                     .parent();
         //@formatter:on
 
-        Cli<Runnable> gitParser = builder.build();
+        CommandLineInterface<Runnable> gitParser = builder.build();
 
         gitParser.parse(args).run();
     }

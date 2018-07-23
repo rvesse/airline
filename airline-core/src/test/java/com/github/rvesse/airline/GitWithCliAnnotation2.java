@@ -47,7 +47,7 @@ import com.github.rvesse.airline.help.Help;
 public class GitWithCliAnnotation2 extends Git {
 
     public static void run(String[] args) {
-        com.github.rvesse.airline.Cli<Runnable> gitParser = new com.github.rvesse.airline.Cli<Runnable>(
+        CommandLineInterface<Runnable> gitParser = new CommandLineInterface<Runnable>(
                 GitWithCliAnnotation2.class);
 
         gitParser.parse(args).run();
