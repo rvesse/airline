@@ -119,7 +119,8 @@
           <debug>true</debug>
           <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
           <postBuildHookScript>verify</postBuildHookScript>
-          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+	  <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+	  <mavenOpts>-Dhttps.protocols=TLSv1.2</mavenOpts>
           <goals>clean,install</goals>
         </configuration>
         <executions>
