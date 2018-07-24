@@ -9,10 +9,10 @@ The Text help generator, also referred to as the CLI help generator, is the defa
 
 The following implementations are available:
 
-- {% include github-ref.md package="help.cli" class="CliGlobalUsageGenerator" } - Full blown CLI help
-- {% include github-ref.md package="help.cli" class="CliGlobalUsageSummaryGenerator" } - Quick summary help for CLIs
-- {% include github-ref.md package="help.cli" class="CliCommandGroupUsageGenerator" } - Help for command groups
-- {% include github-ref.md package="help.cli" class="CliCommandUsageGenerator" } - Help for individual commands 
+- {% include github-ref.md package="help.cli" class="CliGlobalUsageGenerator" %} - Full blown CLI help
+- {% include github-ref.md package="help.cli" class="CliGlobalUsageSummaryGenerator" %} - Quick summary help for CLIs
+- {% include github-ref.md package="help.cli" class="CliCommandGroupUsageGenerator" %} - Help for command groups
+- {% include github-ref.md package="help.cli" class="CliCommandUsageGenerator" %} - Help for individual commands 
 
 ### Example Usage
 
