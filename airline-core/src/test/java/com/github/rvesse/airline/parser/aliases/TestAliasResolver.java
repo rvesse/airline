@@ -18,7 +18,7 @@ package com.github.rvesse.airline.parser.aliases;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.args.Args1;
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.parser.errors.ParseAliasCircularReferenceException;
@@ -31,7 +31,7 @@ public class TestAliasResolver {
      */
     private CliBuilder<Args1> prepareBuilder() {
         //@formatter:off
-        return Cli.<Args1>builder("test")
+        return CommandLineInterface.<Args1>builder("test")
                   .withCommand(Args1.class)
                   .withDefaultCommand(Args1.class);
         //@formatter:on

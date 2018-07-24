@@ -17,6 +17,7 @@ package com.github.rvesse.airline.examples.shipit;
 
 import java.util.Arrays;
 
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.annotations.Cli;
 import com.github.rvesse.airline.annotations.Parser;
 import com.github.rvesse.airline.examples.ExampleRunnable;
@@ -47,7 +48,7 @@ import com.github.rvesse.airline.parser.options.ListValueOptionParser;
 public class ShipItCli {
 
     public static void main(String[] args) {
-        com.github.rvesse.airline.Cli<ExampleRunnable> cli = new com.github.rvesse.airline.Cli<ExampleRunnable>(ShipItCli.class);
+        CommandLineInterface<ExampleRunnable> cli = new CommandLineInterface<ExampleRunnable>(ShipItCli.class);
         try {
             // Parse with a result to allow us to inspect the results of parsing
             ParseResult<ExampleRunnable> result = cli.parseWithResult(args);

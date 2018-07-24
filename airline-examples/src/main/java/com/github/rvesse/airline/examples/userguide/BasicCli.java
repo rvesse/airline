@@ -15,6 +15,7 @@
  */
 package com.github.rvesse.airline.examples.userguide;
 
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.annotations.Cli;
 
 //@formatter:off
@@ -26,7 +27,7 @@ import com.github.rvesse.airline.annotations.Cli;
 public class BasicCli {
 
     public static void main(String[] args) {
-        com.github.rvesse.airline.Cli<Runnable> cli = new com.github.rvesse.airline.Cli<>(BasicCli.class);
+        CommandLineInterface<Runnable> cli = new CommandLineInterface<>(BasicCli.class);
         Runnable cmd = cli.parse(args);
         cmd.run();
     }
