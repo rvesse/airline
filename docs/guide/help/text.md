@@ -31,7 +31,16 @@ The following implementations are available:
 
 #### Command Group Help
 
-TODO
+```java
+   Cli<ExampleRunnable> cli = new Cli<ExampleRunnable>(GroupCli.class);
+        
+   CommandGroupUsageGenerator<ExampleRunnable> helpGenerator = new CliCommandGroupUsageGenerator<>();
+   try {
+       helpGenerator.usage(cli.getMetadata(), new CommandGroupMetadata[] { cli.getMetadata().getCommandGroups().get(0) }, System.out);
+   } catch (IOException e) {
+       e.printStackTrace();
+   }
+```
 
 #### Command Help
 
