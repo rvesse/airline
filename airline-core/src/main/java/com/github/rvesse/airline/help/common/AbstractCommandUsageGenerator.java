@@ -65,33 +65,16 @@ public abstract class AbstractCommandUsageGenerator extends AbstractUsageGenerat
         super(hintComparator, optionComparator, UsageHelper.DEFAULT_COMMAND_COMPARATOR, includeHidden);
         this.exitCodeComparator = exitCodeComparator;
     }
+    
+    @Override
+    public <T> void usage(CommandMetadata command, ParserMetadata<T> parserConfig, OutputStream output) throws IOException {
+        usage(null, null, command.getName(), command, parserConfig, output);
+    }
 
     @Override
     public <T> void usage(String programName, String[] groupNames, String commandName, CommandMetadata command,
             ParserMetadata<T> parserConfig) throws IOException {
         usage(programName, groupNames, commandName, command, parserConfig, Channels.output());
-    }
-
-    /**
-     * @deprecated Please use the overload that explicitly takes a parser
-     *             configuration
-     */
-    @Override
-    @Deprecated
-    public void usage(String programName, String[] groupNames, String commandName, CommandMetadata command)
-            throws IOException {
-        usage(programName, groupNames, commandName, command, null, Channels.output());
-    }
-
-    /**
-     * @deprecated Please use the overload that explicitly takes a parser
-     *             configuration
-     */
-    @Override
-    @Deprecated
-    public void usage(String programName, String[] groupNames, String commandName, CommandMetadata command,
-            OutputStream output) throws IOException {
-        usage(programName, groupNames, commandName, command, null, output);
     }
 
     /**

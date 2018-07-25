@@ -28,46 +28,18 @@ import com.github.rvesse.airline.model.ParserMetadata;
 public interface CommandUsageGenerator {
 
     /**
-     * Generate the help and output it on standard out
+     * Generates the help output to the provided output stream
      * 
-     * @param programName
-     *            Program Name
-     * @param groupNames
-     *            Group Name(s)
-     * @param commandName
-     *            Command Name
      * @param command
      *            Command Metadata
-     * @throws IOException
-     *             Thrown if there is a problem generating usage output
-     * @deprecated Please use the overload that takes the parser configuration
-     *             explicitly
-     */
-    @Deprecated
-    public abstract void usage(String programName, String[] groupNames, String commandName, CommandMetadata command)
-            throws IOException;
-
-    /**
-     * Generate the help and output it to the stream
-     * 
-     * @param programName
-     *            Program Name
-     * @param groupNames
-     *            Group Name(s)
-     * @param commandName
-     *            Command Name
-     * @param command
-     *            Command Metadata
+     * @param parserConfig
+     *            Parser configuration
      * @param output
-     *            Stream to output to
+     *            Output Stream
      * @throws IOException
-     *             Thrown if there is a problem generating usage output
-     * @deprecated Please use the overload that takes the parser configuration
-     *             explicitly
      */
-    @Deprecated
-    public abstract void usage(String programName, String[] groupNames, String commandName, CommandMetadata command,
-            OutputStream output) throws IOException;
+    public abstract <T> void usage(CommandMetadata command, ParserMetadata<T> parserConfig, OutputStream output)
+            throws IOException;
 
     /**
      * Generate the help and output it on standard out
