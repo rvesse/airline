@@ -1,6 +1,8 @@
 ---
 layout: page
 title: MAN Help Generators
+globals: [ "ManGlobalUsageGenerator", "ManMultiPageGlobalUsageGenerator" ]
+commands: [ "ManCommandUsageGenerator" ]
 ---
 
 The MAN help generator is provided by the `airline-help-man` library.  It generates help output in Troff format using MAN page specific extensions to generate Linux manual pages that can be viewed with the `man` tool.
@@ -9,11 +11,11 @@ The MAN help generator is provided by the `airline-help-man` library.  It genera
 
 The following implementations are available:
 
-- {% include github-ref.md module="airline-help/airline-help-man" package="help.man" class="ManGlobalUsageGenerator" %} - Generates help for the entire CLI as a single manual page.
-- {% include github-ref.md module="airline-help/airline-help-man" package="help.man" class="ManMultiPageGlobalUsageGenerator" %} - Generates help for the entire CLI as a series of separate manual pages
-- {% include github-ref.md module="airline-help/airline-help-man" package="help.man" class="ManCommandUsageGenerator" %} - Generates manual pages for individual commands
+- {% include javadoc-ref.md module="airline-help-man" package="help.man" class="ManGlobalUsageGenerator" %} - Generates help for the entire CLI as a single manual page
+- {% include javadoc-ref.md module="airline-help-man" package="help.man" class="ManMultiPageGlobalUsageGenerator" %} - Generates help for the entire CLI as a series of separate manual pages
+- {% include javadoc-ref.md module="airline-help-man" package="help.man" class="ManCommandUsageGenerator" %} - Generates manual pages for individual commands
 
-{% include helpgen-examples.md global="ManGlobalUsageGenerator" command="ManCommandUsageGenerator" %}
+{% include helpgen-examples.md global=page.globals command=page.commands module="airline-help/airline-help-man" package="help.man" %}
 
 ### Viewing the output
 
