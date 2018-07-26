@@ -28,6 +28,7 @@ import com.github.rvesse.airline.help.UsageHelper;
 import com.github.rvesse.airline.help.common.AbstractCommandUsageGenerator;
 import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
+import com.github.rvesse.airline.help.sections.HelpSection;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
@@ -62,6 +63,10 @@ public class HtmlCommandUsageGenerator extends AbstractCommandUsageGenerator {
     public HtmlCommandUsageGenerator(boolean includeHidden) {
         this(UsageHelper.DEFAULT_OPTION_COMPARATOR, includeHidden, DEFAULT_STYLESHEET);
     }
+    
+    public HtmlCommandUsageGenerator(String... stylesheetUrls) {
+        this(UsageHelper.DEFAULT_OPTION_COMPARATOR, false, stylesheetUrls);
+    }
 
     public HtmlCommandUsageGenerator(String stylesheetUrl, boolean includeHidden) {
         this(UsageHelper.DEFAULT_OPTION_COMPARATOR, includeHidden, stylesheetUrl);
@@ -86,6 +91,11 @@ public class HtmlCommandUsageGenerator extends AbstractCommandUsageGenerator {
         if (parserConfig == null) {
             parserConfig = MetadataLoader.loadParser(command.getType());
         }
+        
+        // Find help sections
+        List<HelpSection> preSections = new ArrayList<HelpSection>();
+        List<HelpSection> postSections = new ArrayList<HelpSection>();
+        findHelpSections(command, preSections, postSections);
 
         Writer writer = new OutputStreamWriter(output);
 
@@ -99,7 +109,10 @@ public class HtmlCommandUsageGenerator extends AbstractCommandUsageGenerator {
         // Name and description of command
         outputDescription(writer, programName, groupNames, command);
 
-        // TODO Output pre help sections
+        // Output pre help sections
+        for (HelpSection section : preSections) {
+            outputHelpSection(writer, section);
+        }
 
         // Synopsis
         List<OptionMetadata> options = outputSynopsis(writer, programName, groupNames, command);
@@ -110,7 +123,10 @@ public class HtmlCommandUsageGenerator extends AbstractCommandUsageGenerator {
             outputOptions(writer, options, command.getArguments(), parserConfig);
         }
 
-        // TODO Output post help sections
+        // Output post help sections
+        for (HelpSection section : postSections) {
+            outputHelpSection(writer, section);
+        }
 
         writer.append("</body>\n");
         writer.append("</html>\n");
@@ -220,6 +236,37 @@ public class HtmlCommandUsageGenerator extends AbstractCommandUsageGenerator {
         writer.append("<div class=\"row\">\n");
         writer.append("<div class=\"span8 offset3\">\n");
 
+        outputHelpHint(writer, hint);
+
+        writer.append("</div>\n");
+        writer.append("</div>\n");
+    }
+    
+    /**
+     * Outputs a help section
+     * @param writer Writer
+     * @param section Help section
+     * @throws IOException
+     */
+    protected void outputHelpSection(Writer writer, HelpSection section) throws IOException {
+        writer.append("<h2 class=\"text-info\">").append(section.getTitle()).append("</h1>\n").append(NEWLINE);
+
+        writer.append("<div class=\"row\">");
+        writer.append("<div class=\"span8 offset1\">");
+        outputHelpHint(writer, section);
+        writer.append("</div>\n");
+        writer.append("</div>\n");
+
+        writer.append(NEWLINE);
+    }
+
+    /**
+     * Outputs a help hint
+     * @param writer Writer
+     * @param hint Help hint
+     * @throws IOException
+     */
+    protected void outputHelpHint(Writer writer, HelpHint hint) throws IOException {
         // Append preamble if present
         if (!StringUtils.isEmpty(hint.getPreamble())) {
             writer.append(htmlize(hint.getPreamble()));
@@ -297,9 +344,6 @@ public class HtmlCommandUsageGenerator extends AbstractCommandUsageGenerator {
                 break;
             }
         }
-
-        writer.append("</div>\n");
-        writer.append("</div>\n");
     }
 
     /**

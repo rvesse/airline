@@ -70,3 +70,23 @@ The following completion behaviours are available:
 ### Using the Output
 
 To use the output from this help generator you need to capture it in a file and then use the `source` command to load it into your Bash environment.  Once sourced you will be able to use tab completion for your CLI.
+
+For example:
+
+```java
+   Cli<ExampleRunnable> cli = new Cli<ExampleRunnable>(ShipItCli.class);
+        
+   GlobalUsageGenerator<ExampleRunnable> helpGenerator = new BashCompletionGenerator<>();
+   try {
+       helpGenerator.usage(cli.getMetadata(), new FileOutputStream("completions.bash"));
+   } catch (IOException e) {
+       e.printStackTrace();
+   }
+```
+
+Then source the output file:
+
+```
+> source completions.bash
+```
+Then start using your CLI and you will now have tab completion available for it.
