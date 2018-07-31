@@ -46,4 +46,10 @@ In the event that any of the configured sources are invalid your build will fail
 
 > [ERROR] Failed to execute goal com.github.rvesse:airline-maven-plugin:2.5.1-SNAPSHOT:validate (default) on project airline-plugin-validate-bad: Class com.github.rvesse.airline.examples.cli.SimpleCli is not annotated with @Cli or @Command -> [Help 1]
 
+### Goal Configuration
+
+This goal expects to find a `<sources>` element specifying one/more `<source>` elements.  Each of which specifies a `<classes>` element with one/more `<class>` elements containing the fully qualified class name of a class to load metadata for.
+
+The `<source>` element may also have other children as detailed in the configuration for the `airline:generate` goal however these are ignored for the purposes of the `airline:validate` goal.
+
 ## `airline:generate`
