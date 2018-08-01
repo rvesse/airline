@@ -13,22 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline.examples.shipit;
+package com.github.rvesse.airline.examples.sendit;
 
-import javax.inject.Inject;
+/**
+ * Grades of postal service
+ * 
+ * @author rvesse
+ *
+ */
+public enum PostalService {
+    SecondClass(0.5), FirstClass(1.0), Tracked48(2.0), NextDay(4.0), NextDayAM(10.0);
 
-import com.github.rvesse.airline.annotations.Command;
-import com.github.rvesse.airline.examples.ExampleRunnable;
+    private final double pricePerKilogram;
 
-@Command(name = "check-address", description = "Check if an address meets our restrictions")
-public class CheckAddress implements ExampleRunnable {
+    PostalService(double pricePerKilogram) {
+        this.pricePerKilogram = pricePerKilogram;
+    }
 
-    @Inject
-    private PostalAddress address = new PostalAddress();
-
-    @Override
-    public int run() {
-        System.out.println(this.address.toString());
-        return 0;
+    /**
+     * Calculate the cost of a parcel
+     * 
+     * @param weight
+     *            Parcel weight
+     * @return Cost
+     */
+    public double calculateCost(double weight) {
+        return this.pricePerKilogram * weight;
     }
 }

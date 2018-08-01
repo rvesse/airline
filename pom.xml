@@ -83,8 +83,6 @@
     <module>airline-examples</module>
     <module>airline-io</module>
     <module>airline-help</module>
-    <module>airline-maven-plugin</module>
-    <module>docs</module>
   </modules>
 
   <dependencyManagement>
@@ -130,12 +128,12 @@
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
-      
+
       <!-- Surefire Plugin -->
       <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${plugin.surefire}</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${plugin.surefire}</version>
       </plugin>
 
       <!-- JAR Plugin -->
@@ -347,7 +345,27 @@
 
   <profiles>
     <profile>
+      <id>dev</id>
+      <activation>
+        <jdk>[1.7,)</jdk>
+      </activation>
+      <modules>
+        <module>airline-maven-plugin</module>
+        <module>docs</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>quick</id>
+      <!-- Optional profile that ignores slow building modules that require 
+        extra tooling -->
+    </profile>
+
+    <profile>
       <id>coveralls</id>
+      <modules>
+        <module>airline-maven-plugin</module>
+      </modules>
       <build>
         <plugins>
           <plugin>
@@ -369,7 +387,7 @@
                     <sourceDirectory>airline-maven-plugin/target/generated-sources/</sourceDirectory>
                   </sourceDirectories>
                   <jacocoReports>
-		    <jacocoReport>${project.outputDirectory}/jacoco-it/jacoco.xml</jacocoReport>
+                    <jacocoReport>${project.outputDirectory}/jacoco-it/jacoco.xml</jacocoReport>
                   </jacocoReports>
                 </configuration>
               </execution>
@@ -381,6 +399,10 @@
 
     <profile>
       <id>release</id>
+      <modules>
+        <module>airline-maven-plugin</module>
+        <module>docs</module>
+      </modules>
       <build>
         <plugins>
           <!-- Release Plugin -->
@@ -495,7 +517,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>javadoc-jdk10-plus</id>
       <activation>

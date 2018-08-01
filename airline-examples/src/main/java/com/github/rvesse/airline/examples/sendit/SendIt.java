@@ -13,41 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline.examples.shipit;
+package com.github.rvesse.airline.examples.sendit;
 
 import java.util.Arrays;
 
-import com.github.rvesse.airline.annotations.Cli;
-import com.github.rvesse.airline.annotations.Parser;
+import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.examples.ExampleRunnable;
-import com.github.rvesse.airline.examples.cli.commands.Help;
+import com.github.rvesse.airline.help.Help;
 import com.github.rvesse.airline.parser.ParseResult;
 import com.github.rvesse.airline.parser.errors.ParseException;
-import com.github.rvesse.airline.parser.errors.handlers.CollectAll;
-import com.github.rvesse.airline.parser.options.ListValueOptionParser;
 
-//@formatter:off
-@Cli(name = "ship-it", 
-     defaultCommand = Help.class, 
-     commands = {
-             CheckAddress.class,
-             Send.class,
-             Price.class,
-             Help.class
-     },
-     description = "A demonstration CLI around shipping",
-     parserConfiguration = @Parser(
-       useDefaultOptionParsers = true,
-       defaultParsersFirst = false,
-       optionParsers = { ListValueOptionParser.class },
-       errorHandler = CollectAll.class
-     )
-)
-//@formatter:on
-public class ShipItCli {
+public class SendIt {
 
     public static void main(String[] args) {
-        com.github.rvesse.airline.Cli<ExampleRunnable> cli = new com.github.rvesse.airline.Cli<ExampleRunnable>(ShipItCli.class);
+        Cli<ExampleRunnable> cli = new Cli<ExampleRunnable>(SendItCli.class);
         try {
             // Parse with a result to allow us to inspect the results of parsing
             ParseResult<ExampleRunnable> result = cli.parseWithResult(args);
@@ -66,7 +45,7 @@ public class ShipItCli {
                 
                 System.err.println();
                 
-                com.github.rvesse.airline.help.Help.<ExampleRunnable>help(cli.getMetadata(), Arrays.asList(args), System.err);
+                Help.<ExampleRunnable>help(cli.getMetadata(), Arrays.asList(args), System.err);
             }
         } catch (Exception e) {
             // Errors should be being collected so if anything is thrown it is unexpected

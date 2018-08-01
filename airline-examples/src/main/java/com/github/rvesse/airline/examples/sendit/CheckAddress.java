@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.rvesse.airline.examples.sendit;
 
-package com.github.rvesse.airline.examples.shipit;
+import javax.inject.Inject;
 
-import java.io.IOException;
-
-import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.examples.ExampleRunnable;
-import com.github.rvesse.airline.help.cli.CliGlobalUsageGenerator;
 
-public class GenerateHelp {
+@Command(name = "check-address", description = "Check if an address meets our restrictions")
+public class CheckAddress implements ExampleRunnable {
 
-    public static void main(String[] args) {
-        Cli<ExampleRunnable> cli = new Cli<ExampleRunnable>(ShipItCli.class);
-        
-        CliGlobalUsageGenerator<ExampleRunnable> helpGenerator = new CliGlobalUsageGenerator<>();
-        try {
-            helpGenerator.usage(cli.getMetadata(), System.out);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @Inject
+    private PostalAddress address = new PostalAddress();
+
+    @Override
+    public int run() {
+        System.out.println(this.address.toString());
+        return 0;
     }
 }
