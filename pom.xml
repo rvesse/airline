@@ -345,17 +345,6 @@
 
   <profiles>
     <profile>
-      <id>dev</id>
-      <activation>
-        <jdk>[1.7,)</jdk>
-      </activation>
-      <modules>
-        <module>airline-maven-plugin</module>
-        <module>docs</module>
-      </modules>
-    </profile>
-
-    <profile>
       <id>quick</id>
       <!-- Optional profile that ignores slow building modules that require 
         extra tooling -->
