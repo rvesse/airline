@@ -21,7 +21,6 @@ import java.util.List;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.annotations.restrictions.MinOccurrences;
 import com.github.rvesse.airline.annotations.restrictions.NotBlank;
-import com.github.rvesse.airline.annotations.restrictions.NotEmpty;
 import com.github.rvesse.airline.annotations.restrictions.Pattern;
 import com.github.rvesse.airline.annotations.restrictions.RequireOnlyOne;
 import com.github.rvesse.airline.annotations.restrictions.Required;
@@ -45,7 +44,6 @@ public class PostalAddress {
     
     @Option(name = "--name", title = "HouseName", description = "Specifies the house name")
     @RequireOnlyOne(tag = "nameOrNumber")
-    @NotEmpty
     @NotBlank
     public String houseName;
     

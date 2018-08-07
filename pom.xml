@@ -344,11 +344,6 @@
   </build>
 
   <profiles>
-    <profile>
-      <id>quick</id>
-      <!-- Optional profile that ignores slow building modules that require 
-        extra tooling -->
-    </profile>
 
     <profile>
       <id>coveralls</id>

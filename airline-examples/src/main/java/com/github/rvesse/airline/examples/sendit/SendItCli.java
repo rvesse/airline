@@ -17,6 +17,7 @@ package com.github.rvesse.airline.examples.sendit;
 
 import com.github.rvesse.airline.annotations.Cli;
 import com.github.rvesse.airline.annotations.Parser;
+import com.github.rvesse.airline.examples.cli.commands.BashCompletion;
 import com.github.rvesse.airline.examples.cli.commands.Help;
 import com.github.rvesse.airline.parser.errors.handlers.CollectAll;
 import com.github.rvesse.airline.parser.options.ListValueOptionParser;
@@ -28,7 +29,8 @@ import com.github.rvesse.airline.parser.options.ListValueOptionParser;
              CheckAddress.class,
              Send.class,
              Price.class,
-             Help.class
+             Help.class,
+             BashCompletion.class
      },
      description = "A demonstration CLI around shipping",
      parserConfiguration = @Parser(

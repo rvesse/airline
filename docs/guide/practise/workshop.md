@@ -42,20 +42,27 @@ Finally we don't want to tie you into a particular implementation.  We provide e
 
 For this workshop we are going to build an example command line application called `send-it` that is designed for shipping of packages.  The example code on this page is typically truncated to omit things like import declarations for brevity, the full code is linked alongside each example.
 
-The example code all lives inside the Airline git repository at https://github.com/rvesse/airline/tree/master/airline-examples
+The example code all lives inside the Airline git repository at [https://github.com/rvesse/airline/tree/master/airline-examples](https://github.com/rvesse/airline/tree/master/airline-examples)
+
+### Following Along with the Examples
 
 To follow along you should check out the code and build the examples:
 
 ```
 > git clone https://github.com/rvesse/airline.git
 > cd airline
-> mvn package -Pquick
+> mvn package
 ```
 
 Many of the examples are runnable using the `runExample` script in that directory e.g.
 
 ```
 > ./runExample SendIt
+```
+Or for this specific workshop the `send-it` script can be used:
+
+```
+> ./send-it
 ```
 
 ## Step 1 - Define Options
@@ -64,7 +71,65 @@ Airline works with POJOs (Plain Old Java Objects) so firstly we need to define s
 
 ### `@Option`
 
-The [`@Option`](../annotations/option.html) annotation is used to mark a field as being populated by an option.
+The [`@Option`](../annotations/option.html) annotation is used to mark a field as being populated by an option.  Let's take a look at {% include github-ref.md package="example.sendit" class="PostalAddress" module="airline-examples" %} which defines options for specifying a UK postal address:
+
+```java
+public class PostalAddress {
+    
+    @Option(name = "--recipient", title = "Recipient", 
+            description = "Specifies the name of the receipient")
+    @Required
+    public String recipient;
+
+    @Option(name = "--number", title = "HouseNumber", 
+                   description = "Specifies the house number")
+    @RequireOnlyOne(tag = "nameOrNumber")
+    @IntegerRange(min = 0, minInclusive = false)
+    public Integer houseNumber;
+    
+    @Option(name = "--name", title = "HouseName", 
+                   description = "Specifies the house name")
+    @RequireOnlyOne(tag = "nameOrNumber")
+    @NotBlank
+    public String houseName;
+    
+    @Option(name = { "-a", "--address", "--line" }, title = "AddressLine", 
+            description = "Specifies an address line.  Specify this multiple times to provide multiple address lines, these should be in the order they should be used.")
+    @Required
+    @MinOccurrences(occurrences = 1)
+    public List<String> addressLines = new ArrayList<>();
+    
+    @Option(name = "--postcode", title = "PostCode", 
+                   description = "Specifies the postcode")
+    @Required
+    @Pattern(pattern = "^([A-Z]{1,2}([0-9]{1,2}|[0-9][A-Z])) (\\d[A-Z]{2})$", 
+                    description = "Must be a valid UK postcode.", 
+                    flags = java.util.regex.Pattern.CASE_INSENSITIVE)
+    public String postCode;
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.recipient);
+        builder.append('\n');
+        if (this.houseNumber != null) {
+            builder.append(Integer.toString(this.houseNumber));
+            builder.append(' ');
+        } else {
+            builder.append(this.houseName);
+            builder.append('\n');
+        }
+        
+        for (String line : this.addressLines) {
+            builder.append(line);
+            builder.append('\n');
+        }
+        builder.append(this.postCode);
+        
+        return builder.toString();
+    }
+}
+```
 
 ### `@Arguments`
 
