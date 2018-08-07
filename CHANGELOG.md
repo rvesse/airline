@@ -20,6 +20,9 @@
         - CLI defined help sections are included by CLI help generators (#57)
 - Build Improvements
     - Now possible to build with JDK 9 and JDK 10.  Note that we still compile for JDK 7 compatibility
+    - Dependencies
+        - Upgraded Apache Commons Lang to 3.7 (#82)
+        - Upgraded Apache Commons Collections to 4.2 (#82)
 
 ## 2.5.0
 
