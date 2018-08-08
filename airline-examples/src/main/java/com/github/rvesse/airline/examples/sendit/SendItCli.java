@@ -27,6 +27,7 @@ import com.github.rvesse.airline.parser.options.ListValueOptionParser;
      defaultCommand = Help.class, 
      commands = {
              CheckAddress.class,
+             CheckPostcodes.class,
              Send.class,
              Price.class,
              Help.class,
