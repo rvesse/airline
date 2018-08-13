@@ -173,7 +173,9 @@ For example let's take a look at it in use in the {% include github-ref.md packa
     @Arguments(title = "PostCode", description = "Specifies one/more postcodes to validate")
     @Required
     @MinOccurrences(occurrences = 1)
-    @Pattern(pattern = "^([A-Z]{1,2}([0-9]{1,2}|[0-9][A-Z])) (\\d[A-Z]{2})$", description = "Must be a valid UK postcode.", flags = java.util.regex.Pattern.CASE_INSENSITIVE)
+    @Pattern(pattern = "^([A-Z]{1,2}([0-9]{1,2}|[0-9][A-Z])) (\\d[A-Z]{2})$", 
+             description = "Must be a valid UK postcode.", 
+             flags = java.util.regex.Pattern.CASE_INSENSITIVE)
     public List<String> postCodes = new ArrayList<>();
 ```
 
@@ -187,15 +189,162 @@ RG19 6HS is a valid postcode
 
 ### Restrictions
 
+So we've already seen a number of [Restrictions](../restrictions/index.html) in the above examples.  This is one of the main ways Airline reduces boiler plate and prefers declarative definitions.  There are lots more built-in restrictions than just those seen so far and you can define [Custom Restrictions](../restrictions/custom.html) if you want to encapsulate reusable restriction logic.
+
 ## Step 2 - Define a Command
+
+So now we've seen the basics of defining options and arguments lets use these to define a command:
+
+```java
+@Command(name = "send", description = "Sends a package")
+public class Send implements ExampleRunnable {
+
+    @Inject
+    private PostalAddress address = new PostalAddress();
+    
+    @Inject
+    private Package item = new Package();
+
+    @Option(name = { "-s",
+            "--service" }, title = "Service", description = "Specifies the postal service you would like to use")
+    private PostalService service = PostalService.FirstClass;
+
+    @Override
+    public int run() {
+        // TODO: In a real world app actual business logic would go here...
+        
+        System.out.println(String.format("Sending package weighing %.3f KG sent via %s costing £%.2f", this.item.weight,
+                this.service.toString(), this.service.calculateCost(this.item.weight)));
+        System.out.println("Recipient:");
+        System.out.println();
+        System.out.println(this.address.toString());
+        System.out.println();
+
+        return 0;
+    }
+    
+    public static void main(String[] args) {
+        SingleCommand<Send> parser = SingleCommand.singleCommand(Send.class);
+        try {
+            Send cmd = parser.parse(args);
+            System.exit(cmd.run());
+        } catch (ParseException e) {
+            System.err.print(e.getMessage());
+            System.exit(1);
+        }
+    }
+}
+```
+
+There's quite a few new concepts introduced here, so let's break them down piece by piece.
 
 ### `@Command`
 
+The [`@Command`](../annotations/command.html) annotation is used on Java classes to state that a class is a command.  Let's see our previously introduced `PostalAddress` class combined into an actual command, here we see the {% include github-ref.md  package="examples.sendit" class="Send" module="airline-examples" %}:
+
+```java
+@Command(name = "send", description = "Sends a package")
+public class Send implements ExampleRunnable {
+```
+The `@Command` annotation is fairly simple, we simply have a `name` for our command and a `description`.  The `name` is the name users will use to invoke the command, this name can be any string of non-whitespace characters and is the only required field of the `@Command` annotation.
+
+The `description` field provides descriptive text about the command that will be used in help output, we'll see this used later.
+
 ### Using `@Inject` for composition
 
+Often for command line applications you want to define reusable sets of closely related options as we already saw with the `PostalAddress` class.  Airline provides a composition mechanism that makes this easy to do.
+
+```java
+    @Inject
+    private PostalAddress address = new PostalAddress();
+    
+    @Inject
+    private Package item = new Package();
+```
+
+Here we compose the previously seen `PostalAddress` class into our command, we use the standard Java `@Inject` annotation to indicate to Airline that it should find options declared by that class.  We also have another set of options defined in a separate class, this time the {% include github-ref.md package="examples.sendit" class="Package" module="airline-examples" %} is used to provide options relating to the package being sent.
+
+### Command specific options
+
+As well as composing options defined in other classes we can also define options specific to a command directly in our command class:
+
+```java
+    @Option(name = { "-s",
+            "--service" }, title = "Service", description = "Specifies the postal service you would like to use")
+    private PostalService service = PostalService.FirstClass;
+```
+ 
+Here the command declares an additional option `-s/--service` that is specific to this command.  Here the field actual has an enum type - {% include github-ref.md package="examples.sendit" class="PostalService" module="airline-examples" %} - which Airline happily copes with.
+
+For more details on how Airline supports differently typed fields see the [Supported Types](types.html) documentation.
+ 
 ### Command Logic
 
+```java
+    @Override
+    public int run() {
+        // TODO: In a real world app actual business logic would go here...
+        
+        System.out.println(String.format("Sending package weighing %.3f KG sent via %s costing £%.2f", 
+        				   this.item.weight, this.service.toString(), this.service.calculateCost(this.item.weight)));
+        System.out.println("Recipient:");
+        System.out.println();
+        System.out.println(this.address.toString());
+        System.out.println();
+
+        return 0;
+    }
+}
+```
+
+Finally we have the actual business logic of our class.  In this example application it simply prints out some information but this serves to show that we can access the fields that have been populated by the users command line inputs.
+
 ### Invoking our command
+
+In order to actually invoke our command we need to get a parser from Airline and invoke it on the user input.  In this example we do this in our `main(String[] args)` method:
+
+```java
+    public static void main(String[] args) {
+        SingleCommand<Send> parser = SingleCommand.singleCommand(Send.class);
+```
+We call the static `SingleCommand.singleCommand()` method passing in the command class we want to get a parser for.
+
+```java
+        try {
+            Send cmd = parser.parse(args);
+```
+We can then invoke the `parse()` method passing in our users inputs.
+
+```java
+            System.exit(cmd.run());
+```
+Assuming the parsing is successful we now have an instance of our `Send` class which we can invoke methods on like any other Java object.   In this example our business logic is in the `run()` method so we simply call that method and use its return value as the exit code.
+
+```java
+        } catch (ParseException e) {
+            System.err.print(e.getMessage());
+            System.exit(1);
+        }
+    }
+```
+
+Finally if the parsing goes wrong we print the error message and exit with a non-zero return code.
+
+Try this out now:
+
+```
+> ./runExample Send --recipient You --number 123 -a "Your Street" -a "Somewhere" --postcode "AB12 3CD" -w 0.5
+Sending package weighing 0.500 KG sent via FirstClass costing £0.50
+Recipient:
+
+You
+123 Your Street
+Somewhere
+AB12 3CD
+
+> echo $?
+0
+```
 
 ## Step 3 - Define a CLI
 
