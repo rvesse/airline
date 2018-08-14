@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: slideshow
 title: Workshop - Building a Killer Command Line App with Airline
 ---
 
