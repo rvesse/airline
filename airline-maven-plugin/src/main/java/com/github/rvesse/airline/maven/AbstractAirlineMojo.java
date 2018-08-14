@@ -56,6 +56,7 @@ public abstract class AbstractAirlineMojo extends AbstractMojo {
      * Prepares the sources for which help will be generated
      * 
      * @param skipBadSources
+     *            True if bad sources should be skipped and ignored
      * 
      * @return Prepared sources
      * @throws MojoFailureException

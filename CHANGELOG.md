@@ -10,6 +10,8 @@
     - Allow extending how user alias search locations are resolved to support custom behaviours via new `ResourceLocator` interface
     - Add ability to specify a force prefix for aliases which allows alias definitions to override built-ins while still being able to invoke those built-ins (#72)
     - Add ability to specify default values for positional parameters in alias definitions (#69)
+- Help Improvements
+     - Remove deprecated methods from `CommandUsageGenerator` interface and add new `usage()` overload for more easily generating usage for single commands
 - Annotation Improvements
     - Allow specifying global restriction annotations directly on classes used with `SingleCommand`
     - `@Unrestricted` can now be applied directly to classes to specify no global restrictions on single commands and CLIs
@@ -18,6 +20,9 @@
         - CLI defined help sections are included by CLI help generators (#57)
 - Build Improvements
     - Now possible to build with JDK 9 and JDK 10.  Note that we still compile for JDK 7 compatibility
+    - Dependencies
+        - Upgraded Apache Commons Lang to 3.7 (#82)
+        - Upgraded Apache Commons Collections to 4.2 (#82)
 
 ## 2.5.0
 
