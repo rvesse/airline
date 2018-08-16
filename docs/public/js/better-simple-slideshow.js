@@ -12,16 +12,18 @@ var makeBSS = function (el, options) {
                     speed: (typeof options.auto.speed === "undefined") ? 1500 : options.auto.speed,
                     pauseOnHover: (typeof options.auto.pauseOnHover === "undefined") ? false : options.auto.pauseOnHover,
                     fullScreen: (typeof options.fullScreen === "undefined") ? false : options.fullScreen,
-                    swipe: (typeof options.swipe === "undefined") ? false : options.swipe
+                    swipe: (typeof options.swipe === "undefined") ? false : options.swipe,
+                    anyKeyPress: (typeof options.anyKeyPress === "undefined") ? false : true
                 };
                 
                 this.counter = 0; // to keep track of current slide
                 this.el = el; // current slideshow container    
-                this.$items = el.querySelectorAll(this.opts.selector); // a collection of all of the slides, caching for performance
+                this.$items = document.querySelectorAll(this.opts.selector); // a collection of all of the slides, caching for performance
                 this.numItems = this.$items.length; // total number of slides
                 this.$items[0].classList.add('bss-show'); // add show class to first figure 
-                this.injectControls(el);
-                this.addEventListeners(el);
+	        this.controls = document.querySelectorAll(this.opts.controlsSelector)[0];
+                this.injectControls(this.el);
+                this.addEventListeners(this.el, this.opts.anyKeyPress);
                 if (this.opts.auto) {
                     this.autoCycle(this.el, this.opts.speed, this.opts.pauseOnHover);
                 }
@@ -50,7 +52,7 @@ var makeBSS = function (el, options) {
                 this.$items[this.counter].classList.add('bss-show');
             },
             injectControls: function (el) {
-            // build and inject prev/next controls
+                // build and inject prev/next controls
                 // first create all the new elements
                 var spanPrev = document.createElement("span"),
                     spanNext = document.createElement("span"),
@@ -69,7 +71,7 @@ var makeBSS = function (el, options) {
                 docFrag.appendChild(spanNext);
                 el.appendChild(docFrag);
             },
-            addEventListeners: function (el) {
+            addEventListeners: function (el, anyKeyPress) {
                 var that = this;
                 el.querySelector('.bss-next').addEventListener('click', function () {
                     that.showCurrent(1); // increment & show
@@ -79,7 +81,8 @@ var makeBSS = function (el, options) {
                     that.showCurrent(-1); // decrement & show
                 }, false);
                 
-                el.onkeydown = function (e) {
+                var keyEl = anyKeyPress ? document.documentElement : el;
+                keyEl.onkeydown = function (e) {
                     e = e || window.event;
                     if (e.keyCode === 37) {
                         that.showCurrent(-1); // decrement & show
