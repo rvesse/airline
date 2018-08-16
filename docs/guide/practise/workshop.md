@@ -239,7 +239,7 @@ And finally we have some regular Java code in our class.  Your normal logic can 
 
 ### `@Arguments`
 
-The [`@Arguments`](../annotation/arguments.html) is used to annotate a field that will receive arbitrary arguments i.e. anything that is not an option as defined by your `@Option` annotations.  This is useful when your command wants to operate on a list of things so is typically used in conjunction with a `Collection` typed field e.g. `List<String>`.
+The [`@Arguments`](../annotation/arguments.html) annotation is used to annotate a field that will receive arbitrary inputs i.e. anything that is not recognised as an option as defined by your `@Option` annotations.  This is useful when your command wants to operate on a list of things so is typically used in conjunction with a `Collection` typed field e.g. `List<String>`.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -271,6 +271,13 @@ RG19 6HS is a valid postcode
 ### Restrictions
 
 So we've already seen a number of [Restrictions](../restrictions/index.html) in the above examples.  This is one of the main ways Airline reduces boiler plate and prefers declarative definitions.  There are lots more built-in restrictions than just those seen so far and you can define [Custom Restrictions](../restrictions/custom.html) if you want to encapsulate reusable restriction logic.
+
+Some useful common restrictions include:
+
+- [`@Required`](../annotations/required.html) - For required options/arguments
+- [`@NotBlank`](../annotations/not-blank.html) - To enforce non-blank string values
+- [`@AllowedRawValues`](../annotations/allowed-raw-values.html)/[`@AllowedValues`](../annotations/allowed-values.html) - To restrict options/arguments to a set of acceptable values
+- [`@Path`](../annotations/path.html) - Provides restrictions on options/arguments used to refer to files and directories
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -306,6 +313,10 @@ public class Send implements ExampleRunnable {
 
         return 0;
     }
+```
+### Defining a Command continued
+
+```java
     
     public static void main(String[] args) {
         SingleCommand<Send> parser = SingleCommand.singleCommand(Send.class);
@@ -352,7 +363,7 @@ Often for command line applications you want to define reusable sets of closely 
     private Package item = new Package();
 ```
 
-Here we compose the previously seen `PostalAddress` class into our command, we use the standard Java `@Inject` annotation to indicate to Airline that it should find options declared by that class.  We also have another set of options defined in a separate class, this time the {% include github-ref.md package="examples.sendit" class="Package" module="airline-examples" %} is used to provide options relating to the package being sent.
+Here we compose the previously seen `PostalAddress` class into our command, we use the standard Java `@Inject` annotation to indicate to Airline that it should find options declared by that class.  We also have another set of options defined in a separate class, this time the {% include github-ref.md package="examples.sendit" class="Package" module="airline-examples" %} class is used to provide options relating to the package being sent.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -438,7 +449,7 @@ Finally if the parsing goes wrong we print the error message and exit with a non
 Try this out now:
 
 ```
-> ./runExample Send --recipient You --number 123 -a "Your Street" -a "Somewhere" --postcode "AB12 3CD" -w 0.5
+> ./send-it send --recipient You --number 123 -a "Your Street" -a "Somewhere" --postcode "AB12 3CD" -w 0.5
 Sending package weighing 0.500 KG sent via FirstClass costing £0.50
 Recipient:
 
@@ -454,6 +465,10 @@ AB12 3CD
 {% include slide-start.md %}
 
 ## Step 3 - Define a CLI
+
+Typically real world command line interfaces (CLIs) consist of multiple commands e.g. `git`
+
+Airline allows multiple commands to be composed together into a CLI.
 
 ### `@Cli`
 
