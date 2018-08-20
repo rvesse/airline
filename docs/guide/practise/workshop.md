@@ -446,6 +446,8 @@ Finally if the parsing goes wrong we print the error message and exit with a non
 {% include slide-end.md %}
 {% include slide-start.md %}
 
+### Testing our Command
+
 Try this out now:
 
 ```
@@ -468,9 +470,79 @@ AB12 3CD
 
 Typically real world command line interfaces (CLIs) consist of multiple commands e.g. `git`
 
-Airline allows multiple commands to be composed together into a CLI.
+Airline allows multiple commands to be composed together into a CLI to support complex applications.
 
 ### `@Cli`
+
+We use the [`@Cli`](../annotations/cli.html) annotation to define a CLI, this is applied to classes similar to `@Command` e.g. the {% include github-ref.md module="airline-examples" package="examples.sendit" class="SendItCli" %} class:
+
+```java
+@Cli(name = "send-it", 
+     description = "A demonstration CLI around shipping",
+     commands = {
+             CheckAddress.class,
+             CheckPostcodes.class,
+             Send.class,
+             Price.class,
+             Help.class,
+             BashCompletion.class
+     },
+     defaultCommand = Help.class, 
+     parserConfiguration = @Parser(
+       useDefaultOptionParsers = true,
+       defaultParsersFirst = false,
+       optionParsers = { ListValueOptionParser.class },
+       errorHandler = CollectAll.class
+     )
+)
+public class SendItCli {
+
+}
+```
+Let's break that down a bit...
+
+#### Name and Description
+
+As we saw with `@Command` this is pretty self-explanatory:
+
+```java
+@Cli(name = "send-it", 
+     description = "A demonstration CLI around shipping",
+```
+The `name` is the name that you expect users to type at the command line, typically you'll create a Shells script named this which invokes your actual Java application.
+
+As seen previously `description` is used to provide descriptive text that will get included in help output.
+
+#### Available Commands
+
+```java
+defaultCommand = Help.class, 
+commands = {
+             CheckAddress.class,
+             CheckPostcodes.class,
+             Send.class,
+             Price.class,
+             Help.class,
+             BashCompletion.class
+     }
+```
+
+The `commands` field of the annotation defines the classes that provide your commands.  Each of these must be appropriately annotated with `@Command`
+
+We also see the `defaultCommand` field used to indicate what command is invoked if the user doesn't invoke a command
+
+#### Parser Customisation
+
+Here we see the parser being customised, we're going to skip over this for now and come back to it later:
+
+```java
+parserConfiguration = @Parser(
+       useDefaultOptionParsers = true,
+       defaultParsersFirst = false,
+       optionParsers = { ListValueOptionParser.class },
+       errorHandler = CollectAll.class
+     )
+```
 
 ### Invoking our CLI
 

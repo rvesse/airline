@@ -24,7 +24,7 @@ import com.github.rvesse.airline.parser.options.ListValueOptionParser;
 
 //@formatter:off
 @Cli(name = "send-it", 
-     defaultCommand = Help.class, 
+     description = "A demonstration CLI around shipping",
      commands = {
              CheckAddress.class,
              CheckPostcodes.class,
@@ -33,7 +33,7 @@ import com.github.rvesse.airline.parser.options.ListValueOptionParser;
              Help.class,
              BashCompletion.class
      },
-     description = "A demonstration CLI around shipping",
+     defaultCommand = Help.class,
      parserConfiguration = @Parser(
        useDefaultOptionParsers = true,
        defaultParsersFirst = false,
