@@ -299,7 +299,13 @@ public class Send implements ExampleRunnable {
     @Option(name = { "-s",
             "--service" }, title = "Service", description = "Specifies the postal service you would like to use")
     private PostalService service = PostalService.FirstClass;
+```
+{% include slide-end.md %}
+{% include slide-start.md %}
 
+### Defining a Command continued
+
+```java
     @Override
     public int run() {
         // TODO: In a real world app actual business logic would go here...
@@ -313,10 +319,6 @@ public class Send implements ExampleRunnable {
 
         return 0;
     }
-```
-### Defining a Command continued
-
-```java
     
     public static void main(String[] args) {
         SingleCommand<Send> parser = SingleCommand.singleCommand(Send.class);
@@ -472,6 +474,9 @@ Typically real world command line interfaces (CLIs) consist of multiple commands
 
 Airline allows multiple commands to be composed together into a CLI to support complex applications.
 
+{% include slide-end.md %}
+{% include slide-start.md %}
+
 ### `@Cli`
 
 We use the [`@Cli`](../annotations/cli.html) annotation to define a CLI, this is applied to classes similar to `@Command` e.g. the {% include github-ref.md module="airline-examples" package="examples.sendit" class="SendItCli" %} class:
@@ -501,6 +506,9 @@ public class SendItCli {
 ```
 Let's break that down a bit...
 
+{% include slide-end.md %}
+{% include slide-start.md %}
+
 #### Name and Description
 
 As we saw with `@Command` this is pretty self-explanatory:
@@ -509,14 +517,16 @@ As we saw with `@Command` this is pretty self-explanatory:
 @Cli(name = "send-it", 
      description = "A demonstration CLI around shipping",
 ```
-The `name` is the name that you expect users to type at the command line, typically you'll create a Shells script named this which invokes your actual Java application.
+The `name` is the name that you expect users to type at the command line, typically you'll create a Shell script named this which invokes your actual Java application.
 
 As seen previously `description` is used to provide descriptive text that will get included in help output.
+
+{% include slide-end.md %}
+{% include slide-start.md %}
 
 #### Available Commands
 
 ```java
-defaultCommand = Help.class, 
 commands = {
              CheckAddress.class,
              CheckPostcodes.class,
@@ -524,16 +534,22 @@ commands = {
              Price.class,
              Help.class,
              BashCompletion.class
-     }
+     },
+defaultCommand = Help.class, 
 ```
 
-The `commands` field of the annotation defines the classes that provide your commands.  Each of these must be appropriately annotated with `@Command`
+The `commands` field of the annotation defines the classes that provide your commands.  Each of these must be appropriately annotated with `@Command`.
 
-We also see the `defaultCommand` field used to indicate what command is invoked if the user doesn't invoke a command
+Generally it is useful for all your commands to have a common parent class or interface since as we'll see in a few slides time we'll need to declare a type when creating a parser.  In this case all our commands implement {% include github-ref.md package="examples" module="airline-examples" class="ExampleRunnable" %}
+
+We also see the `defaultCommand` field used to indicate what command is invoked if the user doesn't invoke a command.  This can be useful to provide default behaviour and is often used to point to the help system.
+
+{% include slide-end.md %}
+{% include slide-start.md %}
 
 #### Parser Customisation
 
-Here we see the parser being customised, we're going to skip over this for now and come back to it later:
+Here we see the parser being customised, we're going to skip over most of this for now and come back to it later:
 
 ```java
 parserConfiguration = @Parser(
@@ -543,24 +559,194 @@ parserConfiguration = @Parser(
        errorHandler = CollectAll.class
      )
 ```
+The one important thing to point out here is we are changing the `errorHandler` to `CollectAll` which will allow us to more intelligently handle errors later.
+
+{% include slide-end.md %}
+{% include slide-start.md %}
 
 ### Invoking our CLI
 
+So you probably noticed we had zero logic in the class defining our CLI, similar to our single command example we need to define an appropriate `main()` method for our CLI.  This we do in the {% include github-ref.md package="examples.sendit" module="airline-examples" class="SendIt" %} class:
+
+```java
+public class SendIt {
+
+    public static void main(String[] args) {
+        Cli<ExampleRunnable> parser = new Cli<ExampleRunnable>(SendItCli.class);
+        try {
+            // Parse with a result to allow us to inspect the results of parsing
+            ParseResult<ExampleRunnable> result = parser.parseWithResult(args);
+            if (result.wasSuccessful()) {
+                // Parsed successfully, so just run the command and exit
+                System.exit(result.getCommand().run());
+            } else {
+                // Parsing failed
+                // Display errors and then the help information
+                System.err.println(String.format("%d errors encountered:", result.getErrors().size()));
+                int i = 1;
+                for (ParseException e : result.getErrors()) {
+                    System.err.println(String.format("Error %d: %s", i, e.getMessage()));
+                    i++;
+                }
+```
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+### Invoking our CLI continued...
+
+```java
+                
+                System.err.println();
+                
+                Help.<ExampleRunnable>help(parser.getMetadata(), Arrays.asList(args), System.err);
+            }
+        } catch (Exception e) {
+            // Errors should be being collected so if anything is thrown it is unexpected
+            System.err.println(String.format("Unexpected error: %s", e.getMessage()));
+            e.printStackTrace(System.err);
+        }
+        
+        // If we got here we are exiting abnormally
+        System.exit(1);
+    }
+}
+```
+Once again there's a lot going on, so let's break it down...
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+#### Invoking Airline
+
+```java
+Cli<ExampleRunnable> parser = new Cli<ExampleRunnable>(SendItCli.class);
+```
+So firstly we create an instance of the `Cli` class, not to be confused with the `@Cli` annotation, referring to our previously introduced class with the `@Cli` annotation.
+
+As mentioned we need to define a type for the commands that will be parsed.  So this is where it is helpful to have all your commands inherit from a common parent class or implement a common interface.
+
+```java
+// Parse with a result to allow us to inspect the results of parsing
+ParseResult<ExampleRunnable> result = parser.parseWithResult(args);
+```
+Here we call the `parseWithResult()` method passing in the user arguments received by our `main()` method.  This will give us a `ParseResult` instance that we can inspect to see if parsing succeeded:
+
+```java
+if (result.wasSuccessful()) {
+    // Parsed successfully, so just run the command and exit
+    System.exit(result.getCommand().run());
+```
+Assuming successful parsing we can simply call `getCommand()` on our `result` and then invoke its `run()` method since all our commands implement a common interface.
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+#### Handling Errors
+
+If parsing wasn't successful then we need to do something about that.  We specified a different error handler earlier that allows us to collect up all the errors:
+
+```java
+} else {
+     // Parsing failed
+     // Display errors and then the help information
+     System.err.println(String.format("%d errors encountered:", result.getErrors().size()));
+     int i = 1;
+     for (ParseException e : result.getErrors()) {
+        System.err.println(String.format("Error %d: %s", i, e.getMessage()));
+        i++;
+     }
+```
+So we loop over all the errors printing them out
+
+```java                
+     System.err.println();
+                
+     Help.<ExampleRunnable>help(parser.getMetadata(), Arrays.asList(args), System.err);
+  }
+ ```
+ 
+Followed by invoking the help system to display the help for the CLI.
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+### Shell Script
+
+As noted earlier we usually want to create an entry point shell script for our CLI that matches the name declared in our `@Cli` annotation.
+
+Here's the contents of [`send-it`]({{ site.github.repo }}/blob/master/airline-examples/send-it):
+
+```bash
+#!/usr/bin/env bash
+
+JAR_FILE="target/airline-examples.jar"
+
+if [ ! -f "${JAR_FILE}" ]; then
+  echo "Examples JAR ${JAR_FILE} does not yet exist, please run mvn package to build"
+  exit 1
+fi
+
+java -cp "${JAR_FILE}" com.github.rvesse.airline.examples.sendit.SendIt "$@"
+```
+To run our CLI we just need to invoke the script i.e.
+
+```
+> send-it
+```
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+### `send-it`
+
+Since we defined our default command to be the help command we get useful output:
+
+```
+
+```
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
 ## Step 4 - Customising the Parser
+
+{% include slide-end.md %}
+{% include slide-start.md %}
 
 ### `@Parser`
 
+{% include slide-end.md %}
+{% include slide-start.md %}
+
 ### Configuring option styles
+
+{% include slide-end.md %}
+{% include slide-start.md %}
 
 ### Allowing complex numeric inputs
 
+{% include slide-end.md %}
+{% include slide-start.md %}
+
 ## Step 5 - Help System
+
+{% include slide-end.md %}
+{% include slide-start.md %}
 
 ### Adding `HelpOption` to our commands
 
+{% include slide-end.md %}
+{% include slide-start.md %}
+
 ### Including the `Help` command
 
+{% include slide-end.md %}
+{% include slide-start.md %}
+
 ### Invoking Help manually
+
+{% include slide-end.md %}
+{% include slide-start.md %}
 
 ### Generating Manual Pages
 

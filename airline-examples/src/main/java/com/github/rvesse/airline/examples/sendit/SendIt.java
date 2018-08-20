@@ -26,10 +26,10 @@ import com.github.rvesse.airline.parser.errors.ParseException;
 public class SendIt {
 
     public static void main(String[] args) {
-        Cli<ExampleRunnable> cli = new Cli<ExampleRunnable>(SendItCli.class);
+        Cli<ExampleRunnable> parser = new Cli<ExampleRunnable>(SendItCli.class);
         try {
             // Parse with a result to allow us to inspect the results of parsing
-            ParseResult<ExampleRunnable> result = cli.parseWithResult(args);
+            ParseResult<ExampleRunnable> result = parser.parseWithResult(args);
             if (result.wasSuccessful()) {
                 // Parsed successfully, so just run the command and exit
                 System.exit(result.getCommand().run());
@@ -45,7 +45,7 @@ public class SendIt {
                 
                 System.err.println();
                 
-                Help.<ExampleRunnable>help(cli.getMetadata(), Arrays.asList(args), System.err);
+                Help.<ExampleRunnable>help(parser.getMetadata(), Arrays.asList(args), System.err);
             }
         } catch (Exception e) {
             // Errors should be being collected so if anything is thrown it is unexpected
