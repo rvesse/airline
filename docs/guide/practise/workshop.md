@@ -3,7 +3,9 @@ layout: slideshow
 title: Workshop - Building a Killer Command Line App with Airline
 ---
 
-This workshop session is designed to give you a complete introduction to the core features of Airline for creating powerful CLIs.
+This workshop session is designed to give you a complete introduction to the core features of Airline for creating powerful CLIs.  This was originally written for the [Tech Exeter Conference](https://techexeter.uk) series and presented in September 2018.
+
+The workshop is provided as a HTML slideshow embedded below, use the arrow keys to navigate through the slides.  You can view this in fullscreen by hitting the icon in the top left of the slides.
 
 ---
 
@@ -11,14 +13,25 @@ This workshop session is designed to give you a complete introduction to the cor
 
 {% include slide-start.md %}
 
+<div class="bss-title">
+  <h1>Building a Killer Command Line App with Airline</h1>
+  <h3>Rob Vesse</h3>
+  <h4><span>rvesse</span>@<span>cray</span><span>.com</span></h4>
+</div>
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
 ## Pre-requisites
 
 In order to follow along with this workshop we assume the following knowledge and tools:
 
-- Understanding of the Java programming language
-- JDK 7, 8, 9 or 10 available
-- [`git`](https://git-scm.org) installed
-- [`mvn`](https://maven.apache.org) installed
+1. Understanding of the Java programming language
+2. JDK 7, 8, 9 or 10 available
+3. [`git`](https://git-scm.org) installed
+4. [`mvn`](https://maven.apache.org) installed
+
+2-4 will allow you to run the examples shown in the slides but isn't essential.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -27,14 +40,20 @@ In order to follow along with this workshop we assume the following knowledge an
 
 Everyone builds command line applications at some point but often they are cobbled together or full of needless boiler plate. Airline takes a fully declarative approach to command line applications allowing users to create powerful and flexible command lines.
 
-Airline takes care of lots of heavy lifting providing many features not found in similar libraries including annotation driven value validation restrictions, generating Man pages and Bash completion scripts to name just a few. In the workshop session we'll work through a comprehensive example command line application to see just how powerful this can be.
+Airline takes care of lots of heavy lifting providing many features not found in similar libraries including annotation driven value validation [restrictions](../restrictions/index.html), generating [Man pages](../help/man.html) and [Bash completion scripts](../help/bash.html) to name just a few.
+
+In the workshop session we'll work through an example command line application to see just how powerful this can be.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 ### History
 
-Airline started out as an open source project on GitHub back in January 2012.  I first encountered this library in use in one of our competitors products partway through that year.  I quickly started using it in my own work but encountered a few limitations.  The original authors were not receptive to pull requests so I forked the code and started maintaining my own version that has since evolved considerably.
+- Airline started out as an open source project on GitHub back in January 2012.
+- I first encountered this library in use in one of our competitors products partway through that year.  
+- I quickly started using it in my own work but encountered a few limitations.
+- The original authors were not receptive to pull requests so I forked the code and started maintaining my own version that has since evolved considerably.
+- First release of my fork was December 2014
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -50,21 +69,29 @@ Airline started out as an open source project on GitHub back in January 2012.  I
 
 #### Be Declarative **Not** Imperative
 
-Firstly we want to define our command lines using declarative annotations.  This allows us to separate the command line definition cleanly from the runtime logic.  It also enables us to do optional build time checking of our definitions to ensure valid command line apps.
+Firstly we want to define our command lines using declarative annotations.
+
+This allows us to separate the command line definition cleanly from the runtime logic.
+
+It also enables us to do optional build time checking of our definitions to ensure valid command line apps.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 #### Avoid boiler plate code
 
-Secondly we look to avoid the typical boiler plate code associated with many command line libraries.  You **shouldn't** need to write a ton of `if` statements to check that values for options fall in specified ranges or meet common application constraints.
+Secondly we look to avoid the typical boiler plate code associated with many command line libraries.
+
+You **shouldn't** need to write a ton of `if` statements to check that values for options fall in specified ranges or meet common application constraints.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 #### Allow deep customisation
 
-Finally we don't want to tie you into a particular implementation.  We provide extensibility of almost every aspect of the parsing process yet provide a general purpose default setup that should suit many users.
+Finally we don't want to tie you into a particular implementation approach.
+
+We provide extensibility of almost every aspect of the parsing process yet provide a general purpose default setup that should suit many users.
 
 So a basic CLI should just work, advanced CLIs can be configured as desired
 
@@ -73,7 +100,7 @@ So a basic CLI should just work, advanced CLIs can be configured as desired
 
 ## Workshop Overview
 
-For this workshop we are going to build an example command line application called `send-it` that is designed for shipping of packages.  The example code on this page is typically truncated to omit things like import declarations for brevity, the full code is linked alongside each example.
+For this workshop we are going to build an example command line application called `send-it` that is designed for shipping of packages.  The example code in these slides is typically truncated to omit things like import declarations for brevity, the full code is linked alongside each example.
 
 The example code all lives inside the Airline git repository at [https://github.com/rvesse/airline/tree/master/airline-examples](https://github.com/rvesse/airline/tree/master/airline-examples)
 
@@ -84,7 +111,7 @@ The example code all lives inside the Airline git repository at [https://github.
 
 We use `>` to indicate that a command should be run at a command prompt
 
-To follow along you should check out the code and build the examples:
+To follow along you should start by checking out the code and building the examples:
 
 ```
 > git clone https://github.com/rvesse/airline.git
@@ -114,6 +141,12 @@ Or for this specific workshop the `send-it` script in that same sub-directory ca
 ## Step 1 - Define Options
 
 Airline works with POJOs (Plain Old Java Objects) so firstly we need to define some classes that are going to hold our commands options.
+
+We can define our options across multiple classes and our inheritance hierarchy i.e. you can create a `BaseCommand` with your common options.
+
+Or you can define options in standalone classes and compose them together.
+
+We're going to see the latter approach in this workshop, see [Inheritance and Composition](oop.html) for more detail on the former approach.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -616,7 +649,7 @@ Once again there's a lot going on, so let's break it down...
 {% include slide-end.md %}
 {% include slide-start.md %}
 
-#### Invoking Airline
+#### Creating a Parser Instance
 
 ```java
 Cli<ExampleRunnable> parser = new Cli<ExampleRunnable>(SendItCli.class);
@@ -624,6 +657,13 @@ Cli<ExampleRunnable> parser = new Cli<ExampleRunnable>(SendItCli.class);
 So firstly we create an instance of the `Cli` class, not to be confused with the `@Cli` annotation, referring to our previously introduced class with the `@Cli` annotation.
 
 As mentioned we need to define a type for the commands that will be parsed.  So this is where it is helpful to have all your commands inherit from a common parent class or implement a common interface.
+
+**NB** You can always use `Object` here as the all Java objects derive from this but this will make the rest of your implementation awkward!
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+#### Parsing the User Inputs
 
 ```java
 // Parse with a result to allow us to inspect the results of parsing
@@ -637,6 +677,8 @@ if (result.wasSuccessful()) {
     System.exit(result.getCommand().run());
 ```
 Assuming successful parsing we can simply call `getCommand()` on our `result` and then invoke its `run()` method since all our commands implement a common interface.
+
+Alternatively we could have just called `parse(args)` which would return either the parsed command, throw an exception or return `null` depending on the user inputs and the parser configuration.
 
 {% include slide-end.md %}
 {% include slide-start.md %}

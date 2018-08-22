@@ -20,8 +20,7 @@ var makeBSS = function (el, options) {
                 this.el = el; // current slideshow container    
                 this.$items = document.querySelectorAll(this.opts.selector); // a collection of all of the slides, caching for performance
                 this.numItems = this.$items.length; // total number of slides
-                this.$items[0].classList.add('bss-show'); // add show class to first figure 
-	        this.controls = document.querySelectorAll(this.opts.controlsSelector)[0];
+                this.$items[0].classList.add('bss-show'); // add show class to first figure
                 this.injectControls(this.el);
                 this.addEventListeners(this.el, this.opts.anyKeyPress);
                 if (this.opts.auto) {
@@ -33,14 +32,29 @@ var makeBSS = function (el, options) {
                 if (this.opts.swipe) {
                     this.addSwipe(this.el);
                 }
+
+		var hash = window.location.hash ? window.location.hash.substring(1) : "";
+		if (hash.length > 0 && hash == "no-slides") {
+		  // Don't display as a slideshow
+                  [].forEach.call(this.$items, function (el) {
+                    el.classList.add('bss-show');
+                   });
+		} else {  
+		  // Possibly skip to a specific slide
+		  if (hash.length > 0 && hash.startsWith("slide")) {
+		    slideNum = hash.substring(5);
+                    if (slideNum >= 1 && slideNum <= this.numItems) {
+                      this.counter = slideNum - 1;
+                      this.showSlide(this.counter);
+                    }
+		  }
+		}
             },
-            showCurrent: function (i) {
-                // increment or decrement this.counter depending on whether i === 1 or i === -1
-                if (i > 0) {
-                    this.counter = (this.counter + 1 === this.numItems) ? 0 : this.counter + 1;
-                } else {
-                    this.counter = (this.counter - 1 < 0) ? this.numItems - 1 : this.counter - 1;
-                }
+            showSlideNumber: function(el) {
+              el.innerHTML = '<a href="#slide' + (this.counter + 1) + '">' + (this.counter + 1) + ' of ' + this.numItems + '</a>';
+            },
+            showSlide: function (i) {
+                this.counter = i;
 
                 // remove .show from whichever element currently has it 
                 // http://stackoverflow.com/a/16053538/2006057
@@ -49,26 +63,43 @@ var makeBSS = function (el, options) {
                 });
   
                 // add .show to the one item that's supposed to have it
-                this.$items[this.counter].classList.add('bss-show');
+                this.$items[i].classList.add('bss-show');
+
+                // Update current slide number
+                spanPos = this.el.querySelectorAll('.bss-pos')[0];
+                this.showSlideNumber(spanPos);
+            },
+            showCurrent: function (i) {
+                // increment or decrement this.counter depending on whether i === 1 or i === -1
+                if (i > 0) {
+                    this.counter = (this.counter + 1 === this.numItems) ? 0 : this.counter + 1;
+                } else {
+                    this.counter = (this.counter - 1 < 0) ? this.numItems - 1 : this.counter - 1;
+                }
+                this.showSlide(this.counter);
             },
             injectControls: function (el) {
                 // build and inject prev/next controls
                 // first create all the new elements
                 var spanPrev = document.createElement("span"),
                     spanNext = document.createElement("span"),
+                    spanPos = document.createElement("span"),
                     docFrag = document.createDocumentFragment();
         
                 // add classes
                 spanPrev.classList.add('bss-prev');
                 spanNext.classList.add('bss-next');
+                spanPos.classList.add('bss-pos');
         
                 // add contents
                 spanPrev.innerHTML = '&laquo;';
                 spanNext.innerHTML = '&raquo;';
+                this.showSlideNumber(spanPos);
                 
                 // append elements to fragment, then append fragment to DOM
                 docFrag.appendChild(spanPrev);
                 docFrag.appendChild(spanNext);
+                docFrag.appendChild(spanPos)
                 el.appendChild(docFrag);
             },
             addEventListeners: function (el, anyKeyPress) {

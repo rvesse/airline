@@ -7,5 +7,6 @@ var opts = {
             swipe : false,
             anyKeyPress : true 
         };
+        
 makeBSS("#{{ include.name }}", opts);
 </script>

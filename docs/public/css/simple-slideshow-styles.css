@@ -27,12 +27,11 @@
   display: block;
   position: relative;
 }
-.bss-next, .bss-prev {
+.bss-next, .bss-prev, .bss-pos {
   color: #fff;
   position: absolute;
   background: #000;
   background: rgba(0,0,0, .6);
-  top: 50%;
   z-index: 4;
   font-size: 2em;
   margin-top: -1.2em;
@@ -43,21 +42,39 @@
   user-select: none;
 }
 
-.bss-next:hover, .bss-prev:hover {
+.bss-next:hover, .bss-prev:hover, .bss-pos:hover {
   cursor: pointer;
   opacity: 1;
 }
 .bss-next {
+  top: 50%;
   right: -50px;
   padding: 10px 5px 15px 10px;
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
 .bss-prev {
+  top: 50%;
   left: -50px;
   padding: 10px 10px 15px 5px;
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
+}
+.bss-pos {
+  bottom: 0px;
+  left: 35%;
+  right: 35%;
+  font-size: 1em;
+  padding: 10px 10px 10px 10px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  text-align: center;
+}
+.bss-pos a, .bss-pos a:hover, .bss-pos a:focus {
+  color: #fff;
+}
+.bss-title {
+  text-align: center;
 }
 .bss-fullscreen {
   display: block;
