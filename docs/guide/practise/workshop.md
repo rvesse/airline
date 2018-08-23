@@ -31,7 +31,9 @@ In order to follow along with this workshop we assume the following knowledge an
 3. [`git`](https://git-scm.org) installed
 4. [`mvn`](https://maven.apache.org) installed
 
-2-4 will allow you to run the examples shown in the slides but isn't essential.
+**NB** 2-4 will allow you to run the examples shown in the slides but aren't essential.
+
+You can find these slides at [{{ site.url }}{{ site.baseurl }}/guide/practise/workshop.html]()
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -744,7 +746,24 @@ To run our CLI we just need to invoke the script i.e.
 Since we defined our default command to be the help command we get useful output:
 
 ```
+> ./send-it
+usage: send-it <command> [ <args> ]
 
+Commands are:
+    check-address          Check if an address meets our restrictions
+    check-postcodes        Checks whether postcodes are valid
+    generate-completions   Generates a Bash completion script, the file can then be sourced to provide completion for this CLI
+    help                   A command that provides help on other commands
+    price                  Calculates the price for a parcel
+    send                   Sends a package
+
+See 'send-it help <command>' for more information on a specific command.
+```
+
+Why not try asking for help on the `send` command we saw earlier:
+
+```
+> ./send-it help send
 ```
 
 {% include slide-end.md %}
@@ -752,10 +771,19 @@ Since we defined our default command to be the help command we get useful output
 
 ## Step 4 - Customising the Parser
 
+As we glossed over earlier we can optionally customise our parser to change the command line behaviour in a variety of ways.
+
+So we saw earlier in our `SendItCli` example the parser being customised via the `parserConfiguration` field of the `@Cli` annotation.  Let's look more into that now.
+
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 ### `@Parser`
+
+The [`@Parser`](../annotations/parser.html) can be used in two ways:
+
+- Applied directly to a class annotated with [`@Command`](../annotations/command.html)
+- Used in the `parserConfiguration` field of the [`@Cli`](../annotations/cli.html) annotation
 
 {% include slide-end.md %}
 {% include slide-start.md %}
