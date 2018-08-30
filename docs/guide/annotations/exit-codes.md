@@ -9,8 +9,7 @@ The `@ExitCodes` annotation may be applied to classes and provides documentation
 
 To use it add it like so:
 
-```
-java
+```java
 @ExitCodes(codes = 
            { 
                0,

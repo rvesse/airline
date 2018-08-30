@@ -9,8 +9,7 @@ The `@Copyright` annotation may be applied to classes and provides a copyright s
 
 To use it simply add it like so:
 
-```
-java
+```java
 @Copyright(startYear = 2015,
            endYear = 2016,
            holder = "John Doe")
