@@ -19,15 +19,18 @@ package com.github.rvesse.airline.examples.sendit;
 import java.io.IOException;
 
 import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.examples.ExampleRunnable;
+import com.github.rvesse.airline.help.GlobalUsageGenerator;
 import com.github.rvesse.airline.help.cli.CliGlobalUsageGenerator;
 
+@Command(name = "generate-help")
 public class GenerateHelp {
 
     public static void main(String[] args) {
         Cli<ExampleRunnable> cli = new Cli<ExampleRunnable>(SendItCli.class);
         
-        CliGlobalUsageGenerator<ExampleRunnable> helpGenerator = new CliGlobalUsageGenerator<>();
+        GlobalUsageGenerator<ExampleRunnable> helpGenerator = new CliGlobalUsageGenerator<>();
         try {
             helpGenerator.usage(cli.getMetadata(), System.out);
         } catch (IOException e) {

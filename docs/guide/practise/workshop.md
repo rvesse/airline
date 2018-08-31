@@ -844,10 +844,71 @@ public class CustomHelp extends Help<YourInterface> implements YourInterface {
 
 ### Invoking Help manually
 
+If the previous two approaches don't work then you can always invoke help manually.  You can do this in two ways:
+
+1. Static Methods
+2. Directly creating a help generator
+
+#### Static Methods
+
+Even if you can't incorporate the `Help` command directly you can call its static help methods e.g. {% include github-ref.md package="examples.cli.commands" class="Help" module="airline-examples" %}
+
+```java
+@Command(name = "help", 
+                     description = "A command that provides help on other commands")
+public class Help implements ExampleRunnable {
+
+    @Inject
+    private GlobalMetadata<ExampleRunnable> global;
+
+    @Arguments(description = "Provides the name of the commands you want to provide help for")
+    @BashCompletion(behaviour = CompletionBehaviour.CLI_COMMANDS)
+    private List<String> commandNames = new ArrayList<String>();
+    
+    @Option(name = "--include-hidden", description = "When set hidden commands and options are shown in help", hidden = true)
+    private boolean includeHidden = false;
+
+    @Override
+    public int run() {
+        try {
+            com.github.rvesse.airline.help.Help.help(global, commandNames, this.includeHidden);
+        } catch (IOException e) {
+            System.err.println("Failed to output help: " + e.getMessage());
+            e.printStackTrace(System.err);
+            return 1;
+        }
+        return 0;
+    }
+}
+```
+
+Here we call the static `help()` method passing in the metadata for our CLI (which Airline populated for us) plus the command names that help was requested for.
+
 {% include slide-end.md %}
 {% include slide-start.md %}
 
-### Generating Manual Pages
+#### Direct help generators
+
+Alternatively we can create and use a help generator directly e.g. {% include github-ref.md package="examples.sendit" class="GenerateHelp" module="airline-examples" %}
+
+```java
+@Command(name = "generate-help")
+public class GenerateHelp {
+
+    public static void main(String[] args) {
+        Cli<ExampleRunnable> cli = new Cli<ExampleRunnable>(SendItCli.class);
+        
+        GlobalUsageGenerator<ExampleRunnable> helpGenerator = new CliGlobalUsageGenerator<>();
+        try {
+            helpGenerator.usage(cli.getMetadata(), System.out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+Here we create a specific instance of a `GlobalUsageGenerator` and call the `usage()` method to generate the help.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -859,18 +920,19 @@ public class CustomHelp extends Help<YourInterface> implements YourInterface {
 - Composed our options into a [`@Command`](../annotations/command.html)
 - Further composed our commands into an `@Cli`
 - Executed our CLI
+- Learnt how to incorporate help into our CLIs
 
 This is everything you need to make a functional CLI with Airline.
 
 ### So What's Next?
 
-The user guide which has been linked throughout these slides covers all these topics in more detail.  Find it at http://rvesse.github.io/airline/
+The user guide which has been linked throughout these slides covers all these topics, plus many more, in lots more detail and examples.  Find it at http://rvesse.github.io/airline/
 
-Please try it out, post questions, problems etc at http://github.com/rvesse/airline/issues
+Please try it out, post questions, problems etc. at http://github.com/rvesse/airline/issues
 
 ### Time Allowing...
 
-The remainder of the slides start to dive into more advanced features of the library.  If we have time we'll take a look at these.
+The remainder of the slides start to dive into more advanced features of the library.  If we have time we'll take a look at these...
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -954,6 +1016,11 @@ Exiting with Code 0
 
 Exiting with Code 0
 ```
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+## Generating Manual Pages
 
 {% include slide-end.md %}
 
