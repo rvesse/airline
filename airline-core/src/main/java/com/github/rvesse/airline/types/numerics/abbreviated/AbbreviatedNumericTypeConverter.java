@@ -16,11 +16,14 @@
 package com.github.rvesse.airline.types.numerics.abbreviated;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import com.github.rvesse.airline.types.numerics.ComplexNumericTypeConverter;
 import com.github.rvesse.airline.types.numerics.NumericCandidate;
 
 public abstract class AbbreviatedNumericTypeConverter extends ComplexNumericTypeConverter {
+    
+    protected abstract boolean isCaseSensitive();
 
     protected abstract Collection<String> getPermittedPrefixes();
     
@@ -30,9 +33,12 @@ public abstract class AbbreviatedNumericTypeConverter extends ComplexNumericType
     protected NumericCandidate parse(String value) {
         String origValue = value;
         
+        if (!isCaseSensitive()) 
+            value = value.toLowerCase(Locale.ROOT);
+        
         String prefix = null;
         for (String p : getPermittedPrefixes()) {
-            if (value.startsWith(p)) {
+            if (value.startsWith(isCaseSensitive() ? p : p.toLowerCase(Locale.ROOT))) {
                 prefix = p;
                 value = value.substring(p.length());
                 break;
@@ -41,7 +47,7 @@ public abstract class AbbreviatedNumericTypeConverter extends ComplexNumericType
         
         String suffix = null;
         for (String s : getPermittedSuffixes()) {
-            if (value.endsWith(s)) {
+            if (value.endsWith(isCaseSensitive() ? s : s.toLowerCase(Locale.ROOT))) {
                 suffix = s;
                 value = value.substring(0, value.length() - s.length());
                 break;

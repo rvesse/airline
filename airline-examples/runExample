@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-JAR_FILE="target/airline-examples.jar"
+SCRIPT_DIR=$(cd `dirname $0` && pwd)
+
+JAR_FILE="${SCRIPT_DIR}/target/airline-examples.jar"
 
 EXAMPLE=$1
 shift
@@ -15,7 +17,7 @@ EXAMPLE="${EXAMPLE%.class}"
 EXAMPLE="${EXAMPLE%.java}"
 
 # Locate the example class name
-CLASS=$(find src/main/java/com/github/rvesse/airline/examples -name ${EXAMPLE}.java)
+CLASS=$(find ${SCRIPT_DIR}/src/main/java/com/github/rvesse/airline/examples -name ${EXAMPLE}.java)
 if [ -z "${CLASS}" ]; then
   echo "${EXAMPLE} does not appear to be an example that can be run"
   exit 1
@@ -25,7 +27,7 @@ fi
 # Remove leading src/main/java
 # Replace / with .
 # Remove trailing .java
-CLASS="${CLASS#src/main/java/}"
+CLASS="${CLASS#${SCRIPT_DIR}/src/main/java/}"
 CLASS="${CLASS//\//.}"
 CLASS="${CLASS%.java}"
 
