@@ -849,7 +849,7 @@ If the previous two approaches don't work then you can always invoke help manual
 1. Static Methods
 2. Directly creating a help generator
 
-#### Static Methods
+#### Static Methods
 
 Even if you can't incorporate the `Help` command directly you can call its static help methods e.g. {% include github-ref.md package="examples.cli.commands" class="Help" module="airline-examples" %}
 
@@ -913,7 +913,7 @@ Here we create a specific instance of a `GlobalUsageGenerator` and call the `usa
 {% include slide-end.md %}
 {% include slide-start.md %}
 
-## Basics Summary
+## Workshop Summary
 
 - Define options and arguments using [`@Option`](../annotations/option.html) and [`@Arguments`](../annotation/arguments.html)
     - Optionally used restriction annotations to restrict permissible values, option combinations etc.
@@ -926,13 +926,17 @@ This is everything you need to make a functional CLI with Airline.
 
 ### So What's Next?
 
-The user guide which has been linked throughout these slides covers all these topics, plus many more, in lots more detail and examples.  Find it at http://rvesse.github.io/airline/
+The user guide which has been linked throughout these slides covers all these topics, plus many more, in lots more detail and examples.  Find it at [http://rvesse.github.io/airline/]()
 
-Please try it out, post questions, problems etc. at http://github.com/rvesse/airline/issues
+Please try it out, post questions, problems etc. at [http://github.com/rvesse/airline/issues]()
 
-### Time Allowing...
+#### Questions
 
-The remainder of the slides start to dive into more advanced features of the library.  If we have time we'll take a look at these...
+Please feel free to ask questions now!
+
+#### Time Allowing...
+
+The remainder of the slides give a quick tour of some of the more advanced features of the library.  If we have any extra time left we'll take a look at these...
 
 {% include slide-end.md %}
 {% include slide-start.md %}
