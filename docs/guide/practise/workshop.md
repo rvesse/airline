@@ -741,7 +741,141 @@ Why not try asking for help on the `send` command we saw earlier:
 {% include slide-end.md %}
 {% include slide-start.md %}
 
-## Step 4 - Customising the Parser
+## Step 4 - Help System
+
+So how did that last demo work?
+
+Airline includes a help system that can generate help in a variety of formats plus prebuilt commands and options that can be added into your commands/CLIs.
+
+We can invoke help in a number of ways:
+
+- Composing `HelpOption` into our commands
+- Composing the `Help` command into our CLIs
+- Invoking the help system directly
+
+Let's see the difference between each.
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+### Adding `HelpOption` to our commands
+
+This is a pre-built class which defines a `-h`/`--help` option, therefore we can compose this using `@Inject` as seen earlier:
+
+```java
+@Command(name = "simple", description = "A simple example command")
+public class Simple implements ExampleRunnable {
+
+    @Inject
+    private HelpOption<Simple> help;
+    
+    // Rest of implementation omitted for brevity
+    
+    @Override
+    public int run() {
+        if (help.showHelpIfRequested())
+            return 0;
+            
+        System.out.println("Flag was " + (this.flag ? "set" : "not set"));
+        System.out.println("Name was " + this.name);
+        System.out.println("Number was " + this.number);
+        if (args != null)
+            System.out.println("Arguments were " + StringUtils.join(args, ","));
+ 
+        return 0;
+    }
+}
+```
+We can see in the `run()` method we call the `showHelpIfRequested()` method to check if the user requested help.  If this returns `true`` then help was requested and has been shown so we just exit.  If this returns `false` then we continue with our normal logic.
+
+Let's try that:
+
+```
+> ./runExample Simple
+Flag was not set
+Name was null
+Number was 0
+> ./runExample Simple --help
+NAME
+        simple - A simple example command
+...
+```
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+### Including the `Help` command
+
+Airline includes a pre-built `Help` command that implements `Runnable` and `Callable<Void>`.  If either of these are the common interface for your commands you can simply add this to your commands in your `@Cli` declaration e.g.
+
+```java
+@Cli(name = "send-it", 
+     description = "A demonstration CLI around shipping",
+     commands = {
+             CheckAddress.class,
+             CheckPostcodes.class,
+             Send.class,
+             Price.class,
+             Help.class,
+             BashCompletion.class
+     })
+public class SendItCli {
+     
+}
+```
+
+If you use a different interface then you can simply extend this class and have it implement your interface and call the `run()` method from the base class e.g. {% include github-ref.md package="examples.help" class="CustomHelp" module="airline-examples" %}
+
+```java
+@Command(name = "help", description = "Shows help")
+public class CustomHelp extends Help<YourInterface> implements YourInterface {
+
+    @Override
+    public void execute() {
+        super.run();
+    }
+
+}
+
+```
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+### Invoking Help manually
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+### Generating Manual Pages
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+## Basics Summary
+
+- Define options and arguments using [`@Option`](../annotations/option.html) and [`@Arguments`](../annotation/arguments.html)
+    - Optionally used restriction annotations to restrict permissible values, option combinations etc.
+- Composed our options into a [`@Command`](../annotations/command.html)
+- Further composed our commands into an `@Cli`
+- Executed our CLI
+
+This is everything you need to make a functional CLI with Airline.
+
+### So What's Next?
+
+The user guide which has been linked throughout these slides covers all these topics in more detail.  Find it at http://rvesse.github.io/airline/
+
+Please try it out, post questions, problems etc at http://github.com/rvesse/airline/issues
+
+### Time Allowing...
+
+The remainder of the slides start to dive into more advanced features of the library.  If we have time we'll take a look at these.
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+## Customising the Parser
 
 As we glossed over earlier we can optionally customise our parser to change the command line behaviour in a variety of ways.
 
@@ -749,17 +883,17 @@ So we saw earlier in our `SendItCli` example the parser being customised via the
 
 ### `@Parser`
 
-The [`@Parser`](../annotations/parser.html) can be used in two ways:
+The [`@Parser`](../annotations/parser.html) annotation can be used in two ways:
 
 - Applied directly to a class annotated with [`@Command`](../annotations/command.html), this customises the parser for `SingleCommand` based parsers
-- Used in the `parserConfiguration` field of the [`@Cli`](../annotations/cli.html) annotation, this cutomises the parser for `Cli` based parsers
+- Used in the `parserConfiguration` field of the [`@Cli`](../annotations/cli.html) annotation, this customises the parser for `Cli` based parsers
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 ### Configuring option styles
 
-By default Airline allows for three styles of options:
+By default Airline parses three common option styles in the following order of preference:
 
 - {% include javadoc-ref.md class="StandardOptionParser" package="parser.options" %} - Simple white space separated option and values e.g. `--name value` sets the option `--name` to `value`
 - {% include javadoc-ref.md class="LongGetOptParser" package="parser.options" %} - Long form GNU `getopt` style e.g. `--name=value` sets the option `--name` to `value`
@@ -781,7 +915,7 @@ parserConfiguration = @Parser(
 A couple of additional styles are built-in but not enabled by default:
 
 - {% include javadoc-ref.md class="MaybePairValueOptionParser" package="parser.options" %} - Arity 2 options where the user may specify the values as whitespace/`=` separated e.g. `--name foo bar` and `--name foo=bar` are both acceptable and set the option `--name` to the values `foo` and `bar`
-- {% include javadoc-ref.md class="ListValueOptionParser" package="parser.options" %} - Options that may be specified multiple times can be specified in a compact comma separated list form e.g. `--name foo,bar` sets the option `--name` to the values `foo` and `bar`
+- {% include javadoc-ref.md class="ListValueOptionParser" package="parser.options" %} - Options that may be specified multiple times can be specified in a compact comma separated list form e.g. `--name foo,bar` sets the option `--name` to the values `foo` and `bar`.
 
 **NB** - Power Users can also create [Custom Option Parsers](../parser/options.html) if desired.
 
@@ -790,7 +924,7 @@ A couple of additional styles are built-in but not enabled by default:
 
 ### Allowing complex numeric inputs
 
-Airline allows for customising how it interpets numeric values passed to any `@Option`/`@Arguments` annotated field that has a numeric type i.e. `byte`, `short`, `int`, `long`, `float` and `double` or their boxed equivalents.
+Airline allows for customising how it interprets numeric values passed to any `@Option`/`@Arguments` annotated field that has a numeric type i.e. `byte`, `short`, `int`, `long`, `float` and `double` or their boxed equivalents.
 
 This can be controlled either globally on the `@Parser` annotation with the `numericTypeConverter` field or on a per-option basis by using the `typeConverterProvider` e.g.
 
@@ -822,30 +956,5 @@ Exiting with Code 0
 ```
 
 {% include slide-end.md %}
-{% include slide-start.md %}
 
-## Step 5 - Help System
-
-{% include slide-end.md %}
-{% include slide-start.md %}
-
-### Adding `HelpOption` to our commands
-
-{% include slide-end.md %}
-{% include slide-start.md %}
-
-### Including the `Help` command
-
-{% include slide-end.md %}
-{% include slide-start.md %}
-
-### Invoking Help manually
-
-{% include slide-end.md %}
-{% include slide-start.md %}
-
-### Generating Manual Pages
-
-{% include slide-end.md %}
-
-{% include slideshow-end.md name="workshop" %}d
+{% include slideshow-end.md name="workshop" %}

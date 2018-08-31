@@ -60,7 +60,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * 
      * @param <T>
      *            Command type to parse
-     * @return Default configuraiton
+     * @return Default configuration
      */
     public static <T> ParserMetadata<T> defaultConfiguration() {
         return new ParserBuilder<T>().build();
