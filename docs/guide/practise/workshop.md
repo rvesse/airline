@@ -66,9 +66,6 @@ In the workshop session we'll work through an example command line application t
 2. Avoid boiler plate code
 3. Allow deep customisation
 
-{% include slide-end.md %}
-{% include slide-start.md %}
-
 #### Be Declarative **Not** Imperative
 
 Firstly we want to define our command lines using declarative annotations.
@@ -77,17 +74,11 @@ This allows us to separate the command line definition cleanly from the runtime 
 
 It also enables us to do optional build time checking of our definitions to ensure valid command line apps.
 
-{% include slide-end.md %}
-{% include slide-start.md %}
-
 #### Avoid boiler plate code
 
 Secondly we look to avoid the typical boiler plate code associated with many command line libraries.
 
 You **shouldn't** need to write a ton of `if` statements to check that values for options fall in specified ranges or meet common application constraints.
-
-{% include slide-end.md %}
-{% include slide-start.md %}
 
 #### Allow deep customisation
 
@@ -120,9 +111,6 @@ To follow along you should start by checking out the code and building the examp
 > cd airline
 > mvn package
 ```
-
-{% include slide-end.md %}
-{% include slide-start.md %}
 
 #### Running an Example
 
@@ -462,9 +450,6 @@ We call the static `SingleCommand.singleCommand()` method passing in the command
 ```
 We can then invoke the `parse()` method passing in our users inputs.
 
-{% include slide-end.md %}
-{% include slide-start.md %}
-
 ```java
             System.exit(cmd.run());
 ```
@@ -508,9 +493,6 @@ AB12 3CD
 Typically real world command line interfaces (CLIs) consist of multiple commands e.g. `git`
 
 Airline allows multiple commands to be composed together into a CLI to support complex applications.
-
-{% include slide-end.md %}
-{% include slide-start.md %}
 
 ### `@Cli`
 
@@ -623,14 +605,7 @@ public class SendIt {
                     System.err.println(String.format("Error %d: %s", i, e.getMessage()));
                     i++;
                 }
-```
-{% include slide-end.md %}
-{% include slide-start.md %}
 
-### Invoking our CLI continued...
-
-```java
-                
                 System.err.println();
                 
                 Help.<ExampleRunnable>help(parser.getMetadata(), Arrays.asList(args), System.err);
@@ -661,9 +636,6 @@ So firstly we create an instance of the `Cli` class, not to be confused with the
 As mentioned we need to define a type for the commands that will be parsed.  So this is where it is helpful to have all your commands inherit from a common parent class or implement a common interface.
 
 **NB** You can always use `Object` here as the all Java objects derive from this but this will make the rest of your implementation awkward!
-
-{% include slide-end.md %}
-{% include slide-start.md %}
 
 #### Parsing the User Inputs
 
@@ -735,7 +707,7 @@ java -cp "${JAR_FILE}" com.github.rvesse.airline.examples.sendit.SendIt "$@"
 To run our CLI we just need to invoke the script i.e.
 
 ```
-> send-it
+> ./send-it
 ```
 
 {% include slide-end.md %}
@@ -775,25 +747,79 @@ As we glossed over earlier we can optionally customise our parser to change the 
 
 So we saw earlier in our `SendItCli` example the parser being customised via the `parserConfiguration` field of the `@Cli` annotation.  Let's look more into that now.
 
-{% include slide-end.md %}
-{% include slide-start.md %}
-
 ### `@Parser`
 
 The [`@Parser`](../annotations/parser.html) can be used in two ways:
 
-- Applied directly to a class annotated with [`@Command`](../annotations/command.html)
-- Used in the `parserConfiguration` field of the [`@Cli`](../annotations/cli.html) annotation
+- Applied directly to a class annotated with [`@Command`](../annotations/command.html), this customises the parser for `SingleCommand` based parsers
+- Used in the `parserConfiguration` field of the [`@Cli`](../annotations/cli.html) annotation, this cutomises the parser for `Cli` based parsers
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 ### Configuring option styles
 
+By default Airline allows for three styles of options:
+
+- {% include javadoc-ref.md class="StandardOptionParser" package="parser.options" %} - Simple white space separated option and values e.g. `--name value` sets the option `--name` to `value`
+- {% include javadoc-ref.md class="LongGetOptParser" package="parser.options" %} - Long form GNU `getopt` style e.g. `--name=value` sets the option `--name` to `value`
+- {% include javadoc-ref.md class="ClassicGetOptParser" package="parser.options" %} - Short form GNU `getopt` style e.g. `-n1` sets the option `-n` to `1`
+
+This can be customised via several fields of the [`@Parser`](../annotations/parser.html) annotation e.g.
+
+```java
+parserConfiguration = @Parser(
+       useDefaultOptionParsers = true,
+       defaultParsersFirst = false,
+       optionParsers = { ListValueOptionParser.class }
+     )
+```
+- `useDefaultOptionParsers` indicates whether to use this default setup
+- `defaultParsersFirst` controls whether the defaults parsers are preferred in favour of any additional ones specified
+- `optionParsers` specifies additional option parsers to use
+
+A couple of additional styles are built-in but not enabled by default:
+
+- {% include javadoc-ref.md class="MaybePairValueOptionParser" package="parser.options" %} - Arity 2 options where the user may specify the values as whitespace/`=` separated e.g. `--name foo bar` and `--name foo=bar` are both acceptable and set the option `--name` to the values `foo` and `bar`
+- {% include javadoc-ref.md class="ListValueOptionParser" package="parser.options" %} - Options that may be specified multiple times can be specified in a compact comma separated list form e.g. `--name foo,bar` sets the option `--name` to the values `foo` and `bar`
+
+**NB** - Power Users can also create [Custom Option Parsers](../parser/options.html) if desired.
+
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 ### Allowing complex numeric inputs
+
+Airline allows for customising how it interpets numeric values passed to any `@Option`/`@Arguments` annotated field that has a numeric type i.e. `byte`, `short`, `int`, `long`, `float` and `double` or their boxed equivalents.
+
+This can be controlled either globally on the `@Parser` annotation with the `numericTypeConverter` field or on a per-option basis by using the `typeConverterProvider` e.g.
+
+```java
+@Parser(numericTypeConverter=Hexadecimal.class)
+```
+
+Or:
+
+```java
+    @Option(name = { "-b", "--bytes"}, 
+            description = "Quantity of bytes, optionally expressed in compact form e.g. 1g",
+            typeConverterProvider = KiloAs1024.class)
+    @Required
+    private Long bytes;
+```
+
+Let's try that:
+
+```
+> ./runExample ByteCalculator --bytes 4gb
+4,294,967,296 Bytes
+
+Exiting with Code 0
+> ./runExample ByteCalculator --bytes 16k
+16,384 Bytes
+
+Exiting with Code 0
+```
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -822,4 +848,4 @@ The [`@Parser`](../annotations/parser.html) can be used in two ways:
 
 {% include slide-end.md %}
 
-{% include slideshow-end.md name="workshop" %}
+{% include slideshow-end.md name="workshop" %}d

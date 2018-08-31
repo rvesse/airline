@@ -12,8 +12,8 @@
   display: none;
 }
 .bss-slides div.slide {
-  width: 1024px;
-  height: 768px;
+  width: 1280px;
+  height: 1024px;
 }
 .bss-slides div:first-child {
   //position: relative;

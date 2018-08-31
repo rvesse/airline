@@ -142,6 +142,11 @@ a.sidebar-nav-item:focus {
   }
 }
 
+.slide-content {
+  margin-left: 4rem;
+  margin-right: 4rem;
+}
+
 
 /*
  * Reverse layout
