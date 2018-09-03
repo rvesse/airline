@@ -10,8 +10,8 @@ Resource Locators are a new abstraction introduced from 2.6.0 to allow configura
 | Locator | Behaviour |
 |--------------|----------------|
 | {% include javadoc-ref.md class="FileLocator" package="parser.resources" %} | Locates resources on the file system using the exact locations given. |
-| {% include javadoc-ref.md class="HomeDirectoryLocator" package="parser.resources" %} | Locates resources in the users home directory.  Search locations beginning with `~/` or `~/` (OS dependent) are treated as expanded to the users home directory. |
-| {% include javadoc-ref.md class="WorkingDirectoryLocator" package="parser.resources" %} | Locates resources in the applications working directory.  Search locations beginning with `./` or `./` (OS dependent) are treated as expanded to the applications working directory. |
+| {% include javadoc-ref.md class="HomeDirectoryLocator" package="parser.resources" %} | Locates resources in the users home directory.  Search locations beginning with `~/` or `~\` (OS dependent) are treated as expanded to the users home directory. |
+| {% include javadoc-ref.md class="WorkingDirectoryLocator" package="parser.resources" %} | Locates resources in the applications working directory.  Search locations beginning with `./` or `.\` (OS dependent) are treated as expanded to the applications working directory. |
 | {% include javadoc-ref.md class="EnvVarLocator" package="parser.resources" %} | Locates resources on the filesystem where the search locations given may contain `${VAR}` placeholders to refer to environment variables. |
 | {% include javadoc-ref.md class="JvmSystemPropertyLocator" package="parser.resources" %} | Locates resources on the filesystem where the search locations given may contain `${var}` placeholders to refer to JVM system properties i.e. those passed to the JVM via the `-Dvar=value` flag. |
 | {% include javadoc-ref.md class="ClasspathLocator" package="parser.resources" %} | Locates resources on the JVM class path. |
