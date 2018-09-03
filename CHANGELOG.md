@@ -1,5 +1,7 @@
 # Airline - Change Log
 
+## 2.7.0
+
 ## 2.6.0
 
 - Core Improvements
