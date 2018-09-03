@@ -176,7 +176,7 @@ From 2.6.0 onwards it is possible to force the use of a built-in by applying a c
 logs=!logs --format Json
 ```
 
-This allows you to override the `logs` built-in with an alias that provides your desired arguments yet still invoke the actual built-in command.
+This allows you to override the `logs` built-in with an alias that provides your desired arguments yet still invokes the actual built-in command.
 
 The prefix character is controlled by either calling `withAliasForceBuiltInPrefix()` on the Fluent API or adding the `aliasesForceBuiltInPrefix` field to your `@Parser` annotation.
 
@@ -218,7 +218,7 @@ Here the user tries to define that the `logs` command always defaults to Json fo
 
 Prior to 2.6.0 it is generally recommended to only enable chaining or overriding but not both together.
 
-From 2.6.0 you can use the Force Built-Ins prefix character, that defaults to `!`, to provide more explicit alias definitions that are considered valid i.e.
+From 2.6.0 you can safely enable both and use the force built-ins prefix character, which defaults to `!`, to provide more explicit alias definitions that are resolvable i.e.
 
 ```
 logs=!logs --format Json
