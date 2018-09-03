@@ -103,7 +103,7 @@ I do not currently use JPMS in any of my personal/work projects that use Airline
 
 ## Maven Artifacts
 
-This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `2.5.0`
+This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `2.6.0`
 
 Use the following maven dependency declaration:
 
@@ -111,11 +111,11 @@ Use the following maven dependency declaration:
 <dependency>
     <groupId>com.github.rvesse</groupId>
     <artifactId>airline</artifactId>
-    <version>2.5.0</version>
+    <version>2.6.0</version>
 </dependency>
 ```
 
-Snapshot artifacts of the latest source are also available using the version `2.5.1-SNAPSHOT` from the [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
+Snapshot artifacts of the latest source are also available using the version `2.7.0-SNAPSHOT` from the [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
 
 ## Build Status
 

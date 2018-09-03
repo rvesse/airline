@@ -1,6 +1,6 @@
 # Airline - Change Log
 
-## 2.5.1
+## 2.6.0
 
 - Core Improvements
     - Allow creating a `Cli` instance with an explicit `ParserMetadata` for situations where parser configuration cannot be specified via annotation e.g. using dynamically determined paths for user aliases
