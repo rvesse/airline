@@ -31,10 +31,13 @@ public class WorkingDirectoryLocator extends FileLocator {
 
     @Override
     protected String resolve(String searchLocation) {
+        // Apply parent resolve() first as this strips off any file:// prefix
+        searchLocation = super.resolve(searchLocation);
+
         // Find the working directory since we will also potentially use this to
         // resolve the special ./ alias
         File workingDir = Paths.get("").toAbsolutePath().toFile();
-        
+
         // Can't resolve if no working directory available
         if (workingDir == null)
             return searchLocation;

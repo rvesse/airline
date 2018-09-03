@@ -36,6 +36,9 @@ public class HomeDirectoryLocator extends FileLocator {
 
     @Override
     protected String resolve(String searchLocation) {
+        // Apply parent resolve() first as this strips off any file:// prefix
+        searchLocation = super.resolve(searchLocation);
+        
         // Find the home directory since we will potentially use this to resolve
         // the special ~/ alias
         File homeDir;
