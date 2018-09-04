@@ -23,12 +23,12 @@ import java.lang.annotation.Target;
 import com.github.rvesse.airline.annotations.restrictions.ranges.LengthRange;
 
 /**
- * Annotation that marks that an options value is restricted to a minimum length
- * (which is inclusive)
+ * Annotation that marks that an options value is restricted to being an exact
+ * length
  * <p>
- * If you simply wish to require that an option have a non-empty value then use
- * {@link NotEmpty} instead. Alternatively for a range of lengths you can use
- * {@link LengthRange} or for an exact length you can use {@link ExactLength}.
+ * If you simply wish to require that an option have a minimum length then use
+ * {@link MinLength} instead, similarly {@link MaxLength} for maximum length.
+ * Alternatively for a range of lengths you can use {@link LengthRange}.
  * </p>
  * 
  * @author rvesse
@@ -36,12 +36,12 @@ import com.github.rvesse.airline.annotations.restrictions.ranges.LengthRange;
  */
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 @Target({ FIELD })
-public @interface MinLength {
+public @interface ExactLength {
 
     /**
-     * Minimum required length (inclusive)
+     * Exact required length in characters
      * 
-     * @return Minimum length (inclusive)
+     * @return Exact length
      */
-    public int length() default 0;
+    public int length();
 }

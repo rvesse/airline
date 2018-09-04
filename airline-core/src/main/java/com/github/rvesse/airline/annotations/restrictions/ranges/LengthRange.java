@@ -13,35 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline.annotations.restrictions;
+package com.github.rvesse.airline.annotations.restrictions.ranges;
 
 import static java.lang.annotation.ElementType.FIELD;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.github.rvesse.airline.annotations.restrictions.ranges.LengthRange;
-
 /**
- * Annotation that marks that an options value is restricted to a minimum length
- * (which is inclusive)
- * <p>
- * If you simply wish to require that an option have a non-empty value then use
- * {@link NotEmpty} instead. Alternatively for a range of lengths you can use
- * {@link LengthRange} or for an exact length you can use {@link ExactLength}.
- * </p>
- * 
- * @author rvesse
+ * Annotation that marks values as being restricted to a given length range i.e.
+ * the length of the value must be within the range
  *
  */
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 @Target({ FIELD })
-public @interface MinLength {
+public @interface LengthRange {
 
     /**
-     * Minimum required length (inclusive)
+     * Minimum value
      * 
-     * @return Minimum length (inclusive)
+     * @return Minimum value
      */
-    public int length() default 0;
+    int min() default Integer.MIN_VALUE;
+
+    /**
+     * Maximum value
+     * 
+     * @return Maximum value
+     */
+    int max() default Integer.MAX_VALUE;
 }

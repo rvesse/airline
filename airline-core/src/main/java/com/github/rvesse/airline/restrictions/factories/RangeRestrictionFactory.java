@@ -27,11 +27,14 @@ import com.github.rvesse.airline.annotations.restrictions.ranges.ByteRange;
 import com.github.rvesse.airline.annotations.restrictions.ranges.DoubleRange;
 import com.github.rvesse.airline.annotations.restrictions.ranges.FloatRange;
 import com.github.rvesse.airline.annotations.restrictions.ranges.IntegerRange;
+import com.github.rvesse.airline.annotations.restrictions.ranges.LengthRange;
 import com.github.rvesse.airline.annotations.restrictions.ranges.LexicalRange;
 import com.github.rvesse.airline.annotations.restrictions.ranges.LongRange;
 import com.github.rvesse.airline.annotations.restrictions.ranges.ShortRange;
+import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
+import com.github.rvesse.airline.restrictions.common.LengthRestriction;
 import com.github.rvesse.airline.restrictions.common.RangeRestriction;
 import com.github.rvesse.airline.utils.comparators.ByteComparator;
 import com.github.rvesse.airline.utils.comparators.DoubleComparator;
@@ -73,7 +76,7 @@ public class RangeRestrictionFactory implements OptionRestrictionFactory, Argume
      *            Annotation to create range from
      * @return Range restriction
      */
-    protected final RangeRestriction createCommon(Annotation annotation) {
+    protected final AbstractCommonRestriction createCommon(Annotation annotation) {
         if (annotation instanceof LongRange) {
             return createLongRange(annotation);
         } else if (annotation instanceof IntegerRange) {
@@ -88,6 +91,8 @@ public class RangeRestrictionFactory implements OptionRestrictionFactory, Argume
             return createFloatRange(annotation);
         } else if (annotation instanceof LexicalRange) {
             return createLexicalRange(annotation);
+        } else if (annotation instanceof LengthRange) {
+            return createLengthRange(annotation);
         }
         return createUnknownRange(annotation);
     }
@@ -102,8 +107,13 @@ public class RangeRestrictionFactory implements OptionRestrictionFactory, Argume
      * 
      * @return Range restriction or null if not a supported annotation
      */
-    protected RangeRestriction createUnknownRange(Annotation annotation) {
+    protected AbstractCommonRestriction createUnknownRange(Annotation annotation) {
         return null;
+    }
+
+    protected AbstractCommonRestriction createLengthRange(Annotation annotation) {
+        LengthRange lRange = (LengthRange) annotation;
+        return new LengthRestriction(lRange.min(), lRange.max());
     }
 
     protected RangeRestriction createLexicalRange(Annotation annotation) {
@@ -163,7 +173,7 @@ public class RangeRestrictionFactory implements OptionRestrictionFactory, Argume
                 iRange.max() != Long.MAX_VALUE || !iRange.maxInclusive() ? Long.valueOf(iRange.max()) : null,
                 iRange.maxInclusive(), LONG_COMPARATOR);
     }
-    
+
     protected List<Class<? extends Annotation>> supportedAnnotations() {
         List<Class<? extends Annotation>> supported = new ArrayList<>();
         supported.add(LongRange.class);
@@ -173,6 +183,7 @@ public class RangeRestrictionFactory implements OptionRestrictionFactory, Argume
         supported.add(DoubleRange.class);
         supported.add(FloatRange.class);
         supported.add(LexicalRange.class);
+        supported.add(LengthRange.class);
         return supported;
     }
 

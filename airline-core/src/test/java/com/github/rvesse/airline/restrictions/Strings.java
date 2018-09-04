@@ -20,11 +20,13 @@ import javax.inject.Inject;
 import com.github.rvesse.airline.HelpOption;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
+import com.github.rvesse.airline.annotations.restrictions.ExactLength;
 import com.github.rvesse.airline.annotations.restrictions.MaxLength;
 import com.github.rvesse.airline.annotations.restrictions.MinLength;
 import com.github.rvesse.airline.annotations.restrictions.NotBlank;
 import com.github.rvesse.airline.annotations.restrictions.NotEmpty;
 import com.github.rvesse.airline.annotations.restrictions.Pattern;
+import com.github.rvesse.airline.annotations.restrictions.ranges.LengthRange;
 
 @Command(name = "strings")
 public class Strings {
@@ -52,6 +54,18 @@ public class Strings {
     @Option(name = "--other")
     @Pattern(pattern = "foo|bar|foobar", flags = java.util.regex.Pattern.CASE_INSENSITIVE)
     public String other;
+    
+    @Option(name = "--exact")
+    @ExactLength(length = 5)
+    public String exact;
+    
+    @Option(name = "--range")
+    @LengthRange(min = 4, max = 6)
+    public String range;
+    
+    @Option(name = "--range-exact")
+    @LengthRange(min = 4, max = 4)
+    public String rangeExact;
     
     @Inject
     public HelpOption<Strings> helpOption = new HelpOption<>();

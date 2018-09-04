@@ -20,59 +20,110 @@ import com.github.rvesse.airline.help.sections.HelpHint;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
+import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 
 /**
- * A restriction that requires string values
+ * A restriction that requires string values meet length constraints
  * 
  * @author rvesse
  *
  */
 public class LengthRestriction extends AbstractStringRestriction implements HelpHint {
 
-    private final boolean maximum;
-    private final int length;
+    private final boolean maximum, range;
+    private final int min, max;
 
+    /**
+     * Creates a length restriction with either a minimum or maximum
+     * 
+     * @param length
+     *            Length
+     * @param maximum
+     *            True if the {@code length} is a maximum, false if it is a
+     *            minimum
+     */
     public LengthRestriction(int length, boolean maximum) {
-        this.length = length;
+        this.min = maximum ? Integer.MIN_VALUE : length;
+        this.max = maximum ? length : Integer.MAX_VALUE;
         this.maximum = maximum;
+        this.range = false;
+    }
+
+    /**
+     * Creates a length restriction with a minimum and maximum i.e. a range
+     * 
+     * @param min
+     *            Minimum length
+     * @param max
+     *            Maximum length
+     */
+    public LengthRestriction(int min, int max) {
+        this.min = min;
+        this.max = max;
+        if (min > max)
+            throw new ParseInvalidRestrictionException("min (%s) is greater than max (%s)", min, max);
+        this.maximum = false;
+        this.range = true;
     }
 
     @Override
     protected boolean isValid(String value) {
-        if (maximum) {
-            return value.length() <= this.length;
+        if (this.maximum) {
+            return value.length() <= this.max;
+        } else if (this.range) {
+            return value.length() >= this.min && value.length() <= this.max;
         } else {
-            return value.length() >= this.length;
+            return value.length() >= this.min;
         }
     }
 
     @Override
     protected <T> ParseRestrictionViolatedException violated(ParseState<T> state, OptionMetadata option, String value) {
-        if (maximum) {
+        if (this.maximum) {
             return new ParseRestrictionViolatedException(
                     "Option '%s' was given value '%s' that has length %d which exceeds the maximum permitted length of %d",
-                    option.getTitle(), value, value.length(), this.length);
+                    option.getTitle(), value, value.length(), this.max);
+        } else if (this.range) {
+            if (this.min == this.max) {
+                return new ParseRestrictionViolatedException(
+                        "Option '%s' was given value '%s' that has length %d which does not match the required length of %d",
+                        option.getTitle(), value, value.length(), this.max);
+            } else {
+                return new ParseRestrictionViolatedException(
+                        "Option '%s' was given value '%s' that has length %d which is not in the accepted length range of %d to %d characters",
+                        option.getTitle(), value, value.length(), this.min, this.max);
+            }
         } else {
             return new ParseRestrictionViolatedException(
                     "Option '%s' was given value '%s' that has length %d which is below the minimum required length of %d",
-                    option.getTitle(), value, value.length(), this.length);
+                    option.getTitle(), value, value.length(), this.min);
         }
     }
 
     @Override
     protected <T> ParseRestrictionViolatedException violated(ParseState<T> state, ArgumentsMetadata arguments,
             String value) {
-        if (maximum) {
+        if (this.maximum) {
             return new ParseRestrictionViolatedException(
                     "Argument '%s' was given value '%s' that has length %d which exceeds the maximum permitted length of %d",
-                    AbstractCommonRestriction.getArgumentTitle(state, arguments), value, value.length(), this.length);
-
+                    AbstractCommonRestriction.getArgumentTitle(state, arguments), value, value.length(), this.max);
+        } else if (this.range) {
+            if (this.min == this.max) {
+                return new ParseRestrictionViolatedException(
+                        "Argument '%s' was given value '%s' that has length %d which exceeds the maximum permitted length of %d",
+                        AbstractCommonRestriction.getArgumentTitle(state, arguments), value, value.length(), this.max);
+            } else {
+                return new ParseRestrictionViolatedException(
+                        "Argument '%s' was given value '%s' that has length %d which is not in the accepted length range of %d to %d characters",
+                        AbstractCommonRestriction.getArgumentTitle(state, arguments), value, value.length(), this.min,
+                        this.max);
+            }
         } else {
             return new ParseRestrictionViolatedException(
                     "Argument '%s' was given value '%s' that has length %d which is below the minimum required length of %d",
-                    AbstractCommonRestriction.getArgumentTitle(state, arguments), value, value.length(), this.length);
+                    AbstractCommonRestriction.getArgumentTitle(state, arguments), value, value.length(), this.min);
         }
     }
 
@@ -96,12 +147,18 @@ public class LengthRestriction extends AbstractStringRestriction implements Help
         if (blockNumber != 0)
             throw new IndexOutOfBoundsException();
 
-        if (maximum) {
-            return new String[] {
-                    String.format("This options value has a maximum length of %d characters", this.length) };
+        if (this.maximum) {
+            return new String[] { String.format("This options value has a maximum length of %d characters", this.max) };
+        } else if (this.range) {
+            if (this.min == this.max) {
+                return new String[] {
+                        String.format("This options value must have a length of %d characters", this.max) };
+            } else {
+                return new String[] { String.format(
+                        "This options value must have a length between %d and %d characters", this.min, this.max) };
+            }
         } else {
-            return new String[] {
-                    String.format("This options value has a minimum length of %d characters", this.length) };
+            return new String[] { String.format("This options value has a minimum length of %d characters", this.min) };
         }
     }
 

@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.rvesse.airline.annotations.restrictions.ExactLength;
 import com.github.rvesse.airline.annotations.restrictions.MaxLength;
 import com.github.rvesse.airline.annotations.restrictions.MinLength;
 import com.github.rvesse.airline.annotations.restrictions.NotBlank;
@@ -54,6 +55,9 @@ public class StringRestrictionFactory implements ArgumentsRestrictionFactory, Op
         } else if (annotation instanceof MinLength) {
             MinLength ml = (MinLength) annotation;
             return new LengthRestriction(ml.length(), false);
+        } else if (annotation instanceof ExactLength) {
+            ExactLength el = (ExactLength) annotation;
+            return new LengthRestriction(el.length(), el.length());
         } else if (annotation instanceof NotBlank) {
             return new NotBlankRestriction();
         } else if (annotation instanceof NotEmpty) {
@@ -61,12 +65,13 @@ public class StringRestrictionFactory implements ArgumentsRestrictionFactory, Op
         }
         return null;
     }
-    
+
     protected List<Class<? extends Annotation>> supportedAnnotations() {
         List<Class<? extends Annotation>> supported = new ArrayList<>();
         supported.add(Pattern.class);
         supported.add(MaxLength.class);
         supported.add(MinLength.class);
+        supported.add(ExactLength.class);
         supported.add(NotBlank.class);
         supported.add(NotEmpty.class);
         return supported;
