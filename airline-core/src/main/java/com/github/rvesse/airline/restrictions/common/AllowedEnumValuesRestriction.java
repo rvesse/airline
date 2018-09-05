@@ -15,32 +15,35 @@
  */
 package com.github.rvesse.airline.restrictions.common;
 
-import java.util.Locale;
-
-import org.apache.commons.collections4.IterableUtils;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsIllegalValueException;
 import com.github.rvesse.airline.parser.errors.ParseOptionIllegalValueException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
-import com.github.rvesse.airline.utils.predicates.LocaleSensitiveStringFinder;
 
-public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestriction {
+public class AllowedEnumValuesRestriction extends AbstractAllowedValuesRestriction {
 
-    private final Locale locale;
+    public AllowedEnumValuesRestriction(Class<? extends Enum<?>> cls) {
+        super(true);
+        this.rawValues.addAll(getValues(cls));
+    }
 
-    public AllowedRawValuesRestriction(boolean ignoreCase, Locale locale, String... values) {
-        super(ignoreCase);
-        if (locale == null)
-            locale = Locale.ENGLISH;
-        this.locale = locale;
-        for (String value : values) {
-            if (ignoreCase)
-                value = value.toLowerCase(locale);
-            rawValues.add(value);
+    private Collection<String> getValues(Class<? extends Enum<?>> cls) {
+        if (cls.isEnum()) {
+            List<Enum<?>> e = Arrays.asList(cls.getEnumConstants());
+            List<String> values = new ArrayList<>(e.size());
+            for (Enum<?> member : e) {
+                values.add(member.name());
+            }
+            return values;
         }
+        return Collections.emptySet();
     }
 
     @Override
@@ -50,7 +53,7 @@ public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestrictio
             return;
 
         // Check in list of values
-        if (!IterableUtils.matchesAny(this.rawValues, new LocaleSensitiveStringFinder(value, this.locale)))
+        if (!this.rawValues.contains(value))
             throw new ParseOptionIllegalValueException(option.getTitle(), value, asObjects(rawValues));
     }
 
@@ -61,7 +64,7 @@ public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestrictio
             return;
 
         // Check in list of values
-        if (!IterableUtils.matchesAny(this.rawValues, new LocaleSensitiveStringFinder(value, this.locale))) {
+        if (!this.rawValues.contains(value)) {
             throw new ParseArgumentsIllegalValueException(AbstractCommonRestriction.getArgumentTitle(state, arguments), value, asObjects(rawValues));
         }
     }
