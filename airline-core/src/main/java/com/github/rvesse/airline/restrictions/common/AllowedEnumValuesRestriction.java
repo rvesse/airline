@@ -36,9 +36,8 @@ public class AllowedEnumValuesRestriction extends AbstractAllowedValuesRestricti
 
     private Collection<String> getValues(Class<? extends Enum<?>> cls) {
         if (cls.isEnum()) {
-            List<Enum<?>> e = Arrays.asList(cls.getEnumConstants());
-            List<String> values = new ArrayList<>(e.size());
-            for (Enum<?> member : e) {
+            List<String> values = new ArrayList<>();
+            for (Enum<?> member : cls.getEnumConstants()) {
                 values.add(member.name());
             }
             return values;
