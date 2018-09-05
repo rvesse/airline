@@ -19,6 +19,7 @@ import com.github.rvesse.airline.annotations.Cli;
 import com.github.rvesse.airline.annotations.Parser;
 import com.github.rvesse.airline.examples.cli.commands.BashCompletion;
 import com.github.rvesse.airline.examples.cli.commands.Help;
+import com.github.rvesse.airline.examples.cli.commands.Manuals;
 import com.github.rvesse.airline.parser.errors.handlers.CollectAll;
 import com.github.rvesse.airline.parser.options.ListValueOptionParser;
 
@@ -31,7 +32,8 @@ import com.github.rvesse.airline.parser.options.ListValueOptionParser;
              Send.class,
              Price.class,
              Help.class,
-             BashCompletion.class
+             BashCompletion.class,
+             Manuals.class
      },
      defaultCommand = Help.class,
      parserConfiguration = @Parser(
