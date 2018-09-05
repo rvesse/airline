@@ -20,4 +20,24 @@ public class DoubleComparator extends AbstractComparableComparator<Double> {
     public DoubleComparator() {
         super(Double.class);
     }
+
+    @Override
+    protected int compareValues(Double v1, Double v2) {
+        // Handle special cases
+        if (v1 == Double.MIN_VALUE) {
+            if (v2 == Double.MIN_VALUE)
+                return 0;
+            return -1;
+        } else if (v2 == Double.MIN_VALUE) {
+            return 1;
+        } else if (v1 == Double.MAX_VALUE) {
+            if (v2 == Double.MAX_VALUE)
+                return 0;
+            return 1;
+        } else if (v2 == Double.MAX_VALUE) {
+            return -1;
+        }
+        
+        return super.compareValues(v1, v2);
+    }
 }

@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline.utils.comparators;
+package com.github.rvesse.airline.restrictions.ranges;
 
-public class ByteComparator extends AbstractComparableComparator<Byte> {
+import com.github.rvesse.airline.annotations.Command;
+import com.github.rvesse.airline.annotations.Option;
+import com.github.rvesse.airline.annotations.restrictions.ranges.Negative;
 
-    public ByteComparator() {
-        super(Byte.class);
-    }
+@Command(name = "OptionRangeNegative")
+public class OptionRangeNegativeIncludesZero extends OptionRangeBase {
+
+    @Option(name = "-i", title = "Integer", arity = 1)
+    @Negative(includesZero = true)
+    public long i;
+    
+    @Option(name = "-d", title = "Double", arity = 1)
+    @Negative(includesZero = true)
+    public double d;
 }

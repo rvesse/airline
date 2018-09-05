@@ -20,4 +20,25 @@ public class FloatComparator extends AbstractComparableComparator<Float> {
     public FloatComparator() {
         super(Float.class);
     }
+
+    @Override
+    protected int compareValues(Float v1, Float v2) {
+        // Handle special cases
+        if (v1 == Float.MIN_VALUE) {
+            if (v2 == Float.MIN_VALUE)
+                return 0;
+            return -1;
+        } else if (v2 == Float.MIN_VALUE) {
+            return 1;
+        } else if (v1 == Float.MAX_VALUE) {
+            if (v2 == Float.MAX_VALUE)
+                return 0;
+            return 1;
+        } else if (v2 == Float.MAX_VALUE) {
+            return -1;
+        }
+        
+        // Normal comparison
+        return super.compareValues(v1, v2);
+    }
 }
