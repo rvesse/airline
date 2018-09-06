@@ -22,6 +22,25 @@ The workshop is provided as a HTML slideshow embedded below, use the arrow keys 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
+## Introduction
+
+Everyone builds command line applications at some point but often they are cobbled together or full of needless boiler plate. Airline takes a fully declarative approach to command line applications allowing users to create powerful and flexible command lines.
+
+Airline takes care of lots of heavy lifting providing many features not found in similar libraries including annotation driven value validation [restrictions](../restrictions/index.html), generating [Man pages](../help/man.html) and [Bash completion scripts](../help/bash.html) to name just a few.
+
+In the workshop session we'll work through an example command line application to see just how powerful this can be.
+
+### About Me
+
+* Software Engineer at Cray in the AI & Analytics Group
+* Long background in open source
+    * Have been releasing open source software since around 2003
+    * Involved at the [Apache Software Foundation](https://www.apache.org) (ASF) since 2012 and was elected as a  member in 2015
+    * [https://github.com/rvesse]()
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
 ## Pre-requisites
 
 In order to follow along with this workshop we assume the following knowledge and tools:
@@ -38,17 +57,6 @@ You can find these slides at [{{ site.url }}{{ site.baseurl }}/guide/practise/wo
 {% include slide-end.md %}
 {% include slide-start.md %}
 
-## Background
-
-Everyone builds command line applications at some point but often they are cobbled together or full of needless boiler plate. Airline takes a fully declarative approach to command line applications allowing users to create powerful and flexible command lines.
-
-Airline takes care of lots of heavy lifting providing many features not found in similar libraries including annotation driven value validation [restrictions](../restrictions/index.html), generating [Man pages](../help/man.html) and [Bash completion scripts](../help/bash.html) to name just a few.
-
-In the workshop session we'll work through an example command line application to see just how powerful this can be.
-
-{% include slide-end.md %}
-{% include slide-start.md %}
-
 ### History
 
 - Airline started out as an open source project on GitHub back in January 2012.
@@ -56,6 +64,11 @@ In the workshop session we'll work through an example command line application t
 - I quickly started using it in my own work but encountered a few limitations.
 - The original authors were not receptive to pull requests so I forked the code and started maintaining my own version that has since evolved considerably.
 - First release of my fork was December 2014
+- Latest release at time of writing was 2.6.0
+- Have built various personal and work projects with it e.g.
+    - [SPARQL Query Benchmarker](https://github.com/rvesse/spark-query-bm)
+    - [GitHub PR Stats](https://github.com/rvesse/gh-pr-stats)
+    - [Cray Graph Engine CLI](https://pubs.cray.com/content/S-3014/3.2.UP01/cray-graph-engine-user-guide/cge-cli)
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -263,9 +276,6 @@ And finally we have some regular Java code in our class.  Your normal logic can 
 ### `@Arguments`
 
 The [`@Arguments`](../annotation/arguments.html) annotation is used to annotate a field that will receive arbitrary inputs i.e. anything that is not recognised as an option as defined by your `@Option` annotations.  This is useful when your command wants to operate on a list of things so is typically used in conjunction with a `Collection` typed field e.g. `List<String>`.
-
-{% include slide-end.md %}
-{% include slide-start.md %}
 
 #### `@Arguments` in use
 
@@ -557,9 +567,11 @@ defaultCommand = Help.class,
 
 The `commands` field of the annotation defines the classes that provide your commands.  Each of these must be appropriately annotated with `@Command`.
 
-Generally it is useful for all your commands to have a common parent class or interface since as we'll see in a few slides time we'll need to declare a type when creating a parser.  In this case all our commands implement {% include github-ref.md package="examples" module="airline-examples" class="ExampleRunnable" %}
-
 We also see the `defaultCommand` field used to indicate what command is invoked if the user doesn't invoke a command.  This can be useful to provide default behaviour and is often used to point to the help system.
+
+---
+
+**NB** - Generally it is useful for all your commands to have a common parent class or interface since as we'll see in a few slides time we'll need to declare a type when creating a parser.  In this case all our commands implement {% include github-ref.md package="examples" module="airline-examples" class="ExampleRunnable" %}
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -635,7 +647,7 @@ So firstly we create an instance of the `Cli` class, not to be confused with the
 
 As mentioned we need to define a type for the commands that will be parsed.  So this is where it is helpful to have all your commands inherit from a common parent class or implement a common interface.
 
-**NB** You can always use `Object` here as the all Java objects derive from this but this will make the rest of your implementation awkward!
+**NB** You can always use `Object` here as all Java objects derive from this but this will make the rest of your implementation awkward!
 
 #### Parsing the User Inputs
 
@@ -765,7 +777,6 @@ This is a pre-built class which defines a `-h`/`--help` option, therefore we can
 ```java
 @Command(name = "simple", description = "A simple example command")
 public class Simple implements ExampleRunnable {
-
     @Inject
     private HelpOption<Simple> help;
     
@@ -786,7 +797,8 @@ public class Simple implements ExampleRunnable {
     }
 }
 ```
-We can see in the `run()` method we call the `showHelpIfRequested()` method to check if the user requested help.  If this returns `true`` then help was requested and has been shown so we just exit.  If this returns `false` then we continue with our normal logic.
+
+We can see in the `run()` method we call the `showHelpIfRequested()` method to check if the user requested help.  If this returns `true` then help was requested and has been shown so we just exit.  If this returns `false` then we continue with our normal logic.
 
 Let's try that:
 
@@ -915,12 +927,14 @@ Here we create a specific instance of a `GlobalUsageGenerator` and call the `usa
 
 ## Workshop Summary
 
-- Define options and arguments using [`@Option`](../annotations/option.html) and [`@Arguments`](../annotation/arguments.html)
-    - Optionally used restriction annotations to restrict permissible values, option combinations etc.
-- Composed our options into a [`@Command`](../annotations/command.html)
-- Further composed our commands into an `@Cli`
-- Executed our CLI
-- Learnt how to incorporate help into our CLIs
+So we have seen:
+
+- How to define options and arguments using [`@Option`](../annotations/option.html) and [`@Arguments`](../annotation/arguments.html)
+    - How we can use restriction annotations to restrict permissible values, option combinations etc.
+- How to compose our options into a [`@Command`](../annotations/command.html)
+- How to further compose our commands into an `@Cli`
+- How to execute our CLI
+- How to incorporate help into our CLIs
 
 This is everything you need to make a functional CLI with Airline.
 
@@ -953,6 +967,13 @@ The [`@Parser`](../annotations/parser.html) annotation can be used in two ways:
 
 - Applied directly to a class annotated with [`@Command`](../annotations/command.html), this customises the parser for `SingleCommand` based parsers
 - Used in the `parserConfiguration` field of the [`@Cli`](../annotations/cli.html) annotation, this customises the parser for `Cli` based parsers
+
+There are lots of behaviours that can be customised with this annotation e.g.
+
+- Providing [User Defined Aliases](aliases.html) so users can define command aliases within your CLIs
+- Configuring option styles (see next slide for discussion of this)
+- Automated abbreviation support i.e. allow users to type only partial command/option names provided what they enter is unambiguous
+- Error Handling (as seen earlier)
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -1025,6 +1046,126 @@ Exiting with Code 0
 {% include slide-start.md %}
 
 ## Generating Manual Pages
+
+Manual pages are provided by using help generator as seen earlier.  This is provided in the separate [`airline-help-man`](../help/man.html) module.
+
+If we use {% include javadoc-ref.md class="ManCommandUsageGenerator" package="help.man" module="airline-help-man" %} or {% include javadoc-ref.md class="ManGlobalUsageGenerator" package="help.man" module="airline-help-man" %} our output will be Troff plus `man` extensions that can be rendered by the `man` command.
+
+For example the {% include github-ref.md class="Manuals" package="examples.cli.commands" module="airline-examples" %} class demonstrates this:
+
+```java
+@Command(name = "generate-manuals", description = "Generates manual pages for this CLI that can be rendered with the man tool")
+public class Manuals implements ExampleRunnable {
+
+    @Inject
+    private GlobalMetadata<ExampleRunnable> global;
+
+    @Option(name = "--include-hidden", description = "When set hidden commands and options are shown in help", hidden = true)
+    private boolean includeHidden = false;
+
+    @Override
+    public int run() {
+        try (FileOutputStream output = new FileOutputStream(this.global.getName() + ".1")) {
+            new ManGlobalUsageGenerator<ExampleRunnable>(ManSections.GENERAL_COMMANDS).usage(this.global, output);
+            System.out.println("Generated manuals to " + this.global.getName() + ".1");
+        } catch (IOException e) {
+            System.err.println("Error generating completion script: " + e.getMessage());
+            e.printStackTrace(System.err);
+        }
+        return 0;
+    }
+}
+```
+
+Let's get and view the output:
+
+```
+> ./send-it generate-manuals
+Generated manuals to send-it.1
+> man ./send-it.1
+```
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+## Providing Bash Completion
+
+By the same mechanism we can also do [Bash completion](../help/bash.html), we may need to use the additional `@BashCompletion` annotation on our option/argument fields to control how we'd like Bash to complete things.
+
+We can then create a command like {% include github-ref.md class="BashCompletions" package="examples.cli.commands" %}:
+
+```java
+@Command(name = "generate-completions", description = "Generates a Bash completion script, the file can then be sourced to provide completion for this CLI")
+public class BashCompletion implements ExampleRunnable {
+
+    @Inject
+    private GlobalMetadata<ExampleRunnable> global;
+    
+    @Option(name = "--include-hidden", description = "When set hidden commands and options are shown in help", hidden = true)
+    private boolean includeHidden = false;
+
+    @Override
+    public int run() {
+        try (FileOutputStream out = new FileOutputStream(this.global.getName() + "-completions.bash")) {
+            new BashCompletionGenerator<ExampleRunnable>(this.includeHidden, false).usage(global, out);
+            System.out.println("Generated completion script " + this.global.getName() + "-completions.bash");
+        } catch (IOException e) {
+            System.err.println("Error generating completion script: " + e.getMessage());
+            e.printStackTrace(System.err);
+        }
+        return 0;
+    }
+}
+```
+
+Similar to our previous example this creates a script that we can source.  Let's try that out:
+
+```
+> ./send-it generate-completions
+Generated completion script send-it-completions.bash
+> source send-it-completions.bash
+> ./send-it <tab>
+check-address         check-postcodes       generate-completions  generate-manuals      help                  price                 send 
+```
+
+{% include slide-end.md %}
+{% include slide-start.md %}
+
+## Maven Plugin
+
+There is also a Maven Plugin that can generate the help as part of your build process e.g.
+
+```xml
+      <plugin>
+        <groupId>com.github.rvesse</groupId>
+        <artifactId>airline-maven-plugin</artifactId>
+        <version>{{ site.version }}</version>
+        <configuration>
+          <defaultOptions>
+            <multiFile>true</multiFile>
+          </defaultOptions>
+          <formats>
+            <format>BASH</format>
+            <format>MAN</format>
+          </formats>
+          <sources>
+            <source>
+              <classes>
+                <class>com.github.rvesse.airline.examples.sendit.SendItCli</class>
+              </classes>
+            </source>
+          </sources>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+```
+
+Added to your `pom.xml` would generate both Bash Completion scripts and Manual pages as part of your build.
 
 {% include slide-end.md %}
 
