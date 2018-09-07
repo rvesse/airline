@@ -185,7 +185,8 @@
             <exclude>license.txt</exclude>
             <exclude>pom.xml</exclude>
             <exclude>**/pom.xml</exclude>
-            <exclude>**/*.config</exclude>
+	    <exclude>**/*.config</exclude>
+	    <exclude>**/*.bat</exclude>
 
             <!-- Integration Tests -->
             <exclude>**/verify.bsh</exclude>
