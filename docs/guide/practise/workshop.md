@@ -52,6 +52,8 @@ In order to follow along with this workshop we assume the following knowledge an
 
 **NB** 2-4 will allow you to run the examples shown in the slides but aren't essential.
 
+A Linux/Mac laptop is preferred but you should be able to use Windows for most things.
+
 You can find these slides at [{{ site.url }}{{ site.baseurl }}/guide/practise/workshop.html]()
 
 {% include slide-end.md %}
@@ -106,7 +108,9 @@ So a basic CLI should just work, advanced CLIs can be configured as desired
 
 ## Workshop Overview
 
-For this workshop we are going to build an example command line application called `send-it` that is designed for shipping of packages.  The example code in these slides is typically truncated to omit things like import declarations for brevity, the full code is linked alongside each example.
+Due to time constraints this will be more of an interactive demo, almost everything in these slides is in the GitHub repo so you can play along.
+
+For this workshop we are going to build an example command line application called `send-it` for shipping of packages.  The example code in these slides is typically truncated to omit things like import declarations for brevity, the full code is linked alongside each example.
 
 The example code all lives inside the Airline git repository at [https://github.com/rvesse/airline/tree/master/airline-examples](https://github.com/rvesse/airline/tree/master/airline-examples)
 
@@ -115,7 +119,7 @@ The example code all lives inside the Airline git repository at [https://github.
 
 ### Following Along with the Examples
 
-We use `>` to indicate that a command should be run at a command prompt
+We use `>` to indicate that a command should be run at a command prompt and `<input>` within that to indicate some input is needed.
 
 To follow along you should start by checking out the code and building the examples:
 
@@ -131,13 +135,20 @@ Many of the examples are runnable using the `runExample` script in the `airline-
 
 ```
 > cd airline-examples
-> ./runExample SendIt
+> ./runExample SendIt <options>
 ```
 Or for this specific workshop the `send-it` script in that same sub-directory can be used:
 
 ```
-> ./send-it
+> ./send-it <options>
 ```
+
+Or for Windows Users:
+
+```
+> send-it.bat <options>
+```
+
 {% include slide-end.md %}
 {% include slide-start.md %}
 
