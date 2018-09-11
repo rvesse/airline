@@ -459,6 +459,30 @@ public class TestAliases {
         Assert.assertEquals(cmd.parameters.size(), 1);
         Assert.assertEquals(cmd.parameters.get(0), "bar");
     }
+    
+    @Test
+    public void user_aliases_env_04() throws Exception {
+        Map<String, String> custom = new HashMap<>();
+        custom.put("FOO", new File(f.getAbsolutePath()).getParentFile().getParentFile().getAbsolutePath());
+
+        customEnvironment(custom);
+        prepareConfig(f, "foo=Args1 bar");
+
+        //@formatter:off
+        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                            .withCommand(Args1.class);
+        builder.withParser()
+               .withUserAliases()
+                   .withFilename(f.getName())
+                   .withSearchLocation("${FOO}/${UNDEF}/")
+                   .withLocator(new EnvVarLocator());
+        Cli<Args1> cli = builder.build();
+        //@formatter:on
+
+        // Check definition, should be missing as not all env vars were resolvable
+        List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
+        Assert.assertEquals(aliases.size(), 0);
+    }
 
     @Test
     public void user_aliases_sysprop_01() throws Exception {

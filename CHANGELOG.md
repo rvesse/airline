@@ -2,6 +2,9 @@
 
 ## 2.7.0
 
+- Bug Fixes
+    - `EnvVarLocator` and `JvmSystemPropertyLocator` could resolve locations incorrectly if some placeholders were undefined
+
 ## 2.6.0
 
 - Core Improvements
