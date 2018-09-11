@@ -6,6 +6,10 @@ dependency-reduced-pom.xml
 release.properties
 *.xml.releaseBackup
 
+# Example Artifacts
+*.1
+*-completions.bash
+
 # OS X Artifacts
 .DS_Store
 
