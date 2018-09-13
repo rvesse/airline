@@ -92,12 +92,12 @@ public class ComparatorTests {
     public void byte_comparator_limits_01() {
         ByteComparator comparator = new ByteComparator();
 
-        Assert.assertEquals(comparator.compare(Byte.MIN_VALUE, (byte)0), -128);
-        Assert.assertEquals(comparator.compare((byte)0, Byte.MIN_VALUE), 128);
+        Assert.assertTrue(comparator.compare(Byte.MIN_VALUE, (byte)0) < 0);
+        Assert.assertTrue(comparator.compare((byte)0, Byte.MIN_VALUE) > 0);
         Assert.assertEquals(comparator.compare(Byte.MIN_VALUE, Byte.MIN_VALUE), 0);
         
-        Assert.assertEquals(comparator.compare(Byte.MAX_VALUE, (byte)0), 127);
-        Assert.assertEquals(comparator.compare((byte)0, Byte.MAX_VALUE), -127);
+        Assert.assertTrue(comparator.compare(Byte.MAX_VALUE, (byte)0) > 0);
+        Assert.assertTrue(comparator.compare((byte)0, Byte.MAX_VALUE) < 0);
         Assert.assertEquals(comparator.compare(Byte.MAX_VALUE, Byte.MAX_VALUE), 0);
     }
     

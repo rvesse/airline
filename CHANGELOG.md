@@ -4,6 +4,13 @@
 
 - Bug Fixes
     - `EnvVarLocator` and `JvmSystemPropertyLocator` could resolve locations incorrectly if some placeholders were undefined
+    - Fixes some corner cases with `@FloatRange` and `@DoubleRange` underlying implementation
+- Restriction Improvements
+    - Added `@File` and `@Directory` as more explicit variants of `@Path` (#73)
+    - Added `@Negative` and `@Positive` for numerics (#73)
+    - Added `@LengthRange` and `@ExactLength` for strings (#73)
+    - Added `@AllowedEnumValues` as a simpler way of specifying `@AllowedRawValues` on enum typed fields (#73)
+    - Added `@StartsWith` and `@EndsWith` for enforcing prefixes/suffixes on strings (#73)
 
 ## 2.6.0
 

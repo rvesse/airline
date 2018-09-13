@@ -170,4 +170,116 @@ public class TestStrings {
     public void pattern_case_insensitive_invalid() {
         parser().parse("--other", "test");
     }
+    
+    @Test
+    public void ends_with_01() {
+        Strings cmd = parser().parse("--images", "test.jpg");
+        Assert.assertEquals(cmd.images.size(), 1);
+        Assert.assertEquals(cmd.images.get(0), "test.jpg");
+    }
+    
+    @Test
+    public void ends_with_02() {
+        Strings cmd = parser().parse("--images", "test.jpg", "--images", "test.png", "--images", "test.gif");
+        Assert.assertEquals(cmd.images.size(), 3);
+        Assert.assertEquals(cmd.images.get(0), "test.jpg");
+        Assert.assertEquals(cmd.images.get(1), "test.png");
+        Assert.assertEquals(cmd.images.get(2), "test.gif");
+    }
+    
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class)
+    public void ends_with_03() {
+        parser().parse("--images", "test.txt");
+    }
+    
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class)
+    public void ends_with_04() {
+        // Case sensitive so fails
+        parser().parse("--images", "test.JPG");
+    }
+    
+    @Test
+    public void ends_with_case_insensitive_01() {
+        Strings cmd = parser().parse("--images-ci", "test.jpg");
+        Assert.assertEquals(cmd.imagesCaseInsensitive.size(), 1);
+        Assert.assertEquals(cmd.imagesCaseInsensitive.get(0), "test.jpg");
+    }
+    
+    @Test
+    public void ends_with_case_insensitive_02() {
+        Strings cmd = parser().parse("--images-ci", "test.jpg", "--images-ci", "test.PNG", "--images-ci", "test.GiF");
+        Assert.assertEquals(cmd.imagesCaseInsensitive.size(), 3);
+        Assert.assertEquals(cmd.imagesCaseInsensitive.get(0), "test.jpg");
+        Assert.assertEquals(cmd.imagesCaseInsensitive.get(1), "test.PNG");
+        Assert.assertEquals(cmd.imagesCaseInsensitive.get(2), "test.GiF");
+    }
+    
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class)
+    public void ends_with_case_insensitive_03() {
+        parser().parse("--images-ci", "test.txt");
+    }
+    
+    @Test
+    public void ends_with_case_insensitive_04() {
+        // Case insensitive so passes
+        Strings cmd = parser().parse("--images-ci", "test.JPG");
+        Assert.assertEquals(cmd.imagesCaseInsensitive.size(), 1);
+        Assert.assertEquals(cmd.imagesCaseInsensitive.get(0), "test.JPG");
+    }
+    
+    @Test
+    public void starts_with_01() {
+        Strings cmd = parser().parse("--urls", "http://test.com");
+        Assert.assertEquals(cmd.urls.size(), 1);
+        Assert.assertEquals(cmd.urls.get(0), "http://test.com");
+    }
+    
+    @Test
+    public void starts_with_02() {
+        Strings cmd = parser().parse("--urls", "http://test.com", "--urls", "https://secure.com", "--urls", "ftp://uploads.com");
+        Assert.assertEquals(cmd.urls.size(), 3);
+        Assert.assertEquals(cmd.urls.get(0), "http://test.com");
+        Assert.assertEquals(cmd.urls.get(1), "https://secure.com");
+        Assert.assertEquals(cmd.urls.get(2), "ftp://uploads.com");
+    }
+    
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class)
+    public void starts_with_03() {
+        parser().parse("--urls", "test.txt");
+    }
+    
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class)
+    public void starts_with_04() {
+        // Case sensitive so fails
+        parser().parse("--urls", "HTTP://test.com");
+    }
+    
+    @Test
+    public void starts_with_case_insensitive_01() {
+        Strings cmd = parser().parse("--urls-ci", "http://test.com");
+        Assert.assertEquals(cmd.urlsCaseInsensitive.size(), 1);
+        Assert.assertEquals(cmd.urlsCaseInsensitive.get(0), "http://test.com");
+    }
+    
+    @Test
+    public void starts_with_case_insensitive_02() {
+        Strings cmd = parser().parse("--urls-ci", "http://test.com", "--urls-ci", "HTTPS://secure.com", "--urls-ci", "FtP://uploads.com");
+        Assert.assertEquals(cmd.urlsCaseInsensitive.size(), 3);
+        Assert.assertEquals(cmd.urlsCaseInsensitive.get(0), "http://test.com");
+        Assert.assertEquals(cmd.urlsCaseInsensitive.get(1), "HTTPS://secure.com");
+        Assert.assertEquals(cmd.urlsCaseInsensitive.get(2), "FtP://uploads.com");
+    }
+    
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class)
+    public void starts_with_case_insensitive_03() {
+        parser().parse("--urls-ci", "urn:foo");
+    }
+    
+    @Test
+    public void starts_with_case_insensitive_04() {
+        // Case insensitive so passes
+        Strings cmd = parser().parse("--urls-ci", "HTTP://test.com");
+        Assert.assertEquals(cmd.urlsCaseInsensitive.size(), 1);
+        Assert.assertEquals(cmd.urlsCaseInsensitive.get(0), "HTTP://test.com");
+    }
 }

@@ -26,23 +26,23 @@ import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
-import com.github.rvesse.airline.utils.predicates.SuffixMatcher;
+import com.github.rvesse.airline.utils.predicates.PrefixMatcher;
 
 /**
- * A restriction that requires raw values to end with one of a set of suffixes
+ * A restriction that requires raw values to start with one of a set of prefixes
  * 
  * @author rvesse
  *
  */
-public class EndsWithRestriction extends AbstractLocaleAndCaseStringRestriction implements HelpHint {
+public class StartsWithRestriction extends AbstractLocaleAndCaseStringRestriction implements HelpHint {
 
-    private final String[] suffixes;
-    private final SuffixMatcher matcher;
+    private final String[] prefixes;
+    private final PrefixMatcher matcher;
 
-    public EndsWithRestriction(boolean ignoreCase, Locale locale, String... suffixes) {
+    public StartsWithRestriction(boolean ignoreCase, Locale locale, String... prefixes) {
         super(ignoreCase, locale);
-        this.suffixes = suffixes;
-        this.matcher = new SuffixMatcher(ignoreCase, locale, suffixes);
+        this.prefixes = prefixes;
+        this.matcher = new PrefixMatcher(ignoreCase, locale, prefixes);
     }
 
     @Override
@@ -53,22 +53,22 @@ public class EndsWithRestriction extends AbstractLocaleAndCaseStringRestriction 
     @Override
     protected <T> ParseRestrictionViolatedException violated(ParseState<T> state, OptionMetadata option, String value) {
         throw new ParseRestrictionViolatedException(
-                "Option '%s' has value '%s' which does not end with one of the permitted suffixes: %s",
-                option.getTitle(), value, StringUtils.join(this.suffixes, ", "));
+                "Option '%s' has value '%s' which does not start with one of the permitted prefixes: %s",
+                option.getTitle(), value, StringUtils.join(this.prefixes, ", "));
     }
 
     @Override
     protected <T> ParseRestrictionViolatedException violated(ParseState<T> state, ArgumentsMetadata arguments,
             String value) {
         throw new ParseRestrictionViolatedException(
-                "Argument '%s' has value '%s' which does not end with one of the permitted suffixes: %s",
+                "Argument '%s' has value '%s' which does not end with one of the permitted prefixes: %s",
                 AbstractCommonRestriction.getArgumentTitle(state, arguments), value,
-                StringUtils.join(this.suffixes, ", "));
+                StringUtils.join(this.prefixes, ", "));
     }
 
     @Override
     public String getPreamble() {
-        return String.format("This options value must end with one of the following %s suffixes:",
+        return String.format("This options value must start with one of the following %s prefixes:",
                 this.ignoreCase ? "case insensitive" : "sensitive");
     }
 
@@ -86,7 +86,7 @@ public class EndsWithRestriction extends AbstractLocaleAndCaseStringRestriction 
     public String[] getContentBlock(int blockNumber) {
         if (blockNumber != 0)
             throw new IndexOutOfBoundsException();
-        return this.suffixes;
+        return this.prefixes;
     }
 
 }
