@@ -128,3 +128,23 @@
     -webkit-background-size: contain;
     background-size: contain;
 }
+
+@media print {
+   @page {
+     size: landscape;
+   }
+  .bss-slides div {
+    display: block !important;
+    position: relative !important;
+  }
+  .bss-slides div.slide {
+    page-break-before: always;
+    page-break-inside: avoid !important;
+  }
+  .bss-slides div.slide div {
+    display: block !important;
+  }
+  .bss-next, .bss-prev, .bss-pos {
+    display: none !important;
+  }
+}
