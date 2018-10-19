@@ -15,49 +15,32 @@
  */
 package com.github.rvesse.airline.annotations.restrictions;
 
-import com.github.rvesse.airline.restrictions.common.PortRestriction;
+import static java.lang.annotation.ElementType.FIELD;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * Interface for port ranges, useful if you want to use the
- * {@link PortRestriction} with a custom port range implementation
- * 
- * @author rvesse
- *
+ * Annotation that indicates that an option/argument denotes a port number and
+ * its value should be restricted as such to a specific set of ports. If you
+ * just want to restrict to a predefined port type you should use {@link @Port}
+ * instead, or if you need multiple ranges then use {@link @PortRanges}.
  */
-public interface PortRange {
+@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@Target({ FIELD })
+public @interface PortRange {
 
     /**
-     * Gets the minimum port
+     * Sets the minimum port (inclusive)
      * 
      * @return Minimum port
      */
-    int getMinimumPort();
+    int minimum();
 
     /**
-     * Gets the maximum port
+     * Sets the maximum port (inclusive)
      * 
      * @return Maximum port
      */
-    int getMaximumPort();
-
-    /**
-     * Gets whether a port falls within the range
-     * 
-     * @param port
-     *            Port
-     * @return True if in range, false otherwise
-     */
-    boolean inRange(int port);
-
-    /**
-     * Gets whether the port range contains another port range i.e. does this
-     * cover at least the same range of ports as the other
-     * 
-     * @param other
-     *            Other port type
-     * @return True if this covers at least the same range of ports as the
-     *         other, false otherwise
-     */
-    boolean contains(PortRange other);
-
+    int maximum();
 }

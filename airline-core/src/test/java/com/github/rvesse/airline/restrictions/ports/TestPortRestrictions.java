@@ -24,13 +24,15 @@ import org.testng.annotations.Test;
 
 import com.github.rvesse.airline.SingleCommand;
 import com.github.rvesse.airline.TestingUtil;
-import com.github.rvesse.airline.annotations.restrictions.PortRange;
 import com.github.rvesse.airline.annotations.restrictions.PortType;
 import com.github.rvesse.airline.help.Help;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
+import com.github.rvesse.airline.restrictions.common.PortRange;
+import com.github.rvesse.airline.restrictions.common.PortRangeImpl;
 import com.github.rvesse.airline.restrictions.common.PortRestriction;
 
 public class TestPortRestrictions {
@@ -55,7 +57,7 @@ public class TestPortRestrictions {
             Assert.assertEquals(cmd.port, i);
         }
     }
-    
+
     private String checkHelp(SingleCommand<? extends OptionPortBase> parser, PortRange[] included) throws IOException {
         return checkHelp(parser, included, new PortRange[0]);
     }
@@ -82,7 +84,7 @@ public class TestPortRestrictions {
                 Assert.assertFalse(usage.contains(String.format("%d", range.getMinimumPort())));
             }
         }
-        
+
         return usage;
     }
 
@@ -107,7 +109,7 @@ public class TestPortRestrictions {
         hasPortRestriction(parser.getCommandMetadata());
         parser.parse("-p", "65536");
     }
-    
+
     @Test
     public void port_all() {
         SingleCommand<? extends OptionPortBase> parser = TestingUtil.singleCommandParser(OptionPortAll.class);
@@ -129,7 +131,7 @@ public class TestPortRestrictions {
         hasPortRestriction(parser.getCommandMetadata());
         parser.parse("-p", "65536");
     }
-    
+
     @Test
     public void port_all2() {
         SingleCommand<? extends OptionPortBase> parser = TestingUtil.singleCommandParser(OptionPortAll2.class);
@@ -182,6 +184,28 @@ public class TestPortRestrictions {
         hasPortRestriction(parser.getCommandMetadata());
         parser.parse("-p", Integer.toString(PortType.USER.getMinimumPort()));
     }
+    
+    @Test
+    public void port_custom_single() {
+        SingleCommand<? extends OptionPortBase> parser = TestingUtil.singleCommandParser(OptionPortCustom.class);
+        hasPortRestriction(parser.getCommandMetadata());
+
+        checkPorts(parser, new PortRangeImpl(1500,1600));
+    }
+    
+    @Test
+    public void port_custom_mutliple() {
+        SingleCommand<? extends OptionPortBase> parser = TestingUtil.singleCommandParser(OptionPortCustomMultiple.class);
+        hasPortRestriction(parser.getCommandMetadata());
+
+        checkPorts(parser, new PortRangeImpl(1500,1600));
+        checkPorts(parser, new PortRangeImpl(3500,3600));
+    }
+    
+    @Test(expectedExceptions = ParseInvalidRestrictionException.class)
+    public void port_custom_invalid() {
+        TestingUtil.singleCommandParser(OptionPortCustomInvalid.class);
+    }
 
     @Test
     public void port_help_any() throws IOException {
@@ -198,7 +222,7 @@ public class TestPortRestrictions {
 
         checkHelp(parser, new PortRange[] { PortType.DYNAMIC });
     }
-    
+
     @Test
     public void port_help_several() throws IOException {
         SingleCommand<? extends OptionPortBase> parser = TestingUtil.singleCommandParser(OptionPortSeveral.class);
@@ -208,20 +232,42 @@ public class TestPortRestrictions {
         // Check that port ranges are ordered appropriately
         Assert.assertTrue(usage.contains("1-1023, 49152-65535"));
     }
-    
+
     @Test
     public void port_help_all() throws IOException {
         SingleCommand<? extends OptionPortBase> parser = TestingUtil.singleCommandParser(OptionPortAll.class);
         hasPortRestriction(parser.getCommandMetadata());
 
-        checkHelp(parser, new PortRange[] { PortType.ANY }, new PortRange[] { PortType.SYSTEM, PortType.USER, PortType.DYNAMIC });
+        checkHelp(parser, new PortRange[] { PortType.ANY },
+                new PortRange[] { PortType.SYSTEM, PortType.USER, PortType.DYNAMIC });
     }
-    
+
     @Test
     public void port_help_all2() throws IOException {
         SingleCommand<? extends OptionPortBase> parser = TestingUtil.singleCommandParser(OptionPortAll2.class);
         hasPortRestriction(parser.getCommandMetadata());
 
-        checkHelp(parser, new PortRange[] { PortType.ANY }, new PortRange[] { PortType.SYSTEM, PortType.USER, PortType.DYNAMIC });
+        checkHelp(parser, new PortRange[] { PortType.ANY },
+                new PortRange[] { PortType.SYSTEM, PortType.USER, PortType.DYNAMIC });
+    }
+    
+    @Test
+    public void port_help_custom_single() throws IOException {
+        SingleCommand<? extends OptionPortBase> parser = TestingUtil.singleCommandParser(OptionPortCustom.class);
+        hasPortRestriction(parser.getCommandMetadata());
+
+        String usage = checkHelp(parser, new PortRange[] { new PortRangeImpl(1500, 1600) });
+        // Check that port ranges are ordered appropriately
+        Assert.assertTrue(usage.contains("1500-1600"));
+    }
+    
+    @Test
+    public void port_help_custom_multiple() throws IOException {
+        SingleCommand<? extends OptionPortBase> parser = TestingUtil.singleCommandParser(OptionPortCustomMultiple.class);
+        hasPortRestriction(parser.getCommandMetadata());
+
+        String usage = checkHelp(parser, new PortRange[] { new PortRangeImpl(1500, 1600), new PortRangeImpl(3500, 3600) });
+        // Check that port ranges are ordered appropriately
+        Assert.assertTrue(usage.contains("1500-1600, 3500-3600"));
     }
 }

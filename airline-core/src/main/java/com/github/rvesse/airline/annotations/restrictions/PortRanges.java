@@ -22,19 +22,18 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation that indicates that an option/argument denotes a port number and
- * its value should be restricted as such to a specific set of port classes as
- * defined by {@link PortType}. If you want to restrict to more specific ranges
- * use the {@link PortRange} or {@link PortRanges} annotations instead.
+ * its value should be restricted as such to a specific set of ports. If you
+ * just want to restrict to a predefined port type you should use {@link @Port}
+ * instead, or if you need just a single port range then use {@link @PortRange}.
  */
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 @Target({ FIELD })
-public @interface Port {
+public @interface PortRanges {
 
     /**
-     * The acceptable port types, defaults to {@code PortType#OS_ALLOCATED},
-     * {@code PortType#USER} and {@code PortType#DYNAMIC}
+     * Sets the valid port ranges
      * 
-     * @return Acceptable port types
+     * @return Port ranges
      */
-    PortType[] acceptablePorts() default { PortType.OS_ALLOCATED, PortType.USER, PortType.DYNAMIC };
+    PortRange[] value();
 }

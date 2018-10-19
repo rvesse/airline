@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.github.rvesse.airline.annotations.restrictions.PortRange;
 import com.github.rvesse.airline.annotations.restrictions.PortType;
 import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
@@ -29,15 +28,14 @@ import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
-import com.github.rvesse.airline.utils.AirlineUtils;
 
 public class PortRestriction extends AbstractCommonRestriction implements HelpHint {
     private static final int MIN_PORT = 0, MAX_PORT = 65535;
 
     private Set<PortRange> acceptablePorts = new HashSet<>();
 
-    public PortRestriction(PortRange... portTypes) {
-        this.acceptablePorts.addAll(Arrays.asList(portTypes));
+    public PortRestriction(PortRange... portRanges) {
+        this.acceptablePorts.addAll(Arrays.asList(portRanges));
     }
 
     @Override
