@@ -14,7 +14,7 @@ public int port;
 ```
 This restricts the `-p` option to taking a value which is either an `OS_ALLOCATED` or `DYNAMIC` port which corresponds to the ranges `0` and `49512` through `65535`.
 
-The following table shows the available port ranges:
+The following table shows the available standard port types:
 
 | `PortType` constant | Port Ranges | Notes |
 | -------------------------- | ----------------- | -------- |
@@ -24,6 +24,31 @@ The following table shows the available port ranges:
 | `USER` | `1024` through `49151` | User ports that may be registered with the IANA |
 | `DYNAMIC` | `49152` through `65535` | Dynamic aka `ephermeral` ports |
 
-### Related Annotations
+If you need custom port ranges you can use the more general `@PortRange` and `@PortRanges` annotations as detailed below.
 
-If you have a more restrictive set of acceptable ports to apply then the [`@IntegerRange`](integer-range.html) annotation may be better suited though that only permits a single range to be specified.
+## `@PortRange`
+
+The `@PortRange` annotation allows for custom port ranges e.g.
+
+```java
+@Option(name = "-p", title = "Port")
+@PortRange(minimum = 2000, maximum = 3000)
+public int port;
+```
+
+Restricts the `-p` option to ports in the range 2000 to 3000.
+
+## `@PortRanges`
+
+The `@PortRanges` annotation allows for multiple custom port ranges e.g.
+
+```java
+@Option(name = "-p", title = "Port")
+@PortRanges({ 
+  @PortRange(minimum = 2000, maximum = 3000),
+  @PortRange(minimum = 6000, maximum = 7000)
+}
+public int port;
+```
+
+Restricts the `-p` option to ports in the range 2000 to 3000 or 6000 to 7000.
