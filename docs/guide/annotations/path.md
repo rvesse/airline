@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Path Annotation
+title: Path, File and Directory Annotations
 ---
 
 ## `@Path`
@@ -49,3 +49,13 @@ public String writable;
 public String executable;
 ```
 In the above examples we use the `readable`, `writable` and `executable` fields of the annotation to specify the access modes that the path must support.
+
+## `@File` and `@Directory`
+
+These annotations function the same as the above described `@Path` annotation except that the `kind` field is not available since it is implied by the name of the annotation.
+
+So `@File` functions the same as `@Path(kind = PathKind.FILE)` and `@Directory` the same as `@Path(kind = PathKind.DIRECTORY)` 
+
+### Related Annotations
+
+For enforcing certain file extensions the [`@EndsWith`](ends-with.html) annotation may be useful.
