@@ -17,4 +17,4 @@ Restricts the `--reference` option to values of at most 10 characters.
 
 ### Related Annotations
 
-If you want to restrict the minimum length of a value then use the [`@MinLength`](min-length.html) annotation.
+If you want to restrict the minimum length of a value then use the [`@MinLength`](min-length.html) annotation.  For exact length restrictions use the [`@ExactLength`](exact-length.html) annotation.
