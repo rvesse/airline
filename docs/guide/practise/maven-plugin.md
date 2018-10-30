@@ -53,3 +53,139 @@ This goal expects to find a `<sources>` element specifying one/more `<source>` e
 The `<source>` element may also have other children as detailed in the configuration for the `airline:generate` goal however these are ignored for the purposes of the `airline:validate` goal.
 
 ## `airline:generate`
+
+The `generate` goal is used to generate help for your [`@Cli`](../annotations/cli.html) or [`@Command`](../annotations/command.html) annotated classes.  It can be used to generate multiple formats of help, including for custom formats not provided by Airline itself, and can customise help output on a global, per-format or per-source level.
+
+For example:
+
+```xml
+<plugin>
+        <groupId>com.github.rvesse</groupId>
+        <artifactId>airline-maven-plugin</artifactId>
+        <version>{{ site.version }}</version>
+        <configuration>
+          <formats>
+            <format>MAN</format>
+            <format>CLI</format>
+            <format>MARKDOWN</format>
+          </formats>
+          <sources>
+            <!-- Separate source elements rather than multiple class under a single source element -->
+            <source>
+              <classes>
+                <class>com.github.rvesse.airline.args.Args1</class>
+              </classes>
+            </source>
+            <source>
+              <classes>
+                <class>com.github.rvesse.airline.examples.userguide.BasicCli</class>
+              </classes>
+            </source>
+          </sources>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+```
+
+Here we generate help in three formats for two different sources.
+
+### Goal Configuration
+
+This goal expects to find a `<sources>` element specifying one/more `<source>` elements.  Each of which specifies a `<classes>` element with one/more `<class>` elements containing the fully qualified class name of a class to load metadata for.
+Each `<source>` element may also have an optional `<outputMode>` element and an `<options>` element.  The details of these are described below.
+
+
+## Configuration Elements
+
+The following configuration elements are supported by the plugin.  For each we note where they may be used, permitted child elements, example usage and descriptions of their functionality.
+
+### Top Level Elements
+
+These elements are all supplied directly as children of the plugin declarations `<configuration>` element.
+
+#### `<defaultOptions>`
+
+*Applicable Goals:* `airline:generate`
+
+#### `<failOnNoSources>`
+
+*Applicable Goals:* `airline:generate`, `airline:validate`
+
+Takes a Boolean value indicating whether the goal should fail the build if no sources are specified.  Defaults to **true**
+
+#### `<failOnUnknownFormat>`
+
+*Applicable Goals:* `airline:generate`
+
+Takes a Boolean value indicating whether the goal should fail the build if a format is requested that is not either provided by Airline or registered via `<formatMappings>`.  Defaults to **true**
+
+#### `<failOnUnsupportedOutputMode>`
+
+*Applicable Goals:* `airline:generate`
+
+Takes a Boolean value indicating whether the goal should fail the build if an unsupported output mode is requested for a source.  Defaults to **false**
+
+When **false** an unsupported output mode simply results in a warning and help not being generated for some/all formats.
+
+#### `<formatMappings>`
+
+*Applicable Goals:* `airline:generate`
+
+#### `<formats>`
+
+*Applicable Goals:* `airline:generate`
+
+#### `<outputDirectory>`
+
+*Applicable Goals:* `airline:generate`
+
+```xml
+<outputDirectory>${project.build.directory}/help/<outputDirectory>
+```
+
+Specifies the directory to which generated help output will be written.  Defaults to **${project.build.directory}/help/**
+
+#### `<skipBadSources>`
+
+*Applicable Goals:* `airline:generate`
+
+Takes a Boolean value indicating whether the goal should skip invalid sources.  Defaults to **true**
+
+When **false** an invalid source will fail the build.
+
+#### `<sources>`
+
+*Applicable Goals:* `airline:generate`, `airline:validate`
+
+### Child Elements
+
+These elements are all supplied as child elements to the relevant top level elements.
+
+#### `<columns>`
+
+#### `<format>`
+
+#### `<includeHidden>`
+
+#### `<manSection>`
+
+#### `<mapping>`
+
+#### `<multiFile>`
+
+#### `<outputMode>`
+
+*Child Element Of:* `<source>`
+*Permitted Child Elements:* **N/A**
+
+#### `<options>`
+
+#### `<properties>`
+
+#### `<provider>`
