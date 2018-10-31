@@ -25,7 +25,7 @@ public class Mapping {
 
     /**
      * Constant used in a mapping to indicate that the default provider may be
-     * sued
+     * used
      */
     public static final String DEFAULT = "default";
 
