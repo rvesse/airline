@@ -5,6 +5,7 @@
 - Bug Fixes
     - `EnvVarLocator` and `JvmSystemPropertyLocator` could resolve locations incorrectly if some placeholders were undefined
     - Fixes some corner cases with `@FloatRange` and `@DoubleRange` underlying implementation
+    - Fix possible NPE in maven plugin (#45)
 - Restriction Improvements
     - Added `@File` and `@Directory` as more explicit variants of `@Path` (#73)
     - Added `@Negative` and `@Positive` for numerics (#73)
