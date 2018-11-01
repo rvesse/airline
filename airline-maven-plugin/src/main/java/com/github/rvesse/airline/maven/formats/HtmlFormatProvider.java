@@ -16,6 +16,7 @@
 package com.github.rvesse.airline.maven.formats;
 
 import java.io.File;
+import org.apache.commons.lang3.StringUtils;
 
 import com.github.rvesse.airline.help.CommandGroupUsageGenerator;
 import com.github.rvesse.airline.help.CommandUsageGenerator;
@@ -24,6 +25,7 @@ import com.github.rvesse.airline.help.html.HtmlCommandUsageGenerator;
 
 /**
  * Provides HTML help generators
+ * 
  * @author rvesse
  *
  */
@@ -39,9 +41,20 @@ public class HtmlFormatProvider implements FormatProvider {
         return ".html";
     }
 
+    private String[] getStylesheets(FormatOptions options) {
+        String sheets = options.getProperty("stylesheet");
+        if (StringUtils.isBlank(sheets)) {
+            return new String[] { HtmlCommandUsageGenerator.DEFAULT_STYLESHEET };
+        } else if (sheets.contains(",")) {
+            return StringUtils.split(sheets, ',');
+        } else {
+            return new String[] { sheets };
+        }
+    }
+
     @Override
     public CommandUsageGenerator getCommandGenerator(File outputDirectory, FormatOptions options) {
-        return new HtmlCommandUsageGenerator(options.includeHidden());
+        return new HtmlCommandUsageGenerator(options.includeHidden(), getStylesheets(options));
     }
 
     @Override

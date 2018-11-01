@@ -67,6 +67,10 @@ public class HtmlCommandUsageGenerator extends AbstractCommandUsageGenerator {
     public HtmlCommandUsageGenerator(String... stylesheetUrls) {
         this(UsageHelper.DEFAULT_OPTION_COMPARATOR, false, stylesheetUrls);
     }
+    
+    public HtmlCommandUsageGenerator(boolean includeHidden, String... stylesheetUrls) {
+        this(UsageHelper.DEFAULT_OPTION_COMPARATOR, includeHidden, stylesheetUrls);
+    }
 
     public HtmlCommandUsageGenerator(String stylesheetUrl, boolean includeHidden) {
         this(UsageHelper.DEFAULT_OPTION_COMPARATOR, includeHidden, stylesheetUrl);

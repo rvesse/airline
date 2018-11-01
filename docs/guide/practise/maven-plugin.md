@@ -245,7 +245,7 @@ These elements are all supplied as child elements to the relevant top level elem
 *Applicable Goals:* `airline:generate`  
 *Child Element Of:* `<defaultOptions>` and `<options>`
 
-Specifies the integer number of columns to use for column wrapped output formats e.g.
+Specifies the integer number of columns to use for column wrapped output formats, defaults to **79** e.g.
 
 ```xml
 <columns>70</columns>
@@ -258,13 +258,59 @@ Specifies the integer number of columns to use for column wrapped output formats
 
 Specifies the name of an output format.  By default Airline recognizes the names `BASH`, `CLI`, `HTML`, `MAN` and `MARKDOWN` as referring to built in help formats.  However this mapping can be redefined by the `<formatMappings>` element as desired.
 
+```xml
+<format>MAN</format>
+```
+
 #### `<includeHidden>`
+
+*Applicable Goals:* `airline:generate`  
+*Child Element Of:* `<formats>` and `<mapping>`
+
+Specifies whether hidden groups, commands and options should be included in the output.  Defaults to **false**
+
+```xml
+<includeHidden>true</includeHidden>
+```
 
 #### `<manSection>`
 
+*Applicable Goals:* `airline:generate`  
+*Child Element Of:* `<formats>` and `<mapping>`
+
+Specifies what man section should be used for the output for formats that respect man section.  Defaults to **1** which is General Commands.
+
+```xml
+<manSection>8</manSection>
+```
+
 #### `<mapping>`
 
+*Applicable Goals:* `airline:generate`
+*Child Element Of:* `<formatMappings>`
+
+Defines a relationship between a format name used in a `<format>` element to an underlying {% include javadoc-ref.md class="FormatProvider" package="maven.formats" module="airline-maven-plugin" %}.  Can also optionally specify default options for the format which would override `<defaultOptions>` but can also later be overridden by `<source>` options.
+
+```xml
+<mapping>
+  <format>CUSTOM</format>
+  <provider>some.package.YourFormatProvider</provider>
+  <options>
+    <columns>100</columns>
+  </options>
+</mapping>
+```
+
 #### `<multiFile>`
+
+*Applicable Goals:* `airline:generate`  
+*Child Element Of:* `<formats>` and `<mapping>`
+
+Specifies whether output should be generated to multiple files when the format supports it.  So to take Man pages for example when set to **true** will generate an individual output file per CLI, group and command whereas when set to **false** generates a single output file.  Defaults to **false**.
+
+```xml
+<multiFile>true</multiFile>
+```
 
 #### `<outputMode>`
 
@@ -274,4 +320,24 @@ Specifies the name of an output format.  By default Airline recognizes the names
 
 #### `<properties>`
 
+*Applicable Goals:* `airline:generate`  
+*Child Element Of:* `<formats>` and `<mapping>`
+
+Specifies additional custom properties that may be used by output formats to further customise their output.  This allows for free-form key value pairs where interpretation is up to the format provider without needing to extend the plugin to introduce new configuration.
+
+```xml
+<properties>
+  <stylesheet>css/my-style.css</stylesheet>
+</properties>
+```
+
 #### `<provider>`
+
+*Applicable Goals:* `airline:generate`
+*Child Element Of:* `<mapping>`
+
+Specifies the provider for a format.  This can either be a fully qualified class name or can be the special value `default`.  In the case of `default` whatever the default provider for the name declared by the `<format>` element of the `<mapping>` is will be used.  Default providers are discovered using the JDK `ServiceLoader` so provided your custom provider is present on the plugins classpath and has an appropriate `com.github.rvesse.airline.maven.formats.FormatProvider` file in its `META-INF/services` folder then using the `<provider>` element will be unecessary.
+
+```xml
+<provider>some.package.YourCustomProvider</provider>
+```
