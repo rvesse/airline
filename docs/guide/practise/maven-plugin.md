@@ -111,7 +111,7 @@ These elements are all supplied directly as children of the plugin declarations 
 
 #### `<defaultOptions>`
 
-*Applicable Goals:* `airline:generate`
+*Applicable Goals:* `airline:generate`  
 *Child Elements*: `<columns>`, `<includeHidden>`, `<manSection>`, `<multiFile>` and `<properties>`
 
 Provides the default formatting options used to configure each requested output format.  These defaults can be overridden at both a `<format>` and `<source>` level.  See documentation for the child elements for their defaults.
@@ -163,7 +163,7 @@ When **false** an unsupported output mode simply results in a warning and help n
 
 #### `<formatMappings>`
 
-*Applicable Goals:* `airline:generate`
+*Applicable Goals:* `airline:generate`  
 *Child Elements:* `<mapping>`
 
 Contains one or more `<mapping>` elements used to configure available output formats e.g.
@@ -182,7 +182,7 @@ Contains one or more `<mapping>` elements used to configure available output for
 
 #### `<formats>`
 
-*Applicable Goals:* `airline:generate`
+*Applicable Goals:* `airline:generate`  
 *Child Elements:* `<format>`
 
 Contains one or more `<format>` elements indicating desired output formats.  The separate `<formatMappings>` element is used to configure the available output formats e.g.
@@ -224,7 +224,7 @@ When **false** an invalid source will fail the build.
 *Applicable Goals:* `airline:generate`, `airline:validate`  
 *Child Elements:* `<source>`
 
-Specifies one or more `<source>` elements that specifies source(s) for which help should be generated e.g.
+Contains one or more `<source>` elements that specifies source(s) for which help should be generated e.g.
 
 ```xml
 <sources>
@@ -236,9 +236,28 @@ Specifies one or more `<source>` elements that specifies source(s) for which hel
 </sources>
 ```
 
+A `<source>` element may optionally have an `<options>` child element to define source specific options.
+
+If this element is empty then the build may fail depending on the value of the `<failOnNoSources>` element.
+
 ### Child Elements
 
-These elements are all supplied as child elements to the relevant top level elements.
+These elements are all supplied as child elements to the specified elements.
+
+#### `<class>`
+
+*Applicable Goals:* `airline:generate` and `airline:validate`  
+*Child Element Of:* `<classes>`
+
+Specifies a fully qualified class names to treat as a source.  This class should be `@Cli` or `@Command` annotated.  If the class specified does not exist then the class will either be ignored or fail the build depending on the value of the `<skipBadSources>` element.
+
+#### `<classes>`
+
+*Applicable Goals:* `airline:generate` and `airline:validate`  
+*Child Element Of:* `<sources>`  
+*Child Elements:* `<class>`
+
+Contains one or more `<class>` elements that specify fully qualified class names to treat as sources.
 
 #### `<columns>`
 
@@ -286,7 +305,7 @@ Specifies what man section should be used for the output for formats that respec
 
 #### `<mapping>`
 
-*Applicable Goals:* `airline:generate`
+*Applicable Goals:* `airline:generate`  
 *Child Element Of:* `<formatMappings>`
 
 Defines a relationship between a format name used in a `<format>` element to an underlying {% include javadoc-ref.md class="FormatProvider" package="maven.formats" module="airline-maven-plugin" %}.  Can also optionally specify default options for the format which would override `<defaultOptions>` but can also later be overridden by `<source>` options.
@@ -301,6 +320,8 @@ Defines a relationship between a format name used in a `<format>` element to an 
 </mapping>
 ```
 
+This allows for configuring the plugin to use custom help formats provided by 3rd party modules.
+
 #### `<multiFile>`
 
 *Applicable Goals:* `airline:generate`  
@@ -314,9 +335,37 @@ Specifies whether output should be generated to multiple files when the format s
 
 #### `<outputMode>`
 
+*Applicable Goals:* `airline:generate`  
 *Child Element Of:* `<source>`
 
+Specifies the desired output type for the source.  Acceptable values are `DEFAULT`, `CLI`, `GROUP` and `COMMAND`.
+
+- `DEFAULT` causes the output to be source dependent, so `@Cli` sources generate CLI help while `@Command` sources generate command help
+- `CLI` requests CLI output
+- `GROUP` requests command group output
+- `COMMAND` requests command output
+
+If you request an output mode for a source that is not compatible then that source will either be skipped or fail the build depending on the value of `<failOnUnsupportedOutputMode>`.  Similarly not all formats support all output modes so again certain combinations of formats and output modes will result in either no output or a build failure.
+
 #### `<options>`
+
+*Applicable Goals:* `airline:generate`  
+*Child Elements*: `<columns>`, `<includeHidden>`, `<manSection>`, `<multiFile>` and `<properties>`
+
+Provides the formatting options for the parent source/format.  See documentation for the child elements for their purpose and defaults.
+
+For example:
+
+```xml
+<options>
+  <columns>120</columns>
+  <includeHidden>false</includeHidden>
+  <multiFile>true</multiFile>
+  <properties>
+    <key>value</key>
+  </properties>
+</options>
+```
 
 #### `<properties>`
 
@@ -331,9 +380,11 @@ Specifies additional custom properties that may be used by output formats to fur
 </properties>
 ```
 
+The above example can be used with the built-in `HTML` format to customise the stylesheet linked into the output.
+
 #### `<provider>`
 
-*Applicable Goals:* `airline:generate`
+*Applicable Goals:* `airline:generate`  
 *Child Element Of:* `<mapping>`
 
 Specifies the provider for a format.  This can either be a fully qualified class name or can be the special value `default`.  In the case of `default` whatever the default provider for the name declared by the `<format>` element of the `<mapping>` is will be used.  Default providers are discovered using the JDK `ServiceLoader` so provided your custom provider is present on the plugins classpath and has an appropriate `com.github.rvesse.airline.maven.formats.FormatProvider` file in its `META-INF/services` folder then using the `<provider>` element will be unecessary.
@@ -341,3 +392,13 @@ Specifies the provider for a format.  This can either be a fully qualified class
 ```xml
 <provider>some.package.YourCustomProvider</provider>
 ```
+
+### Option Precedence
+
+As described above formatting options can be specified at several levels of configuration.  The resulting formatting options for each output are the result of merging the options in the following order:
+
+- Top level options from `<defaultOptions>`
+- Format options from `<formatMappings>/<mapping>/<options>`
+- Source options from `<sources>/<source>/<options>`
+
+i.e. the most specific options specified take precedence but respect any options that are not overridden.
