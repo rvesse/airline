@@ -402,3 +402,53 @@ As described above formatting options can be specified at several levels of conf
 - Source options from `<sources>/<source>/<options>`
 
 i.e. the most specific options specified take precedence but respect any options that are not overridden.
+
+Here's an example configuration that does all of the above:
+
+```xml
+      <plugin>
+        <groupId>com.github.rvesse</groupId>
+        <artifactId>airline-maven-plugin</artifactId>
+        <version>{{ site.version }}</version>
+        <configuration>
+          <defaultOptions>
+            <includeHidden>true</includeHidden>
+          </defaultOptions>
+          <formats>
+            <format>CLI</format>
+          </formats>
+          <formatMappings>
+            <mapping>
+              <format>CLI</format>
+              <options>
+                <columns>68</columns>
+                <includeHidden>false</includeHidden>
+                <multiFile>true</multiFile>
+              </options>
+            </mapping>
+          </formatMappings>
+          <sources>
+            <source>
+              <classes>
+                <class>com.github.rvesse.airline.args.Args1</class>
+              </classes>
+              <options>
+                <columns>100</columns>
+               </options>
+            </source>
+          </sources>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+```
+Here options are defined at all three levels, since the most specific options take effect the resulting options for our `Arg1` class are as follows:
+
+- `columns` is 100 (overriden at source level)
+- `multiFile` is `true` (set at format level)
+- `includeHidden` is `false` (overridden at source level)
