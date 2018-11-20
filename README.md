@@ -10,7 +10,7 @@ Additionally it provides many powerful features including, but not limited to, t
 - [User Defined Aliases](http://rvesse.github.io/airline/guide/practise/aliases.html)
 - Annotation driven [restrictions](http://rvesse.github.io/airline/guide/restrictions/) framework to reduce boilerplate
 - Extensible [Help](http://rvesse.github.io/airline/guide/help) system supporting multiple output formats including generating Man pages and Bash completion scripts
-- [Maven Plugin](http://rvesse.github.io/airline/guide/maven-plugin/) for validation and help generation during builds
+- [Maven Plugin](http://rvesse.github.io/airline/guide/practise/maven-plugin.html) for validation and help generation during builds
 
 ## User Guide
 
