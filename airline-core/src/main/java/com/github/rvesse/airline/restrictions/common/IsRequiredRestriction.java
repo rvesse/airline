@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline.restrictions.common;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
@@ -33,7 +33,7 @@ public class IsRequiredRestriction extends AbstractCommonRestriction {
 
     @Override
     public <T> void finalValidate(ParseState<T> state, OptionMetadata option) {
-        if (CollectionUtils.find(state.getParsedOptions(), new ParsedOptionFinder(option)) == null)
+        if (IterableUtils.find(state.getParsedOptions(), new ParsedOptionFinder(option)) == null)
             throw new ParseOptionMissingException(AirlineUtils.first(option.getOptions()));
     }
 

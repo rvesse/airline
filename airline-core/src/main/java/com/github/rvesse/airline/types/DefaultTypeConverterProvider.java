@@ -15,6 +15,7 @@
  */
 package com.github.rvesse.airline.types;
 
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.model.ParserMetadata;
@@ -37,6 +38,11 @@ public class DefaultTypeConverterProvider implements TypeConverterProvider {
 
     @Override
     public <T> TypeConverter getTypeConverter(ArgumentsMetadata arguments, ParseState<T> state) {
+        return state.getParserConfiguration().getTypeConverter();
+    }
+
+    @Override
+    public <T> TypeConverter getTypeConverter(PositionalArgumentMetadata argumentMetadata, ParseState<T> state) {
         return state.getParserConfiguration().getTypeConverter();
     }
 

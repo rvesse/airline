@@ -15,6 +15,7 @@
  */
 package com.github.rvesse.airline.types.numerics;
 
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
@@ -32,6 +33,11 @@ public class DefaultNumericConverter implements TypeConverterProvider, NumericTy
 
     @Override
     public <T> TypeConverter getTypeConverter(ArgumentsMetadata arguments, ParseState<T> state) {
+        return new DefaultTypeConverter(this);
+    }
+    
+    @Override
+    public <T> TypeConverter getTypeConverter(PositionalArgumentMetadata argument, ParseState<T> state) {
         return new DefaultTypeConverter(this);
     }
 

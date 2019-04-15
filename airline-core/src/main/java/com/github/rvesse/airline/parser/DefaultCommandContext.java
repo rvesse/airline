@@ -19,6 +19,8 @@ import com.github.rvesse.airline.Accessor;
 import com.github.rvesse.airline.CommandContext;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
+
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -31,14 +33,18 @@ public final class DefaultCommandContext<T> implements CommandContext<T> {
 
     private Iterable<OptionMetadata> options;
     private List<Pair<OptionMetadata, Object>> parsedOptions;
+    private List<Pair<PositionalArgumentMetadata, Object>> positionalArgs;
     private ArgumentsMetadata arguments;
     private Iterable<Object> parsedArguments;
     private Iterable<Accessor> metadataInjection;
     private Map<Class<?>, Object> bindings;
 
-    DefaultCommandContext(Iterable<OptionMetadata> options, List<Pair<OptionMetadata, Object>> parsedOptions, ArgumentsMetadata arguments, Iterable<Object> parsedArguments, Iterable<Accessor> metadataInjection, Map<Class<?>, Object> bindings) {
+    DefaultCommandContext(Iterable<OptionMetadata> options, List<Pair<OptionMetadata, Object>> parsedOptions,
+            List<Pair<PositionalArgumentMetadata, Object>> positionalArgs, ArgumentsMetadata arguments,
+            Iterable<Object> parsedArguments, Iterable<Accessor> metadataInjection, Map<Class<?>, Object> bindings) {
         this.options = options;
         this.parsedOptions = parsedOptions;
+        this.positionalArgs = positionalArgs;
         this.arguments = arguments;
         this.parsedArguments = parsedArguments;
         this.metadataInjection = metadataInjection;
@@ -52,6 +58,14 @@ public final class DefaultCommandContext<T> implements CommandContext<T> {
 
     @Override
     public void processArguments(T commandInstance) {
+        if (positionalArgs != null && positionalArgs.size() > 0) {
+            for (Pair<PositionalArgumentMetadata, Object> parsedPosArg : positionalArgs) {
+                List<Object> values = Collections.singletonList(parsedPosArg.getRight()); 
+                for (Accessor accessor : parsedPosArg.getLeft().getAccessors()) {
+                    accessor.addValues(commandInstance, values);
+                }
+            }
+        }
         if (arguments != null && parsedArguments != null) {
             for (Accessor accessor : arguments.getAccessors()) {
                 accessor.addValues(commandInstance, parsedArguments);

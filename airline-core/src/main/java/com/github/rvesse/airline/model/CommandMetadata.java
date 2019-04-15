@@ -34,7 +34,7 @@ public class CommandMetadata {
     private final List<OptionMetadata> groupOptions;
     private final List<OptionMetadata> commandOptions;
     private final OptionMetadata defaultOption;
-    private final List<ArgumentMetadata> positionalArgs;
+    private final List<PositionalArgumentMetadata> positionalArgs;
     private final ArgumentsMetadata arguments;
     private final List<Accessor> metadataInjections;
     private final Class<?> type;
@@ -50,7 +50,7 @@ public class CommandMetadata {
                            Iterable<OptionMetadata> groupOptions,
                            Iterable<OptionMetadata> commandOptions, 
                            OptionMetadata defaultOption,
-                           List<ArgumentMetadata> positionalArguments,
+                           List<PositionalArgumentMetadata> positionalArguments,
                            ArgumentsMetadata arguments,
                            Iterable<Accessor> metadataInjections, 
                            Class<?> type, 
@@ -151,7 +151,7 @@ public class CommandMetadata {
         return defaultOption;
     }
 
-    public List<ArgumentMetadata> getPositionalArguments() {
+    public List<PositionalArgumentMetadata> getPositionalArguments() {
         return positionalArgs;
     }
 

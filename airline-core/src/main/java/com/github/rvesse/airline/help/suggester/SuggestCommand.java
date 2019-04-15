@@ -24,6 +24,7 @@ import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.model.SuggesterMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.suggester.SuggestionParser;
@@ -79,7 +80,8 @@ public class SuggestCommand<T> implements Runnable, Callable<Void> {
                 }
 
                 Suggester suggester = createInstance(suggesterMetadata.getSuggesterClass(),
-                        Collections.<OptionMetadata> emptyList(), null, null, null,
+                        Collections.<OptionMetadata> emptyList(), null,
+                        Collections.<PositionalArgumentMetadata> emptyList(), null, null, null,
                         suggesterMetadata.getMetadataInjections(), AirlineUtils.unmodifiableMapCopy(bindings));
 
                 return suggester.suggest();

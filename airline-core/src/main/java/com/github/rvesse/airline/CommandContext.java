@@ -33,7 +33,7 @@ public interface CommandContext<T> {
     Map<Class<?>, Object> getBindings();
 
     /**
-     * Process arguments of command instance.
+     * Process positional and non-positional arguments of command instance.
      *
      * @param commandInstance command instance
      */

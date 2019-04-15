@@ -112,11 +112,13 @@ public class ParseResult<T> {
         if (state.getGlobal() != null) {
             // Create instance
             return createInstance(command.getType(), command.getAllOptions(), state.getParsedOptions(),
-                    command.getArguments(), state.getParsedArguments(), command.getMetadataInjections(), bindings,
+                    command.getPositionalArguments(), state.getParsedPositionalArguments(), command.getArguments(),
+                    state.getParsedArguments(), command.getMetadataInjections(), bindings,
                     state.getParserConfiguration().getCommandFactory());
         } else {
             return createInstance(command.getType(), command.getAllOptions(), state.getParsedOptions(),
-                    command.getArguments(), state.getParsedArguments(), command.getMetadataInjections(), bindings,
+                    command.getPositionalArguments(), state.getParsedPositionalArguments(), command.getArguments(),
+                    state.getParsedArguments(), command.getMetadataInjections(), bindings,
                     state.getParserConfiguration().getCommandFactory());
         }
 

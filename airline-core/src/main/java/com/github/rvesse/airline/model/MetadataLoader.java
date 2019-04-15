@@ -52,7 +52,7 @@ import com.github.rvesse.airline.utils.predicates.parser.GroupFinder;
 
 import javax.inject.Inject;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -254,7 +254,7 @@ public class MetadataLoader {
             }
 
             // Maybe a top level group we've already seen
-            CommandGroupMetadata group = CollectionUtils.find(groups, new GroupFinder(groupName));
+            CommandGroupMetadata group = IterableUtils.find(groups, new GroupFinder(groupName));
             if (group == null) {
                 // Maybe a sub-group we've already seen
                 group = subGroups.get(subGroupPath);
@@ -750,7 +750,7 @@ public class MetadataLoader {
                     List<ArgumentsRestriction> restrictions = collectArgumentRestrictions(field, false);
 
                     //@formatter:off
-                    injectionMetadata.positionalArgs.add(new ArgumentMetadata(positionalArgumentAnnotation.position(), 
+                    injectionMetadata.positionalArgs.add(new PositionalArgumentMetadata(positionalArgumentAnnotation.position(), 
                                                                               title, 
                                                                               positionalArgumentAnnotation.description(),
                                                                               positionalArgumentAnnotation.sealed(),
@@ -940,12 +940,12 @@ public class MetadataLoader {
         optionIndex.put(names, merged);
     }
 
-    private static List<ArgumentMetadata> overridePositionalArgumentSet(List<ArgumentMetadata> args) {
+    private static List<PositionalArgumentMetadata> overridePositionalArgumentSet(List<PositionalArgumentMetadata> args) {
         args = ListUtils.unmodifiableList(args);
 
-        Map<Integer, ArgumentMetadata> argsIndex = new HashMap<>();
+        Map<Integer, PositionalArgumentMetadata> argsIndex = new HashMap<>();
         int maxIndex = -1;
-        for (ArgumentMetadata arg : args) {
+        for (PositionalArgumentMetadata arg : args) {
             maxIndex = Math.max(maxIndex, arg.getZeroBasedPosition());
 
             if (argsIndex.containsKey(arg.getZeroBasedPosition())) {
@@ -956,7 +956,7 @@ public class MetadataLoader {
             }
         }
 
-        List<ArgumentMetadata> posArgs = new ArrayList<>(maxIndex);
+        List<PositionalArgumentMetadata> posArgs = new ArrayList<>(maxIndex);
         for (int i = 0; i < maxIndex; i++) {
             posArgs.set(i, argsIndex.get(i));
             if (posArgs.get(i) == null) {
@@ -969,13 +969,13 @@ public class MetadataLoader {
         return ListUtils.unmodifiableList(posArgs);
     }
 
-    private static void tryOverridePositionalArgument(Map<Integer, ArgumentMetadata> argsIndex,
-            ArgumentMetadata parent) {
+    private static void tryOverridePositionalArgument(Map<Integer, PositionalArgumentMetadata> argsIndex,
+            PositionalArgumentMetadata parent) {
 
         // As the metadata is extracted from the deepest class in the hierarchy
         // going upwards we need to treat the passed option as the parent and
         // the pre-existing option definition as the child
-        ArgumentMetadata child = argsIndex.get(parent.getZeroBasedPosition());
+        PositionalArgumentMetadata child = argsIndex.get(parent.getZeroBasedPosition());
 
         Accessor parentField = parent.getAccessors().iterator().next();
         Accessor childField = child.getAccessors().iterator().next();
@@ -999,7 +999,7 @@ public class MetadataLoader {
                     parentField, childField, parent.getZeroBasedPosition(), parent.getTitle()));
 
         // Attempt overriding, this will error if the overriding is not possible
-        ArgumentMetadata merged = ArgumentMetadata.override(parent, child);
+        PositionalArgumentMetadata merged = PositionalArgumentMetadata.override(parent, child);
         argsIndex.put(parent.getZeroBasedPosition(), merged);
     }
 
@@ -1017,7 +1017,7 @@ public class MetadataLoader {
             // now add the command to any groupNames specified in the Command
             // annotation
             for (String groupName : command.getGroupNames()) {
-                CommandGroupMetadata group = CollectionUtils.find(commandGroups, new GroupFinder(groupName));
+                CommandGroupMetadata group = IterableUtils.find(commandGroups, new GroupFinder(groupName));
                 if (group != null) {
                     // Add to existing top level group
                     group.addCommand(command);
@@ -1030,7 +1030,7 @@ public class MetadataLoader {
                         for (int i = 0; i < groups.length; i++) {
                             if (i == 0) {
                                 // Find/create the necessary top level group
-                                subGroup = CollectionUtils.find(commandGroups, new GroupFinder(groups[i]));
+                                subGroup = IterableUtils.find(commandGroups, new GroupFinder(groups[i]));
                                 if (subGroup == null) {
                                     subGroup = new CommandGroupMetadata(groups[i], "", false,
                                             Collections.<OptionMetadata> emptyList(),
@@ -1040,7 +1040,7 @@ public class MetadataLoader {
                                 }
                             } else {
                                 // Find/create the next sub-group
-                                CommandGroupMetadata nextSubGroup = CollectionUtils.find(subGroup.getSubGroups(),
+                                CommandGroupMetadata nextSubGroup = IterableUtils.find(subGroup.getSubGroups(),
                                         new GroupFinder(groups[i]));
                                 if (nextSubGroup == null) {
                                     nextSubGroup = new CommandGroupMetadata(groups[i], "", false,
@@ -1096,7 +1096,7 @@ public class MetadataLoader {
                 // load default command if needed
                 if (!groupAnno.defaultCommand().equals(Group.NO_DEFAULT.class)) {
                     defaultCommandClass = groupAnno.defaultCommand();
-                    defaultCommand = CollectionUtils.find(allCommands, new CommandTypeFinder(defaultCommandClass));
+                    defaultCommand = IterableUtils.find(allCommands, new CommandTypeFinder(defaultCommandClass));
                     if (null == defaultCommand) {
                         defaultCommand = loadCommand(defaultCommandClass, baseHelpSections);
                         newCommands.add(defaultCommand);
@@ -1107,7 +1107,7 @@ public class MetadataLoader {
                 List<CommandMetadata> groupCommands = new ArrayList<CommandMetadata>(groupAnno.commands().length);
                 CommandMetadata groupCommand = null;
                 for (Class commandClass : groupAnno.commands()) {
-                    groupCommand = CollectionUtils.find(allCommands, new CommandTypeFinder(commandClass));
+                    groupCommand = IterableUtils.find(allCommands, new CommandTypeFinder(commandClass));
                     if (null == groupCommand) {
                         groupCommand = loadCommand(commandClass, baseHelpSections);
                         newCommands.add(groupCommand);
@@ -1117,7 +1117,7 @@ public class MetadataLoader {
 
                 // Find the group metadata
                 // May already exist as a top level group
-                CommandGroupMetadata groupMetadata = CollectionUtils.find(commandGroups,
+                CommandGroupMetadata groupMetadata = IterableUtils.find(commandGroups,
                         new GroupFinder(groupAnno.name()));
                 if (groupMetadata == null) {
                     // Not a top level group
@@ -1167,7 +1167,7 @@ public class MetadataLoader {
             for (int i = 0; i < groups.length - 1; i++) {
                 if (i == 0) {
                     // Should be a top level group
-                    parentGroup = CollectionUtils.find(commandGroups, new GroupFinder(groups[i]));
+                    parentGroup = IterableUtils.find(commandGroups, new GroupFinder(groups[i]));
                     if (parentGroup == null) {
                         // Top level parent group does not exist so create empty
                         // top level group
@@ -1179,7 +1179,7 @@ public class MetadataLoader {
                     }
                 } else {
                     // Should be a sub-group of the current parent
-                    CommandGroupMetadata nextParent = CollectionUtils.find(parentGroup.getSubGroups(),
+                    CommandGroupMetadata nextParent = IterableUtils.find(parentGroup.getSubGroups(),
                             new GroupFinder(groups[i]));
                     if (nextParent == null) {
                         // Next parent group does not exist so create empty
@@ -1206,7 +1206,7 @@ public class MetadataLoader {
         private List<OptionMetadata> groupOptions = new ArrayList<>();
         private List<OptionMetadata> commandOptions = new ArrayList<>();
         private OptionMetadata defaultOption = null;
-        private List<ArgumentMetadata> positionalArgs = new ArrayList<>();
+        private List<PositionalArgumentMetadata> positionalArgs = new ArrayList<>();
         private List<ArgumentsMetadata> arguments = new ArrayList<>();
         private List<Accessor> metadataInjections = new ArrayList<>();
 

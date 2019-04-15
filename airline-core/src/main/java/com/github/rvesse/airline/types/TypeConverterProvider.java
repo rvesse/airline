@@ -15,6 +15,7 @@
  */
 package com.github.rvesse.airline.types;
 
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
@@ -48,4 +49,16 @@ public interface TypeConverterProvider {
      * @return Type converter
      */
     public abstract <T> TypeConverter getTypeConverter(ArgumentsMetadata arguments, ParseState<T> state);
+
+    /**
+     * Gets the type converter to use for the given positional argument and
+     * parser state
+     * 
+     * @param argumentMetadata
+     *            Positional argument metadata
+     * @param parseState
+     *            Parser state
+     * @return Type converter
+     */
+    public abstract <T> TypeConverter getTypeConverter(PositionalArgumentMetadata argumentMetadata, ParseState<T> parseState);
 }

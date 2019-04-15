@@ -18,7 +18,7 @@ package com.github.rvesse.airline.annotations;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.github.rvesse.airline.model.ArgumentMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.types.DefaultTypeConverterProvider;
 import com.github.rvesse.airline.types.TypeConverterProvider;
 
@@ -65,7 +65,7 @@ public @interface PositionalArgument {
      * the argument definitions are compatible.
      * <p>
      * See
-     * {@link ArgumentMetadata#override(ArgumentMetadata, ArgumentMetadata)}
+     * {@link PositionalArgumentMetadata#override(PositionalArgumentMetadata, PositionalArgumentMetadata)}
      * for legal overrides
      * </p>
      * <p>

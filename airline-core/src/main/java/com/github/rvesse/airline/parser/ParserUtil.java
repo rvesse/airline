@@ -21,6 +21,7 @@ import com.github.rvesse.airline.CommandFactory;
 import com.github.rvesse.airline.DefaultCommandFactory;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.errors.ParseException;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
 import org.apache.commons.lang3.tuple.Pair;
@@ -42,26 +43,28 @@ public class ParserUtil {
     }
 
     public static <T> T createInstance(Class<?> type, Iterable<OptionMetadata> options,
-            List<Pair<OptionMetadata, Object>> parsedOptions, ArgumentsMetadata arguments,
+            List<Pair<OptionMetadata, Object>> parsedOptions, Iterable<PositionalArgumentMetadata> positionalArguments,
+            List<Pair<PositionalArgumentMetadata, Object>> parsedPositionalArguments, ArgumentsMetadata arguments,
             Iterable<Object> parsedArguments, Iterable<Accessor> metadataInjection, Map<Class<?>, Object> bindings) {
-        return createInstance(type, options, parsedOptions, arguments, parsedArguments, metadataInjection, bindings,
-                new DefaultCommandFactory<T>());
+        return createInstance(type, options, parsedOptions, positionalArguments, parsedPositionalArguments, arguments,
+                parsedArguments, metadataInjection, bindings, new DefaultCommandFactory<T>());
     }
 
 
     public static <T> T createInstance(Class<?> type, Iterable<OptionMetadata> options,
-            List<Pair<OptionMetadata, Object>> parsedOptions, ArgumentsMetadata arguments,
+            List<Pair<OptionMetadata, Object>> parsedOptions, Iterable<PositionalArgumentMetadata> positionalArguments,
+            List<Pair<PositionalArgumentMetadata, Object>> parsedPositionalArguments, ArgumentsMetadata arguments,
             Iterable<Object> parsedArguments, Iterable<Accessor> metadataInjection, Map<Class<?>, Object> bindings,
             CommandFactory<T> commandFactory) {
 
-        CommandContext<T> context = new DefaultCommandContext<>(options, parsedOptions, arguments, parsedArguments, metadataInjection, bindings);
+        CommandContext<T> context = new DefaultCommandContext<>(options, parsedOptions, parsedPositionalArguments, arguments, parsedArguments, metadataInjection, bindings);
         return commandFactory.createInstance(context, type);
     }
 
     public static ResourceLocator[] createResourceLocators(Class<? extends ResourceLocator>[] locatorClasses) {
         ResourceLocator[] locators = new ResourceLocator[locatorClasses.length];
         int i = 0;
-        for (Class<? extends ResourceLocator> locatorClass :locatorClasses) {
+        for (Class<? extends ResourceLocator> locatorClass : locatorClasses) {
             ResourceLocator locator = ParserUtil.createInstance(locatorClass);
             locators[i] = locator;
             i++;

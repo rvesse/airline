@@ -33,7 +33,7 @@ import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public class ArgumentMetadata {
+public class PositionalArgumentMetadata {
     private final int position;
     private final String title, description;
     private final boolean sealed, overrides;
@@ -42,7 +42,7 @@ public class ArgumentMetadata {
     private final TypeConverterProvider provider;
 
     /**
-     * Creates new argument metadata
+     * Creates new positional argument metadata
      * 
      * @param position
      *            Zero based position index
@@ -58,7 +58,7 @@ public class ArgumentMetadata {
      *            Field to modify
      */
     //@formatter:off
-    public ArgumentMetadata(int position, String title, 
+    public PositionalArgumentMetadata(int position, String title, 
                             String description, 
                             boolean sealed, boolean overrides,
                             Iterable<ArgumentsRestriction> restrictions, 
@@ -85,13 +85,13 @@ public class ArgumentMetadata {
         this.accessors = SetUtils.unmodifiableSet(Collections.singleton(new Accessor(path)));
     }
 
-    public ArgumentMetadata(Iterable<ArgumentMetadata> arguments) {
+    public PositionalArgumentMetadata(Iterable<PositionalArgumentMetadata> arguments) {
         if (arguments == null)
             throw new NullPointerException("arguments cannot be null");
         if (!arguments.iterator().hasNext())
             throw new IllegalArgumentException("arguments cannot be empty");
 
-        ArgumentMetadata first = arguments.iterator().next();
+        PositionalArgumentMetadata first = arguments.iterator().next();
 
         this.sealed = first.sealed;
         this.overrides = first.overrides;
@@ -102,7 +102,7 @@ public class ArgumentMetadata {
         this.provider = first.provider;
 
         Set<Accessor> accessors = new HashSet<>();
-        for (ArgumentMetadata other : arguments) {
+        for (PositionalArgumentMetadata other : arguments) {
             if (!first.equals(other))
                 throw new IllegalArgumentException(
                         String.format("Conflicting arguments definitions: %s, %s", first, other));
@@ -179,7 +179,7 @@ public class ArgumentMetadata {
             return false;
         }
 
-        ArgumentMetadata that = (ArgumentMetadata) o;
+        PositionalArgumentMetadata that = (PositionalArgumentMetadata) o;
 
         if (this.position != that.position)
             return false;
@@ -232,7 +232,7 @@ public class ArgumentMetadata {
      *            Child
      * @return Merged metadata
      */
-    public static ArgumentMetadata override(ArgumentMetadata parent, ArgumentMetadata child) {
+    public static PositionalArgumentMetadata override(PositionalArgumentMetadata parent, PositionalArgumentMetadata child) {
         // Cannot change position
         if (parent.position != child.position)
             throw new IllegalArgumentException(
@@ -277,9 +277,9 @@ public class ArgumentMetadata {
             throw new IllegalArgumentException(
                     String.format("Cannot override positional argument %d (%s) unless child argument sets overrides to true", parent.position, parent.title));
 
-        ArgumentMetadata merged;
+        PositionalArgumentMetadata merged;
         //@formatter:off
-        merged = new ArgumentMetadata(child.position, 
+        merged = new PositionalArgumentMetadata(child.position, 
                                       child.title, 
                                       child.description, 
                                       child.sealed, 

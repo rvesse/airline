@@ -17,6 +17,7 @@ package com.github.rvesse.airline.parser;
 
 import com.github.rvesse.airline.Context;
 import com.github.rvesse.airline.builder.ParserBuilder;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
@@ -35,6 +36,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+/**
+ * Used to track the state of the parser
+ *
+ * @param <T>
+ *            Command type
+ */
 public class ParseState<T> {
     private final List<Context> locationStack;
     private final GlobalMetadata<T> global;
@@ -42,13 +49,15 @@ public class ParseState<T> {
     private final CommandGroupMetadata group;
     private final CommandMetadata command;
     private final List<Pair<OptionMetadata, Object>> parsedOptions;
+    private final List<Pair<PositionalArgumentMetadata, Object>> parsedPositionalArgs;
     private final List<Object> parsedArguments;
     private final OptionMetadata currentOption;
     private final List<String> unparsedInput;
 
     ParseState(GlobalMetadata<T> global, ParserMetadata<T> parserConfig, CommandGroupMetadata group,
             CommandMetadata command, List<Pair<OptionMetadata, Object>> parsedOptions, List<Context> locationStack,
-            List<Object> parsedArguments, OptionMetadata currentOption, List<String> unparsedInput) {
+            List<Pair<PositionalArgumentMetadata, Object>> parsedPositionalArgs, List<Object> parsedArguments,
+            OptionMetadata currentOption, List<String> unparsedInput) {
         this.global = global;
         if (global != null) {
             this.parserConfig = global.getParserConfiguration();
@@ -61,6 +70,7 @@ public class ParseState<T> {
         this.command = command;
         this.parsedOptions = parsedOptions;
         this.locationStack = locationStack;
+        this.parsedPositionalArgs = parsedPositionalArgs;
         this.parsedArguments = parsedArguments;
         this.currentOption = currentOption;
         this.unparsedInput = unparsedInput;
@@ -68,23 +78,23 @@ public class ParseState<T> {
 
     public static <T> ParseState<T> newInstance() {
         return new ParseState<T>(null, null, null, null, new ArrayList<Pair<OptionMetadata, Object>>(),
-                Collections.<Context> emptyList(), Collections.<Object> emptyList(), null,
-                Collections.<String> emptyList());
+                Collections.<Context> emptyList(), new ArrayList<Pair<PositionalArgumentMetadata, Object>>(),
+                Collections.<Object> emptyList(), null, Collections.<String> emptyList());
     }
 
     public ParseState<T> pushContext(Context location) {
         List<Context> locations = AirlineUtils.listCopy(this.locationStack);
         locations.add(location);
 
-        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locations, parsedArguments,
-                currentOption, unparsedInput);
+        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locations, parsedPositionalArgs,
+                parsedArguments, currentOption, unparsedInput);
     }
 
     public ParseState<T> popContext() {
         List<Context> locationStack = AirlineUtils
                 .unmodifiableListCopy(this.locationStack.subList(0, this.locationStack.size() - 1));
-        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack, parsedArguments,
-                currentOption, unparsedInput);
+        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack,
+                parsedPositionalArgs, parsedArguments, currentOption, unparsedInput);
     }
 
     public ParseState<T> withOptionValue(OptionMetadata option, String rawValue) {
@@ -114,8 +124,8 @@ public class ParseState<T> {
             List<Pair<OptionMetadata, Object>> newOptions = AirlineUtils.listCopy(parsedOptions);
             newOptions.add(Pair.of(option, value));
 
-            return new ParseState<T>(global, parserConfig, group, command, newOptions, locationStack, parsedArguments,
-                    currentOption, unparsedInput);
+            return new ParseState<T>(global, parserConfig, group, command, newOptions, locationStack,
+                    parsedPositionalArgs, parsedArguments, currentOption, unparsedInput);
         } catch (ParseException e) {
             this.parserConfig.getErrorHandler().handleError(e);
 
@@ -123,40 +133,55 @@ public class ParseState<T> {
             newUnparsed.add(rawValue);
 
             return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack,
-                    parsedArguments, currentOption, newUnparsed);
+                    parsedPositionalArgs, parsedArguments, currentOption, newUnparsed);
         }
     }
 
     public ParseState<T> withGlobal(GlobalMetadata<T> global) {
-        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack, parsedArguments,
-                currentOption, unparsedInput);
+        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack,
+                parsedPositionalArgs, parsedArguments, currentOption, unparsedInput);
     }
 
     public ParseState<T> withConfiguration(ParserMetadata<T> parserConfig) {
-        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack, parsedArguments,
-                currentOption, unparsedInput);
+        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack,
+                parsedPositionalArgs, parsedArguments, currentOption, unparsedInput);
     }
 
     public ParseState<T> withGroup(CommandGroupMetadata group) {
-        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack, parsedArguments,
-                currentOption, unparsedInput);
+        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack,
+                parsedPositionalArgs, parsedArguments, currentOption, unparsedInput);
     }
 
     public ParseState<T> withCommand(CommandMetadata command) {
-        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack, parsedArguments,
-                currentOption, unparsedInput);
+        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack,
+                parsedPositionalArgs, parsedArguments, currentOption, unparsedInput);
     }
 
     public ParseState<T> withOption(OptionMetadata option) {
-        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack, parsedArguments,
-                option, unparsedInput);
+        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack,
+                parsedPositionalArgs, parsedArguments, option, unparsedInput);
     }
 
-    public ParseState<T> withArgument(ArgumentsMetadata arguments, String rawValue) {
+    public ParseState<T> withArgument(List<PositionalArgumentMetadata> positionalArgs, ArgumentsMetadata arguments,
+            String rawValue) {
+        // Are we still parsing positional arguments or are we on non-positional
+        // arguments?
+        boolean positional = positionalArgs.size() > 0 && parsedArguments.size() < positionalArgs.size();
+        int posIndex = positional ? parsedArguments.size() : -1;
+        if (!positional && arguments == null) {
+            return withUnparsedInput(rawValue);
+        }
+        PositionalArgumentMetadata posArg = positionalArgs.get(posIndex);
+        List<ArgumentsRestriction> restrictions = positional ? posArg.getRestrictions() : arguments.getRestrictions();
+
         // Pre-validate
-        for (ArgumentsRestriction restriction : arguments.getRestrictions()) {
+        for (ArgumentsRestriction restriction : restrictions) {
             try {
-                restriction.preValidate(this, arguments, rawValue);
+                if (positional) {
+                    restriction.preValidate(this, posArg, rawValue);
+                } else {
+                    restriction.preValidate(this, arguments, rawValue);
+                }
             } catch (ParseException e) {
                 this.parserConfig.getErrorHandler().handleError(e);
             }
@@ -164,23 +189,38 @@ public class ParseState<T> {
 
         // Convert value
         try {
-            TypeConverter converter = arguments.getTypeConverterProvider().getTypeConverter(arguments, this);
-            Object value = converter.convert(arguments.getTitle().get(0), arguments.getJavaType(), rawValue);
+            TypeConverter converter = positional ? posArg.getTypeConverterProvider().getTypeConverter(posArg, this)
+                    : arguments.getTypeConverterProvider().getTypeConverter(arguments, this);
+            Object value = converter.convert(positional ? posArg.getTitle() : arguments.getTitle().get(0),
+                    arguments.getJavaType(), rawValue);
 
             // Post-validate
-            for (ArgumentsRestriction restriction : arguments.getRestrictions()) {
+            for (ArgumentsRestriction restriction : restrictions) {
                 try {
-                    restriction.postValidate(this, arguments, value);
+                    if (positional) {
+                        restriction.postValidate(this, posArg, value);
+                    } else {
+                        restriction.postValidate(this, arguments, value);
+                    }
                 } catch (ParseException e) {
                     this.parserConfig.getErrorHandler().handleError(e);
                 }
             }
 
-            List<Object> newArguments = AirlineUtils.listCopy(parsedArguments);
-            newArguments.add(value);
+            if (positional) {
+                List<Pair<PositionalArgumentMetadata, Object>> newPosArgs = AirlineUtils.listCopy(parsedPositionalArgs);
+                newPosArgs.add(Pair.of(posArg, value));
 
-            return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack, newArguments,
-                    currentOption, unparsedInput);
+                return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack, newPosArgs,
+                        parsedArguments, currentOption, unparsedInput);
+            } else {
+
+                List<Object> newArguments = AirlineUtils.listCopy(parsedArguments);
+                newArguments.add(value);
+
+                return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack,
+                        parsedPositionalArgs, newArguments, currentOption, unparsedInput);
+            }
         } catch (ParseException e) {
             this.parserConfig.getErrorHandler().handleError(e);
 
@@ -188,7 +228,7 @@ public class ParseState<T> {
             newUnparsed.add(rawValue);
 
             return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack,
-                    parsedArguments, currentOption, newUnparsed);
+                    parsedPositionalArgs, parsedArguments, currentOption, newUnparsed);
         }
     }
 
@@ -196,15 +236,16 @@ public class ParseState<T> {
         List<String> newUnparsedInput = AirlineUtils.listCopy(unparsedInput);
         newUnparsedInput.add(input);
 
-        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack, parsedArguments,
-                currentOption, newUnparsedInput);
+        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, locationStack,
+                parsedPositionalArgs, parsedArguments, currentOption, newUnparsedInput);
     }
 
     @Override
     public String toString() {
         return "ParseState{" + "locationStack=" + locationStack + ", global=" + global + ", group=" + group
-                + ", command=" + command + ", parsedOptions=" + parsedOptions + ", parsedArguments=" + parsedArguments
-                + ", currentOption=" + currentOption + ", unparsedInput=" + unparsedInput + '}';
+                + ", command=" + command + ", parsedOptions=" + parsedOptions + ", parsedPositionalArguments="
+                + parsedPositionalArgs + ", parsedArguments=" + parsedArguments + ", currentOption=" + currentOption
+                + ", unparsedInput=" + unparsedInput + '}';
     }
 
     public Context getLocation() {
@@ -233,6 +274,10 @@ public class ParseState<T> {
 
     public List<Pair<OptionMetadata, Object>> getParsedOptions() {
         return parsedOptions;
+    }
+    
+    public List<Pair<PositionalArgumentMetadata, Object>> getParsedPositionalArguments() {
+        return parsedPositionalArgs;
     }
 
     public List<Object> getParsedArguments() {

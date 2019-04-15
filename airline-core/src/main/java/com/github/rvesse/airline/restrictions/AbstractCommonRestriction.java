@@ -17,6 +17,7 @@ package com.github.rvesse.airline.restrictions;
 
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 
 public abstract class AbstractCommonRestriction implements OptionRestriction, ArgumentsRestriction {
@@ -48,6 +49,21 @@ public abstract class AbstractCommonRestriction implements OptionRestriction, Ar
 
     @Override
     public <T> void finalValidate(ParseState<T> state, ArgumentsMetadata arguments) {
+        // Does no validation
+    }
+    
+    @Override
+    public <T> void preValidate(ParseState<T> state, PositionalArgumentMetadata arguments, String value) {
+        // Does no validation
+    }
+    
+    @Override
+    public <T> void postValidate(ParseState<T> state, PositionalArgumentMetadata arguments, Object value) {
+        // Does no validation
+    }
+
+    @Override
+    public <T> void finalValidate(ParseState<T> state, PositionalArgumentMetadata arguments) {
         // Does no validation
     }
 

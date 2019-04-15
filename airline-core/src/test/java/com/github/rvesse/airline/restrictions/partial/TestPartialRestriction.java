@@ -29,6 +29,7 @@ import com.github.rvesse.airline.SingleCommand;
 import com.github.rvesse.airline.annotations.OptionType;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsIllegalValueException;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
@@ -53,11 +54,12 @@ public class TestPartialRestriction {
         restrictions.add(restriction);
         List<Field> fields = Collections.singletonList(PartialUnannotated.class.getField("args"));
 
+        List<PositionalArgumentMetadata> posArgs = Collections.emptyList();
         ArgumentsMetadata arguments = new ArgumentsMetadata(titles, "", restrictions, null, fields);
 
         ParseState<PartialUnannotated> state = ParseState.newInstance();
-        state = state.withArgument(arguments, "text");
-        state = state.withArgument(arguments, "");
+        state = state.withArgument(posArgs, arguments, "text");
+        state = state.withArgument(posArgs, arguments, "");
 
         restriction.finalValidate(state, arguments);
     }
@@ -77,7 +79,7 @@ public class TestPartialRestriction {
 
         ParseState<PartialUnannotated> state = ParseState.newInstance();
         // Should fail restriction because first argument cannot be blank
-        state = state.withArgument(arguments, "");
+        state = state.withArgument(Collections.<PositionalArgumentMetadata> emptyList(), arguments, "");
     }
 
     @Test
@@ -91,11 +93,12 @@ public class TestPartialRestriction {
         restrictions.add(restriction);
         List<Field> fields = Collections.singletonList(PartialUnannotated.class.getField("args"));
 
+        List<PositionalArgumentMetadata> posArgs = Collections.emptyList();
         ArgumentsMetadata arguments = new ArgumentsMetadata(titles, "", restrictions, null, fields);
 
         ParseState<PartialUnannotated> state = ParseState.newInstance();
-        state = state.withArgument(arguments, "foo");
-        state = state.withArgument(arguments, "bar");
+        state = state.withArgument(posArgs, arguments, "foo");
+        state = state.withArgument(posArgs, arguments, "bar");
 
         restriction.finalValidate(state, arguments);
     }
@@ -116,7 +119,7 @@ public class TestPartialRestriction {
         ParseState<PartialUnannotated> state = ParseState.newInstance();
         // Should fail restriction because first argument is restricted to a set
         // of values
-        state.withArgument(arguments, "bar");
+        state.withArgument(Collections.<PositionalArgumentMetadata> emptyList(), arguments, "bar");
     }
 
     @Test
@@ -130,11 +133,12 @@ public class TestPartialRestriction {
         restrictions.add(restriction);
         List<Field> fields = Collections.singletonList(PartialUnannotated.class.getField("args"));
 
+        List<PositionalArgumentMetadata> posArgs = Collections.emptyList();
         ArgumentsMetadata arguments = new ArgumentsMetadata(titles, "", restrictions, null, fields);
 
         ParseState<PartialUnannotated> state = ParseState.newInstance();
-        state = state.withArgument(arguments, "foo");
-        state = state.withArgument(arguments, "bar");
+        state = state.withArgument(posArgs, arguments, "foo");
+        state = state.withArgument(posArgs, arguments, "bar");
 
         restriction.finalValidate(state, arguments);
     }
@@ -155,7 +159,7 @@ public class TestPartialRestriction {
         ParseState<PartialUnannotated> state = ParseState.newInstance();
         // Should fail restriction because first argument is restricted to a set
         // of values
-        state.withArgument(arguments, "bar");
+        state.withArgument(Collections.<PositionalArgumentMetadata> emptyList(), arguments, "bar");
     }
 
     @Test
@@ -201,7 +205,7 @@ public class TestPartialRestriction {
     public void partial_annotated_notblank_01() throws NoSuchFieldException, SecurityException {
         SingleCommand<PartialAnnotated> parser = SingleCommand.singleCommand(PartialAnnotated.class);
         PartialAnnotated cmd = parser.parse(new String[] { "--kvp", "text", "" });
-        
+
         Assert.assertEquals(cmd.kvps.size(), 2);
         Assert.assertEquals(cmd.kvps.get(0), "text");
         Assert.assertEquals(cmd.kvps.get(1), "");
@@ -212,23 +216,23 @@ public class TestPartialRestriction {
         SingleCommand<PartialAnnotated> parser = SingleCommand.singleCommand(PartialAnnotated.class);
         parser.parse(new String[] { "--kvp", "", "text" });
     }
-    
+
     @Test
     public void partials_annotated_01() {
         SingleCommand<PartialsAnnotated> parser = SingleCommand.singleCommand(PartialsAnnotated.class);
         PartialsAnnotated cmd = parser.parse(new String[] { "--kvp", "server", "remote.com" });
-        
+
         Assert.assertEquals(cmd.kvps.size(), 2);
         Assert.assertEquals(cmd.kvps.get(0), "server");
         Assert.assertEquals(cmd.kvps.get(1), "remote.com");
     }
-    
+
     @Test(expectedExceptions = ParseRestrictionViolatedException.class)
     public void partials_annotated_02() {
         SingleCommand<PartialsAnnotated> parser = SingleCommand.singleCommand(PartialsAnnotated.class);
         parser.parse(new String[] { "--kvp", "other", "remote.com" });
     }
-    
+
     @Test(expectedExceptions = ParseRestrictionViolatedException.class)
     public void partials_annotated_03() {
         SingleCommand<PartialsAnnotated> parser = SingleCommand.singleCommand(PartialsAnnotated.class);
