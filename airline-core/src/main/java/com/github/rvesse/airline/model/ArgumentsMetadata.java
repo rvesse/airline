@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.SetUtils;
@@ -96,7 +96,7 @@ public class ArgumentsMetadata {
     }
 
     public boolean isRequired() {
-        return CollectionUtils.exists(this.restrictions, new IsRequiredArgumentFinder());
+        return IterableUtils.matchesAny(this.restrictions, new IsRequiredArgumentFinder());
     }
 
     public Set<Accessor> getAccessors() {

@@ -34,6 +34,7 @@ public class CommandMetadata {
     private final List<OptionMetadata> groupOptions;
     private final List<OptionMetadata> commandOptions;
     private final OptionMetadata defaultOption;
+    private final List<ArgumentMetadata> positionalArgs;
     private final ArgumentsMetadata arguments;
     private final List<Accessor> metadataInjections;
     private final Class<?> type;
@@ -49,6 +50,7 @@ public class CommandMetadata {
                            Iterable<OptionMetadata> groupOptions,
                            Iterable<OptionMetadata> commandOptions, 
                            OptionMetadata defaultOption,
+                           List<ArgumentMetadata> positionalArguments,
                            ArgumentsMetadata arguments,
                            Iterable<Accessor> metadataInjections, 
                            Class<?> type, 
@@ -68,6 +70,7 @@ public class CommandMetadata {
         this.groupOptions = AirlineUtils.unmodifiableListCopy(groupOptions);
         this.commandOptions = AirlineUtils.unmodifiableListCopy(commandOptions);
         this.defaultOption = defaultOption;
+        this.positionalArgs = positionalArguments;
         this.arguments = arguments;
 
         if (this.defaultOption != null && this.arguments != null) {
@@ -126,6 +129,10 @@ public class CommandMetadata {
     public OptionMetadata getDefaultOption() {
         return defaultOption;
     }
+    
+    public List<ArgumentMetadata> getPositionalArguments() {
+        return positionalArgs;
+    }
 
     public ArgumentsMetadata getArguments() {
         return arguments;
@@ -156,6 +163,7 @@ public class CommandMetadata {
         sb.append(" , globalOptions=").append(globalOptions).append('\n');
         sb.append(" , groupOptions=").append(groupOptions).append('\n');
         sb.append(" , commandOptions=").append(commandOptions).append('\n');
+        sb.append("  , positionalArguments=").append(positionalArgs).append('\n');
         sb.append(" , arguments=").append(arguments).append('\n');
         sb.append(" , metadataInjections=").append(metadataInjections).append('\n');
         sb.append(" , type=").append(type).append('\n');

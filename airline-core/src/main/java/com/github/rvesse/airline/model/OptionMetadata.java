@@ -29,7 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.SetUtils;
 
 public class OptionMetadata {
@@ -131,7 +131,7 @@ public class OptionMetadata {
     }
 
     public boolean isRequired() {
-        return CollectionUtils.exists(this.restrictions, new IsRequiredOptionFinder());
+        return IterableUtils.matchesAny(this.restrictions, new IsRequiredOptionFinder());
     }
 
     public boolean isHidden() {
@@ -248,7 +248,6 @@ public class OptionMetadata {
      * <ul>
      * <li>Title</li>
      * <li>Description</li>
-     * <li>Required</li>
      * <li>Hidden</li>
      * </ul>
      * 

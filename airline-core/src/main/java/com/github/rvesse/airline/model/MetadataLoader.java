@@ -25,6 +25,7 @@ import com.github.rvesse.airline.annotations.Groups;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.annotations.OptionType;
 import com.github.rvesse.airline.annotations.Parser;
+import com.github.rvesse.airline.annotations.PositionalArgument;
 import com.github.rvesse.airline.annotations.restrictions.Partial;
 import com.github.rvesse.airline.annotations.restrictions.Partials;
 import com.github.rvesse.airline.builder.ParserBuilder;
@@ -484,6 +485,7 @@ public class MetadataLoader {
                                                               injectionMetadata.groupOptions,
                                                               injectionMetadata.commandOptions, 
                                                               injectionMetadata.defaultOption,
+                                                              injectionMetadata.positionalArgs,
                                                               AirlineUtils.first(injectionMetadata.arguments, null),
                                                               injectionMetadata.metadataInjections, 
                                                               commandType, 
@@ -615,6 +617,7 @@ public class MetadataLoader {
                     // nicely with Guice
                 }
 
+                // Process Option annotations
                 Option optionAnnotation = field.getAnnotation(Option.class);
                 DefaultOption defaultOptionAnnotation = field.getAnnotation(DefaultOption.class);
                 if (optionAnnotation != null) {
@@ -730,7 +733,32 @@ public class MetadataLoader {
                     throw new IllegalArgumentException(String.format(
                             "Field %s annotated with @DefaultOption must also have an @Option annotation", field));
                 }
+                
+                // Process positional arguments annotations
+                PositionalArgument positionalArgumentAnnotation = field.getAnnotation(PositionalArgument.class);
+                if (field.isAnnotationPresent(PositionalArgument.class)) {
+                    String title = positionalArgumentAnnotation.title();
+                    if (StringUtils.isBlank(title)) {
+                        title = field.getName();
+                    }
+                    
+                    TypeConverterProvider provider = ParserUtil.createInstance(positionalArgumentAnnotation.typeConverterProvider());
+                    
+                    List<ArgumentsRestriction> restrictions = collectArgumentRestrictions(field);
+                    
+                    //@formatter:off
+                    injectionMetadata.positionalArgs.add(new ArgumentMetadata(positionalArgumentAnnotation.position(), 
+                                                                              title, 
+                                                                              positionalArgumentAnnotation.description(),
+                                                                              positionalArgumentAnnotation.sealed(),
+                                                                              positionalArgumentAnnotation.override(),
+                                                                              restrictions,
+                                                                              provider,
+                                                                              path));
+                    //@formatter:on
+                }
 
+                // Process arguments annotation
                 Arguments argumentsAnnotation = field.getAnnotation(Arguments.class);
                 if (field.isAnnotationPresent(Arguments.class)) {
                     // Can't have both @DefaultOption and @Arguments
@@ -751,23 +779,7 @@ public class MetadataLoader {
                     TypeConverterProvider provider = ParserUtil
                             .createInstance(argumentsAnnotation.typeConverterProvider());
 
-                    Map<Class<? extends Annotation>, Set<Integer>> partials = loadPartials(field);
-                    List<ArgumentsRestriction> restrictions = new ArrayList<>();
-                    for (Class<? extends Annotation> annotationClass : RestrictionRegistry
-                            .getArgumentsRestrictionAnnotationClasses()) {
-                        Annotation annotation = field.getAnnotation(annotationClass);
-                        if (annotation == null)
-                            continue;
-                        ArgumentsRestriction restriction = RestrictionRegistry.getArgumentsRestriction(annotationClass,
-                                annotation);
-                        if (restriction != null) {
-                            // Adjust for partial if necessary
-                            if (partials.containsKey(annotationClass))
-                                restriction = new PartialRestriction(partials.get(annotationClass), restriction);
-
-                            restrictions.add(restriction);
-                        }
-                    }
+                    List<ArgumentsRestriction> restrictions = collectArgumentRestrictions(field);
 
                     //@formatter:off
                     injectionMetadata.arguments.add(new ArgumentsMetadata(titles, 
@@ -779,6 +791,27 @@ public class MetadataLoader {
                 }
             }
         }
+    }
+
+    public static List<ArgumentsRestriction> collectArgumentRestrictions(Field field) {
+        Map<Class<? extends Annotation>, Set<Integer>> partials = loadPartials(field);
+        List<ArgumentsRestriction> restrictions = new ArrayList<>();
+        for (Class<? extends Annotation> annotationClass : RestrictionRegistry
+                .getArgumentsRestrictionAnnotationClasses()) {
+            Annotation annotation = field.getAnnotation(annotationClass);
+            if (annotation == null)
+                continue;
+            ArgumentsRestriction restriction = RestrictionRegistry.getArgumentsRestriction(annotationClass,
+                    annotation);
+            if (restriction != null) {
+                // Adjust for partial if necessary
+                if (partials.containsKey(annotationClass))
+                    restriction = new PartialRestriction(partials.get(annotationClass), restriction);
+
+                restrictions.add(restriction);
+            }
+        }
+        return restrictions;
     }
 
     private static Map<Class<? extends Annotation>, Set<Integer>> loadPartials(Field field) {
@@ -902,6 +935,69 @@ public class MetadataLoader {
         // Attempt overriding, this will error if the overriding is not possible
         OptionMetadata merged = OptionMetadata.override(names, parent, child);
         optionIndex.put(names, merged);
+    }
+
+    private static List<ArgumentMetadata> overridePositionalArgumentSet(List<ArgumentMetadata> args) {
+        args = ListUtils.unmodifiableList(args);
+
+        Map<Integer, ArgumentMetadata> argsIndex = new HashMap<>();
+        int maxIndex = -1;
+        for (ArgumentMetadata arg : args) {
+            maxIndex = Math.max(maxIndex, arg.getZeroBasedPosition());
+
+            if (argsIndex.containsKey(arg.getZeroBasedPosition())) {
+                tryOverridePositionalArgument(argsIndex, arg);
+            } else {
+                // First argument for this positional index we've seen
+                argsIndex.put(arg.getZeroBasedPosition(), arg);
+            }
+        }
+
+        List<ArgumentMetadata> posArgs = new ArrayList<>(maxIndex);
+        for (int i = 0; i < maxIndex; i++) {
+            posArgs.set(i, argsIndex.get(i));
+            if (posArgs.get(i) == null) {
+                throw new IllegalStateException(String.format(
+                        "Gap in positional arguments, missing argument at position %d the following positional arguments are present: %s",
+                        i, StringUtils.join(argsIndex.keySet(), ", ")));
+            }
+        }
+        
+        return ListUtils.unmodifiableList(posArgs);
+    }
+
+    private static void tryOverridePositionalArgument(Map<Integer, ArgumentMetadata> argsIndex,
+            ArgumentMetadata parent) {
+
+        // As the metadata is extracted from the deepest class in the hierarchy
+        // going upwards we need to treat the passed option as the parent and
+        // the pre-existing option definition as the child
+        ArgumentMetadata child = argsIndex.get(parent.getZeroBasedPosition());
+
+        Accessor parentField = parent.getAccessors().iterator().next();
+        Accessor childField = child.getAccessors().iterator().next();
+
+        // Check for duplicates
+        boolean isDuplicate = parent == child || parent.equals(child);
+
+        // Parent must not state it is sealed UNLESS it is a duplicate which can
+        // happen when using @Inject to inject options via delegates
+        if (parent.isSealed() && !isDuplicate)
+            throw new IllegalArgumentException(String.format(
+                    "Fields %s and %s have conflicting definitions of positional argument %d (%s) - parent field %s declares itself as sealed and cannot be overridden",
+                    parentField, childField, parent.getZeroBasedPosition(), parent.getTitle(), parentField));
+
+        // Child must explicitly state that it overrides otherwise we cannot
+        // override UNLESS it is the case that this is a duplicate which
+        // can happen when using @Inject to inject options via delegates
+        if (!child.isOverride() && !isDuplicate)
+            throw new IllegalArgumentException(String.format(
+                    "Fields %s and %s have conflicting definitions of positional argument %d (%s) - if you wanted to override this argument you must explicitly specify override = true in your child field annotation",
+                    parentField, childField, parent.getZeroBasedPosition(), parent.getTitle()));
+
+        // Attempt overriding, this will error if the overriding is not possible
+        ArgumentMetadata merged = ArgumentMetadata.override(parent, child);
+        argsIndex.put(parent.getZeroBasedPosition(), merged);
     }
 
     public static void loadCommandsIntoGroupsByAnnotation(List<CommandMetadata> allCommands,
@@ -1107,8 +1203,11 @@ public class MetadataLoader {
         private List<OptionMetadata> groupOptions = new ArrayList<>();
         private List<OptionMetadata> commandOptions = new ArrayList<>();
         private OptionMetadata defaultOption = null;
+        private List<ArgumentMetadata> positionalArgs = new ArrayList<>();
         private List<ArgumentsMetadata> arguments = new ArrayList<>();
         private List<Accessor> metadataInjections = new ArrayList<>();
+        
+        
 
         private void compact() {
             globalOptions = overrideOptionSet(globalOptions);
@@ -1128,6 +1227,8 @@ public class MetadataLoader {
                         break;
                 }
             }
+
+            positionalArgs = overridePositionalArgumentSet(positionalArgs);
 
             if (arguments.size() > 1) {
                 arguments = ListUtils.unmodifiableList(Collections.singletonList(new ArgumentsMetadata(arguments)));
