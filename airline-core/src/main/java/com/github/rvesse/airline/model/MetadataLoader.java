@@ -956,8 +956,11 @@ public class MetadataLoader {
             }
         }
 
-        List<PositionalArgumentMetadata> posArgs = new ArrayList<>(maxIndex);
-        for (int i = 0; i < maxIndex; i++) {
+        List<PositionalArgumentMetadata> posArgs = new ArrayList<>(maxIndex + 1);
+        for (int i = 0; i <= maxIndex; i++) {
+            while (posArgs.size() <= i) {
+                posArgs.add(null);
+            }
             posArgs.set(i, argsIndex.get(i));
             if (posArgs.get(i) == null) {
                 throw new IllegalStateException(String.format(

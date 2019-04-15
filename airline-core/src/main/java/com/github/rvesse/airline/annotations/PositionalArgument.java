@@ -34,6 +34,14 @@ import java.lang.annotation.Documented;
 @Target({ FIELD })
 @Documented
 public @interface PositionalArgument {
+
+    /**
+     * Helper constants for more explicitly specifying the positional index of
+     * the argument
+     */
+    public static final int FIRST = 0, SECOND = 1, THIRD = 2, FOURTH = 3, FIFTH = 4, SIXTH = 5, SEVENTH = 6, EIGTH = 7,
+            NINTH = 8, TENTH = 9;
+
     /**
      * Name of the argument
      * 
@@ -49,29 +57,31 @@ public @interface PositionalArgument {
     String description() default "";
 
     /**
-     * The positional index (one-based) for the argument
+     * The positional index (zero-based) for the argument
      * <p>
-     * So {@code 1} represents the first argument, {@code 3} the third argument
-     * and so forth
+     * So {@code 0} represents the first argument, {@code 3} the fourth argument
+     * and so forth. Helper constants are provided on the annotation class e.g.
+     * {@link #SECOND} for making uses of this annotation more clear
      * </p>
      * 
      * @return
      */
     int position();
-    
+
     /**
      * If true this parameter can override parameters of the same index (set via
-     * the {@link PositionalArgument#position()} property) declared by parent classes assuming
-     * the argument definitions are compatible.
+     * the {@link PositionalArgument#position()} property) declared by parent
+     * classes assuming the argument definitions are compatible.
      * <p>
      * See
      * {@link PositionalArgumentMetadata#override(PositionalArgumentMetadata, PositionalArgumentMetadata)}
      * for legal overrides
      * </p>
      * <p>
-     * Note that where the child argument definition is an exact duplicate of the
-     * parent then overriding is implicitly permitted
+     * Note that where the child argument definition is an exact duplicate of
+     * the parent then overriding is implicitly permitted
      * </p>
+     * 
      * @return True if an override, false otherwise
      */
     boolean override() default false;
