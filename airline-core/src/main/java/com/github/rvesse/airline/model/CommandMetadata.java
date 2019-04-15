@@ -62,7 +62,7 @@ public class CommandMetadata {
             throw new IllegalArgumentException("Command name may not be null/empty");
         if (StringUtils.containsWhitespace(name))
             throw new IllegalArgumentException("Command name may not contain whitespace");
-        
+
         this.name = name;
         this.description = description;
         this.hidden = hidden;
@@ -72,6 +72,27 @@ public class CommandMetadata {
         this.defaultOption = defaultOption;
         this.positionalArgs = positionalArguments;
         this.arguments = arguments;
+
+        // Check that we don't have required positional/non-positional arguments
+        // after optional positional arguments
+        boolean posArgsRequired = false;
+        for (int i = 0; i < this.positionalArgs.size(); i++) {
+            if (i == 0) {
+                posArgsRequired = this.positionalArgs.get(i).isRequired();
+            } else if (!posArgsRequired && this.positionalArgs.get(i).isRequired()) {
+                throw new IllegalArgumentException(String.format(
+                        "Positional argument %d (%s) is declared as @Required but one/more preceeding positional arguments are optional",
+                        i, this.positionalArgs.get(i).getTitle()));
+            } else {
+                posArgsRequired = this.positionalArgs.get(i).isRequired();
+            }
+        }
+        if (this.positionalArgs.size() > 0 && !posArgsRequired) {
+            if (this.arguments.isRequired()) {
+                throw new IllegalArgumentException(
+                        "Non-positional arguments are declared as required but one/more preceding positional arguments are optional");
+            }
+        }
 
         if (this.defaultOption != null && this.arguments != null) {
             throw new IllegalArgumentException("Command cannot declare both @Arguments and @DefaultOption");
@@ -129,7 +150,7 @@ public class CommandMetadata {
     public OptionMetadata getDefaultOption() {
         return defaultOption;
     }
-    
+
     public List<ArgumentMetadata> getPositionalArguments() {
         return positionalArgs;
     }
@@ -153,6 +174,7 @@ public class CommandMetadata {
     public List<Group> getGroups() {
         return groups;
     }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -170,15 +192,17 @@ public class CommandMetadata {
         sb.append('}');
         return sb.toString();
     }
-    
+
     @Override
     public boolean equals(Object other) {
-        if (this == other) return true;
-        
-        if (!(other instanceof CommandMetadata)) return false;
-        
+        if (this == other)
+            return true;
+
+        if (!(other instanceof CommandMetadata))
+            return false;
+
         CommandMetadata cmd = (CommandMetadata) other;
-        
+
         // TODO This should ideally be more robust
         return StringUtils.equals(this.name, cmd.name) && this.type.equals(cmd.type);
     }

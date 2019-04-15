@@ -733,7 +733,7 @@ public class MetadataLoader {
                     throw new IllegalArgumentException(String.format(
                             "Field %s annotated with @DefaultOption must also have an @Option annotation", field));
                 }
-                
+
                 // Process positional arguments annotations
                 PositionalArgument positionalArgumentAnnotation = field.getAnnotation(PositionalArgument.class);
                 if (field.isAnnotationPresent(PositionalArgument.class)) {
@@ -741,11 +741,14 @@ public class MetadataLoader {
                     if (StringUtils.isBlank(title)) {
                         title = field.getName();
                     }
-                    
-                    TypeConverterProvider provider = ParserUtil.createInstance(positionalArgumentAnnotation.typeConverterProvider());
-                    
-                    List<ArgumentsRestriction> restrictions = collectArgumentRestrictions(field);
-                    
+
+                    TypeConverterProvider provider = ParserUtil
+                            .createInstance(positionalArgumentAnnotation.typeConverterProvider());
+
+                    // Collect restrictions, note that @Partials/@Partial does
+                    // not make sense for positional arguments
+                    List<ArgumentsRestriction> restrictions = collectArgumentRestrictions(field, false);
+
                     //@formatter:off
                     injectionMetadata.positionalArgs.add(new ArgumentMetadata(positionalArgumentAnnotation.position(), 
                                                                               title, 
@@ -779,7 +782,7 @@ public class MetadataLoader {
                     TypeConverterProvider provider = ParserUtil
                             .createInstance(argumentsAnnotation.typeConverterProvider());
 
-                    List<ArgumentsRestriction> restrictions = collectArgumentRestrictions(field);
+                    List<ArgumentsRestriction> restrictions = collectArgumentRestrictions(field, true);
 
                     //@formatter:off
                     injectionMetadata.arguments.add(new ArgumentsMetadata(titles, 
@@ -793,16 +796,16 @@ public class MetadataLoader {
         }
     }
 
-    public static List<ArgumentsRestriction> collectArgumentRestrictions(Field field) {
-        Map<Class<? extends Annotation>, Set<Integer>> partials = loadPartials(field);
+    private static List<ArgumentsRestriction> collectArgumentRestrictions(Field field, boolean allowPartials) {
+        Map<Class<? extends Annotation>, Set<Integer>> partials = allowPartials ? loadPartials(field)
+                : Collections.<Class<? extends Annotation>, Set<Integer>> emptyMap();
         List<ArgumentsRestriction> restrictions = new ArrayList<>();
         for (Class<? extends Annotation> annotationClass : RestrictionRegistry
                 .getArgumentsRestrictionAnnotationClasses()) {
             Annotation annotation = field.getAnnotation(annotationClass);
             if (annotation == null)
                 continue;
-            ArgumentsRestriction restriction = RestrictionRegistry.getArgumentsRestriction(annotationClass,
-                    annotation);
+            ArgumentsRestriction restriction = RestrictionRegistry.getArgumentsRestriction(annotationClass, annotation);
             if (restriction != null) {
                 // Adjust for partial if necessary
                 if (partials.containsKey(annotationClass))
@@ -962,7 +965,7 @@ public class MetadataLoader {
                         i, StringUtils.join(argsIndex.keySet(), ", ")));
             }
         }
-        
+
         return ListUtils.unmodifiableList(posArgs);
     }
 
@@ -1206,8 +1209,6 @@ public class MetadataLoader {
         private List<ArgumentMetadata> positionalArgs = new ArrayList<>();
         private List<ArgumentsMetadata> arguments = new ArrayList<>();
         private List<Accessor> metadataInjections = new ArrayList<>();
-        
-        
 
         private void compact() {
             globalOptions = overrideOptionSet(globalOptions);
