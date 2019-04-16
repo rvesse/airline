@@ -19,20 +19,35 @@ import java.util.List;
 
 import org.apache.commons.collections4.IteratorUtils;
 
-import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
-import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.model.ParserMetadata;
 import com.github.rvesse.airline.parser.AbstractCommandParser;
 import com.github.rvesse.airline.parser.ParseResult;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseException;
-import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.GlobalRestriction;
-import com.github.rvesse.airline.restrictions.OptionRestriction;
 
+/**
+ * A parser that parses a single command
+ *
+ * @param <T>
+ *            Command type
+ */
 public class SingleCommandParser<T> extends AbstractCommandParser<T> {
 
+    /**
+     * Parses the command
+     * 
+     * @param parserConfig
+     *            Parser configuration
+     * @param commandMetadata
+     *            Command meta-data
+     * @param restrictions
+     *            Global restrictions to apply
+     * @param args
+     *            Command arguments to parse
+     * @return Parse result
+     */
     public ParseResult<T> parseWithResult(ParserMetadata<T> parserConfig, CommandMetadata commandMetadata,
             Iterable<GlobalRestriction> restrictions, Iterable<String> args) {
         if (args == null)
@@ -45,6 +60,19 @@ public class SingleCommandParser<T> extends AbstractCommandParser<T> {
 
     }
 
+    /**
+     * Parses the command
+     * 
+     * @param parserConfig
+     *            Parser configuration
+     * @param commandMetadata
+     *            Command meta-data
+     * @param restrictions
+     *            Global restrictions to apply
+     * @param args
+     *            Command arguments to parse
+     * @return Command which may be {@code null} if parsing failed
+     */
     public T parse(ParserMetadata<T> parserConfig, CommandMetadata commandMetadata,
             Iterable<GlobalRestriction> restrictions, Iterable<String> args) {
         ParseResult<T> result = parseWithResult(parserConfig, commandMetadata, restrictions, args);
@@ -73,35 +101,6 @@ public class SingleCommandParser<T> extends AbstractCommandParser<T> {
             }
         }
         CommandMetadata command = state.getCommand();
-        if (command != null) {
-            // Arguments restrictions
-            ArgumentsMetadata arguments = command.getArguments();
-            if (arguments != null) {
-                for (ArgumentsRestriction restriction : arguments.getRestrictions()) {
-                    if (restriction == null)
-                        continue;
-                    try {
-                        restriction.finalValidate(state, arguments);
-                    } catch (ParseException e) {
-                        state.getParserConfiguration().getErrorHandler().handleError(e);
-                    }
-                }
-            }
-
-            // Option restrictions
-            for (OptionMetadata option : command.getAllOptions()) {
-                if (option == null)
-                    continue;
-                for (OptionRestriction restriction : option.getRestrictions()) {
-                    if (restriction == null)
-                        continue;
-                    try {
-                        restriction.finalValidate(state, option);
-                    } catch (ParseException e) {
-                        state.getParserConfiguration().getErrorHandler().handleError(e);
-                    }
-                }
-            }
-        }
+        validateCommand(state, command);
     }
 }

@@ -24,14 +24,22 @@ import java.lang.annotation.Target;
 /**
  * Annotation to mark a field as the default option
  * <p>
+ * This means that supplying the name of the associated option is optional since
+ * any non-option input seen will be treating as supplying a value for the
+ * associated option.
+ * </p>
+ * <p>
  * This annotation can only be used <strong>once</strong> on a command field
  * provided the following requirements are met:
  * </p>
  * <ul>
  * <li>The field is also annotated with {@link Option}</li>
  * <li>The {@linkplain Option} annotation has an arity of 1</li>
- * <li>The {@linkplain Option} annotation has a type of {@link OptionType#COMMAND}</li>
- * <li>The command does not have any field annotated with {@link Arguments}</li>
+ * <li>The {@linkplain Option} annotation has a type of
+ * {@link OptionType#COMMAND}</li>
+ * <li>The command does not have any field annotated with {@link Arguments} or
+ * {@link PositionalArgument} as otherwise it would be ambiguous as to whether a
+ * non-option value should be parsed as an argument or as an option value</li>
  * </ul>
  *
  */

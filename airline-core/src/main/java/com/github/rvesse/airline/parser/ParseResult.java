@@ -32,8 +32,6 @@ import com.github.rvesse.airline.utils.AirlineUtils;
 
 /**
  * Represents parsing results
- * 
- * @author rvesse
  *
  * @param <T>
  *            Command type

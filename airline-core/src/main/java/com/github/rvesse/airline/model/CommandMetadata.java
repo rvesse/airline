@@ -76,26 +76,30 @@ public class CommandMetadata {
         // Check that we don't have required positional/non-positional arguments
         // after optional positional arguments
         boolean posArgsRequired = false;
-        for (int i = 0; i < this.positionalArgs.size(); i++) {
-            if (i == 0) {
-                posArgsRequired = this.positionalArgs.get(i).isRequired();
-            } else if (!posArgsRequired && this.positionalArgs.get(i).isRequired()) {
-                throw new IllegalArgumentException(String.format(
-                        "Positional argument %d (%s) is declared as @Required but one/more preceeding positional arguments are optional",
-                        i, this.positionalArgs.get(i).getTitle()));
-            } else {
-                posArgsRequired = this.positionalArgs.get(i).isRequired();
+        if (this.positionalArgs != null) {
+            for (int i = 0; i < this.positionalArgs.size(); i++) {
+                if (i == 0) {
+                    posArgsRequired = this.positionalArgs.get(i).isRequired();
+                } else if (!posArgsRequired && this.positionalArgs.get(i).isRequired()) {
+                    throw new IllegalArgumentException(String.format(
+                            "Positional argument %d (%s) is declared as @Required but one/more preceeding positional arguments are optional",
+                            i, this.positionalArgs.get(i).getTitle()));
+                } else {
+                    posArgsRequired = this.positionalArgs.get(i).isRequired();
+                }
             }
-        }
-        if (this.positionalArgs.size() > 0 && !posArgsRequired) {
-            if (this.arguments.isRequired()) {
-                throw new IllegalArgumentException(
-                        "Non-positional arguments are declared as required but one/more preceding positional arguments are optional");
+            if (this.positionalArgs.size() > 0 && !posArgsRequired) {
+                if (this.arguments.isRequired()) {
+                    throw new IllegalArgumentException(
+                            "Non-positional arguments are declared as required but one/more preceding positional arguments are optional");
+                }
             }
         }
 
-        if (this.defaultOption != null && this.arguments != null) {
-            throw new IllegalArgumentException("Command cannot declare both @Arguments and @DefaultOption");
+        if (this.defaultOption != null
+                && (this.arguments != null || (this.positionalArgs != null && this.positionalArgs.size() > 0))) {
+            throw new IllegalArgumentException(
+                    "Command cannot declare both @Arguments/@PositionalArgument and use @DefaultOption");
         }
 
         this.metadataInjections = AirlineUtils.unmodifiableListCopy(metadataInjections);
@@ -185,7 +189,7 @@ public class CommandMetadata {
         sb.append(" , globalOptions=").append(globalOptions).append('\n');
         sb.append(" , groupOptions=").append(groupOptions).append('\n');
         sb.append(" , commandOptions=").append(commandOptions).append('\n');
-        sb.append("  , positionalArguments=").append(positionalArgs).append('\n');
+        sb.append(" , positionalArguments=").append(positionalArgs).append('\n');
         sb.append(" , arguments=").append(arguments).append('\n');
         sb.append(" , metadataInjections=").append(metadataInjections).append('\n');
         sb.append(" , type=").append(type).append('\n');

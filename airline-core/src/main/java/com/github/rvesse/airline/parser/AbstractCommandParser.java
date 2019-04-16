@@ -24,7 +24,10 @@ import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.model.ParserMetadata;
 import com.github.rvesse.airline.parser.aliases.AliasResolver;
+import com.github.rvesse.airline.parser.errors.ParseException;
 import com.github.rvesse.airline.parser.options.OptionParser;
+import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
+import com.github.rvesse.airline.restrictions.OptionRestriction;
 import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.parser.AbbreviatedCommandFinder;
 import com.github.rvesse.airline.utils.predicates.parser.AbbreviatedGroupFinder;
@@ -275,7 +278,8 @@ public abstract class AbstractCommandParser<T> extends AbstractParser<T> {
             OptionMetadata defaultOption) {
         if (arguments != null || positionalArgs.size() > 0) {
             // Argument
-            state = state.withArgument(positionalArgs, arguments, tokens.next());
+            state = state.pushContext(Context.ARGS);
+            state = state.withArgument(positionalArgs, arguments, tokens.next()).popContext();
         } else if (defaultOption != null) {
             // Default Option
             state = state.pushContext(Context.OPTION).withOption(defaultOption);
@@ -285,5 +289,64 @@ public abstract class AbstractCommandParser<T> extends AbstractParser<T> {
             state = state.withUnparsedInput(tokens.next());
         }
         return state;
+    }
+
+    /**
+     * Validates that a command meets all the option, positional argument and
+     * argument level restrictions
+     * 
+     * @param state
+     *            Parser state
+     * @param command
+     *            Command meta-data
+     */
+    protected void validateCommand(ParseState<T> state, CommandMetadata command) {
+        if (command == null)
+            return;
+    
+        // Positional arguments restrictions
+        List<PositionalArgumentMetadata> posArgs = command.getPositionalArguments();
+        if (posArgs != null) {
+            for (PositionalArgumentMetadata posArg : posArgs) {
+                for (ArgumentsRestriction restriction : posArg.getRestrictions()) {
+                    if (restriction == null)
+                        continue;
+                    try {
+                        restriction.finalValidate(state, posArg);
+                    } catch (ParseException e) {
+                        state.getParserConfiguration().getErrorHandler().handleError(e);
+                    }
+                }
+            }
+        }
+    
+        // Arguments restrictions
+        ArgumentsMetadata arguments = command.getArguments();
+        if (arguments != null) {
+            for (ArgumentsRestriction restriction : arguments.getRestrictions()) {
+                if (restriction == null)
+                    continue;
+                try {
+                    restriction.finalValidate(state, arguments);
+                } catch (ParseException e) {
+                    state.getParserConfiguration().getErrorHandler().handleError(e);
+                }
+            }
+        }
+    
+        // Option restrictions
+        for (OptionMetadata option : command.getAllOptions()) {
+            if (option == null)
+                continue;
+            for (OptionRestriction restriction : option.getRestrictions()) {
+                if (restriction == null)
+                    continue;
+                try {
+                    restriction.finalValidate(state, option);
+                } catch (ParseException e) {
+                    state.getParserConfiguration().getErrorHandler().handleError(e);
+                }
+            }
+        }
     }
 }

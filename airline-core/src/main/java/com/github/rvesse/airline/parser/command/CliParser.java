@@ -15,20 +15,31 @@
  */
 package com.github.rvesse.airline.parser.command;
 
-import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
-import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.AbstractCommandParser;
 import com.github.rvesse.airline.parser.ParseResult;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseException;
-import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.GlobalRestriction;
-import com.github.rvesse.airline.restrictions.OptionRestriction;
 
+/**
+ * A parser that parses full CLIs
+ *
+ * @param <T>
+ *            Command type
+ */
 public class CliParser<T> extends AbstractCommandParser<T> {
 
+    /**
+     * Parses the input arguments returning the parse result
+     * 
+     * @param metadata
+     *            CLI meta-data
+     * @param args
+     *            CLI arguments to parse
+     * @return Parse result
+     */
     public ParseResult<T> parseWithResult(GlobalMetadata<T> metadata, Iterable<String> args) {
         if (args == null)
             throw new NullPointerException("args cannot be null");
@@ -49,6 +60,16 @@ public class CliParser<T> extends AbstractCommandParser<T> {
         return metadata.getParserConfiguration().getErrorHandler().finished(state);
     }
 
+    /**
+     * Parses the input arguments returning the users specified command
+     * 
+     * @param metadata
+     *            CLI meta-data
+     * @param args
+     *            CLI arguments to parse
+     * @return Command which may be {@code null} if a command could not be
+     *         parsed
+     */
     public T parse(GlobalMetadata<T> metadata, Iterable<String> args) {
         ParseResult<T> result = parseWithResult(metadata, args);
         return result.getCommand();
@@ -76,36 +97,6 @@ public class CliParser<T> extends AbstractCommandParser<T> {
             }
         }
         CommandMetadata command = state.getCommand();
-        if (command != null) {
-
-            // Argument restrictions
-            ArgumentsMetadata arguments = command.getArguments();
-            if (arguments != null) {
-                for (ArgumentsRestriction restriction : arguments.getRestrictions()) {
-                    if (restriction == null)
-                        continue;
-                    try {
-                        restriction.finalValidate(state, arguments);
-                    } catch (ParseException e) {
-                        state.getParserConfiguration().getErrorHandler().handleError(e);
-                    }
-                }
-            }
-
-            // Option restrictions
-            for (OptionMetadata option : command.getAllOptions()) {
-                if (option == null)
-                    continue;
-                for (OptionRestriction restriction : option.getRestrictions()) {
-                    if (restriction == null)
-                        continue;
-                    try {
-                        restriction.finalValidate(state, option);
-                    } catch (ParseException e) {
-                        state.getParserConfiguration().getErrorHandler().handleError(e);
-                    }
-                }
-            }
-        }
+        validateCommand(state, command);
     }
 }
