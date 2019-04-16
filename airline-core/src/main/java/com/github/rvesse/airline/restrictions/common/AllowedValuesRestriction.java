@@ -21,6 +21,7 @@ import java.util.Set;
 
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsIllegalValueException;
 import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
@@ -85,6 +86,20 @@ public class AllowedValuesRestriction extends AbstractAllowedValuesRestriction {
             return;
 
         String title = getArgumentTitle(state, arguments);
+        Set<Object> allowedValues = createAllowedValues(state, title, arguments.getJavaType(),
+                arguments.getTypeConverterProvider().getTypeConverter(arguments, state));
+        if (!allowedValues.contains(value)) {
+            throw new ParseArgumentsIllegalValueException(title, value, allowedValues);
+        }
+    }
+
+    @Override
+    public <T> void postValidate(ParseState<T> state, PositionalArgumentMetadata arguments, Object value) {
+        // Not enforced if no values specified
+        if (this.rawValues.isEmpty())
+            return;
+
+        String title = arguments.getTitle();
         Set<Object> allowedValues = createAllowedValues(state, title, arguments.getJavaType(),
                 arguments.getTypeConverterProvider().getTypeConverter(arguments, state));
         if (!allowedValues.contains(value)) {

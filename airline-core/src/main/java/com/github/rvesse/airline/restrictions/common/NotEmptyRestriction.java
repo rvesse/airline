@@ -21,6 +21,7 @@ import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
@@ -42,6 +43,13 @@ public class NotEmptyRestriction extends AbstractStringRestriction implements He
             String value) {
         return new ParseRestrictionViolatedException("Arguments '%s' requires a non-empty value",
                 AbstractCommonRestriction.getArgumentTitle(state, arguments));
+    }
+    
+    @Override
+    protected <T> ParseRestrictionViolatedException violated(ParseState<T> state, PositionalArgumentMetadata arguments,
+            String value) {
+        return new ParseRestrictionViolatedException("Positional argument %d ('%s') requires a non-empty value",
+                arguments.getZeroBasedPosition(), arguments.getTitle());
     }
 
     @Override

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsIllegalValueException;
 import com.github.rvesse.airline.parser.errors.ParseOptionIllegalValueException;
@@ -64,6 +65,18 @@ public class AllowedEnumValuesRestriction extends AbstractAllowedValuesRestricti
         // Check in list of values
         if (!this.rawValues.contains(value)) {
             throw new ParseArgumentsIllegalValueException(AbstractCommonRestriction.getArgumentTitle(state, arguments), value, asObjects(rawValues));
+        }
+    }
+
+    @Override
+    public <T> void preValidate(ParseState<T> state, PositionalArgumentMetadata arguments, String value) {
+        // Not enforced if no values specified
+        if (rawValues.isEmpty())
+            return;
+
+        // Check in list of values
+        if (!this.rawValues.contains(value)) {
+            throw new ParseArgumentsIllegalValueException(arguments.getTitle(), value, asObjects(rawValues));
         }
     }
 }

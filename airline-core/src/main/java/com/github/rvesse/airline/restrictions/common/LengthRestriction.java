@@ -19,6 +19,7 @@ import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
@@ -124,6 +125,31 @@ public class LengthRestriction extends AbstractStringRestriction implements Help
             return new ParseRestrictionViolatedException(
                     "Argument '%s' was given value '%s' that has length %d which is below the minimum required length of %d",
                     AbstractCommonRestriction.getArgumentTitle(state, arguments), value, value.length(), this.min);
+        }
+    }
+
+    @Override
+    protected <T> ParseRestrictionViolatedException violated(ParseState<T> state, PositionalArgumentMetadata arguments,
+            String value) {
+        if (this.maximum) {
+            return new ParseRestrictionViolatedException(
+                    "Positional Argument %d ('%s') was given value '%s' that has length %d which exceeds the maximum permitted length of %d",
+                    arguments.getZeroBasedPosition(), arguments.getTitle(), value, value.length(), this.max);
+        } else if (this.range) {
+            if (this.min == this.max) {
+                return new ParseRestrictionViolatedException(
+                        "Positional Argument %d ('%s') was given value '%s' that has length %d which exceeds the maximum permitted length of %d",
+                        arguments.getZeroBasedPosition(), arguments.getTitle(), value, value.length(), this.max);
+            } else {
+                return new ParseRestrictionViolatedException(
+                        "Positional Argument %d ('%s') was given value '%s' that has length %d which is not in the accepted length range of %d to %d characters",
+                        arguments.getZeroBasedPosition(), arguments.getTitle(), value, value.length(), this.min,
+                        this.max);
+            }
+        } else {
+            return new ParseRestrictionViolatedException(
+                    "Positional Argument %d ('%s') was given value '%s' that has length %d which is below the minimum required length of %d",
+                    arguments.getZeroBasedPosition(), arguments.getTitle(), value, value.length(), this.min);
         }
     }
 

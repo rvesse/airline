@@ -19,12 +19,14 @@ import org.apache.commons.collections4.IterableUtils;
 
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsMissingException;
 import com.github.rvesse.airline.parser.errors.ParseOptionMissingException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.parser.ParsedOptionFinder;
+import com.github.rvesse.airline.utils.predicates.parser.ParsedPositionalArgumentFinder;
 
 /**
  * A restriction that options/arguments are required
@@ -41,6 +43,13 @@ public class IsRequiredRestriction extends AbstractCommonRestriction {
     public <T> void finalValidate(ParseState<T> state, ArgumentsMetadata arguments) {
         if (state.getParsedArguments().isEmpty())
             throw new ParseArgumentsMissingException(arguments.getTitle());
+    }
+
+    @Override
+    public <T> void finalValidate(ParseState<T> state, PositionalArgumentMetadata arguments) {
+        if (IterableUtils.find(state.getParsedPositionalArguments(),
+                new ParsedPositionalArgumentFinder(arguments)) == null)
+            throw new ParseArgumentsMissingException(arguments);
     }
 
 }

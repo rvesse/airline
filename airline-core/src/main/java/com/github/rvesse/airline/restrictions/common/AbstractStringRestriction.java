@@ -17,6 +17,7 @@ package com.github.rvesse.airline.restrictions.common;
 
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
@@ -41,6 +42,12 @@ public abstract class AbstractStringRestriction extends AbstractCommonRestrictio
             throw violated(state, arguments, value);
     }
 
+    @Override
+    public final <T> void preValidate(ParseState<T> state, PositionalArgumentMetadata arguments, String value) {
+        if (!isValid(value))
+            throw violated(state, arguments, value);
+    }
+    
     /**
      * Method that derived classes must implement to check whether a value is
      * valid
@@ -59,7 +66,7 @@ public abstract class AbstractStringRestriction extends AbstractCommonRestrictio
      * @param state
      *            Parser state
      * @param option
-     *            Option metadata for the option whose value is being checked
+     *            Option meta-data for the option whose value is being checked
      * @param value
      *            Value which has been deemed invalid
      * @return Exception
@@ -75,11 +82,27 @@ public abstract class AbstractStringRestriction extends AbstractCommonRestrictio
      * @param state
      *            Parser state
      * @param arguments
-     *            Arguments metadata
+     *            Arguments meta-data
      * @param value
      *            Value which has been deemed invalid
      * @return Exception
      */
     protected abstract <T> ParseRestrictionViolatedException violated(ParseState<T> state, ArgumentsMetadata arguments,
+            String value);
+    
+    /**
+     * Method that derived classes must implement to provide an exception for
+     * the case of an invalid argument value, this will be called if
+     * {@link #isValid(String)} returns {@code false}
+     * 
+     * @param state
+     *            Parser state
+     * @param arguments
+     *            Argument meta-data
+     * @param value
+     *            Value which has been deemed invalid
+     * @return Exception
+     */
+    protected abstract <T> ParseRestrictionViolatedException violated(ParseState<T> state, PositionalArgumentMetadata arguments,
             String value);
 }

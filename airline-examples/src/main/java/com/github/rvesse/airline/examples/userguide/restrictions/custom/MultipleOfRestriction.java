@@ -19,6 +19,7 @@ import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
@@ -31,29 +32,35 @@ public class MultipleOfRestriction extends AbstractCommonRestriction implements 
         this.multipleOf = multipleOf;
     }
 
-    private <T> void validate(ParseState<T> state, String optionTitle, Object value) {
+    private <T> void validate(ParseState<T> state, String optionType, String optionTitle, Object value) {
         if (value instanceof Number) {
             Number n = (Number) value;
             if (n.longValue() % this.multipleOf != 0) {
                 throw new ParseRestrictionViolatedException(
-                        "Option '%s' must be an integer multiple of %d but got value '%s'", optionTitle,
+                        "%s '%s' must be an integer multiple of %d but got value '%s'", optionType, optionTitle,
                         this.multipleOf, value);
             }
         } else {
             throw new ParseRestrictionViolatedException(
-                    "Option '%s' must be an integer multiple of %d which requires a numeric value but got value '%s'",
-                    optionTitle, this.multipleOf, value);
+                    "%s '%s' must be an integer multiple of %d which requires a numeric value but got value '%s'",
+                    optionType, optionTitle, this.multipleOf, value);
         }
     }
 
     @Override
     public <T> void postValidate(ParseState<T> state, OptionMetadata option, Object value) {
-        validate(state, option.getTitle(), value);
+        validate(state, "Option", option.getTitle(), value);
     }
 
     @Override
     public <T> void postValidate(ParseState<T> state, ArgumentsMetadata arguments, Object value) {
-        validate(state, getArgumentTitle(state, arguments), value);
+        validate(state, "Argument", getArgumentTitle(state, arguments), value);
+    }
+
+    @Override
+    public <T> void postValidate(ParseState<T> state, PositionalArgumentMetadata arguments, Object value) {
+        validate(state, String.format("Positional argument %d", arguments.getZeroBasedPosition()), arguments.getTitle(),
+                value);
     }
 
     @Override

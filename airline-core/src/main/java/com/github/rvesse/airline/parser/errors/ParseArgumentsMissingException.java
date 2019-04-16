@@ -15,9 +15,12 @@
  */
 package com.github.rvesse.airline.parser.errors;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 
 /**
  * Exception thrown when required arguments are missing
@@ -27,6 +30,11 @@ public class ParseArgumentsMissingException extends ParseRestrictionViolatedExce
     private static final long serialVersionUID = 6220909299960264997L;
     
     private final List<String> argumentTitles;
+    
+    public ParseArgumentsMissingException(PositionalArgumentMetadata posArg) {
+        super("Required positional argument %d ('%s') is missing", posArg.getZeroBasedPosition(), posArg.getTitle());
+        this.argumentTitles = Collections.singletonList(posArg.getTitle());
+    }
 
     public ParseArgumentsMissingException(List<String> argumentTitles) {
         super("Required arguments are missing: '%s'", StringUtils.join(argumentTitles, ','));

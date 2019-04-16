@@ -26,6 +26,7 @@ import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsMissingException;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
@@ -73,6 +74,23 @@ public class OccurrencesRestriction extends AbstractCommonRestriction implements
         } else if (!maximum && state.getParsedArguments().size() < this.occurrences) {
             throw new ParseArgumentsMissingException("At least %d arguments must be specified but only %d were found",
                     titles(state, arguments), this.occurrences, state.getParsedArguments().size());
+        }
+    }
+
+    @Override
+    public <T> void finalValidate(ParseState<T> state, PositionalArgumentMetadata arguments) {
+        if (occurrences <= 0)
+            return;
+
+        // NB - Since a positional argument can only ever receive a single value
+        // setting occurrences to any value other than 1 makes no sense
+
+        if (maximum && state.getParsedArguments().size() > this.occurrences) {
+            throw new ParseTooManyArgumentsException("At most %d positional arguments may be specified but %d were found",
+                    occurrences, state.getParsedArguments().size());
+        } else if (!maximum && state.getParsedArguments().size() < this.occurrences) {
+            throw new ParseArgumentsMissingException("At least %d positional arguments must be specified but only %d were found",
+                    Collections.singletonList(arguments.getTitle()), this.occurrences, state.getParsedArguments().size());
         }
     }
 
