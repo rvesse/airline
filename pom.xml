@@ -67,6 +67,7 @@
     <plugin.gpg>1.6</plugin.gpg>
     <plugin.shade>3.1.1</plugin.shade>
     <plugin.surefire>2.22.0</plugin.surefire>
+    <plugin.moditect>1.0.0.Beta2</plugin.moditect>
 
     <!-- Dependency Versions -->
     <dependency.javax-inject>1</dependency.javax-inject>
@@ -531,6 +532,43 @@
                 <option>-Xdoclint:none</option>
               </additionalOptions>
             </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>moditect-jdk8-plus</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+        <file>
+          <exists>${basedir}/src/main/moditect/module-info.java</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.moditect</groupId>
+            <artifactId>moditect-maven-plugin</artifactId>
+            <version>${plugin.moditect}</version>
+            <executions>
+              <execution>
+                <id>add-module-infos</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>add-module-info</goal>
+                </goals>
+                <configuration>
+                  <jvmVersion>9</jvmVersion>
+                  <overwriteExistingFiles>true</overwriteExistingFiles>
+                  <module>
+                    <moduleInfoFile>
+                      ${basedir}/src/main/moditect/module-info.java
+                    </moduleInfoFile>
+                  </module>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

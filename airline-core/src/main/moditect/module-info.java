@@ -1,0 +1,52 @@
+/**
+ * Copyright (C) 2010-16 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+module com.github.rvesse.airline
+{
+  requires com.github.rvesse.airline.io;
+  requires org.apache.commons.collections4;
+  requires javax.inject;
+
+  exports com.github.rvesse.airline;
+  exports com.github.rvesse.airline.annotations;
+  exports com.github.rvesse.airline.annotations.help;
+  exports com.github.rvesse.airline.annotations.restrictions;
+  exports com.github.rvesse.airline.annotations.restrictions.global;
+  exports com.github.rvesse.airline.annotations.restrictions.ranges;
+  exports com.github.rvesse.airline.builder;
+  exports com.github.rvesse.airline.help;
+  exports com.github.rvesse.airline.help.cli;
+  exports com.github.rvesse.airline.help.common;
+  exports com.github.rvesse.airline.help.sections;
+  exports com.github.rvesse.airline.help.sections.common;
+  exports com.github.rvesse.airline.help.sections.factories;
+  exports com.github.rvesse.airline.help.suggester;
+  exports com.github.rvesse.airline.model;
+  exports com.github.rvesse.airline.parser;
+  exports com.github.rvesse.airline.parser.aliases;
+  exports com.github.rvesse.airline.parser.command;
+  exports com.github.rvesse.airline.parser.errors;
+  exports com.github.rvesse.airline.parser.errors.handlers;
+  exports com.github.rvesse.airline.parser.options;
+  exports com.github.rvesse.airline.parser.resources;
+  exports com.github.rvesse.airline.parser.suggester;
+  exports com.github.rvesse.airline.restrictions;
+  exports com.github.rvesse.airline.restrictions.common;
+  exports com.github.rvesse.airline.restrictions.factories;
+  exports com.github.rvesse.airline.restrictions.global;
+  exports com.github.rvesse.airline.restrictions.options;
+  exports com.github.rvesse.airline.types;
+  exports com.github.rvesse.airline.utils;
+}
