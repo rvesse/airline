@@ -69,10 +69,6 @@ public class PositionalArgumentMetadata {
             throw new IllegalArgumentException("Position must be >= 0");
         if (title == null)
             throw new NullPointerException("title cannot be null");
-        if (path == null)
-            throw new NullPointerException("path cannot be null");
-        if (!path.iterator().hasNext())
-            throw new IllegalArgumentException("path cannot be empty");
 
         this.position = position;
         this.title = title;
@@ -82,7 +78,12 @@ public class PositionalArgumentMetadata {
         this.restrictions = restrictions != null ? AirlineUtils.unmodifiableListCopy(restrictions)
                 : Collections.<ArgumentsRestriction> emptyList();
         this.provider = typeConverterProvider != null ? typeConverterProvider : new DefaultTypeConverterProvider();
-        this.accessors = SetUtils.unmodifiableSet(Collections.singleton(new Accessor(path)));
+
+        if (path != null) {
+            if (!path.iterator().hasNext())
+                throw new IllegalArgumentException("path cannot be empty");
+            this.accessors = SetUtils.unmodifiableSet(Collections.singleton(new Accessor(path)));
+        }
     }
 
     public PositionalArgumentMetadata(Iterable<PositionalArgumentMetadata> arguments) {
@@ -232,7 +233,8 @@ public class PositionalArgumentMetadata {
      *            Child
      * @return Merged metadata
      */
-    public static PositionalArgumentMetadata override(PositionalArgumentMetadata parent, PositionalArgumentMetadata child) {
+    public static PositionalArgumentMetadata override(PositionalArgumentMetadata parent,
+            PositionalArgumentMetadata child) {
         // Cannot change position
         if (parent.position != child.position)
             throw new IllegalArgumentException(
@@ -267,15 +269,17 @@ public class PositionalArgumentMetadata {
         // Parent must not state it is sealed UNLESS it is a duplicate which can
         // happen when using @Inject to inject options via delegates
         if (parent.sealed && !isDuplicate)
-            throw new IllegalArgumentException(
-                    String.format("Cannot override positional argument %d (%s) as parent argument declares it to be sealed", parent.position, parent.title));
+            throw new IllegalArgumentException(String.format(
+                    "Cannot override positional argument %d (%s) as parent argument declares it to be sealed",
+                    parent.position, parent.title));
 
         // Child must explicitly state that it overrides otherwise we cannot
         // override UNLESS it is the case that this is a duplicate which
         // can happen when using @Inject to inject options via delegates
         if (!child.overrides && !isDuplicate)
-            throw new IllegalArgumentException(
-                    String.format("Cannot override positional argument %d (%s) unless child argument sets overrides to true", parent.position, parent.title));
+            throw new IllegalArgumentException(String.format(
+                    "Cannot override positional argument %d (%s) unless child argument sets overrides to true",
+                    parent.position, parent.title));
 
         PositionalArgumentMetadata merged;
         //@formatter:off

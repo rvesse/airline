@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline.args;
+package com.github.rvesse.airline.args.positional;
 
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Command(name = "ArgsPositional", description = "ArgsPositional description")
-public class ArgsPositional
+public class ArgsPositionalConflict
 {
     @PositionalArgument(position = PositionalArgument.FIRST, title = "File")
     @Required
     public String file;
     
-    @PositionalArgument(position = PositionalArgument.SECOND, title = "Mode")
+    @PositionalArgument(position = PositionalArgument.FIRST, title = "Mode")
     public Integer mode;
     
     @Arguments
