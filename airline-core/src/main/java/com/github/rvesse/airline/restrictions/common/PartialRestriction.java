@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 
 import com.github.rvesse.airline.help.sections.HelpFormat;

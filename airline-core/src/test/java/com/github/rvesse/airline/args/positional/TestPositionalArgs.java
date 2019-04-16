@@ -17,11 +17,18 @@
 package com.github.rvesse.airline.args.positional;
 
 import com.github.rvesse.airline.SingleCommand;
+import com.github.rvesse.airline.help.cli.CliCommandUsageGenerator;
 import com.github.rvesse.airline.model.PositionalArgumentMetadata;
+import com.github.rvesse.airline.parser.errors.ParseArgumentsUnexpectedException;
+
 import static com.github.rvesse.airline.TestingUtil.singleCommandParser;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -53,7 +60,6 @@ public class TestPositionalArgs {
         assertEquals(cmd.mode, new Integer(600));
         assertEquals(cmd.parameters.size(), 1);
         assertEquals(cmd.parameters.get(0), "extra");
-
     }
     
     @Test
@@ -67,7 +73,6 @@ public class TestPositionalArgs {
         assertEquals(cmd.parameters.get(0), "extra");
         assertEquals(cmd.parameters.get(1), "other");
         assertEquals(cmd.parameters.get(2), "another");
-
     }
     
     @Test
@@ -83,7 +88,6 @@ public class TestPositionalArgs {
         assertEquals(cmd.mode, new Integer(600));
         assertEquals(cmd.parameters.size(), 1);
         assertEquals(cmd.parameters.get(0), "extra");
-
     }
     
     @Test
@@ -110,7 +114,28 @@ public class TestPositionalArgs {
         assertEquals(cmd.mode, new Integer(600));
         assertEquals(cmd.parameters.size(), 1);
         assertEquals(cmd.parameters.get(0), "extra");
+    }
+    
+    @Test
+    public void positional_args_05() {
+        SingleCommand<ArgsPositionalNoExtras> parser = singleCommandParser(ArgsPositionalNoExtras.class);
+        assertFalse(parser.getCommandMetadata().getPositionalArguments().isEmpty());
+        assertEquals(parser.getCommandMetadata().getPositionalArguments().size(), 2);
 
+        ArgsPositionalNoExtras cmd = parser.parse("example.txt", "600");
+        assertEquals(cmd.file, "example.txt");
+        assertEquals(cmd.mode, new Integer(600));
+    }
+    
+    @Test(expectedExceptions = ParseArgumentsUnexpectedException.class)
+    public void positional_args_06() {
+        SingleCommand<ArgsPositionalNoExtras> parser = singleCommandParser(ArgsPositionalNoExtras.class);
+        assertFalse(parser.getCommandMetadata().getPositionalArguments().isEmpty());
+        assertEquals(parser.getCommandMetadata().getPositionalArguments().size(), 2);
+
+        ArgsPositionalNoExtras cmd = parser.parse("example.txt", "600", "extra");
+        assertEquals(cmd.file, "example.txt");
+        assertEquals(cmd.mode, new Integer(600));
     }
 
     @Test(expectedExceptions = IllegalStateException.class)
@@ -136,5 +161,18 @@ public class TestPositionalArgs {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void positional_args_required_02() {
         singleCommandParser(ArgsPositionalRequiredAfterOptional2.class);
+    }
+    
+    @Test
+    public void positional_args_help_01() throws IOException {
+        SingleCommand<ArgsPositional> parser = singleCommandParser(ArgsPositional.class);
+        
+        CliCommandUsageGenerator generator = new CliCommandUsageGenerator();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        generator.usage(parser.getCommandMetadata(), parser.getParserConfiguration(), output);
+        
+        String actual = output.toString(StandardCharsets.UTF_8.name());
+        
+        assertTrue(actual.contains("ArgsPositional [ -- ] <File> [ <Mode> ] [ <ExtraArg>... ]"));
     }
 }

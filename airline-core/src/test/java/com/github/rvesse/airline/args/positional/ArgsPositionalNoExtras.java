@@ -15,16 +15,12 @@
  */
 package com.github.rvesse.airline.args.positional;
 
-import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.PositionalArgument;
 import com.github.rvesse.airline.annotations.restrictions.Required;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Command(name = "ArgsPositional", description = "ArgsPositional description")
-public class ArgsPositional
+public class ArgsPositionalNoExtras
 {
     @PositionalArgument(position = PositionalArgument.FIRST, title = "File", description = "File to operate on")
     @Required
@@ -32,7 +28,4 @@ public class ArgsPositional
     
     @PositionalArgument(position = PositionalArgument.SECOND, title = "Mode", description = "Mode to set on the file")
     public Integer mode;
-    
-    @Arguments(title = { "ExtraArg" }, description = "Additional argument(s)")
-    public List<String> parameters = new ArrayList<>();
 }

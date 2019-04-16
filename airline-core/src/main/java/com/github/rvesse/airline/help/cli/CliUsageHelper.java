@@ -31,6 +31,7 @@ import com.github.rvesse.airline.io.printers.UsagePrinter;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.model.ParserMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
 
@@ -187,21 +188,50 @@ public class CliUsageHelper extends AbstractUsageGenerator {
         return maxRows;
     }
 
-    public <T> void outputArguments(UsagePrinter out, ArgumentsMetadata arguments, ParserMetadata<T> parserConfig)
-            throws IOException {
-        if (arguments != null) {
+    public <T> void outputArguments(UsagePrinter out, List<PositionalArgumentMetadata> positionalArgs,
+            ArgumentsMetadata arguments, ParserMetadata<T> parserConfig) throws IOException {
+        UsagePrinter optionPrinter = out.newIndentedPrinter(8);
+        UsagePrinter descriptionPrinter;
+        boolean needsArgsSeparator = ((positionalArgs != null && positionalArgs.size() > 0) || arguments != null);
+        if (needsArgsSeparator) {
             // Arguments separator option
-            UsagePrinter optionPrinter = out.newIndentedPrinter(8);
             optionPrinter.append(parserConfig.getArgumentsSeparator()).newline();
             optionPrinter.flush();
 
             // Description
-            UsagePrinter descriptionPrinter = optionPrinter.newIndentedPrinter(4);
-            descriptionPrinter
-                    .append("This option can be used to separate command-line options from the list of arguments (useful when arguments might be mistaken for command-line options)")
+            descriptionPrinter = optionPrinter.newIndentedPrinter(4);
+            descriptionPrinter.append(
+                    "This option can be used to separate command-line options from the list of arguments (useful when arguments might be mistaken for command-line options)")
                     .newline();
             descriptionPrinter.newline();
+            descriptionPrinter.flush();
+        } else {
+            // No positional or non-positional arguments so just return
+            return;
+        }
 
+        if (positionalArgs != null && positionalArgs.size() > 0) {
+            for (PositionalArgumentMetadata posArg : positionalArgs) {
+                // Argument name
+                optionPrinter.append(toDescription(posArg)).newline();
+
+                // Description
+                descriptionPrinter = optionPrinter.newIndentedPrinter(4);
+                descriptionPrinter.append(posArg.getDescription()).newline();
+
+                List<HelpHint> hints = sortArgumentsRestrictions(arguments.getRestrictions());
+                for (HelpHint hint : hints) {
+                    // Safe to cast back to ArgumentsRestriction as must have
+                    // come from an ArgumentsRestriction to start with
+                    outputArgumentsRestriction(descriptionPrinter, posArg, (ArgumentsRestriction) hint, hint);
+                }
+                
+                descriptionPrinter.newline();
+                descriptionPrinter.flush();
+            }
+        }
+
+        if (arguments != null) {
             // Arguments name(s)
             optionPrinter.append(toDescription(arguments)).newline();
 
@@ -219,6 +249,27 @@ public class CliUsageHelper extends AbstractUsageGenerator {
             descriptionPrinter.newline();
             descriptionPrinter.flush();
         }
+        
+        optionPrinter.flush();
+    }
+    
+    /**
+     * Outputs documentation about a restriction on an option
+     * 
+     * @param descriptionPrinter
+     *            Description printer
+     * @param arguments
+     *            Arguments meta-data
+     * @param restriction
+     *            Restriction
+     * @param hint
+     *            Help hint
+     * @throws IOException
+     */
+    protected void outputArgumentsRestriction(UsagePrinter descriptionPrinter, PositionalArgumentMetadata arguments,
+            ArgumentsRestriction restriction, HelpHint hint) throws IOException {
+        descriptionPrinter.newline();
+        outputHint(descriptionPrinter, hint, false);
     }
 
     /**

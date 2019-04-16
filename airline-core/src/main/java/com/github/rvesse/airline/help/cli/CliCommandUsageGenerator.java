@@ -30,6 +30,7 @@ import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.model.ParserMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 
 public class CliCommandUsageGenerator extends AbstractPrintedCommandUsageGenerator {
 
@@ -83,12 +84,13 @@ public class CliCommandUsageGenerator extends AbstractPrintedCommandUsageGenerat
         }
 
         // Synopsis
-        List<OptionMetadata> options = outputSynopsis(out, programName, groupNames, commandName, command);
+        List<OptionMetadata> options = outputSynopsis(out, programName, groupNames, commandName, command, parserConfig);
 
         // Options
         ArgumentsMetadata arguments = command.getArguments();
-        if (options.size() > 0 || arguments != null) {
-            outputOptionsAndArguments(out, command, options, arguments, parserConfig);
+        if (options.size() > 0 || (arguments != null
+                || (command.getPositionalArguments() != null && command.getPositionalArguments().size() > 0))) {
+            outputOptionsAndArguments(out, command, options, command.getPositionalArguments(), arguments, parserConfig);
         }
 
         // Output post help sections
@@ -106,6 +108,8 @@ public class CliCommandUsageGenerator extends AbstractPrintedCommandUsageGenerat
      *            Command meta-data
      * @param options
      *            Options meta-data
+     * @param positionalArgs
+     *            Positional arguments meta-data
      * @param arguments
      *            Arguments meta-data
      * @param parserConfig
@@ -116,10 +120,10 @@ public class CliCommandUsageGenerator extends AbstractPrintedCommandUsageGenerat
      *             Thrown if there is a problem generating usage output
      */
     protected <T> void outputOptionsAndArguments(UsagePrinter out, CommandMetadata command,
-            List<OptionMetadata> options, ArgumentsMetadata arguments, ParserMetadata<T> parserConfig)
-            throws IOException {
+            List<OptionMetadata> options, List<PositionalArgumentMetadata> positionalArgs, ArgumentsMetadata arguments,
+            ParserMetadata<T> parserConfig) throws IOException {
         helper.outputOptions(out, options);
-        helper.outputArguments(out, arguments, parserConfig);
+        helper.outputArguments(out, positionalArgs, arguments, parserConfig);
     }
 
     /**
@@ -139,8 +143,8 @@ public class CliCommandUsageGenerator extends AbstractPrintedCommandUsageGenerat
      * @throws IOException
      *             Thrown if there is a problem generating usage output
      */
-    protected List<OptionMetadata> outputSynopsis(UsagePrinter out, String programName, String[] groupNames,
-            String commandName, CommandMetadata command) throws IOException {
+    protected <T> List<OptionMetadata> outputSynopsis(UsagePrinter out, String programName, String[] groupNames,
+            String commandName, CommandMetadata command, ParserMetadata<T> parserConfig) throws IOException {
         out.append("SYNOPSIS").newline();
         UsagePrinter synopsis = out.newIndentedPrinter(8).newPrinterWithHangingIndent(8);
         List<OptionMetadata> options = new ArrayList<>();
@@ -155,10 +159,19 @@ public class CliCommandUsageGenerator extends AbstractPrintedCommandUsageGenerat
         }
         synopsis.append(commandName).appendWords(toSynopsisUsage(sortOptions(command.getCommandOptions())));
         options.addAll(command.getCommandOptions());
+        
+        boolean needsArgumentsSeparator = command.hasAnyArguments();
+        if (needsArgumentsSeparator) {
+            synopsis.append("[").append(parserConfig.getArgumentsSeparator()).append("]");
+        }
+        
+        if (command.hasPositionalArguments()) {
+            synopsis.append(toUsage(command.getPositionalArguments()));
+        }
 
         // command arguments (optional)
-        if (command.getArguments() != null) {
-            synopsis.append("[--]").append(toUsage(command.getArguments()));
+        if (command.hasNonPositionalArguments()) {
+            synopsis.append(toUsage(command.getArguments()));
         }
         synopsis.newline();
         synopsis.newline();
@@ -178,7 +191,8 @@ public class CliCommandUsageGenerator extends AbstractPrintedCommandUsageGenerat
      *            Command name
      * @param command
      *            Command meta-data
-     * @throws IOException Thrown if there is a problem generating usage output
+     * @throws IOException
+     *             Thrown if there is a problem generating usage output
      */
     protected void outputDescription(UsagePrinter out, String programName, String[] groupNames, String commandName,
             CommandMetadata command) throws IOException {

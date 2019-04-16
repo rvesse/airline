@@ -89,15 +89,14 @@ public class CommandMetadata {
                 }
             }
             if (this.positionalArgs.size() > 0 && !posArgsRequired) {
-                if (this.arguments.isRequired()) {
+                if (this.arguments != null && this.arguments.isRequired()) {
                     throw new IllegalArgumentException(
                             "Non-positional arguments are declared as required but one/more preceding positional arguments are optional");
                 }
             }
         }
 
-        if (this.defaultOption != null
-                && (this.arguments != null || (this.positionalArgs != null && this.positionalArgs.size() > 0))) {
+        if (this.defaultOption != null && hasAnyArguments()) {
             throw new IllegalArgumentException(
                     "Command cannot declare both @Arguments/@PositionalArgument and use @DefaultOption");
         }
@@ -108,6 +107,34 @@ public class CommandMetadata {
         this.groups = groups;
 
         this.sections = AirlineUtils.unmodifiableListCopy(sections);
+    }
+
+    /**
+     * Gets whether this command has any positional and/or non-positional
+     * arguments
+     * 
+     * @return True if any arguments are defined, false otherwise
+     */
+    public boolean hasAnyArguments() {
+        return hasNonPositionalArguments() || hasPositionalArguments();
+    }
+
+    /**
+     * Gets whether this command has any positional arguments
+     * 
+     * @return True if positional arguments are defined, false otherwise
+     */
+    public boolean hasPositionalArguments() {
+        return this.positionalArgs != null && this.positionalArgs.size() > 0;
+    }
+
+    /**
+     * Gets whether this command has any non-positional arguments
+     * 
+     * @return True if non-positional arguments are defined, false otherwise
+     */
+    public boolean hasNonPositionalArguments() {
+        return this.arguments != null;
     }
 
     public String getName() {

@@ -29,6 +29,7 @@ import com.github.rvesse.airline.help.sections.HelpHint;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
 
@@ -91,7 +92,7 @@ public class AbstractUsageGenerator {
         List<HelpHint> hints = new ArrayList<>();
         for (OptionRestriction restriction : restrictions) {
             if (restriction instanceof HelpHint) {
-                hints.add((HelpHint)restriction);
+                hints.add((HelpHint) restriction);
             }
         }
         if (hintComparator != null) {
@@ -99,12 +100,12 @@ public class AbstractUsageGenerator {
         }
         return hints;
     }
-    
+
     protected List<HelpHint> sortArgumentsRestrictions(List<ArgumentsRestriction> restrictions) {
         List<HelpHint> hints = new ArrayList<>();
         for (ArgumentsRestriction restriction : restrictions) {
             if (restriction instanceof HelpHint) {
-                hints.add((HelpHint)restriction);
+                hints.add((HelpHint) restriction);
             }
         }
         if (hintComparator != null) {
@@ -184,9 +185,13 @@ public class AbstractUsageGenerator {
     protected String toUsage(ArgumentsMetadata arguments) {
         boolean required = arguments.isRequired();
         StringBuilder stringBuilder = new StringBuilder();
+
+        // NB Any additional arguments are either considered all required or
+        // optional whether that is actually the case or not. If users want fine
+        // grained control over whether each argument is required or not they
+        // need to use positional arguments instead
+
         if (!required) {
-            // TODO: be able to handle required arguments individually, like
-            // arity for the options
             stringBuilder.append("[ ");
         }
 
@@ -200,6 +205,30 @@ public class AbstractUsageGenerator {
             stringBuilder.append(" ]");
         }
         return stringBuilder.toString();
+    }
+
+    protected String toUsage(List<PositionalArgumentMetadata> posArgs) {
+        StringBuilder builder = new StringBuilder();
+
+        boolean first = true;
+        for (PositionalArgumentMetadata posArg : posArgs) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append(' ');
+            }
+
+            boolean required = posArg.isRequired();
+            if (!required) {
+                builder.append("[ ");
+            }
+            builder.append(toDescription(posArg));
+            if (!required) {
+                builder.append(" ]");
+            }
+        }
+
+        return builder.toString();
     }
 
     protected String toUsage(OptionMetadata option) {
@@ -262,6 +291,10 @@ public class AbstractUsageGenerator {
         }
 
         return stringBuilder.toString();
+    }
+
+    protected String toDescription(PositionalArgumentMetadata posArg) {
+        return String.format("<%s>", posArg.getTitle());
     }
 
     protected String toDescription(OptionMetadata option) {
