@@ -59,6 +59,7 @@ public class GuiceCommandFactory<T> implements CommandFactory<T> {
         return injector.createChildInjector(new CommandModule<>(commandType, context));
     }
 
+    @SuppressWarnings("unchecked")
     private Key<T> createKey(Class<?> command) {
         ParameterizedType parameterizedType;
         Class<?> enclosingClass = command.getEnclosingClass();
