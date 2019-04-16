@@ -88,8 +88,7 @@ public class CliCommandUsageGenerator extends AbstractPrintedCommandUsageGenerat
 
         // Options
         ArgumentsMetadata arguments = command.getArguments();
-        if (options.size() > 0 || (arguments != null
-                || (command.getPositionalArguments() != null && command.getPositionalArguments().size() > 0))) {
+        if (options.size() > 0 || command.hasAnyArguments()) {
             outputOptionsAndArguments(out, command, options, command.getPositionalArguments(), arguments, parserConfig);
         }
 
@@ -162,7 +161,7 @@ public class CliCommandUsageGenerator extends AbstractPrintedCommandUsageGenerat
         
         boolean needsArgumentsSeparator = command.hasAnyArguments();
         if (needsArgumentsSeparator) {
-            synopsis.append("[").append(parserConfig.getArgumentsSeparator()).append("]");
+            synopsis.append(String.format("[%s]", parserConfig.getArgumentsSeparator()));
         }
         
         if (command.hasPositionalArguments()) {

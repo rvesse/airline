@@ -187,7 +187,6 @@ public class AbstractUsageGenerator {
         StringBuilder stringBuilder = new StringBuilder();
 
         // NB Any additional arguments are either considered all required or
-        // optional whether that is actually the case or not. If users want fine
         // grained control over whether each argument is required or not they
         // need to use positional arguments instead
 

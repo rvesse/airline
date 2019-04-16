@@ -18,6 +18,9 @@ package com.github.rvesse.airline.help.cli;
 import java.io.IOException;
 import java.util.*;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.github.rvesse.airline.builder.ParserBuilder;
 import com.github.rvesse.airline.help.UsageHelper;
 import com.github.rvesse.airline.help.common.AbstractPrintedCommandGroupUsageGenerator;
 import com.github.rvesse.airline.help.sections.HelpHint;
@@ -26,6 +29,8 @@ import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.ParserMetadata;
+
 import static com.github.rvesse.airline.help.UsageHelper.DEFAULT_COMMAND_COMPARATOR;
 import static com.github.rvesse.airline.help.UsageHelper.DEFAULT_OPTION_COMPARATOR;
 import static com.github.rvesse.airline.help.UsageHelper.DEFAULT_HINT_COMPARATOR;
@@ -86,7 +91,8 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
      * @param groups
      *            Group(s) meta-data
      * 
-     * @throws IOException Thrown if there is a problem generating usage output
+     * @throws IOException
+     *             Thrown if there is a problem generating usage output
      */
     protected void outputOptions(UsagePrinter out, GlobalMetadata<T> global, CommandGroupMetadata[] groups)
             throws IOException {
@@ -119,6 +125,20 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
         }
     }
 
+    protected String getArgsUsage(CommandMetadata command) {
+        StringBuilder builder = new StringBuilder();
+        if (command.hasPositionalArguments()) {
+            builder.append(toUsage(command.getPositionalArguments()));
+        }
+        if (command.hasNonPositionalArguments()) {
+            if (command.hasPositionalArguments()) {
+                builder.append(' ');
+            }
+            builder.append(toUsage(command.getArguments()));
+        }
+        return builder.toString();
+    }
+
     /**
      * Outputs a documentation section detailing a usage synopsis
      * 
@@ -128,7 +148,8 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
      *            Global meta-data
      * @param groups
      *            Groups meta-data
-     * @throws IOException Thrown if there is a problem generating usage output
+     * @throws IOException
+     *             Thrown if there is a problem generating usage output
      */
     protected void outputSynopsis(UsagePrinter out, GlobalMetadata<T> global, CommandGroupMetadata[] groups)
             throws IOException {
@@ -137,6 +158,8 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
 
         CommandGroupMetadata group = groups[groups.length - 1];
         List<CommandMetadata> commands = sortCommands(group.getCommands());
+        ParserMetadata<T> parserConfig = global != null ? global.getParserConfiguration()
+                : ParserBuilder.<T> defaultConfiguration();
 
         // Populate group info via an extra for loop through commands
         boolean hasDefaultCommand = group.getDefaultCommand() != null;
@@ -156,16 +179,19 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
                 commonGroupOptions = new ArrayList<>(command.getCommandOptions());
             }
             if (commonGroupArgs == null) {
-                commonGroupArgs = (command.getArguments() != null ? toUsage(command.getArguments()) : "");
+                commonGroupArgs = getArgsUsage(command);
             }
 
             commonGroupOptions.retainAll(command.getCommandOptions());
             if (command.getCommandOptions().size() > commonGroupOptions.size()) {
                 hasCommandSpecificOptions = true;
             }
-            if (commonGroupArgs != (command.getArguments() != null ? toUsage(command.getArguments()) : "")) {
+            if (!StringUtils.equals(commonGroupArgs, getArgsUsage(command))) {
                 hasCommandSpecificArgs = true;
             }
+        }
+        if (commands.size() == 1) {
+            hasCommandSpecificArgs = true;
         }
         for (CommandGroupMetadata subGroup : group.getSubGroups()) {
             groupNames.add(subGroup.getName());
@@ -206,7 +232,7 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
                     synopsis.append(" | ");
             }
         }
-        synopsis.append("} [--]");
+        synopsis.append("}");
         if (commonGroupOptions.size() > 0) {
             synopsis.appendWords(toSynopsisUsage(commonGroupOptions));
         }
@@ -214,9 +240,11 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
             synopsis.append(" [cmd-options]");
         }
         if (hasCommandSpecificArgs) {
+            synopsis.append(String.format("[%s]", parserConfig.getArgumentsSeparator()));
             synopsis.append(" <cmd-args>");
         }
         synopsis.newline();
+        synopsis.flush();
         Map<String, String> cmdOptions = new TreeMap<>();
         Map<String, String> cmdArguments = new TreeMap<>();
         Map<String, String> subGroups = new TreeMap<>();
@@ -249,6 +277,7 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
                 grps.append(groupName + ": " + subGroups.get(groupName)).newline();
             }
         }
+        synopsis.flush();
 
         for (CommandMetadata command : commands) {
 
@@ -264,7 +293,7 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
                 }
                 if (hasCommandSpecificArgs) {
                     cmdArguments.put(command.getName(),
-                            (command.getArguments() != null ? toUsage(command.getArguments()) : ""));
+                            getArgsUsage(command));
                 }
             }
         }
@@ -288,6 +317,7 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
         synopsis.newline().append("See").append("'" + global.getName()).append("help ")
                 .appendWords(UsageHelper.toGroupNames(Arrays.asList(groups)))
                 .appendOnOneLine(" <command>' for more information on a specific command.").newline();
+        synopsis.flush();
     }
 
     /**
@@ -299,7 +329,8 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
      *            Global meta-data
      * @param groups
      *            Groups meta-data
-     * @throws IOException Thrown if there is a problem generating usage output
+     * @throws IOException
+     *             Thrown if there is a problem generating usage output
      */
     protected void outputDescription(UsagePrinter out, GlobalMetadata<T> global, CommandGroupMetadata[] groups)
             throws IOException {

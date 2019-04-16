@@ -335,7 +335,7 @@ public class TestHelp {
                 "        git remote - Manage set of tracked repositories\n" +
                 "\n" +
                 "SYNOPSIS\n" +
-                "        git [ -v ] remote { add | show* } [--] [cmd-options] <cmd-args>\n" +
+                "        git [ -v ] remote { add | show* } [cmd-options] [--] <cmd-args>\n" +
                 "\n" +
                 "        Where command-specific options [cmd-options] are:\n" +
                 "            add: [ -t <branch> ]\n" +

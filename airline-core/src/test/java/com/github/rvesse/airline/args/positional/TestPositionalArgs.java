@@ -173,6 +173,6 @@ public class TestPositionalArgs {
         
         String actual = output.toString(StandardCharsets.UTF_8.name());
         
-        assertTrue(actual.contains("ArgsPositional [ -- ] <File> [ <Mode> ] [ <ExtraArg>... ]"));
+        assertTrue(actual.contains("ArgsPositional [--] <File> [ <Mode> ] [ <ExtraArg>... ]"));
     }
 }
