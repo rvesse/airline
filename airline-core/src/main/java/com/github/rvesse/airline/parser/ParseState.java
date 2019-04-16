@@ -25,6 +25,7 @@ import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.model.ParserMetadata;
 import com.github.rvesse.airline.parser.errors.ParseException;
+import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
 import com.github.rvesse.airline.types.TypeConverter;
@@ -166,12 +167,12 @@ public class ParseState<T> {
             String rawValue) {
         // Are we still parsing positional arguments or are we on non-positional
         // arguments?
-        boolean positional = positionalArgs.size() > 0 && parsedArguments.size() < positionalArgs.size();
-        int posIndex = positional ? parsedArguments.size() : -1;
+        boolean positional = positionalArgs.size() > 0 && parsedPositionalArgs.size() < positionalArgs.size();
+        int posIndex = positional ? parsedPositionalArgs.size() : -1;
         if (!positional && arguments == null) {
             return withUnparsedInput(rawValue);
         }
-        PositionalArgumentMetadata posArg = positionalArgs.get(posIndex);
+        PositionalArgumentMetadata posArg = positional ? positionalArgs.get(posIndex) : null;
         List<ArgumentsRestriction> restrictions = positional ? posArg.getRestrictions() : arguments.getRestrictions();
 
         // Pre-validate
@@ -191,8 +192,9 @@ public class ParseState<T> {
         try {
             TypeConverter converter = positional ? posArg.getTypeConverterProvider().getTypeConverter(posArg, this)
                     : arguments.getTypeConverterProvider().getTypeConverter(arguments, this);
-            Object value = converter.convert(positional ? posArg.getTitle() : arguments.getTitle().get(0),
-                    arguments.getJavaType(), rawValue);
+            Class<?> javaType = positional ? posArg.getJavaType() : arguments.getJavaType();
+            String title = positional ? posArg.getTitle() : AbstractCommonRestriction.getArgumentTitle(this, arguments);
+            Object value = converter.convert(title, javaType, rawValue);
 
             // Post-validate
             for (ArgumentsRestriction restriction : restrictions) {
@@ -275,7 +277,7 @@ public class ParseState<T> {
     public List<Pair<OptionMetadata, Object>> getParsedOptions() {
         return parsedOptions;
     }
-    
+
     public List<Pair<PositionalArgumentMetadata, Object>> getParsedPositionalArguments() {
         return parsedPositionalArgs;
     }
