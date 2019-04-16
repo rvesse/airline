@@ -24,6 +24,7 @@ import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
@@ -65,6 +66,10 @@ public class PortRestriction extends AbstractCommonRestriction implements HelpHi
     protected void invalidArgumentsPort(ArgumentsMetadata arguments, String title, Object value) {
         invalidPort(String.format("Argument '%s'", title), value);
     }
+    
+    protected void invalidArgumentsPort(PositionalArgumentMetadata arguments, String title, Object value) {
+        invalidPort(String.format("Positional argument %d ('%s')", arguments.getZeroBasedPosition(), title), value);
+    }
 
     protected void invalidPort(String title, Object value) {
         throw new ParseRestrictionViolatedException(
@@ -78,6 +83,27 @@ public class PortRestriction extends AbstractCommonRestriction implements HelpHi
             return;
 
         String title = getArgumentTitle(state, arguments);
+        if (value instanceof Long) {
+            if (!isValid(((Long) value).longValue()))
+                invalidArgumentsPort(arguments, title, value);
+        } else if (value instanceof Integer) {
+            if (!isValid(((Integer) value).intValue()))
+                invalidArgumentsPort(arguments, title, value);
+        } else if (value instanceof Short) {
+            if (!isValid(((Short) value).shortValue()))
+                invalidArgumentsPort(arguments, title, value);
+        } else {
+            throw new ParseInvalidRestrictionException("Cannot apply a @Port restriction to an option of type %s",
+                    arguments.getJavaType());
+        }
+    }
+    
+    @Override
+    public <T> void postValidate(ParseState<T> state, PositionalArgumentMetadata arguments, Object value) {
+        if (acceptablePorts.isEmpty())
+            return;
+
+        String title = arguments.getTitle();
         if (value instanceof Long) {
             if (!isValid(((Long) value).longValue()))
                 invalidArgumentsPort(arguments, title, value);

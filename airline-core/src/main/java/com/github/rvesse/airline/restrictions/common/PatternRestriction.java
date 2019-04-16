@@ -23,6 +23,7 @@ import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
@@ -67,6 +68,15 @@ public class PatternRestriction extends AbstractCommonRestriction implements Hel
             throw new ParseRestrictionViolatedException(
                     "Argument '%s' was given value '%s' which does not match the regular expression '%s'.  %s",
                     AbstractCommonRestriction.getArgumentTitle(state, arguments), value, this.pattern.toString(),
+                    StringUtils.isNotBlank(this.description) ? this.description : "");
+    }
+    
+    @Override
+    public <T> void preValidate(ParseState<T> state, PositionalArgumentMetadata arguments, String value) {
+        if (!this.pattern.matcher(value).find())
+            throw new ParseRestrictionViolatedException(
+                    "Positional Argument %d ('%s') was given value '%s' which does not match the regular expression '%s'.  %s",
+                    arguments.getZeroBasedPosition(), arguments.getTitle(), value, this.pattern.toString(),
                     StringUtils.isNotBlank(this.description) ? this.description : "");
     }
 

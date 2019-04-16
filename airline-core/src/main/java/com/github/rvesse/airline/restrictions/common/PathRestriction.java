@@ -21,6 +21,7 @@ import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
@@ -167,6 +168,12 @@ public class PathRestriction extends AbstractCommonRestriction implements HelpHi
     @Override
     public <T> void preValidate(ParseState<T> state, ArgumentsMetadata arguments, String value) {
         this.validate(String.format("Argument '%s'", AbstractCommonRestriction.getArgumentTitle(state, arguments)),
+                value);
+    }
+    
+    @Override
+    public <T> void preValidate(ParseState<T> state, PositionalArgumentMetadata arguments, String value) {
+        this.validate(String.format("Positional Argument %d ('%s')", arguments.getZeroBasedPosition(), arguments.getTitle()),
                 value);
     }
 

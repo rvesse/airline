@@ -21,6 +21,7 @@ import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
 import com.github.rvesse.airline.parser.errors.ParseOptionOutOfRangeException;
@@ -82,6 +83,16 @@ public class RangeRestriction extends AbstractCommonRestriction implements HelpH
         
         if (!inRange(value))
             throw new ParseOptionOutOfRangeException(getArgumentTitle(state, arguments), value, min, minInclusive, max, maxInclusive);
+    }
+    
+    @Override
+    public <T> void postValidate(ParseState<T> state, PositionalArgumentMetadata arguments, Object value) {
+        // Not enforced if no range provided
+        if (this.min == null && this.max == null)
+            return;
+        
+        if (!inRange(value))
+            throw new ParseOptionOutOfRangeException(arguments.getTitle(), value, min, minInclusive, max, maxInclusive);
     }
 
     protected boolean inRange(Object value) {

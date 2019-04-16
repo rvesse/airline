@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 
 import com.github.rvesse.airline.help.sections.HelpFormat;
 import com.github.rvesse.airline.help.sections.HelpHint;
@@ -43,13 +44,15 @@ public class PartialRestriction extends AbstractCommonRestriction implements Hel
     private PartialRestriction(OptionRestriction optionRestriction) {
         this.optionRestriction = optionRestriction;
         this.argumentsRestriction = optionRestriction instanceof ArgumentsRestriction
-                ? (ArgumentsRestriction) optionRestriction : null;
+                ? (ArgumentsRestriction) optionRestriction
+                : null;
         this.hint = optionRestriction instanceof HelpHint ? (HelpHint) optionRestriction : null;
     }
 
     private PartialRestriction(ArgumentsRestriction argumentsRestriction) {
         this.optionRestriction = argumentsRestriction instanceof OptionRestriction
-                ? (OptionRestriction) argumentsRestriction : null;
+                ? (OptionRestriction) argumentsRestriction
+                : null;
         this.argumentsRestriction = argumentsRestriction;
         this.hint = argumentsRestriction instanceof HelpHint ? (HelpHint) argumentsRestriction : null;
     }
@@ -79,8 +82,8 @@ public class PartialRestriction extends AbstractCommonRestriction implements Hel
     }
 
     private <T> boolean isApplicableToOption(ParseState<T> state, OptionMetadata option) {
-        int index = CollectionUtils.countMatches(state.getParsedOptions(), new ParsedOptionFinder(option))
-                % option.getArity();
+        int index = (int) (IterableUtils.countMatches(state.getParsedOptions(), new ParsedOptionFinder(option))
+                % option.getArity());
         return indices.contains(index);
     }
 
@@ -103,6 +106,9 @@ public class PartialRestriction extends AbstractCommonRestriction implements Hel
 
         this.optionRestriction.postValidate(state, option, value);
     }
+
+    // NB - Partial restriction make no sense for positional arguments which
+    // only ever take a single value and thus are not applied
 
     private <T> boolean isApplicableToArgument(ParseState<T> state) {
         int index = state.getParsedArguments().size();
