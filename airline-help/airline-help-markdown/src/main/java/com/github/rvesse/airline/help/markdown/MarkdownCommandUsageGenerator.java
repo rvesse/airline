@@ -86,7 +86,7 @@ public class MarkdownCommandUsageGenerator extends AbstractPrintedCommandUsageGe
         }
 
         // Synopsis
-        List<OptionMetadata> options = outputSynopsis(out, programName, groupNames, commandName, command);
+        List<OptionMetadata> options = outputSynopsis(out, programName, groupNames, commandName, command, parserConfig);
 
         // Options
         ArgumentsMetadata arguments = command.getArguments();
@@ -142,8 +142,8 @@ public class MarkdownCommandUsageGenerator extends AbstractPrintedCommandUsageGe
      * @throws IOException
      *             Thrown if there is a problem generating usage output
      */
-    protected List<OptionMetadata> outputSynopsis(UsagePrinter out, String programName, String[] groupNames,
-            String commandName, CommandMetadata command) throws IOException {
+    protected <T> List<OptionMetadata> outputSynopsis(UsagePrinter out, String programName, String[] groupNames,
+            String commandName, CommandMetadata command, ParserMetadata<T> parserConfig) throws IOException {
         out.append("# SYNOPSIS").newline().newline();
 
         List<OptionMetadata> options = new ArrayList<>();
@@ -164,8 +164,8 @@ public class MarkdownCommandUsageGenerator extends AbstractPrintedCommandUsageGe
         options.addAll(command.getCommandOptions());
 
         // command arguments (optional)
-        if (command.getArguments() != null) {
-            out.append("[ `--` ]");
+        if (command.hasAnyArguments()) {
+            out.append(String.format("[ `%s` ]", parserConfig.getArgumentsSeparator()));
             helper.outputArgumentsSynopsis(out, command.getArguments());
         }
         out.newline();

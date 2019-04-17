@@ -393,15 +393,24 @@ public class BashCompletionGenerator<T> extends AbstractGlobalUsageGenerator<T> 
         writeWordListVariable(writer, 2, "FLAG_OPTS", flagOpts.iterator());
         writeWordListVariable(writer, 2, "ARG_OPTS", argOpts.iterator());
         writer.append(NEWLINE);
+        
+        // Check whether we've seen the arguments separator
+        writer.append("  $( containsElement \"").append(global.getParserConfiguration().getArgumentsSeparator()).append("\" ${COMP_WORDS[@]} )");
+        writer.append("  SAW_ARGS_SEPARATOR=$?");
+        writer.append("  if [[ ${SAW_ARGS_SEPARATOR} -eq 0 ]]; then");
+        
+        // TODO Do completion specifically for arguments
+        
+        writer.append("  fi");
 
-        // Check whether we are completing a value for an argument flag
+        // Check whether we are completing a value for an option
         if (argOpts.size() > 0) {
             writer.append("  $( containsElement ${PREV_WORD} ${ARG_OPTS[@]} )").append(NEWLINE);
-            writer.append("  SAW_ARG=$?").append(NEWLINE);
+            writer.append("  SAW_OPTION=$?").append(NEWLINE);
 
             // If we previously saw an argument then we are completing that
             // argument
-            writer.append("  if [[ ${SAW_ARG} -eq 0 ]]; then").append(NEWLINE);
+            writer.append("  if [[ ${SAW_OPTION} -eq 0 ]]; then").append(NEWLINE);
             writer.append("    ARG_VALUES=").append(NEWLINE);
             writer.append("    ARG_GENERATED_VALUES=").append(NEWLINE);
             writer.append("    case ${PREV_WORD} in").append(NEWLINE);
@@ -439,7 +448,7 @@ public class BashCompletionGenerator<T> extends AbstractGlobalUsageGenerator<T> 
             writer.append("  fi").append(DOUBLE_NEWLINE);
         }
 
-        // If we previously saw a flag we could see another option or an
+        // If we previously saw a flag option we could see another option or an
         // argument if supported
         BashCompletion completion = null;
         if (command.getArguments() != null) {

@@ -91,10 +91,10 @@ public class ManUsageHelper extends AbstractUsageGenerator {
         return output;
     }
 
-    public <T> void outputArguments(TroffPrinter printer, List<PositionalArgumentMetadata> posArgs, ArgumentsMetadata arguments, boolean startList,
-            ParserMetadata<T> parserConfig) throws IOException {
+    public <T> void outputArguments(TroffPrinter printer, List<PositionalArgumentMetadata> posArgs,
+            ArgumentsMetadata arguments, boolean startList, ParserMetadata<T> parserConfig) throws IOException {
         boolean needsArgsSeparator = (posArgs != null && posArgs.size() > 0) || arguments != null;
-        
+
         if (needsArgsSeparator) {
             // Arguments separator option
             if (startList) {
@@ -113,30 +113,30 @@ public class ManUsageHelper extends AbstractUsageGenerator {
         } else {
             return;
         }
-        
+
         if (posArgs != null && posArgs.size() > 0) {
             for (PositionalArgumentMetadata posArg : posArgs) {
                 // Argument name
                 printer.nextTitledListItem();
                 printer.printItalic(posArg.getTitle());
-                
+
                 // Description
                 printer.startPlainList();
                 printer.println(posArg.getDescription());
-                
+
                 // Restrictions
                 List<HelpHint> hints = sortArgumentsRestrictions(arguments.getRestrictions());
                 for (HelpHint hint : hints) {
-                    // Safe to cast back to ArgumentsRestriction as must have come
+                    // Safe to cast back to ArgumentsRestriction as must have
+                    // come
                     // from an ArgumentsRestriction to start with
                     outputArgumentsRestriction(printer, arguments, (ArgumentsRestriction) hint, hint);
                 }
                 printer.endList();
             }
         }
-        
-        if (arguments != null) {
 
+        if (arguments != null) {
 
             // Arguments name(s)
             printer.nextTitledListItem();
@@ -155,9 +155,12 @@ public class ManUsageHelper extends AbstractUsageGenerator {
             }
             printer.endList();
         }
-        
-        // End list of options and arguments
-        printer.endList();
+
+        // End list of options and arguments unless there were none in which
+        // case we'd never have started a list here
+        if (needsArgsSeparator) {
+            printer.endList();
+        }
     }
 
     /**

@@ -91,9 +91,9 @@ public class ManCommandUsageGenerator extends AbstractCommandUsageGenerator {
             helper.outputHelpSection(printer, section);
         }
 
-        List<OptionMetadata> options = outputSynopsis(printer, programName, groupNames, commandName, command);
+        List<OptionMetadata> options = outputSynopsis(printer, programName, groupNames, commandName, command, parserConfig);
 
-        if (options.size() > 0 || command.getArguments() != null) {
+        if (options.size() > 0 || command.hasAnyArguments()) {
             outputOptions(printer, command, options, parserConfig);
         }
 
@@ -127,7 +127,7 @@ public class ManCommandUsageGenerator extends AbstractCommandUsageGenerator {
             ParserMetadata<T> parserConfig) throws IOException {
         // Options
         // Can end the list if there are no arguments
-        int optionsOutput = helper.outputOptions(printer, options, command.getArguments() == null);
+        int optionsOutput = helper.outputOptions(printer, options, !command.hasAnyArguments());
 
         // Arguments
         // Must start the list if there are no visible options
@@ -152,8 +152,8 @@ public class ManCommandUsageGenerator extends AbstractCommandUsageGenerator {
      * @throws IOException
      *             Thrown if there is a problem generating usage output
      */
-    protected List<OptionMetadata> outputSynopsis(TroffPrinter printer, String programName, String[] groupNames,
-            String commandName, CommandMetadata command) throws IOException {
+    protected <T> List<OptionMetadata> outputSynopsis(TroffPrinter printer, String programName, String[] groupNames,
+            String commandName, CommandMetadata command, ParserMetadata<T> parserConfig) throws IOException {
         printer.nextSection("SYNOPSIS");
 
         List<OptionMetadata> options = new ArrayList<>();
@@ -200,9 +200,9 @@ public class ManCommandUsageGenerator extends AbstractCommandUsageGenerator {
         options.addAll(aOptions);
 
         // Command arguments (optional)
-        if (command.getArguments() != null) {
+        if (command.hasAnyArguments()) {
             printer.print(" [ ");
-            printer.printBold("--");
+            printer.printBold(parserConfig.getArgumentsSeparator());
             printer.print(" ] ");
             this.helper.outputArgumentsSynopsis(printer, command.getPositionalArguments(), command.getArguments());
         }
