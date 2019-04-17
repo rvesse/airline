@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.rvesse.airline.Context;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
-import com.github.rvesse.airline.utils.AirlineUtils;
 
 /**
  * An options parser that expects the name and values to be white space

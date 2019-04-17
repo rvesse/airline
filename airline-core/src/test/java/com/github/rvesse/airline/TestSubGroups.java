@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -90,14 +90,14 @@ public class TestSubGroups {
         Assert.assertEquals(parentGroup.getCommands().size(), 0);
         Assert.assertEquals(parentGroup.getSubGroups().size(), 2);
         
-        CommandGroupMetadata subGroup = CollectionUtils.find(parentGroup.getSubGroups(), new GroupFinder("bar"));
+        CommandGroupMetadata subGroup = IterableUtils.find(parentGroup.getSubGroups(), new GroupFinder("bar"));
         Assert.assertNotNull(subGroup);
         Assert.assertEquals(parentGroup, subGroup.getParent());
         Assert.assertEquals(subGroup.getName(), "bar");
         Assert.assertEquals(subGroup.getCommands().size(), 1);
         Assert.assertEquals(subGroup.getDefaultCommand().getType(), Help.class);
         
-        subGroup = CollectionUtils.find(parentGroup.getSubGroups(), new GroupFinder("baz"));
+        subGroup = IterableUtils.find(parentGroup.getSubGroups(), new GroupFinder("baz"));
         Assert.assertNotNull(subGroup);
         Assert.assertEquals(parentGroup, subGroup.getParent());
         Assert.assertEquals(subGroup.getName(), "baz");
@@ -263,14 +263,14 @@ public class TestSubGroups {
         Assert.assertEquals(parentGroup.getCommands().size(), 0);
         Assert.assertEquals(parentGroup.getSubGroups().size(), 2);
         
-        CommandGroupMetadata subGroup = CollectionUtils.find(parentGroup.getSubGroups(), new GroupFinder("bar"));
+        CommandGroupMetadata subGroup = IterableUtils.find(parentGroup.getSubGroups(), new GroupFinder("bar"));
         Assert.assertNotNull(subGroup);
         Assert.assertEquals(parentGroup, subGroup.getParent());
         Assert.assertEquals(subGroup.getName(), "bar");
         Assert.assertEquals(subGroup.getCommands().size(), 1);
         Assert.assertEquals(subGroup.getDefaultCommand().getType(), Help.class);
         
-        subGroup = CollectionUtils.find(parentGroup.getSubGroups(), new GroupFinder("baz"));
+        subGroup = IterableUtils.find(parentGroup.getSubGroups(), new GroupFinder("baz"));
         Assert.assertNotNull(subGroup);
         Assert.assertEquals(parentGroup, subGroup.getParent());
         Assert.assertEquals(subGroup.getName(), "baz");

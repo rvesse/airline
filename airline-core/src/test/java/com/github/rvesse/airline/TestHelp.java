@@ -68,7 +68,7 @@ import com.github.rvesse.airline.parser.resources.ResourceLocator;
 import com.github.rvesse.airline.restrictions.partial.PartialAnnotated;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -757,7 +757,7 @@ public class TestHelp {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         AbstractCommandUsageGenerator generator = new CliCommandUsageGenerator(true);
-        CommandMetadata metadata = CollectionUtils.find(parser.getMetadata().getDefaultGroupCommands(), new CommandFinder("OptionsHidden"));
+        CommandMetadata metadata = IterableUtils.find(parser.getMetadata().getDefaultGroupCommands(), new CommandFinder("OptionsHidden"));
         Assert.assertNotNull(metadata);
         generator.usage("test", null, "OptionsHidden", metadata, null, out);
         

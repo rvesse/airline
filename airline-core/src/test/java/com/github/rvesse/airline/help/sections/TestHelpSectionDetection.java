@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline.help.sections;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
@@ -48,11 +48,11 @@ public class TestHelpSectionDetection {
     public void help_section_cli_01() {
         CommandLineInterface<Object> cli = new CommandLineInterface<>(CliWithSections.class);
         CommandFinder finder = new CommandFinder("Args1");
-        CommandMetadata cmd = CollectionUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
+        CommandMetadata cmd = IterableUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
         Assert.assertNotNull(cmd);
         
         Assert.assertEquals(cmd.getHelpSections().size(), 1);
-        HelpSection section = CollectionUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
+        HelpSection section = IterableUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
         Assert.assertTrue(section instanceof DiscussionSection);
         DiscussionSection discussion = (DiscussionSection) section;
         String[] paragraphs = discussion.getContentBlock(0);
@@ -65,11 +65,11 @@ public class TestHelpSectionDetection {
     public void help_section_cli_02() {
         CommandLineInterface<Object> cli = new CommandLineInterface<>(CliWithSections.class);
         CommandFinder finder = new CommandFinder("remove");
-        CommandMetadata cmd = CollectionUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
+        CommandMetadata cmd = IterableUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
         Assert.assertNotNull(cmd);
         
         Assert.assertEquals(cmd.getHelpSections().size(), 2);
-        HelpSection section = CollectionUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
+        HelpSection section = IterableUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
         Assert.assertTrue(section instanceof DiscussionSection);
         DiscussionSection discussion = (DiscussionSection) section;
         String[] paragraphs = discussion.getContentBlock(0);
@@ -85,11 +85,11 @@ public class TestHelpSectionDetection {
                 .build();
         //@formatter:on
         CommandFinder finder = new CommandFinder("Args1");
-        CommandMetadata cmd = CollectionUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
+        CommandMetadata cmd = IterableUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
         Assert.assertNotNull(cmd);
         
         Assert.assertEquals(cmd.getHelpSections().size(), 1);
-        HelpSection section = CollectionUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
+        HelpSection section = IterableUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
         Assert.assertTrue(section instanceof DiscussionSection);
         DiscussionSection discussion = (DiscussionSection) section;
         String[] paragraphs = discussion.getContentBlock(0);
@@ -107,10 +107,10 @@ public class TestHelpSectionDetection {
                 .build();
         //@formatter:on
         CommandFinder finder = new CommandFinder("Args1");
-        CommandMetadata cmd = CollectionUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
+        CommandMetadata cmd = IterableUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
         Assert.assertNotNull(cmd);
         Assert.assertEquals(cmd.getHelpSections().size(), 1);
-        HelpSection section = CollectionUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
+        HelpSection section = IterableUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
         Assert.assertTrue(section instanceof BasicSection);
         BasicSection basic = (BasicSection) section;
         Assert.assertEquals(basic.getTitle(), "Discussion");

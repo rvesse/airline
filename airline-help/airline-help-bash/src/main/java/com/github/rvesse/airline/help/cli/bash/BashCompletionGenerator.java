@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.rvesse.airline.Accessor;
@@ -425,7 +425,7 @@ public class BashCompletionGenerator<T> extends AbstractGlobalUsageGenerator<T> 
                     indent(writer, 8);
                     writer.append("ARG_GENERATED_VALUES=$( ").append(completion.command()).append(" )").append(NEWLINE);
                 }
-                AbstractAllowedValuesRestriction allowedValues = (AbstractAllowedValuesRestriction) CollectionUtils
+                AbstractAllowedValuesRestriction allowedValues = (AbstractAllowedValuesRestriction) IterableUtils
                         .find(option.getRestrictions(), new AllowedValuesOptionFinder());
                 if (allowedValues != null && allowedValues.getAllowedValues().size() > 0) {
                     writeWordListVariable(writer, 8, "ARG_VALUES", allowedValues.getAllowedValues().iterator());

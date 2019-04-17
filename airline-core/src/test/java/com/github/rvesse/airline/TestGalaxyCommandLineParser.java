@@ -26,7 +26,7 @@ import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.utils.AirlineTestUtils;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -103,7 +103,7 @@ public class TestGalaxyCommandLineParser
         GlobalMetadata<GalaxyCommand> global = cli.getMetadata();
         Assert.assertEquals(global.getOptions().size(), 2);
         
-        CommandMetadata show = CollectionUtils.find(global.getDefaultGroupCommands(), new CommandFinder("show"));
+        CommandMetadata show = IterableUtils.find(global.getDefaultGroupCommands(), new CommandFinder("show"));
         Assert.assertNotNull(show);
         Assert.assertEquals(show.getCommandOptions().size(), 6);
         Assert.assertEquals(show.getAllOptions().size(), 8);

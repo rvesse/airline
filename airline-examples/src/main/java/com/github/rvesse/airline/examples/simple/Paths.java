@@ -92,6 +92,7 @@ public class Paths {
             this.path = path;
         }
         
+        @SuppressWarnings("unused")
         public String getSource() {
             return this.source;
         }

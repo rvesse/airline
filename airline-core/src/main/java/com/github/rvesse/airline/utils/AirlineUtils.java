@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.Predicate;
@@ -146,7 +146,7 @@ public class AirlineUtils {
     public static <T> T find(Iterable<T> collection, Predicate<T> predicate, T defaultValue) {
         if (collection == null)
             return defaultValue;
-        T value = CollectionUtils.find(collection, predicate);
+        T value = IterableUtils.find(collection, predicate);
         if (value == null)
             return defaultValue;
         return value;

@@ -49,10 +49,9 @@ import com.github.rvesse.airline.parser.errors.ParseException;
 import com.github.rvesse.airline.parser.errors.ParseOptionGroupException;
 import com.github.rvesse.airline.parser.options.ClassicGetOptParser;
 import com.github.rvesse.airline.parser.options.StandardOptionParser;
-import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -219,7 +218,7 @@ public class TestSingleCommand {
     @Test
     public void repeatedArgs() {
         SingleCommand<Args1> parser = singleCommand(Args1.class);
-        CommandMetadata command = CollectionUtils.find(Collections.singletonList(parser.getCommandMetadata()),
+        CommandMetadata command = IterableUtils.find(Collections.singletonList(parser.getCommandMetadata()),
                 new CommandFinder("Args1"));
         assertEquals(command.getAllOptions().size(), 8);
     }

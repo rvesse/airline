@@ -22,7 +22,6 @@ import org.testng.annotations.Test;
 import com.github.rvesse.airline.builder.ParserBuilder;
 import com.github.rvesse.airline.help.Help;
 import com.github.rvesse.airline.model.ParserMetadata;
-import com.github.rvesse.airline.parser.errors.ParseCommandUnrecognizedException;
 
 public class TestGitByAnnotation {
     @Test

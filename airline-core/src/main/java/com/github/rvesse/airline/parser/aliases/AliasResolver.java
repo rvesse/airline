@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.iterators.PeekingIterator;
 
@@ -59,7 +59,7 @@ public class AliasResolver<T> extends AbstractParser<T> {
 
         do {
             // Try to find an alias
-            AliasMetadata alias = CollectionUtils.find(state.getParserConfiguration().getAliases(),
+            AliasMetadata alias = IterableUtils.find(state.getParserConfiguration().getAliases(),
                     new AliasFinder(tokens.peek()));
 
             // Nothing further to do if no aliases found
@@ -95,8 +95,8 @@ public class AliasResolver<T> extends AbstractParser<T> {
                     GlobalMetadata<T> metadata = state.getGlobal();
                     findGroupPredicate = new GroupFinder(tokens.peek());
                     findCommandPredicate = new CommandFinder(tokens.peek());
-                    if (CollectionUtils.find(metadata.getCommandGroups(), findGroupPredicate) != null
-                            || CollectionUtils.find(metadata.getDefaultGroupCommands(), findCommandPredicate) != null)
+                    if (IterableUtils.find(metadata.getCommandGroups(), findGroupPredicate) != null
+                            || IterableUtils.find(metadata.getDefaultGroupCommands(), findCommandPredicate) != null)
                         return tokens;
                 }
             }

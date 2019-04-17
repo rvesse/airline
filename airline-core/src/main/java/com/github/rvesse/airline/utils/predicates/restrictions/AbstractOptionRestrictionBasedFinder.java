@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline.utils.predicates.restrictions;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
 
 import com.github.rvesse.airline.model.OptionMetadata;
@@ -26,8 +26,8 @@ public abstract class AbstractOptionRestrictionBasedFinder implements Predicate<
     protected abstract Predicate<OptionRestriction> getRestrictionPredicate();
 
     @Override
-    public final boolean evaluate(OptionMetadata arg0) {
-        return CollectionUtils.exists(arg0.getRestrictions(), getRestrictionPredicate());
+    public final boolean evaluate(OptionMetadata option) {
+        return IterableUtils.matchesAny(option.getRestrictions(), getRestrictionPredicate());
     }
 
 }

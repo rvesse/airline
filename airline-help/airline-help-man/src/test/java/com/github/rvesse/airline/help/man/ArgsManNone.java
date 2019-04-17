@@ -15,9 +15,6 @@
  */
 package com.github.rvesse.airline.help.man;
 
-import java.util.List;
-
-import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 
 @Command(name = "args-none")
