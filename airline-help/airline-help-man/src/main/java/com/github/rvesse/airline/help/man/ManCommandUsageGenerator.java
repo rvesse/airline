@@ -131,7 +131,7 @@ public class ManCommandUsageGenerator extends AbstractCommandUsageGenerator {
 
         // Arguments
         // Must start the list if there are no visible options
-        helper.outputArguments(printer, command.getArguments(), optionsOutput == 0, parserConfig);
+        helper.outputArguments(printer, command.getPositionalArguments(), command.getArguments(), optionsOutput == 0, parserConfig);
     }
 
     /**
@@ -204,7 +204,7 @@ public class ManCommandUsageGenerator extends AbstractCommandUsageGenerator {
             printer.print(" [ ");
             printer.printBold("--");
             printer.print(" ] ");
-            this.helper.outputArgumentsSynopsis(printer, command.getArguments());
+            this.helper.outputArgumentsSynopsis(printer, command.getPositionalArguments(), command.getArguments());
         }
 
         printer.println();

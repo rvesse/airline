@@ -33,6 +33,7 @@ import com.github.rvesse.airline.io.printers.TroffPrinter;
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.model.ParserMetadata;
+import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
 
@@ -90,11 +91,12 @@ public class ManUsageHelper extends AbstractUsageGenerator {
         return output;
     }
 
-    public <T> void outputArguments(TroffPrinter printer, ArgumentsMetadata arguments, boolean startList,
+    public <T> void outputArguments(TroffPrinter printer, List<PositionalArgumentMetadata> posArgs, ArgumentsMetadata arguments, boolean startList,
             ParserMetadata<T> parserConfig) throws IOException {
-        if (arguments != null) {
+        boolean needsArgsSeparator = (posArgs != null && posArgs.size() > 0) || arguments != null;
+        
+        if (needsArgsSeparator) {
             // Arguments separator option
-
             if (startList) {
                 printer.startTitledList();
             } else {
@@ -108,6 +110,33 @@ public class ManUsageHelper extends AbstractUsageGenerator {
             printer.println(
                     "This option can be used to separate command-line options from the list of arguments (useful when arguments might be mistaken for command-line options)");
             printer.endList();
+        } else {
+            return;
+        }
+        
+        if (posArgs != null && posArgs.size() > 0) {
+            for (PositionalArgumentMetadata posArg : posArgs) {
+                // Argument name
+                printer.nextTitledListItem();
+                printer.printItalic(posArg.getTitle());
+                
+                // Description
+                printer.startPlainList();
+                printer.println(posArg.getDescription());
+                
+                // Restrictions
+                List<HelpHint> hints = sortArgumentsRestrictions(arguments.getRestrictions());
+                for (HelpHint hint : hints) {
+                    // Safe to cast back to ArgumentsRestriction as must have come
+                    // from an ArgumentsRestriction to start with
+                    outputArgumentsRestriction(printer, arguments, (ArgumentsRestriction) hint, hint);
+                }
+                printer.endList();
+            }
+        }
+        
+        if (arguments != null) {
+
 
             // Arguments name(s)
             printer.nextTitledListItem();
@@ -125,9 +154,10 @@ public class ManUsageHelper extends AbstractUsageGenerator {
                 outputArgumentsRestriction(printer, arguments, (ArgumentsRestriction) hint, hint);
             }
             printer.endList();
-
-            printer.endList();
         }
+        
+        // End list of options and arguments
+        printer.endList();
     }
 
     /**
@@ -175,7 +205,8 @@ public class ManUsageHelper extends AbstractUsageGenerator {
      *            Troff printer
      * @param section
      *            Help section
-     * @throws IOException Thrown if there is a problem generating usage output
+     * @throws IOException
+     *             Thrown if there is a problem generating usage output
      */
     public void outputHelpSection(TroffPrinter printer, HelpSection section) throws IOException {
         if (section.getFormat() == HelpFormat.NONE_PRINTABLE)
@@ -332,18 +363,37 @@ public class ManUsageHelper extends AbstractUsageGenerator {
         }
     }
 
-    public void outputArgumentsSynopsis(TroffPrinter printer, ArgumentsMetadata arguments) {
-        if (!arguments.isRequired()) {
-            printer.print("[ ");
+    public void outputArgumentsSynopsis(TroffPrinter printer, List<PositionalArgumentMetadata> posArgs,
+            ArgumentsMetadata arguments) {
+        if (posArgs != null) {
+            for (PositionalArgumentMetadata posArg : posArgs) {
+                if (!posArg.isRequired()) {
+                    printer.print("[ ");
+                }
+                printer.printItalic(posArg.getTitle());
+                printer.print(" ");
+                if (!posArg.isRequired()) {
+                    printer.print("]");
+                }
+            }
         }
 
-        for (String title : arguments.getTitle()) {
-            printer.printItalic(title);
-            printer.print(" ");
-        }
+        if (arguments != null) {
+            if (posArgs != null && posArgs.size() > 0) {
+                printer.print(" ");
+            }
+            if (!arguments.isRequired()) {
+                printer.print("[ ");
+            }
 
-        if (!arguments.isRequired()) {
-            printer.print("]");
+            for (String title : arguments.getTitle()) {
+                printer.printItalic(title);
+                printer.print(" ");
+            }
+
+            if (!arguments.isRequired()) {
+                printer.print("]");
+            }
         }
     }
 

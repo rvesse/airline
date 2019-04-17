@@ -914,6 +914,41 @@ public class TestHelpMan {
         //@formatter:on
     }
     
+    public void testManArgsOnly_02() throws IOException {
+        SingleCommand<ArgsManPositionalArgs> command = singleCommand(ArgsManPositionalArgs.class);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        new ManCommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
+        
+        //@formatter:off
+        assertEquals(new String(out.toByteArray(), utf8),
+                StringUtils.join(new String[] {
+                        ".TH \"test\" \"1\" \"\" \"\" \"\"",
+                        ".SH NAME",
+                        ".IP \"\" 0",
+                        "\\fBtest\\fR",
+                        ".SH SYNOPSIS",
+                        ".IP \"\" 0",
+                        "\\fBtest\\fR  [ \\fB\\-\\-\\fR ] \\fIFile\\fR [ \\fIMode\\fR ] [ \\fIExtraArg\\fR ]",
+                        ".SH OPTIONS",
+                        ".RS",
+                        ".TP",
+                        "\\fB\\-\\-\\fR",
+                        ".RS",
+                        ".IP \"\" 4",
+                        "This option can be used to separate command\\-line options from the list of arguments (useful when arguments might be mistaken for command\\-line options)",
+                        ".RE",
+                        ".TP",
+                        "\\fIExtraArg\\fR",
+                        ".RS",
+                        ".IP \"\" 4",
+                        "Additional arguments",
+                        ".RE",
+                        ".IP \"\" 0",
+                        ""
+                }, '\n'));
+        //@formatter:on
+    }
+    
     public void testManNone_01() throws IOException {
         SingleCommand<ArgsManNone> command = singleCommand(ArgsManNone.class);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
