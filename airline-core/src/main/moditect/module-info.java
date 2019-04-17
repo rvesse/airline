@@ -19,6 +19,12 @@ module com.github.rvesse.airline
   requires org.apache.commons.collections4;
   requires javax.inject;
 
+  uses com.github.rvesse.airline.ChannelFactory;
+  uses com.github.rvesse.airline.help.sections.factories.HelpSectionFactory;
+  uses com.github.rvesse.airline.restrictions.factories.ArgumentsRestrictionFactory;
+  uses com.github.rvesse.airline.restrictions.factories.GlobalRestrictionFactory;
+  uses com.github.rvesse.airline.restrictions.factories.OptionRestrictionFactory;
+
   exports com.github.rvesse.airline;
   exports com.github.rvesse.airline.annotations;
   exports com.github.rvesse.airline.annotations.help;
