@@ -48,6 +48,7 @@
 
   <properties>
     <jdk.target>1.7</jdk.target>
+    <jdk.enforced>1.7</jdk.enforced>
     <license.header.path>${project.basedir}</license.header.path>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 
@@ -163,7 +164,7 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <version>${jdk.target}</version>
+                  <version>${jdk.enforced}</version>
                 </requireJavaVersion>
               </rules>
             </configuration>
@@ -387,6 +388,9 @@
         <module>airline-maven-plugin</module>
         <module>docs</module>
       </modules>
+      <properties>
+        <jdk.enforced>1.8</jdk.enforced>
+      </properties>
       <build>
         <plugins>
           <!-- Release Plugin -->
