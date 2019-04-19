@@ -563,6 +563,7 @@
                   <goal>add-module-info</goal>
                 </goals>
                 <configuration>
+                  <jvmVersion>9</jvmVersion>
                   <overwriteExistingFiles>true</overwriteExistingFiles>
                   <module>
                     <moduleInfoFile>
