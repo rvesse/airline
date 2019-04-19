@@ -16,6 +16,7 @@
 module com.github.rvesse.airline
 {
   requires com.github.rvesse.airline.io;
+  requires org.apache.commons.lang3;
   requires org.apache.commons.collections4;
   requires javax.inject;
 
@@ -24,6 +25,32 @@ module com.github.rvesse.airline
   uses com.github.rvesse.airline.restrictions.factories.ArgumentsRestrictionFactory;
   uses com.github.rvesse.airline.restrictions.factories.GlobalRestrictionFactory;
   uses com.github.rvesse.airline.restrictions.factories.OptionRestrictionFactory;
+
+  provides com.github.rvesse.airline.help.sections.factories.HelpSectionFactory with
+      com.github.rvesse.airline.help.sections.factories.CommonSectionsFactory;
+
+  provides com.github.rvesse.airline.restrictions.factories.ArgumentsRestrictionFactory with
+      com.github.rvesse.airline.restrictions.factories.AllowedValuesRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.OccurrencesRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.PathRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.PortRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.RangeRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.SimpleRestrictionsFactory,
+      com.github.rvesse.airline.restrictions.factories.StringRestrictionFactory;
+
+  provides com.github.rvesse.airline.restrictions.factories.GlobalRestrictionFactory with
+      com.github.rvesse.airline.restrictions.factories.StandardGlobalRestrictionsFactory;
+
+  provides com.github.rvesse.airline.restrictions.factories.OptionRestrictionFactory with
+      com.github.rvesse.airline.restrictions.factories.AllowedValuesRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.OccurrencesRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.PathRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.PortRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.RangeRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.RequiredOnlyIfRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.RequireFromRestrictionFactory,
+      com.github.rvesse.airline.restrictions.factories.SimpleRestrictionsFactory,
+      com.github.rvesse.airline.restrictions.factories.StringRestrictionFactory;
 
   exports com.github.rvesse.airline;
   exports com.github.rvesse.airline.annotations;
