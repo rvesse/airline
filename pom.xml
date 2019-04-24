@@ -48,6 +48,7 @@
 
   <properties>
     <jdk.target>1.7</jdk.target>
+    <jdk.enforced>1.7</jdk.enforced>
     <license.header.path>${project.basedir}</license.header.path>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 
@@ -67,6 +68,7 @@
     <plugin.gpg>1.6</plugin.gpg>
     <plugin.shade>3.1.1</plugin.shade>
     <plugin.surefire>2.22.0</plugin.surefire>
+    <plugin.moditect>1.0.0.Beta2</plugin.moditect>
 
     <!-- Dependency Versions -->
     <dependency.javax-inject>1</dependency.javax-inject>
@@ -162,7 +164,7 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <version>${jdk.target}</version>
+                  <version>${jdk.enforced}</version>
                 </requireJavaVersion>
               </rules>
             </configuration>
@@ -386,6 +388,9 @@
         <module>airline-maven-plugin</module>
         <module>docs</module>
       </modules>
+      <properties>
+        <jdk.enforced>1.8</jdk.enforced>
+      </properties>
       <build>
         <plugins>
           <!-- Release Plugin -->
@@ -531,6 +536,116 @@
                 <option>-Xdoclint:none</option>
               </additionalOptions>
             </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>moditect-jdk8-plus</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+        <file>
+          <exists>${basedir}/src/main/moditect/module-info.java</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.moditect</groupId>
+            <artifactId>moditect-maven-plugin</artifactId>
+            <version>${plugin.moditect}</version>
+            <executions>
+              <execution>
+                <id>add-module-infos</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>add-module-info</goal>
+                </goals>
+                <configuration>
+                  <jvmVersion>9</jvmVersion>
+                  <overwriteExistingFiles>true</overwriteExistingFiles>
+                  <module>
+                    <moduleInfoFile>
+                      ${basedir}/src/main/moditect/module-info.java
+                    </moduleInfoFile>
+                  </module>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>automatic-module-name</id>
+      <activation>
+        <property>
+          <name>moditect.skip</name>
+          <value>true</value>
+        </property>
+        <file>
+          <exists>${basedir}/src/main/moditect/module-info.java</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>${plugin.jar}</version>
+            <configuration>
+              <archive>
+                <manifestEntries>
+                  <Automatic-Module-Name>${moditect.moduleName}</Automatic-Module-Name>
+                </manifestEntries>
+              </archive>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>generate-module-info</id>
+      <properties>
+        <jdk.enforced>9</jdk.enforced>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.moditect</groupId>
+            <artifactId>moditect-maven-plugin</artifactId>
+            <version>${plugin.moditect}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>generate-module-info</goal>
+                </goals>
+                <configuration>
+                  <modules>
+                    <module>
+                      <artifact>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>${project.artifactId}</artifactId>
+                        <version>${project.version}</version>
+                      </artifact>
+                      <moduleInfo>
+                        <name>${moditect.moduleName}</name>
+                        <exports>
+                            *;
+                        </exports>
+                        <requires>
+                            *;
+                        </requires>
+                        <addServiceUses>true</addServiceUses>
+                      </moduleInfo>
+                    </module>
+                  </modules>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
