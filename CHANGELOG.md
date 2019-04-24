@@ -26,12 +26,24 @@ Major refactoring and functionality enhancements
     - `EnvVarLocator` and `JvmSystemPropertyLocator` could resolve locations incorrectly if some placeholders were undefined
     - Fixes some corner cases with `@FloatRange` and `@DoubleRange` underlying implementation
     - Fix possible NPE in maven plugin (#45)
+- Annotation Improvements
+    - New `@PositionalArgument` annotation introduced which associates a field with an argument (#91)
+        - Allows multiple fields to receive argument values, potentially with different types and restrictions
+        - Are processed prior to any `@Arguments` field
+        - Is fully backwards compatible with `@Arguments` i.e. existing commands continue to function as before.  However refactoring to use `@PositionalArgument` may make commands clearer and easier to implement.
+- Parser Improvements
+    - Support for parsing positional arguments prior to parsing non-positional arguments (#91)
+- Help Improvements
+    - Generates help for positional arguments (#91)
 - Restriction Improvements
     - Added `@File` and `@Directory` as more explicit variants of `@Path` (#73)
     - Added `@Negative` and `@Positive` for numerics (#73)
     - Added `@LengthRange` and `@ExactLength` for strings (#73)
     - Added `@AllowedEnumValues` as a simpler way of specifying `@AllowedRawValues` on enum typed fields (#73)
     - Added `@StartsWith` and `@EndsWith` for enforcing prefixes/suffixes on strings (#73)
+    - **`ArgumentsRestriction ` can also be applied to positional arguments
+        - All built-in implementations support this
+        - This is a **BREAKING** change for users writing Custom Restrictions, your implementations may need to implement additional methods to work with positional arguments
 - Build Improvements
    - Provide `module-info.java` available so modules can be used on Module Path (#92) - Thanks to [jfallows](https://github.com/jfallows)
 
