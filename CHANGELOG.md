@@ -12,6 +12,8 @@
     - Added `@LengthRange` and `@ExactLength` for strings (#73)
     - Added `@AllowedEnumValues` as a simpler way of specifying `@AllowedRawValues` on enum typed fields (#73)
     - Added `@StartsWith` and `@EndsWith` for enforcing prefixes/suffixes on strings (#73)
+- Build Improvements
+   - `Automatic-Module-Name` manifest entries and `module-info.java` available so modules can be used on Module Path (#92) - Thanks to [jfallows](https://github.com/jfallows)
 
 ## 2.6.0
 
