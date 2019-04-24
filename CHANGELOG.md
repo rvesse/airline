@@ -4,6 +4,8 @@
 
 - Bug Fixes
     - `EnvVarLocator` and `JvmSystemPropertyLocator` could resolve locations incorrectly if some placeholders were undefined
+- Build Improvements
+   - `Automatic-Module-Name` manifest entries and `module-info.java` available so modules can be used on Module Path (#92) - Thanks to [jfallows](https://github.com/jfallows)
 
 ## 2.6.0
 

@@ -99,7 +99,7 @@ Airline is built with Java 7 so can be used with Java 7 or above.
 
 Airline does make heavy use of reflection and therefore will likely not work on the Module Path without exporting packages that contain your CLI and Command classes as part of your `module-info.java`
 
-I do not currently use JPMS in any of my personal/work projects that use Airline and therefore there has been no testing of this.
+Current `2.7.0-SNAPSHOT` builds include contributions from our user community to enable use of Airline on the Module Path including relevant `module-info.java` and `Automatic-Module-Name` manifest entries.  If you encounter a problem with this please report it at https://github.com/rvesse/airline/issues
 
 ## Maven Artifacts
 
