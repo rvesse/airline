@@ -10,4 +10,4 @@ jdk:
 env:
   - MAVEN_OPTS="-Dhttps.protocol=TLSv1.2"
 script: mvn install -Prelease -Dgpg.skip=true -Djdk.enforced=1.7
-after_success: mvn package -Pcoveralls
+after_success: mvn verify -Pcoveralls
