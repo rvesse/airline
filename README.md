@@ -99,11 +99,11 @@ Airline is built with Java 7 so can be used with Java 7 or above.
 
 Airline does make heavy use of reflection and therefore will likely not work on the Module Path without exporting packages that contain your CLI and Command classes as part of your `module-info.java`
 
-Current `2.7.0-SNAPSHOT` builds include contributions from our user community to enable use of Airline on the Module Path including relevant `module-info.java` files.  If you encounter a problem with this please report it at https://github.com/rvesse/airline/issues
+From 2.7.0 onwards builds include contributions from our user community to enable use of Airline on the Module Path including relevant `module-info.java` files.  If you encounter a problem with this please report it at https://github.com/rvesse/airline/issues
 
 ## Maven Artifacts
 
-This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `2.6.0`
+This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `2.7.0`
 
 Use the following maven dependency declaration:
 
@@ -111,11 +111,11 @@ Use the following maven dependency declaration:
 <dependency>
     <groupId>com.github.rvesse</groupId>
     <artifactId>airline</artifactId>
-    <version>2.6.0</version>
+    <version>2.7.0</version>
 </dependency>
 ```
 
-Snapshot artifacts of the latest source are also available using the version `2.7.0-SNAPSHOT` from the [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
+Snapshot artifacts of the latest source are also available using the version `2.8.0-SNAPSHOT` from the [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
 
 ## Build Status
 
