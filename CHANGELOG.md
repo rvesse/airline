@@ -1,3 +1,4 @@
+
 # Airline - Change Log
 
 # 3.x Releases
@@ -8,15 +9,11 @@ API refactoring based on several years of deployed production usage and communit
 
 - Core Improvements
     - `Cli` class renamed to `CommandLineInterface` to remove ambiguity between `@Cli` and `Cli`
+       - Old `Cli` class is deprecated
 - Dependency Injection Framework support improvements
     - New `CommandContext` abstraction in `CommandFactory` API
     - New `airline-guice` module for Google Guice integration
-
----
-
-# 2.x Releases
-
-Major refactoring and functionality enhancements
+       - Provides `GuiceCommandFactory` as a drop-in replacement for the default command factory
 
 ## 2.8.0
 
@@ -36,14 +33,23 @@ Major refactoring and functionality enhancements
 - Help Improvements
     - Generates help for positional arguments (#91)
 - Restriction Improvements
+    - **`ArgumentsRestriction ` can also be applied to positional arguments
+        - All built-in implementations support this
+        - This is a **BREAKING** change for users writing Custom Restrictions, your implementations may need to implement additional methods to work with positional arguments    
+
+
+## 2.7.0
+
+- Bug Fixes
+    - `EnvVarLocator` and `JvmSystemPropertyLocator` could resolve locations incorrectly if some placeholders were undefined
+    - Fixes some corner cases with `@FloatRange` and `@DoubleRange` underlying implementation
+    - Fix possible NPE in maven plugin (#45)
+- Restriction Improvements
     - Added `@File` and `@Directory` as more explicit variants of `@Path` (#73)
     - Added `@Negative` and `@Positive` for numerics (#73)
     - Added `@LengthRange` and `@ExactLength` for strings (#73)
     - Added `@AllowedEnumValues` as a simpler way of specifying `@AllowedRawValues` on enum typed fields (#73)
     - Added `@StartsWith` and `@EndsWith` for enforcing prefixes/suffixes on strings (#73)
-    - **`ArgumentsRestriction ` can also be applied to positional arguments
-        - All built-in implementations support this
-        - This is a **BREAKING** change for users writing Custom Restrictions, your implementations may need to implement additional methods to work with positional arguments
 - Build Improvements
    - Provide `module-info.java` available so modules can be used on Module Path (#92) - Thanks to [jfallows](https://github.com/jfallows)
 
