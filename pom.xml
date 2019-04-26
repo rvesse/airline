@@ -372,7 +372,7 @@
                     <sourceDirectory>airline-maven-plugin/target/generated-sources/</sourceDirectory>
                   </sourceDirectories>
                   <jacocoReports>
-                    <jacocoReport>${project.outputDirectory}/jacoco-it/jacoco.xml</jacocoReport>
+                    <jacocoReport>airline-maven-plugin/target/jacoco-it/jacoco.xml</jacocoReport>
                   </jacocoReports>
                 </configuration>
               </execution>
