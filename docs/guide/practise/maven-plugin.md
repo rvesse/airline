@@ -33,7 +33,7 @@ Example usage:
           <execution>
             <phase>verify</phase>
             <goals>
-              <goal>validate</goal>
+              <goal>package</goal>
             </goals>
           </execution>
         </executions>
@@ -88,6 +88,7 @@ For example:
             <goals>
               <goal>generate</goal>
             </goals>
+            <phase>package</phase>
           </execution>
         </executions>
       </plugin>
