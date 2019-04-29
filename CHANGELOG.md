@@ -14,15 +14,6 @@ API refactoring based on several years of deployed production usage and communit
     - New `CommandContext` abstraction in `CommandFactory` API
     - New `airline-guice` module for Google Guice integration
        - Provides `GuiceCommandFactory` as a drop-in replacement for the default command factory
-
-## 2.8.0
-
-## 2.7.0
-
-- Bug Fixes
-    - `EnvVarLocator` and `JvmSystemPropertyLocator` could resolve locations incorrectly if some placeholders were undefined
-    - Fixes some corner cases with `@FloatRange` and `@DoubleRange` underlying implementation
-    - Fix possible NPE in maven plugin (#45)
 - Annotation Improvements
     - New `@PositionalArgument` annotation introduced which associates a field with an argument (#91)
         - Allows multiple fields to receive argument values, potentially with different types and restrictions
@@ -32,11 +23,19 @@ API refactoring based on several years of deployed production usage and communit
     - Support for parsing positional arguments prior to parsing non-positional arguments (#91)
 - Help Improvements
     - Generates help for positional arguments (#91)
+
+## 2.8.0
+
+## 2.7.0
+
+- Bug Fixes
+    - `EnvVarLocator` and `JvmSystemPropertyLocator` could resolve locations incorrectly if some placeholders were undefined
+    - Fixes some corner cases with `@FloatRange` and `@DoubleRange` underlying implementation
+    - Fix possible NPE in maven plugin (#45)
 - Restriction Improvements
     - **`ArgumentsRestriction ` can also be applied to positional arguments
         - All built-in implementations support this
         - This is a **BREAKING** change for users writing Custom Restrictions, your implementations may need to implement additional methods to work with positional arguments    
-
 
 ## 2.7.0
 
