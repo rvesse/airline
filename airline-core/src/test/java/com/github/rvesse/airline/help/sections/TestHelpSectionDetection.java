@@ -21,7 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.args.Args1;
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.help.sections.common.BasicSection;
@@ -46,7 +46,7 @@ public class TestHelpSectionDetection {
 
     @Test
     public void help_section_cli_01() {
-        Cli<Object> cli = new Cli<>(CliWithSections.class);
+        CommandLineInterface<Object> cli = new CommandLineInterface<>(CliWithSections.class);
         CommandFinder finder = new CommandFinder("Args1");
         CommandMetadata cmd = CollectionUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
         Assert.assertNotNull(cmd);
@@ -63,7 +63,7 @@ public class TestHelpSectionDetection {
     
     @Test
     public void help_section_cli_02() {
-        Cli<Object> cli = new Cli<>(CliWithSections.class);
+        CommandLineInterface<Object> cli = new CommandLineInterface<>(CliWithSections.class);
         CommandFinder finder = new CommandFinder("remove");
         CommandMetadata cmd = CollectionUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
         Assert.assertNotNull(cmd);
@@ -79,7 +79,7 @@ public class TestHelpSectionDetection {
     @Test
     public void help_section_cli_builder_01() {
         //@formatter:off
-        Cli<Object> cli = new CliBuilder<>("test")
+        CommandLineInterface<Object> cli = new CliBuilder<>("test")
                 .withHelpSection(new DiscussionSection(new String[] { "A", "B" }))
                 .withCommand(Args1.class)
                 .build();
@@ -101,7 +101,7 @@ public class TestHelpSectionDetection {
     @Test
     public void help_section_cli_builder_02() {
         //@formatter:off
-        Cli<Object> cli = new CliBuilder<>("test")
+        CommandLineInterface<Object> cli = new CliBuilder<>("test")
                 .withHelpSection(new DiscussionSection(new String[] { "A", "B" }))
                 .withCommand(Args1HidesDiscussion.class)
                 .build();

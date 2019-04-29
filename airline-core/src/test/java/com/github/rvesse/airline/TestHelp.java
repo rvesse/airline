@@ -1052,7 +1052,7 @@ public class TestHelp {
     @Test
     public void testVersionCli() throws IOException {
         //@formatter:off
-        Cli<Args1> cli = new CliBuilder<Args1>("test")
+        CommandLineInterface<Args1> cli = new CliBuilder<Args1>("test")
                             .withCommand(Args1.class)
                             .withHelpSection(new VersionSection(new String[] { "/test.version" }, 
                                                                 new ResourceLocator[] { new ClasspathLocator() }, 
@@ -1089,7 +1089,7 @@ public class TestHelp {
     @Test
     public void testVersionCli2() throws IOException {
         //@formatter:off
-        Cli<Args1> cli = new CliBuilder<Args1>("test")
+        CommandLineInterface<Args1> cli = new CliBuilder<Args1>("test")
                             .withCommand(Args1.class)
                             .withHelpSection(new VersionSection(new String[] { "/test.version" }, 
                                                                 new ResourceLocator[] { new ClasspathLocator() }, 
@@ -1230,7 +1230,7 @@ public class TestHelp {
     
     @Test
     public void testCliSectionsAnnotated() throws IOException {
-        Cli<Object> cli = new Cli<>(CliWithSections.class);
+        CommandLineInterface<Object> cli = new CommandLineInterface<>(CliWithSections.class);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         new CliGlobalUsageGenerator<Object>().usage(cli.getMetadata(), out);
@@ -1266,7 +1266,7 @@ public class TestHelp {
     
     @Test
     public void testCliSectionsAnnotated2() throws IOException {
-        Cli<Object> cli = new Cli<>(CliWithSections.class);
+        CommandLineInterface<Object> cli = new CommandLineInterface<>(CliWithSections.class);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         new CliGlobalUsageSummaryGenerator<Object>().usage(cli.getMetadata(), out);

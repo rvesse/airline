@@ -469,14 +469,14 @@ public class TestAliases {
         prepareConfig(f, "foo=Args1 bar");
 
         //@formatter:off
-        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+        CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                             .withCommand(Args1.class);
         builder.withParser()
                .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocation("${FOO}/${UNDEF}/")
                    .withLocator(new EnvVarLocator());
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<Args1> cli = builder.build();
         //@formatter:on
 
         // Check definition, should be missing as not all env vars were resolvable
@@ -1045,7 +1045,7 @@ public class TestAliases {
         prepareConfig(f, "Args1=a", "a=b", "b=!Args1 -debug");
 
         //@formatter:off
-        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+        CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                                        .withCommand(Args1.class);
         builder.withParser()
                .withAliasesOverridingBuiltIns()
@@ -1053,7 +1053,7 @@ public class TestAliases {
                .withUserAliases()
                    .withProgramName("test")
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<Args1> cli = builder.build();
         //@formatter:on
 
         // Check parsing
@@ -1070,7 +1070,7 @@ public class TestAliases {
         prepareConfig(f, "Args1=a", "a=b", "b=!Args1 -debug");
 
         //@formatter:off
-        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+        CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                                        .withCommand(Args1.class);
         builder.withParser()
                .withAliasesOverridingBuiltIns()
@@ -1079,7 +1079,7 @@ public class TestAliases {
                .withUserAliases()
                    .withProgramName("test")
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<Args1> cli = builder.build();
         //@formatter:on
 
         // Check parsing
@@ -1096,7 +1096,7 @@ public class TestAliases {
         prepareConfig(f, "Args1=a", "a=b", "b=@Args1 -debug");
 
         //@formatter:off
-        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+        CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                                        .withCommand(Args1.class);
         builder.withParser()
                .withAliasesOverridingBuiltIns()
@@ -1105,7 +1105,7 @@ public class TestAliases {
                .withUserAliases()
                    .withProgramName("test")
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<Args1> cli = builder.build();
         //@formatter:on
 
         // Check parsing
@@ -1118,7 +1118,7 @@ public class TestAliases {
         prepareConfig(f, "Args1=!Args1 -debug");
 
         //@formatter:off
-        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+        CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                                        .withCommand(Args1.class);
         builder.withParser()
                .withAliasesOverridingBuiltIns()
@@ -1126,7 +1126,7 @@ public class TestAliases {
                .withUserAliases()
                    .withProgramName("test")
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<Args1> cli = builder.build();
         //@formatter:on
 
         // Check parsing
@@ -1143,7 +1143,7 @@ public class TestAliases {
         prepareConfig(f, "logs=logs --format Json", "xml=logs --format Xml", "json=logs --format Json");
 
         //@formatter:off
-        CliBuilder<Logs> builder = Cli.<Logs>builder("test")
+        CliBuilder<Logs> builder = CommandLineInterface.<Logs>builder("test")
                                        .withCommand(Logs.class);
         builder.withParser()
                .withAliasesOverridingBuiltIns()
@@ -1151,7 +1151,7 @@ public class TestAliases {
                .withUserAliases()
                    .withProgramName("test")
                    .withSearchLocation("target/");
-        Cli<Logs> cli = builder.build();
+        CommandLineInterface<Logs> cli = builder.build();
         //@formatter:on
 
         cli.parse("logs");
@@ -1162,7 +1162,7 @@ public class TestAliases {
         prepareConfig(f, "logs=!logs --format Json", "xml=!logs --format Xml", "json=!logs --format Json");
 
         //@formatter:off
-        CliBuilder<Logs> builder = Cli.<Logs>builder("test")
+        CliBuilder<Logs> builder = CommandLineInterface.<Logs>builder("test")
                                        .withCommand(Logs.class);
         builder.withParser()
                .withAliasesOverridingBuiltIns()
@@ -1170,7 +1170,7 @@ public class TestAliases {
                .withUserAliases()
                    .withProgramName("test")
                    .withSearchLocation("target/");
-        Cli<Logs> cli = builder.build();
+        CommandLineInterface<Logs> cli = builder.build();
         //@formatter:on
 
         Logs logs = cli.parse("logs");
@@ -1193,7 +1193,7 @@ public class TestAliases {
     public void user_aliases_force_builtin_08() throws IOException {
         prepareConfig(f, "logs=logs --format Json", "xml=logs --format Xml", "json=logs --format Json");
 
-        Cli<Logs> cli = new Cli<>(LogsWithParser.class);
+        CommandLineInterface<Logs> cli = new CommandLineInterface<>(LogsWithParser.class);
 
         cli.parse("logs");
     }
@@ -1203,7 +1203,7 @@ public class TestAliases {
         // Using alternative force prefix
         prepareConfig(f, "logs=@logs --format Json", "xml=@logs --format Xml", "json=@logs --format Json");
 
-        Cli<Logs> cli = new Cli<>(LogsWithParser.class);
+        CommandLineInterface<Logs> cli = new CommandLineInterface<>(LogsWithParser.class);
 
         Logs logs = cli.parse("logs");
         Assert.assertEquals(logs.format, Logs.Format.Json);
@@ -1228,13 +1228,13 @@ public class TestAliases {
         prepareConfig(f, "Args1=!Args1 -debug");
 
         //@formatter:off
-        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+        CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                                        .withCommand(Args1.class);
         builder.withParser()
                .withUserAliases()
                    .withProgramName("test")
                    .withSearchLocation("target/");
-        Cli<Args1> cli = builder.build();
+        CommandLineInterface<Args1> cli = builder.build();
         //@formatter:on
 
         // Check parsing
