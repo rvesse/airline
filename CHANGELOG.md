@@ -6,7 +6,11 @@ API refactoring based on several years of deployed production usage and communit
 
 ## 3.0.0 Alpha
 
-
+- Core Improvements
+    - `Cli` class renamed to `CommandLineInterface` to remove ambiguity between `@Cli` and `Cli`
+- Dependency Injection Framework support improvements
+    - New `CommandContext` abstraction in `CommandFactory` API
+    - New `airline-guice` module for Google Guice integration
 
 ---
 
@@ -14,17 +18,46 @@ API refactoring based on several years of deployed production usage and communit
 
 Major refactoring and functionality enhancements
 
-## 2.5.1
+## 2.8.0
+
+## 2.7.0
+
+- Bug Fixes
+    - `EnvVarLocator` and `JvmSystemPropertyLocator` could resolve locations incorrectly if some placeholders were undefined
+    - Fixes some corner cases with `@FloatRange` and `@DoubleRange` underlying implementation
+    - Fix possible NPE in maven plugin (#45)
+- Restriction Improvements
+    - Added `@File` and `@Directory` as more explicit variants of `@Path` (#73)
+    - Added `@Negative` and `@Positive` for numerics (#73)
+    - Added `@LengthRange` and `@ExactLength` for strings (#73)
+    - Added `@AllowedEnumValues` as a simpler way of specifying `@AllowedRawValues` on enum typed fields (#73)
+    - Added `@StartsWith` and `@EndsWith` for enforcing prefixes/suffixes on strings (#73)
+- Build Improvements
+   - Provide `module-info.java` available so modules can be used on Module Path (#92) - Thanks to [jfallows](https://github.com/jfallows)
+
+## 2.6.0
 
 - Core Improvements
     - Allow creating a `Cli` instance with an explicit `ParserMetadata` for situations where parser configuration cannot be specified via annotation e.g. using dynamically determined paths for user aliases
+    - Abstract direct usage of `System.out` via `Channels` factory interface to allow the library to be used in environments that are not consoles (#78) - Thanks to [sdorra](http://github.com/sdorra/)
 - Parser Improvements
     - Allow `./` as a user alias search location resolved as the current working directory
     - Allow extending how user alias search locations are resolved to support custom behaviours via new `ResourceLocator` interface
+    - Add ability to specify a force prefix for aliases which allows alias definitions to override built-ins while still being able to invoke those built-ins (#72)
+    - Add ability to specify default values for positional parameters in alias definitions (#69)
+- Help Improvements
+     - Remove deprecated methods from `CommandUsageGenerator` interface and add new `usage()` overload for more easily generating usage for single commands
 - Annotation Improvements
     - Allow specifying global restriction annotations directly on classes used with `SingleCommand`
     - `@Unrestricted` can now be applied directly to classes to specify no global restrictions on single commands and CLIs
     - `@Version` can now use `ResourceLocator` to modify search locations
+    - Help Sections annotations can now be placed onto `@Cli` annotated classes and will be inherited by all commands defined for the CLI.  Commands can still override help sections as desired. (#59)
+        - CLI defined help sections are included by CLI help generators (#57)
+- Build Improvements
+    - Now possible to build with JDK 9 and JDK 10.  Note that we still compile for JDK 7 compatibility
+    - Dependencies
+        - Upgraded Apache Commons Lang to 3.7 (#82)
+        - Upgraded Apache Commons Collections to 4.2 (#82)
 
 ## 2.5.0
 
@@ -43,7 +76,6 @@ Major refactoring and functionality enhancements
     - Removed some unnecessary helper methods from `AirlineUtils` in favour of JDK built-ins (#64)
 - Help Improvements
     - Fixed some issues with UsagePrinter not correctly respecting configured column limits in some cases
-    - New `airline-maven-plugin` that can be used to generate help for your Airline powered CLIs directly in your Maven build (#45)
 
 ## 2.4.0
 

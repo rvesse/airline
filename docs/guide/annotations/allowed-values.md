@@ -20,4 +20,6 @@ Note that the restriction applies to the option value **after** the parser conve
 
 If there is only one way that a given value may be specified then it may be simpler and more efficient to use the [`@AllowedRawValues`](allowed-raw-values.html) annotation instead.
 
+If the acceptable values come from an `enum` you can simplify your code by using the [`@AllowedEnumValues`](allowed-enum-values.html) annotation.
+
 For more complex value restrictions a regular expression based restriction using [`@Pattern`](pattern.html) might be appropriate.

@@ -26,6 +26,7 @@ import com.github.rvesse.airline.help.CommandUsageGenerator;
 import com.github.rvesse.airline.help.UsageHelper;
 import com.github.rvesse.airline.help.common.AbstractGlobalUsageGenerator;
 import com.github.rvesse.airline.help.man.ManSections;
+import com.github.rvesse.airline.help.sections.HelpSection;
 import com.github.rvesse.airline.io.printers.TroffPrinter;
 import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
@@ -75,6 +76,16 @@ public class ManGlobalUsageGenerator<T> extends AbstractGlobalUsageGenerator<T> 
         TroffPrinter printer = new TroffPrinter(new PrintWriter(output));
 
         outputTitle(global, printer);
+        
+        // Find the help sections
+        List<HelpSection> preSections = new ArrayList<HelpSection>();
+        List<HelpSection> postSections = new ArrayList<HelpSection>();
+        findHelpSections(global, preSections, postSections);
+
+        // Output pre help sections
+        for (HelpSection section : preSections) {
+            helper.outputHelpSection(printer, section);
+        }
 
         List<OptionMetadata> options = new ArrayList<>();
         if (global.getOptions() != null && global.getOptions().size() > 0) {
@@ -99,6 +110,11 @@ public class ManGlobalUsageGenerator<T> extends AbstractGlobalUsageGenerator<T> 
             // No groups
             outputCommandList(printer, global);
             outputCommandUsages(output, printer, global);
+        }
+        
+        // Output post help sections
+        for (HelpSection section : postSections) {
+            helper.outputHelpSection(printer, section);
         }
 
         // Flush the output

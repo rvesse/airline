@@ -26,15 +26,15 @@ public class FormatOptions {
     private final Boolean includeHidden, multiFile;
     private final Properties properties;
     private final FormatOptions parent;
-    
+
     public FormatOptions() {
         this(new RawFormatOptions(), null);
     }
-    
+
     public FormatOptions(RawFormatOptions options) {
         this(options, null);
     }
-    
+
     public FormatOptions(RawFormatOptions options, FormatOptions parentOptions) {
         this.parent = parentOptions;
         this.columns = options.columns;
@@ -43,39 +43,55 @@ public class FormatOptions {
         this.multiFile = options.multiFile;
         this.properties = options.properties;
     }
-    
+
     public int getColumns() {
-        return this.columns != null ? this.columns.intValue() : this.parent != null ? this.parent.getColumns() : AbstractUsageGenerator.DEFAULT_COLUMNS;
+        return this.columns != null ? this.columns.intValue()
+                : this.parent != null ? this.parent.getColumns() : AbstractUsageGenerator.DEFAULT_COLUMNS;
     }
-    
+
     public int getManSection() {
-        return this.manSection != null ? this.manSection.intValue() : this.parent != null ? this.parent.getManSection() : ManSections.GENERAL_COMMANDS;
+        return this.manSection != null ? this.manSection.intValue()
+                : this.parent != null ? this.parent.getManSection() : ManSections.GENERAL_COMMANDS;
     }
-    
+
     public boolean includeHidden() {
-        return this.includeHidden != null ? this.includeHidden.booleanValue() : this.parent != null ? this.parent.includeHidden() : false;
+        return this.includeHidden != null ? this.includeHidden.booleanValue()
+                : this.parent != null ? this.parent.includeHidden() : false;
     }
-    
+
     public boolean useMultipleFiles() {
-        return this.multiFile != null ? this.multiFile.booleanValue() : this.parent != null ? this.parent.useMultipleFiles() : false;
+        return this.multiFile != null ? this.multiFile.booleanValue()
+                : this.parent != null ? this.parent.useMultipleFiles() : false;
     }
-    
+
     public Object get(Object key) {
-        Object value = this.properties.get(key);
-        if (value == null && this.parent != null) {
-            value = this.parent.get(key);
+        if (this.properties != null) {
+            Object value = this.properties.get(key);
+            if (value == null && this.parent != null) {
+                value = this.parent.get(key);
+            }
+            return value;
+        } else if (this.parent != null) {
+            return this.parent.get(key);
+        } else {
+            return null;
         }
-        return value;
     }
-    
+
     public String getProperty(String key) {
-        String value = this.properties.getProperty(key);
-        if (value == null && this.parent != null) {
-            value = this.parent.getProperty(key);
+        if (this.properties != null) {
+            String value = this.properties.getProperty(key);
+            if (value == null && this.parent != null) {
+                value = this.parent.getProperty(key);
+            }
+            return value;
+        } else if (this.parent != null) {
+            return this.parent.getProperty(key);
+        } else {
+            return null;
         }
-        return value;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

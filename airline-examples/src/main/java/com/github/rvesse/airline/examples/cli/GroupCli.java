@@ -16,7 +16,10 @@
 package com.github.rvesse.airline.examples.cli;
 
 import com.github.rvesse.airline.CommandLineInterface;
-import com.github.rvesse.airline.builder.CliBuilder;
+import java.io.IOException;
+
+import com.github.rvesse.airline.annotations.Cli;
+import com.github.rvesse.airline.annotations.Group;
 import com.github.rvesse.airline.examples.ExampleExecutor;
 import com.github.rvesse.airline.examples.ExampleRunnable;
 import com.github.rvesse.airline.examples.cli.commands.Help;
@@ -24,32 +27,49 @@ import com.github.rvesse.airline.examples.inheritance.Child;
 import com.github.rvesse.airline.examples.inheritance.GoodGrandchild;
 import com.github.rvesse.airline.examples.inheritance.Parent;
 import com.github.rvesse.airline.examples.simple.Simple;
+import com.github.rvesse.airline.help.CommandGroupUsageGenerator;
+import com.github.rvesse.airline.help.cli.CliCommandGroupUsageGenerator;
+import com.github.rvesse.airline.model.CommandGroupMetadata;
 
 /**
  * An example of creating a CLI using command groups
  */
+//@formatter:off
+@Cli(
+    name = "cli", 
+    description = "A simple CLI with several commands available in groups",
+    groups = {
+        @Group(
+            name = "basic",
+            description = "Basic commands",
+            commands = { Simple.class }
+        ),
+        @Group(
+            name = "inheritance",
+            description = "Commands that demonstrate option inheritance",
+            commands = { Parent.class, Child.class, GoodGrandchild.class }
+        )
+    },
+    commands = { Help.class }
+)
+//@formatter:on
 public class GroupCli {
     
-    @SuppressWarnings("unchecked")
     public static void main(String[] args) {
-        //@formatter:off
-        // The program name is cli
-        CliBuilder<ExampleRunnable> builder = CommandLineInterface.<ExampleRunnable>builder("cli")
-                                                 // Add a description
-                                                 .withDescription("A simple CLI with several commands available in groups");
-        // Add a basic group
-        builder.withGroup("basic")
-               .withDescription("Basic commands")
-               .withCommand(Simple.class);
-        // Add another group
-        builder.withGroup("inheritance")
-               .withDescription("Commands that demonstrate option inheritance")
-               .withCommands(Parent.class, Child.class, GoodGrandchild.class);
-        // You can still define top level commands as well 
-        builder.withCommand(Help.class);
-        //@formatter:on
+        CommandLineInterface<ExampleRunnable> cli = new CommandLineInterface<ExampleRunnable>(GroupCli.class);
         
-        ExampleExecutor.executeCli(builder.build(), args);
+        ExampleExecutor.executeCli(cli, args);
+    }
+    
+    public static void generateHelp() throws IOException {
+        CommandLineInterface<ExampleRunnable> cli = new CommandLineInterface<ExampleRunnable>(GroupCli.class);
+        
+        CommandGroupUsageGenerator<ExampleRunnable> helpGenerator = new CliCommandGroupUsageGenerator<>();
+        try {
+            helpGenerator.usage(cli.getMetadata(), new CommandGroupMetadata[] { cli.getMetadata().getCommandGroups().get(0) }, System.out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

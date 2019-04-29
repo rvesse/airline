@@ -15,6 +15,50 @@
  */
 package com.github.rvesse.airline.restrictions;
 
+import java.util.concurrent.TimeUnit;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import com.github.rvesse.airline.SingleCommand;
+import com.github.rvesse.airline.parser.errors.ParseOptionIllegalValueException;
+
 public class TestAllowedValues {
 
+    @Test
+    public void allowed_raw_01() {
+        String[] allowed = new String[] { "foo", "bar", "faz" };
+        
+        SingleCommand<Allowable> parser = SingleCommand.singleCommand(Allowable.class);
+        for (String value : allowed) {
+            Allowable cmd = parser.parse("--raw", value);
+            Assert.assertEquals(cmd.raw, value);
+        }
+    }
+    
+    @Test(expectedExceptions = ParseOptionIllegalValueException.class)
+    public void allowed_raw_02() {
+        SingleCommand<Allowable> parser = SingleCommand.singleCommand(Allowable.class);
+        parser.parse("--raw", "other");
+    }
+    
+    @Test
+    public void allowed_typed_01() {
+        String[] allowed = new String[] { "1", "2.0", "0.3E1" };
+        
+        SingleCommand<Allowable> parser = SingleCommand.singleCommand(Allowable.class);
+        for (String value : allowed) {
+            Allowable cmd = parser.parse("--typed", value);
+            Assert.assertEquals(cmd.typed, Double.parseDouble(value));
+        }
+    }
+    
+    @Test
+    public void allowed_enum_01() {
+        SingleCommand<Allowable> parser = SingleCommand.singleCommand(Allowable.class);
+        for (TimeUnit unit : TimeUnit.values()) {
+            Allowable cmd = parser.parse("--enum", unit.name());
+            Assert.assertEquals(cmd.enumTyped, unit);
+        }
+    }
 }

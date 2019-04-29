@@ -22,7 +22,9 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation that indicates that an option/argument denotes a port number and
- * its value should be restricted as such
+ * its value should be restricted as such to a specific set of port classes as
+ * defined by {@link PortType}. If you want to restrict to more specific ranges
+ * use the {@link PortRange} or {@link PortRanges} annotations instead.
  */
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 @Target({ FIELD })

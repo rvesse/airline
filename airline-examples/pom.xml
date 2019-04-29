@@ -30,6 +30,11 @@
       <artifactId>airline-help-bash</artifactId>
       <version>${project.version}</version>
     </dependency>
+        <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-help-man</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

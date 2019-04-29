@@ -31,7 +31,7 @@ public class Logs implements ExampleRunnable {
 }
 ```
 
-Here the user can choose from several possible formats with the `--format` option.  Users who always prefer a particular format may wish to define an alias `json` that always outputs the JSON format.  So in effect we want to allow the user to type  `cli json` rather than `cli logs --format json`.  Airline's user defined aliases mechanism allows us to do exactly this.
+Here the user can choose from several possible formats with the `--format` option.  Users who always prefer a particular format may wish to define an alias `json` that always outputs the JSON format.  So in effect we want to allow the user to type  `cli json` rather than `cli logs --format Json`.  Airline's user defined aliases mechanism allows us to do exactly this.
 
 ## Defining Aliases
 
@@ -74,7 +74,9 @@ public class UserAliasedCli {
         // src/main/resources/aliases.config
         //@formatter:off
         builder.withParser()
-               .withUserAliases("aliases.config", null, "~/.cli/", "src/main/resources/");
+               .withUserAliases()
+                 .withFilename("aliases.config")
+                 .withSearchLocations("~/.cli/", "src/main/resources/");
         //@formatter:on
 
         ExampleExecutor.executeCli(builder.build(), args);
@@ -87,7 +89,9 @@ Here we see a simple CLI defined with a small selection of commands including ou
 
 ```java
 builder.withParser()
-        withUserAliases("aliases.config", null, "~/.cli/", "src/main/resources/");
+        .withUserAliases()
+                 .withFilename("aliases.config")
+                 .withSearchLocations("~/.cli/", "src/main/resources/");
 ```
 
 Note that if you were using the [`@Parser`](../annotations/parser.html) annotation you could also use the various fields of that annotation to configure the same functionality:
@@ -97,13 +101,15 @@ Note that if you were using the [`@Parser`](../annotations/parser.html) annotati
         userAliasesSearchLocation = { "~/.cli/", "src/main/resources/" })
 ```
 
-This configuration specifies that Airline should look for a file named `aliases.config` in either `~/.cli/` or in `src/main/resources/`.  Note that Airline allows use of `~/` as a reference to the users home directory.
+This configuration specifies that Airline should look for a file named `aliases.config` in either `~/.cli/` or in `src/main/resources/`.  Note that Airline allows use of `~/` as a reference to the users home directory, this is optionally configurable via the [Resource Locators](resource-locators.html) API.
 
 ### Search Locations
 
-All locations are searched both on the filesystem and the JVM class path (if applicable) and their contents are merged.  
+By default locations are searched for on the filesystem and their contents are merged.  
 
 Search locations should be given in order of preference, so if files were found in both locations and both defined the same alias the definition from the first location would be used.
+
+How the search locations given are interpreted is controlled by the configurable [resource locators](resource-locators.html).  So it is possible to create search locations that refer to special directories, like the users home directory, as seen in the above examples.
 
 ### Aliases File
 
@@ -160,6 +166,20 @@ Some times if might be desirable to allow users to override built-ins in which c
 If you enable overriding it *MAY* prevent users from accessing the overridden built-in's depending on whether you have also enabled chaining (see below) and the users alias definition.  Therefore carefully consider whether you want to allow overriding before enabling it.
 {% include end-alert.html %}
 
+#### Forcing use of built-in
+
+{% include req-ver.md version="2.6.0" %}
+
+From 2.6.0 onwards it is possible to force the use of a built-in by applying a configurable prefix character which defaults to `!`.  So for example you could do the following alias definition:
+
+```
+logs=!logs --format Json
+```
+
+This allows you to override the `logs` built-in with an alias that provides your desired arguments yet still invokes the actual built-in command.
+
+The prefix character is controlled by either calling `withAliasForceBuiltInPrefix()` on the Fluent API or adding the `aliasesForceBuiltInPrefix` field to your `@Parser` annotation.
+
 #### Alias Chaining
 
 By default aliases cannot be defined in terms of other aliases, so the following would not be legal:
@@ -196,7 +216,17 @@ xml=logs --format Xml
 
 Here the user tries to define that the `logs` command always defaults to Json format.  They also define `json` and `xml` aliases to ask for the logs in those formats.  However when Airline attempts to resolve this you will end up with a circular reference error as above.  This is because when alias chaining is resolved Airline always tries to resolve as many aliases as possible until it hits a built-in or a non-alias.  If overriding is enabled it always favours aliases over built-in's so you have to be careful if trying to chain aliases and redefine built-ins.
 
-Therefore it is generally recommended to only enable chaining or overriding but not both together.
+Prior to 2.6.0 it is generally recommended to only enable chaining or overriding but not both together.
+
+From 2.6.0 you can safely enable both and use the force built-ins prefix character, which defaults to `!`, to provide more explicit alias definitions that are resolvable i.e.
+
+```
+logs=!logs --format Json
+json=!logs --format Json
+xml=!logs --format Xml
+```
+
+By using the `!` prefix we force the parser to choose the built-in regardless of the fact that we have created an alias for `logs` that normally overrides it.
 
 #### Positional Parameters
 
@@ -218,3 +248,14 @@ reversed=command $2 $1
 ```
 
 Here invoking `reversed out in` expands to `command in out`
+
+#### Positional Parameter Defaults
+
+{% include req-ver.md version="2.6.0" %}
+
+From 2.6.0 onwards it is possible to supply default values to positional parameters like so:
+
+```
+l=logs --format ${1:-Json}
+```
+With this definition if the user has supplied an input after the alias then that will be substituted, however if they have not then the default value `Json` will be substituted.

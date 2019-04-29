@@ -22,7 +22,7 @@ public class AbstractComparableComparator<T extends Comparable<T>> extends Abstr
     }
 
     @Override
-    protected final int compareValues(T v1, T v2) {
+    protected int compareValues(T v1, T v2) {
         return v1.compareTo(v2);
     }
 

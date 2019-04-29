@@ -15,9 +15,9 @@
  */
 package com.github.rvesse.airline.utils.comparators;
 
-public class ByteComparator extends AbstractComparableComparator<Short> {
+public class ByteComparator extends AbstractComparableComparator<Byte> {
 
     public ByteComparator() {
-        super(Short.class);
+        super(Byte.class);
     }
 }

@@ -21,9 +21,9 @@ import java.io.File;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * A resource locator that allows the {@code ~/} or {@code ~\} alias
- * (depending on your platforms file separator) to be used to refer to the users
- * home directory
+ * A resource locator that allows the {@code ~/} or {@code ~\} alias (depending
+ * on your platforms file separator) to be used to refer to the users home
+ * directory
  * <p>
  * Note that if the users home directory cannot be obtained then this locator
  * will not resolve the alias
@@ -36,6 +36,9 @@ public class HomeDirectoryLocator extends FileLocator {
 
     @Override
     protected String resolve(String searchLocation) {
+        // Apply parent resolve() first as this strips off any file:// prefix
+        searchLocation = super.resolve(searchLocation);
+
         // Find the home directory since we will potentially use this to resolve
         // the special ~/ alias
         File homeDir;

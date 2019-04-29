@@ -30,7 +30,7 @@ public class MapAbbreviatedNumericTypeConverter extends AbbreviatedNumericTypeCo
     public MapAbbreviatedNumericTypeConverter(boolean caseSensitive, Map<String, Integer> prefixes,
             Map<String, Long> suffixes) {
         this.caseSensitive = caseSensitive;
-        if (!this.caseSensitive) {
+        if (this.caseSensitive) {
             this.prefixes.putAll(prefixes);
             this.suffixes.putAll(suffixes);
         } else {
@@ -41,6 +41,11 @@ public class MapAbbreviatedNumericTypeConverter extends AbbreviatedNumericTypeCo
                 this.suffixes.put(e.getKey().toLowerCase(Locale.ROOT), e.getValue());
             }
         }
+    }
+    
+    @Override
+    protected boolean isCaseSensitive() {
+        return this.caseSensitive;
     }
 
     @Override

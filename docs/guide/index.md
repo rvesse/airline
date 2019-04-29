@@ -14,6 +14,21 @@ Many of the examples contained in this user guide may be found in compilable for
 ```
 airline-examples> ./runExample GettingStarted
 ```
+## Warnings
+
+Throughout this website where you see a box like the following:
+
+{% include alert.html %}
+Some warning text goes here...
+{% include end-alert.html %}
+
+This is a warning that describes a potential pit-fall that users might encounter.  These are used to call out places where it is possible for users to introduce dangerous behaviours, or where they are strict constraints they must respect.
+
+Also where the library has evolved over time you may see the following:
+
+{% include req-ver.md version="1.2.3" %}
+
+This is used to denote features that are only available in newer versions of the library or where behaviours have changed across versions.
 
 ## Definitions
 

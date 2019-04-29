@@ -22,7 +22,6 @@ import org.testng.annotations.Test;
 
 import com.github.rvesse.airline.SingleCommand;
 import com.github.rvesse.airline.parser.errors.ParseOptionConversionException;
-import com.github.rvesse.airline.parser.errors.ParseOptionIllegalValueException;
 import com.github.rvesse.airline.types.numerics.DefaultNumericConverter;
 import com.github.rvesse.airline.types.numerics.NumericTypeConverter;
 import com.github.rvesse.airline.types.numerics.abbreviated.KiloAs1000;
@@ -66,6 +65,14 @@ public class TestTypeConverters {
             Assert.assertFalse(result.wasSuccessfull());
             Assert.assertNull(result.getConvertedValue());
         }
+    }
+
+    @Test
+    public void numeric_case_insensitivity_01() {
+        NumericTypeConverter converter = new KiloAs1024();
+        ConvertResult result = converter.tryConvertNumerics("test", Long.class, "4GB");
+        Assert.assertTrue(result.wasSuccessfull());
+        Assert.assertEquals((long) result.getConvertedValue(), 4l * 1024l * 1024l * 1024l);
     }
 
     @Test
@@ -310,6 +317,12 @@ public class TestTypeConverters {
     }
 
     @Test
+    public void numeric_kilo_1024_integer_04() {
+        checkIntegerAbbreviationKilo(new KiloAs1024(), 1024, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.class,
+                1024l * 1024l * 1024l, "G");
+    }
+
+    @Test
     public void numeric_kilo_1024_short_01() {
         checkIntegerAbbreviationKilo(new KiloAs1024(), 1024, Short.MIN_VALUE, Short.MAX_VALUE, Short.class, 1024l, "k");
     }
@@ -376,35 +389,35 @@ public class TestTypeConverters {
         long value = 47000;
         ArgsRadix radix = cmd.parse("--normal", Long.toString(value), "--hex", Long.toString(value, 16), "--octal",
                 Long.toString(value, 8), "--binary", Long.toString(value, 2), "--kilo", (value / 1000) + "k");
-        
+
         Assert.assertEquals(radix.normal, value);
         Assert.assertEquals(radix.hex, value);
         Assert.assertEquals(radix.octal, value);
         Assert.assertEquals(radix.binary, value);
         Assert.assertEquals(radix.abbrev, value);
     }
-    
+
     @Test
     public void command_mixed_converters_02() {
         SingleCommand<ArgsRadix> cmd = SingleCommand.singleCommand(ArgsRadix.class);
         long value = 47000;
         ArgsRadix radix = cmd.parse("--normal", Long.toString(value), "--hex", Long.toString(value), "--octal",
                 Long.toString(value));
-        
+
         Assert.assertEquals(radix.normal, value);
         Assert.assertEquals(radix.hex, Long.parseLong(Long.toString(value), 16));
         Assert.assertEquals(radix.octal, Long.parseLong(Long.toString(value), 8));
     }
-    
+
     @Test
     public void command_mixed_converters_03() {
         SingleCommand<ArgsRadix> cmd = SingleCommand.singleCommand(ArgsRadix.class);
         long value = 47000;
         ArgsRadix radix = cmd.parse("--kilo", Long.toString(value));
-        
+
         Assert.assertEquals(radix.abbrev, value);
     }
-    
+
     @Test(expectedExceptions = ParseOptionConversionException.class)
     public void command_mixed_converters_04() {
         SingleCommand<ArgsRadix> cmd = SingleCommand.singleCommand(ArgsRadix.class);

@@ -83,14 +83,14 @@ public class Simple implements ExampleRunnable {
 
     @Override
     public int run() {
-        if (!help.showHelpIfRequested()) {
-            System.out.println("Flag was " + (this.flag ? "set" : "not set"));
-            System.out.println("Name was " + this.name);
-            System.out.println("Number was " + this.number);
-            if (args != null)
-                System.out.println("Arguments were " + StringUtils.join(args, ","));
+        if (help.showHelpIfRequested())
+            return 0;
+        System.out.println("Flag was " + (this.flag ? "set" : "not set"));
+        System.out.println("Name was " + this.name);
+        System.out.println("Number was " + this.number);
+        if (args != null)
+            System.out.println("Arguments were " + StringUtils.join(args, ","));
 
-        }
         return 0;
     }
 }

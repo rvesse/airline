@@ -109,7 +109,7 @@ Would instead use `@@` as the arguments separator.
 
 Airline supports a [User Defined Aliases](../practise/aliases.html) system which allows for users to define custom aliases for use with your Airline powered CLIs.
 
-To specify where to get user defined aliases from you use some combination of the `userAliasesFile`, `userAliasesSearchLocation` and `userAliasesPrefix` fields e.g.
+To specify where to get user defined aliases from you use some combination of the `userAliasesFile`, `userAliasesSearchLocation`, and the `userAliasesPrefix` fields e.g.
 
 ```java
 @Parser(userAliasesFile = "example.config",
@@ -117,7 +117,22 @@ To specify where to get user defined aliases from you use some combination of th
         userAliasesPrefix = "alias.")
 ```
 
-Here we define that aliases will be defined in a file `example.config` which should be found under `~/example` (where `~` is treated as special value for users home directory)
+Here we define that aliases will be defined in a file `example.config` which should be found under `~/example` (where `~` is treated as special value for users home directory).
+
+The treatment of special values is controlled by the choice of [Resource Locators](../practise/resource-locators.html) which can be changed via the `userAliasLocators` property.  The use of the default setup, which includes support for `~/` as a reference to the users home directory, is controlled via the `useDefaultAliasLocators` field and `defaultAliasLocatorsFirst`.  For example if we wished to enable use of an environment variable to locate user aliases we could do the following:
+
+```java
+@Parser(userAliasesFile = "example.config",
+        userAliasesSearchLocation = { "${EXAMPLE_CONFIG_DIR}", "~/example/" },
+        userAliasesPrefix = "alias.",
+        defaultAliasLocatorsFirst = false,
+        useDefaultAliasLocators = true,
+        userAliasLocators = { EnvVarLocator.class })
+```
+
+Here we add a new search location `${EXAMPLE_CONFIG_DIR}` and we configure the use of the `EnvVarLocator` which understands how to resolve that location.  We prefer our configured locators so the environment variable location, if set and resolved, will be the first used.
+
+#### Alias Definition Controls
 
 If you are using aliases then there are two remaining options that you may also be interested in.  The `aliasesMayChain` field which defaults to `false` controls whether user defined aliases are allowed to reference each other i.e. whether users can define aliases in terms or other aliases.  When set to `true` then aliases may be defined in terms of each other provided that a circular reference does not exist.
 

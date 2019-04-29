@@ -50,8 +50,11 @@ This project was forked from [http://github.com/airlift/airline](http://github.c
 
 This website is built with [Jekyll](http://jekyllrb.com), it uses the following 3rd party resources:
 
-- [Hyde theme](https://github.com/poole/hyde) by Mark Otto
-- [Table of Contents plugin](https://github.com/ghiculescu/jekyll-table-of-contents) by Alex Ghiculescu 
-- [Multi-Level Push Menu plugin](https://github.com/adgsm/multi-level-push-menu) by Momcilo Dzunic 
+- [Hyde theme](https://github.com/poole/hyde) by Mark Otto - MIT License
+- [Table of Contents plugin](https://github.com/ghiculescu/jekyll-table-of-contents) by Alex Ghiculescu - MIT License
+- [Multi-Level Push Menu plugin](https://github.com/adgsm/multi-level-push-menu) by Momcilo Dzunic  - MIT License
+- [Better Simple Slideshow](https://github.com/leemark/better-simple-slideshow) by Mark Lee - Mozilla Public License
 
-All 3rd party resources used on the website are licensed under the MIT License.  Content on this website is licensed under the same [Apache License 2.0](http://apache.org/licenses/LICENSE-2.0) used for the library as stated in the above License section.
+All 3rd party resources used on the website are licensed under the stated open source licenses.
+
+Content on this website is licensed under the same [Apache License 2.0](http://apache.org/licenses/LICENSE-2.0) used for the library as stated in the above License section.

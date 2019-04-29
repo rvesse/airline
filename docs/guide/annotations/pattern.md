@@ -37,3 +37,5 @@ Requires that the option meet the regular expression case insensitively i.e. `FO
 To restrict values to specific sets of values it is likely more efficient to use the [`@AllowedRawValues`](allowed-raw-values.html) or [`@AllowedValues`](allowed-values.html) annotations.
 
 To place simple string related restrictions some combination of [`@NotBlank`](not-blank.html), [`@NotEmpty`](not-empty.html), [`@MaxLength`](max-length.html) and [`@MinLength`](min-length.html) may also be useful.
+
+For simple prefix/suffix constraints you can use the [`@StartsWith`](starts-with.html) and [`@EndsWith`](ends-with.html) annotations.

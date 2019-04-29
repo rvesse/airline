@@ -1,0 +1,21 @@
+---
+extra_styles: [ "simple-slideshow-styles.css" ] 
+extra_js: [ "better-simple-slideshow.js" ] 
+---
+
+<!DOCTYPE html>
+<html lang="en-us">
+
+  {% include head.html extra_styles=layout.extra_styles extra_scripts=layout.extra_js %}
+
+  <body class="theme-base-0d">
+
+    <div class="container slide-content">
+      <div class="page">
+        <h1 class="page-title">{{ page.title }}</h1>
+        {{ content }}
+      </div>
+    </div>
+
+  </body>
+</html>

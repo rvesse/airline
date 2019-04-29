@@ -9,9 +9,8 @@ The `@Examples` annotation may be applied to classes and provides documentation 
 
 To use it add it like so:
 
-```
-java
-@ExitCodes(examples = 
+```java
+@Examples(examples = 
            { 
                "my-cmd --lower bar",
                "my-cmd --raise bar"

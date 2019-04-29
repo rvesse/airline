@@ -17,7 +17,8 @@ package com.github.rvesse.airline.restrictions.common;
 
 import java.util.Locale;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
+
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
@@ -49,7 +50,7 @@ public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestrictio
             return;
 
         // Check in list of values
-        if (!CollectionUtils.exists(this.rawValues, new LocaleSensitiveStringFinder(value, this.locale)))
+        if (!IterableUtils.matchesAny(this.rawValues, new LocaleSensitiveStringFinder(value, this.locale)))
             throw new ParseOptionIllegalValueException(option.getTitle(), value, asObjects(rawValues));
     }
 
@@ -60,7 +61,7 @@ public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestrictio
             return;
 
         // Check in list of values
-        if (!CollectionUtils.exists(this.rawValues, new LocaleSensitiveStringFinder(value, this.locale))) {
+        if (!IterableUtils.matchesAny(this.rawValues, new LocaleSensitiveStringFinder(value, this.locale))) {
             throw new ParseArgumentsIllegalValueException(AbstractCommonRestriction.getArgumentTitle(state, arguments), value, asObjects(rawValues));
         }
     }

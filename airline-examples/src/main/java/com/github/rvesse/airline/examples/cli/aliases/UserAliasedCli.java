@@ -55,8 +55,9 @@ public class UserAliasedCli {
         //@formatter:off
         builder.withParser()
                .withUserAliases()
-                   .withFilename("aliases.config")
-                   .withSearchLocations("~/.cli/", "src/main/resources/");
+                 .withFilename("aliases.config")
+                 .withSearchLocations("~/.cli/", "src/main/resources/");
+
         //@formatter:on
 
         ExampleExecutor.executeCli(builder.build(), args);

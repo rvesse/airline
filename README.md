@@ -14,7 +14,7 @@ Additionally it provides many powerful features including, but not limited to, t
 - [User Defined Aliases](http://rvesse.github.io/airline/guide/practise/aliases.html)
 - Annotation driven [restrictions](http://rvesse.github.io/airline/guide/restrictions/) framework to reduce boilerplate
 - Extensible [Help](http://rvesse.github.io/airline/guide/help) system supporting multiple output formats including generating Man pages and Bash completion scripts
-- [Maven Plugin](http://rvesse.github.io/airline/guide/maven-plugin/) for validation and help generation during builds
+- [Maven Plugin](http://rvesse.github.io/airline/guide/practise/maven-plugin.html) for validation and help generation during builds
 
 ## User Guide
 
@@ -74,15 +74,40 @@ Or:
 
     myapp --global-option group --group-option command --command-option arguments
     
+    
 ## License
 
 Airline is licensed under the Apache Software License Version 2.0, see provided **LICENSE**
 
 See provided **NOTICE** for Copyright Holders
 
+## JDK Compatibility
+
+### Source
+
+Our source code is Java 7 compliant.
+
+### Build
+
+Airline can be built with Java 7, 8, 9 or 10 and our `pom.xml` contains appropriate profile customisations to enable this.  Regardless of the version built the `pom.xml` will target Java 7 byte code.  Our official releases are built with Java 7 to maximise version compatibility.
+
+Airline cannot currently be built with Java 11 due to Maven plugin compatibility issues.
+
+**NB** - If you are trying to build older versions from source the relevant `pom.xml` customisations may not have existed at that time.
+
+### Runtime
+
+Airline is built with Java 7 so can be used with Java 7 or above.
+
+#### JPMS
+
+Airline does make heavy use of reflection and therefore will likely not work on the Module Path without exporting packages that contain your CLI and Command classes as part of your `module-info.java`
+
+From 2.7.0 onwards builds include contributions from our user community to enable use of Airline on the Module Path including relevant `module-info.java` files.  If you encounter a problem with this please report it at https://github.com/rvesse/airline/issues
+
 ## Maven Artifacts
 
-This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `2.5.0`
+This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `2.7.0`
 
 Use the following maven dependency declaration:
 
@@ -90,11 +115,11 @@ Use the following maven dependency declaration:
 <dependency>
     <groupId>com.github.rvesse</groupId>
     <artifactId>airline</artifactId>
-    <version>2.5.0</version>
+    <version>2.7.0</version>
 </dependency>
 ```
 
-Snapshot artifacts of the latest source are also available using the version `2.5.1-SNAPSHOT` from the [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
+Snapshot artifacts of the latest source are also available using the version `2.8.0-SNAPSHOT` from the [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
 
 For 3.x Alpha artifacts use the version `3.0.0-alpha-1-SNAPSHOT` from the same SNAPSHOT repositories
 

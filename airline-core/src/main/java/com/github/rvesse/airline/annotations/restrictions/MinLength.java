@@ -20,12 +20,15 @@ import static java.lang.annotation.ElementType.FIELD;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.github.rvesse.airline.annotations.restrictions.ranges.LengthRange;
+
 /**
  * Annotation that marks that an options value is restricted to a minimum length
  * (which is inclusive)
  * <p>
  * If you simply wish to require that an option have a non-empty value then use
- * {@link NotEmpty} instead
+ * {@link NotEmpty} instead. Alternatively for a range of lengths you can use
+ * {@link LengthRange} or for an exact length you can use {@link ExactLength}.
  * </p>
  * 
  * @author rvesse

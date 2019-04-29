@@ -157,6 +157,20 @@ public @interface Parser {
     String userAliasesPrefix() default "";
 
     /**
+     * Sets a character used in alias definitions to indicate that the built-in
+     * should be called regardless of the setting of
+     * {@link #aliasesOverrideBuiltIns()}
+     * <p>
+     * This is useful since it allows users to redefine built-ins with their
+     * desired default arguments while still allowing the alias to call the
+     * original built-in. This defaults to {@code !}
+     * </p>
+     * 
+     * @return Aliases force built-in prefix character
+     */
+    char aliasesForceBuiltInPrefix() default '!';
+
+    /**
      * Sets whether to use the default user alias locators (default true)
      * 
      * @return True if defaults are used, false otherwise

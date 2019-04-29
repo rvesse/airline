@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+JAR_FILE="target/airline-examples.jar"
+
+if [ ! -f "${JAR_FILE}" ]; then
+  echo "Examples JAR ${JAR_FILE} does not yet exist, please run mvn package to build"
+  exit 1
+fi
+
+java -cp "${JAR_FILE}" com.github.rvesse.airline.examples.sendit.SendIt "$@"

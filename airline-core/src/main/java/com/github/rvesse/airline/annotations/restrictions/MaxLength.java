@@ -20,9 +20,15 @@ import static java.lang.annotation.ElementType.FIELD;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.github.rvesse.airline.annotations.restrictions.ranges.LengthRange;
+
 /**
  * Annotation that marks that an options value is restricted to a maximum length
  * (which is inclusive)
+ * <p>
+ * Alternatively for a range of lengths you can use {@link LengthRange} or for
+ * an exact length you can use {@link ExactLength}.
+ * </p>
  * 
  * @author rvesse
  *

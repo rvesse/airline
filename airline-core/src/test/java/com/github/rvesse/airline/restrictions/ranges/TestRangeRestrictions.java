@@ -29,15 +29,21 @@ import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
 import com.github.rvesse.airline.parser.errors.ParseOptionOutOfRangeException;
+import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
+import com.github.rvesse.airline.restrictions.common.PositiveNegativeRestriction;
 import com.github.rvesse.airline.restrictions.common.RangeRestriction;
 
 public class TestRangeRestrictions {
 
     private void hasRangeRestriction(CommandMetadata metadata) {
+        hasRestriction(metadata, RangeRestriction.class);
+    }
+    
+    private void hasRestriction(CommandMetadata metadata, Class<?> restrictionType) {
         for (OptionMetadata option : metadata.getAllOptions()) {
             for (OptionRestriction restriction : option.getRestrictions()) {
-                if (restriction instanceof RangeRestriction)
+                if (restriction.getClass().isAssignableFrom(restrictionType));
                     return;
             }
         }
@@ -208,6 +214,72 @@ public class TestRangeRestrictions {
     public void integer_range_invalid_02() {
         TestingUtil.singleCommandParser(OptionIntegerRangeInvalidSingleValue.class);
     }
+    
+    @Test
+    public void integer_range_positive_01() throws IOException {
+        SingleCommand<? extends OptionRangeBase> parser = TestingUtil
+                .singleCommandParser(OptionRangePositive.class);
+        hasRestriction(parser.getCommandMetadata(), PositiveNegativeRestriction.class);
+
+        OptionRangeBase cmd = parser.parse("-i", Integer.toString(0));
+        for (int i = 1; i <= 32678d; i *= 2) {
+            cmd = parser.parse("-i", Integer.toString(i));
+            Assert.assertEquals(cmd.i, i);
+        }
+        
+        checkHelp(parser, new String[] { "positive value", "value >= 0" }, new String[] { "negative value" });
+    }
+    
+    @Test
+    public void integer_range_positive_02() throws IOException {
+        SingleCommand<? extends OptionRangeBase> parser = TestingUtil
+                .singleCommandParser(OptionRangePositiveExcludesZero.class);
+        hasRestriction(parser.getCommandMetadata(), PositiveNegativeRestriction.class);
+
+        for (int i = 1; i <= 32678d; i *= 2) {
+            OptionRangeBase cmd = parser.parse("-i", Integer.toString(i));
+            Assert.assertEquals(cmd.i, i);
+        }
+        
+        checkHelp(parser, new String[] { "positive value", "value > 0" }, new String[] { "negative value" });
+    }
+    
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class)
+    public void integer_range_positive_03() throws IOException {
+        SingleCommand<? extends OptionRangeBase> parser = TestingUtil
+                .singleCommandParser(OptionRangePositiveExcludesZero.class);
+        hasRestriction(parser.getCommandMetadata(), PositiveNegativeRestriction.class);
+        parser.parse("-i", Integer.toString(0));
+    }
+    
+    @Test
+    public void integer_range_negative_01() throws IOException {
+        SingleCommand<? extends OptionRangeBase> parser = TestingUtil
+                .singleCommandParser(OptionRangeNegative.class);
+        hasRestriction(parser.getCommandMetadata(), PositiveNegativeRestriction.class);
+
+        for (int i = -1; i >= -32678d; i = -(i * -2)) {
+            OptionRangeBase cmd = parser.parse("-i", Integer.toString(i));
+            Assert.assertEquals(cmd.i, i);
+        }
+        
+        checkHelp(parser, new String[] { "negative value", "value < 0" }, new String[] { "positive value" });
+    }
+    
+    @Test
+    public void integer_range_negative_02() throws IOException {
+        SingleCommand<? extends OptionRangeBase> parser = TestingUtil
+                .singleCommandParser(OptionRangeNegativeIncludesZero.class);
+        hasRestriction(parser.getCommandMetadata(), PositiveNegativeRestriction.class);
+
+        OptionRangeBase cmd = parser.parse("-i", Integer.toString(0));
+        for (int i = -1; i >= -32678d; i = -(i * -2)) {
+            cmd = parser.parse("-i", Integer.toString(i));
+            Assert.assertEquals(cmd.i, i);
+        }
+        
+        checkHelp(parser, new String[] { "negative value", "value <= 0" }, new String[] { "positive value" });
+    }
 
     @Test
     public void double_range_inclusive() throws IOException {
@@ -221,6 +293,35 @@ public class TestRangeRestrictions {
         }
         
         checkHelp(parser, new String[] { "0 <= value <= 1.0" }, new String[0]);
+    }
+    
+    @Test
+    public void double_range_positive() throws IOException {
+        SingleCommand<? extends OptionRangeBase> parser = TestingUtil
+                .singleCommandParser(OptionRangePositive.class);
+        hasRestriction(parser.getCommandMetadata(), PositiveNegativeRestriction.class);
+
+        OptionRangeBase cmd = parser.parse("-d", Double.toString(0d));
+        for (double d = 1d; d <= 32678d; d *= 2d) {
+            cmd = parser.parse("-d", Double.toString(d));
+            Assert.assertEquals(cmd.d, d);
+        }
+        
+        checkHelp(parser, new String[] { "positive value", "value >= 0" }, new String[] { "negative value" });
+    }
+    
+    @Test
+    public void double_range_negative() throws IOException {
+        SingleCommand<? extends OptionRangeBase> parser = TestingUtil
+                .singleCommandParser(OptionRangeNegative.class);
+        hasRestriction(parser.getCommandMetadata(), PositiveNegativeRestriction.class);
+
+        for (double d = -1d; d >= -32678d; d = -(d * -2d)) {
+            OptionRangeBase cmd = parser.parse("-d", Double.toString(d));
+            Assert.assertEquals(cmd.d, d);
+        }
+        
+        checkHelp(parser, new String[] { "negative value", "value < 0" }, new String[] { "positive value" });
     }
 
     @Test(expectedExceptions = ParseOptionOutOfRangeException.class, expectedExceptionsMessageRegExp = ".*(0.0 <= value <= 1.0).*")

@@ -12,6 +12,7 @@
   <properties>
     <license.header.path>${project.parent.basedir}</license.header.path>
     <coveralls.skip>true</coveralls.skip>
+    <moditect.moduleName>com.github.rvesse.airline.io</moditect.moduleName>
   </properties>
 
   <dependencies>

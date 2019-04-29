@@ -57,29 +57,40 @@
                 </ul>
               </li>
               <li>
-              <a href="#">Value Restrictions</a>
+              <a href="#">General Value Restrictions</a>
                 <ul>
                   <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/allowed-raw-values.html">@AllowedRawValues</a></li>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/allowed-enum-values.html">@AllowedEnumValues</a></li>
                   <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/allowed-values.html">@AllowedValues</a></li>
-                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/max-length.html">@MaxLength</a></li>
-                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/min-length.html">@MinLength</a></li>
                   <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/not-blank.html">@NotBlank</a></li>
                   <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/not-empty.html">@NotEmpty</a></li>
-                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/path.html">@Path</a></li>
-                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/pattern.html">@Pattern</a></li>
-                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/port.html">@Port</a></li>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/path.html">@Path, @File and @Directory</a></li>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/port.html">@Port and @PortRange</a></li>
                 </ul>
               </li>
               <li>
-              <a href="#">Value Range Restrictions</a>
+              <a href="#">Numeric Value Restrictions</a>
                 <ul>
                   <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/byte-range.html">@ByteRange</a></li>
                   <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/double-range.html">@DoubleRange</a></li>
                   <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/float-range.html">@FloatRange</a></li>
                   <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/integer-range.html">@IntegerRange</a></li>
-                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/lexical-range.html">@LexicalRange</a></li>
                   <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/long-range.html">@LongRange</a></li>
                   <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/short-range.html">@ShortRange</a></li>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/pos-neg.html">@Positive and @Negative</a></li>
+                </ul>
+              </li>
+              <li>
+              <a href="#">String Value Restrictions</a>
+                <ul>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/starts-with.html">@StartsWith</a></li>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/ends-with.html">@EndsWith</a></li>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/pattern.html">@Pattern</a></li>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/max-length.html">@MaxLength</a></li>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/min-length.html">@MinLength</a></li>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/exact-length.html">@ExactLength</a></li>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/length-range.html">@LengthRange</a></li>
+                  <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/annotations/lexical-range.html">@LexicalRange</a></li>
                 </ul>
               </li>
             </ul>
@@ -124,10 +135,24 @@
   	    <a href="#">Airline In Practise</a>
   	    <ul>
   	      <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/index.html">Overview</a></li>
-  	      <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/oop.html">Inheritance and Composition</a></li>
-  	      <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/types.html">Supported Types</a></li>
-          <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/aliases.html">User Defined Aliases</a></li>
-          <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/exceptions.html">Exceptions and Error Handling</a></li>
+  	      <li>
+  	        <a href="#">Command/CLI Definition</a>
+  	        <ul>
+    	          <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/oop.html">Inheritance and Composition</a></li>
+  	          <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/types.html">Supported Types</a></li>
+  	       </ul>
+  	    </li>
+  	    <li>
+  	      <a href="#">Advanced Configuration</a>
+  	      <ul>
+              <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/aliases.html">User Defined Aliases</a></li>
+              <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/exceptions.html">Exceptions and Error Handling</a></li>
+              <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/resource-locators.html">Resource Locators</a></li>
+            </ul>
+          </li>
+          <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/maven-plugin.html">Maven Plugin</a></li>
+          <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/jdk.html">JDK Compatibility</a></li>
+          <li><a class="sidebar-nav-item" href="{{ site.baseurl }}/guide/practise/workshop.html">Workshop Session</a></li>
         </ul>
       </li>
     </ul>

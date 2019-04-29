@@ -20,6 +20,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.rvesse.airline.builder.ParserBuilder;
+import com.github.rvesse.airline.help.sections.HelpSection;
 import com.github.rvesse.airline.restrictions.GlobalRestriction;
 import com.github.rvesse.airline.utils.AirlineUtils;
 
@@ -36,11 +37,12 @@ public class GlobalMetadata<T> {
     private final List<CommandGroupMetadata> commandGroups;
     private final ParserMetadata<T> parserConfig;
     private final List<GlobalRestriction> restrictions;
+    private final List<HelpSection> baseHelpSections;
 
     public GlobalMetadata(String name, String description, Iterable<OptionMetadata> options,
             CommandMetadata defaultCommand, Iterable<CommandMetadata> defaultGroupCommands,
             Iterable<CommandGroupMetadata> commandGroups, Iterable<GlobalRestriction> restrictions,
-            ParserMetadata<T> parserConfig) {
+            Iterable<HelpSection> baseHelpSections, ParserMetadata<T> parserConfig) {
         if (StringUtils.isBlank(name))
             throw new IllegalArgumentException("Program name cannot be null/empty/whitespace");
         if (parserConfig == null)
@@ -53,37 +55,89 @@ public class GlobalMetadata<T> {
         this.defaultGroupCommands = AirlineUtils.unmodifiableListCopy(defaultGroupCommands);
         this.commandGroups = AirlineUtils.unmodifiableListCopy(commandGroups);
         this.restrictions = AirlineUtils.unmodifiableListCopy(restrictions);
-        this.parserConfig = parserConfig != null ? parserConfig : ParserBuilder.<T>defaultConfiguration();
+        this.baseHelpSections = AirlineUtils.unmodifiableListCopy(baseHelpSections);
+        this.parserConfig = parserConfig != null ? parserConfig : ParserBuilder.<T> defaultConfiguration();
     }
 
+    /**
+     * Gets the name of the CLI
+     * 
+     * @return Name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets the description of the CLI
+     * 
+     * @return Description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Gets the global scoped options
+     * 
+     * @return Options
+     */
     public List<OptionMetadata> getOptions() {
         return options;
     }
 
+    /**
+     * Gets the default command for the CLI
+     * 
+     * @return Default command
+     */
     public CommandMetadata getDefaultCommand() {
         return defaultCommand;
     }
 
+    /**
+     * Gets the default group of commands for the CLI i.e. commands that don't
+     * need a group to be specified
+     * 
+     * @return Default group commands
+     */
     public List<CommandMetadata> getDefaultGroupCommands() {
         return defaultGroupCommands;
     }
 
+    /**
+     * Gets the command groups for the CLI
+     * 
+     * @return Command groups
+     */
     public List<CommandGroupMetadata> getCommandGroups() {
         return commandGroups;
     }
-    
+
+    /**
+     * Gets the global restrictions
+     * 
+     * @return Global restrictions
+     */
     public List<GlobalRestriction> getRestrictions() {
         return restrictions;
     }
 
+    /**
+     * Gets the base help sections used by all commands unless specifically
+     * overridden by individual commands
+     * 
+     * @return Base help sections
+     */
+    public List<HelpSection> getBaseHelpSections() {
+        return baseHelpSections;
+    }
+
+    /**
+     * Gets the parser configuration for the CLI
+     * 
+     * @return Parser configuration
+     */
     public ParserMetadata<T> getParserConfiguration() {
         return parserConfig;
     }

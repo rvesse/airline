@@ -9,8 +9,7 @@ The `@License` annotation may be applied to classes and provides a copyright sta
 
 To use it simply add it like so:
 
-```
-java
+```java
 @License(paragraphs =
          {
            "This command is licensed under the Apache License 2.0"

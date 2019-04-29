@@ -39,6 +39,7 @@ import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.help.cli.CliGlobalUsageGenerator;
 import com.github.rvesse.airline.model.AliasMetadata;
 import com.github.rvesse.airline.parser.errors.ParseAliasCircularReferenceException;
+import com.github.rvesse.airline.parser.errors.ParseCommandUnrecognizedException;
 import com.github.rvesse.airline.parser.errors.ParseOptionConversionException;
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.EnvVarLocator;
@@ -96,7 +97,7 @@ public class TestAliases {
                     field.setAccessible(true);
                     Object obj = field.get(env);
                     Map<String, String> map = (Map<String, String>) obj;
-                    //map.clear();
+                    // map.clear();
                     map.putAll(customEnvironment);
                 }
             }
@@ -365,10 +366,10 @@ public class TestAliases {
     public void user_aliases_env_01() throws Exception {
         Map<String, String> custom = new HashMap<>();
         custom.put("FOO", f.getParentFile().getAbsolutePath());
-        
+
         customEnvironment(custom);
         prepareConfig(f, "foo=Args1 bar");
-        
+
         //@formatter:off
         CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                             .withCommand(Args1.class);
@@ -396,15 +397,15 @@ public class TestAliases {
         Assert.assertEquals(cmd.parameters.size(), 1);
         Assert.assertEquals(cmd.parameters.get(0), "bar");
     }
-    
+
     @Test
     public void user_aliases_env_02() throws Exception {
         Map<String, String> custom = new HashMap<>();
         custom.put("FOO", f.getParentFile().getAbsolutePath());
-        
+
         customEnvironment(custom);
         prepareConfig(f, "foo=Args1 bar");
-        
+
         //@formatter:off
         CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                             .withCommand(Args1.class);
@@ -421,16 +422,16 @@ public class TestAliases {
         List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
         Assert.assertEquals(aliases.size(), 0);
     }
-    
+
     @Test
     public void user_aliases_env_03() throws Exception {
         Map<String, String> custom = new HashMap<>();
         custom.put("FOO", new File(f.getAbsolutePath()).getParentFile().getParentFile().getAbsolutePath());
         custom.put("BAR", f.getParentFile().getName());
-        
+
         customEnvironment(custom);
         prepareConfig(f, "foo=Args1 bar");
-        
+
         //@formatter:off
         CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                             .withCommand(Args1.class);
@@ -460,10 +461,34 @@ public class TestAliases {
     }
     
     @Test
+    public void user_aliases_env_04() throws Exception {
+        Map<String, String> custom = new HashMap<>();
+        custom.put("FOO", new File(f.getAbsolutePath()).getParentFile().getParentFile().getAbsolutePath());
+
+        customEnvironment(custom);
+        prepareConfig(f, "foo=Args1 bar");
+
+        //@formatter:off
+        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                            .withCommand(Args1.class);
+        builder.withParser()
+               .withUserAliases()
+                   .withFilename(f.getName())
+                   .withSearchLocation("${FOO}/${UNDEF}/")
+                   .withLocator(new EnvVarLocator());
+        Cli<Args1> cli = builder.build();
+        //@formatter:on
+
+        // Check definition, should be missing as not all env vars were resolvable
+        List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
+        Assert.assertEquals(aliases.size(), 0);
+    }
+
+    @Test
     public void user_aliases_sysprop_01() throws Exception {
         System.getProperties().put("FOO", f.getParentFile().getAbsolutePath());
         prepareConfig(f, "foo=Args1 bar");
-        
+
         //@formatter:off
         CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                             .withCommand(Args1.class);
@@ -491,12 +516,12 @@ public class TestAliases {
         Assert.assertEquals(cmd.parameters.size(), 1);
         Assert.assertEquals(cmd.parameters.get(0), "bar");
     }
-    
+
     @Test
     public void user_aliases_sysprop_02() throws Exception {
         System.getProperties().put("FOO", f.getParentFile().getAbsolutePath());
         prepareConfig(f, "foo=Args1 bar");
-        
+
         //@formatter:off
         CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                             .withCommand(Args1.class);
@@ -513,13 +538,14 @@ public class TestAliases {
         List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
         Assert.assertEquals(aliases.size(), 0);
     }
-    
+
     @Test
     public void user_aliases_sysprop_03() throws Exception {
-        System.getProperties().put("FOO", new File(f.getAbsolutePath()).getParentFile().getParentFile().getAbsolutePath());
+        System.getProperties().put("FOO",
+                new File(f.getAbsolutePath()).getParentFile().getParentFile().getAbsolutePath());
         System.getProperties().put("BAR", f.getParentFile().getName());
         prepareConfig(f, "foo=Args1 bar");
-        
+
         //@formatter:off
         CliBuilder<Args1> builder = CommandLineInterface.<Args1>builder("test")
                             .withCommand(Args1.class);
@@ -547,7 +573,7 @@ public class TestAliases {
         Assert.assertEquals(cmd.parameters.size(), 1);
         Assert.assertEquals(cmd.parameters.get(0), "bar");
     }
-    
+
     @Test
     public void user_aliases_classpath_01() throws Exception {
         //@formatter:off
@@ -577,7 +603,7 @@ public class TestAliases {
         Assert.assertEquals(cmd.parameters.size(), 1);
         Assert.assertEquals(cmd.parameters.get(0), "bar");
     }
-    
+
     @Test
     public void user_aliases_classpath_02() throws Exception {
         //@formatter:off
@@ -1010,5 +1036,209 @@ public class TestAliases {
 
         // Check parsing
         cli.parse("a");
+    }
+
+    @Test
+    public void user_aliases_force_builtin_01() throws IOException {
+        // Override a built-in but break the circular reference with the !
+        // specifier
+        prepareConfig(f, "Args1=a", "a=b", "b=!Args1 -debug");
+
+        //@formatter:off
+        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                                       .withCommand(Args1.class);
+        builder.withParser()
+               .withAliasesOverridingBuiltIns()
+               .withAliasesChaining()
+               .withUserAliases()
+                   .withProgramName("test")
+                   .withSearchLocation("target/");
+        Cli<Args1> cli = builder.build();
+        //@formatter:on
+
+        // Check parsing
+        Args1 args = cli.parse("Args1");
+        Assert.assertTrue(args.debug);
+    }
+
+    @Test(expectedExceptions = ParseCommandUnrecognizedException.class)
+    public void user_aliases_force_builtin_02() throws IOException {
+        // Override a built-in but break the circular reference with the force
+        // specifier
+        // however specifier is configured so still fails with a command not
+        // found instead
+        prepareConfig(f, "Args1=a", "a=b", "b=!Args1 -debug");
+
+        //@formatter:off
+        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                                       .withCommand(Args1.class);
+        builder.withParser()
+               .withAliasesOverridingBuiltIns()
+               .withAliasesChaining()
+               .withAliasForceBuiltInPrefix('@')
+               .withUserAliases()
+                   .withProgramName("test")
+                   .withSearchLocation("target/");
+        Cli<Args1> cli = builder.build();
+        //@formatter:on
+
+        // Check parsing
+        Args1 args = cli.parse("Args1");
+        Assert.assertTrue(args.debug);
+    }
+
+    @Test
+    public void user_aliases_force_builtin_03() throws IOException {
+        // Override a built-in but break the circular reference with the force
+        // specifier
+        // however specifier is configured so still fails with a command not
+        // found instead
+        prepareConfig(f, "Args1=a", "a=b", "b=@Args1 -debug");
+
+        //@formatter:off
+        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                                       .withCommand(Args1.class);
+        builder.withParser()
+               .withAliasesOverridingBuiltIns()
+               .withAliasesChaining()
+               .withAliasForceBuiltInPrefix('@')
+               .withUserAliases()
+                   .withProgramName("test")
+                   .withSearchLocation("target/");
+        Cli<Args1> cli = builder.build();
+        //@formatter:on
+
+        // Check parsing
+        Args1 args = cli.parse("Args1");
+        Assert.assertTrue(args.debug);
+    }
+
+    @Test
+    public void user_aliases_force_builtin_04() throws IOException {
+        prepareConfig(f, "Args1=!Args1 -debug");
+
+        //@formatter:off
+        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                                       .withCommand(Args1.class);
+        builder.withParser()
+               .withAliasesOverridingBuiltIns()
+               .withAliasesChaining()
+               .withUserAliases()
+                   .withProgramName("test")
+                   .withSearchLocation("target/");
+        Cli<Args1> cli = builder.build();
+        //@formatter:on
+
+        // Check parsing
+        Args1 args = cli.parse("Args1");
+        Assert.assertTrue(args.debug);
+
+        // Check forcing built-in
+        args = cli.parse("!Args1");
+        Assert.assertFalse(args.debug);
+    }
+
+    @Test(expectedExceptions = ParseAliasCircularReferenceException.class)
+    public void user_aliases_force_builtin_05() throws IOException {
+        prepareConfig(f, "logs=logs --format Json", "xml=logs --format Xml", "json=logs --format Json");
+
+        //@formatter:off
+        CliBuilder<Logs> builder = Cli.<Logs>builder("test")
+                                       .withCommand(Logs.class);
+        builder.withParser()
+               .withAliasesOverridingBuiltIns()
+               .withAliasesChaining()
+               .withUserAliases()
+                   .withProgramName("test")
+                   .withSearchLocation("target/");
+        Cli<Logs> cli = builder.build();
+        //@formatter:on
+
+        cli.parse("logs");
+    }
+
+    @Test
+    public void user_aliases_force_builtin_06() throws IOException {
+        prepareConfig(f, "logs=!logs --format Json", "xml=!logs --format Xml", "json=!logs --format Json");
+
+        //@formatter:off
+        CliBuilder<Logs> builder = Cli.<Logs>builder("test")
+                                       .withCommand(Logs.class);
+        builder.withParser()
+               .withAliasesOverridingBuiltIns()
+               .withAliasesChaining()
+               .withUserAliases()
+                   .withProgramName("test")
+                   .withSearchLocation("target/");
+        Cli<Logs> cli = builder.build();
+        //@formatter:on
+
+        Logs logs = cli.parse("logs");
+        Assert.assertEquals(logs.format, Logs.Format.Json);
+
+        logs = cli.parse("json");
+        Assert.assertEquals(logs.format, Logs.Format.Json);
+
+        logs = cli.parse("xml");
+        Assert.assertEquals(logs.format, Logs.Format.Xml);
+
+        logs = cli.parse("logs", "--format", "Text");
+        Assert.assertEquals(logs.format, Logs.Format.Text);
+
+        logs = cli.parse("!logs");
+        Assert.assertEquals(logs.format, Logs.Format.Text);
+    }
+
+    @Test(expectedExceptions = ParseAliasCircularReferenceException.class)
+    public void user_aliases_force_builtin_08() throws IOException {
+        prepareConfig(f, "logs=logs --format Json", "xml=logs --format Xml", "json=logs --format Json");
+
+        Cli<Logs> cli = new Cli<>(LogsWithParser.class);
+
+        cli.parse("logs");
+    }
+
+    @Test
+    public void user_aliases_force_builtin_09() throws IOException {
+        // Using alternative force prefix
+        prepareConfig(f, "logs=@logs --format Json", "xml=@logs --format Xml", "json=@logs --format Json");
+
+        Cli<Logs> cli = new Cli<>(LogsWithParser.class);
+
+        Logs logs = cli.parse("logs");
+        Assert.assertEquals(logs.format, Logs.Format.Json);
+
+        logs = cli.parse("json");
+        Assert.assertEquals(logs.format, Logs.Format.Json);
+
+        logs = cli.parse("xml");
+        Assert.assertEquals(logs.format, Logs.Format.Xml);
+
+        logs = cli.parse("logs", "--format", "Text");
+        Assert.assertEquals(logs.format, Logs.Format.Text);
+
+        logs = cli.parse("@logs");
+        Assert.assertEquals(logs.format, Logs.Format.Text);
+    }
+
+    @Test
+    public void user_aliases_force_builtin_10() throws IOException {
+        // Override a built-in but when alias overriding not enabled will result
+        // in us just getting the built-in implementation
+        prepareConfig(f, "Args1=!Args1 -debug");
+
+        //@formatter:off
+        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                                       .withCommand(Args1.class);
+        builder.withParser()
+               .withUserAliases()
+                   .withProgramName("test")
+                   .withSearchLocation("target/");
+        Cli<Args1> cli = builder.build();
+        //@formatter:on
+
+        // Check parsing
+        Args1 args = cli.parse("Args1");
+        Assert.assertFalse(args.debug);
     }
 }

@@ -4,7 +4,10 @@ install: true
 jdk: 
   - openjdk7
   - openjdk8
+  - openjdk9
+  - openjdk10
+#  - openjdk11 # Not currently supported by Jacoco plugin
 env:
   - MAVEN_OPTS="-Dhttps.protocol=TLSv1.2"
-script: mvn install -Prelease -Dgpg.skip=true
+script: mvn install -Prelease -Dgpg.skip=true -Djdk.enforced=1.7
 after_success: mvn package -Pcoveralls

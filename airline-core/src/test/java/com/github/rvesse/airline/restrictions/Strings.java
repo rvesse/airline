@@ -15,16 +15,23 @@
  */
 package com.github.rvesse.airline.restrictions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import com.github.rvesse.airline.HelpOption;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
+import com.github.rvesse.airline.annotations.restrictions.EndsWith;
+import com.github.rvesse.airline.annotations.restrictions.ExactLength;
 import com.github.rvesse.airline.annotations.restrictions.MaxLength;
 import com.github.rvesse.airline.annotations.restrictions.MinLength;
 import com.github.rvesse.airline.annotations.restrictions.NotBlank;
 import com.github.rvesse.airline.annotations.restrictions.NotEmpty;
 import com.github.rvesse.airline.annotations.restrictions.Pattern;
+import com.github.rvesse.airline.annotations.restrictions.StartsWith;
+import com.github.rvesse.airline.annotations.restrictions.ranges.LengthRange;
 
 @Command(name = "strings")
 public class Strings {
@@ -52,6 +59,34 @@ public class Strings {
     @Option(name = "--other")
     @Pattern(pattern = "foo|bar|foobar", flags = java.util.regex.Pattern.CASE_INSENSITIVE)
     public String other;
+    
+    @Option(name = "--exact")
+    @ExactLength(length = 5)
+    public String exact;
+    
+    @Option(name = "--range")
+    @LengthRange(min = 4, max = 6)
+    public String range;
+    
+    @Option(name = "--range-exact")
+    @LengthRange(min = 4, max = 4)
+    public String rangeExact;
+    
+    @Option(name = "--images")
+    @EndsWith(suffixes = { ".jpg", ".png", ".gif" })
+    public List<String> images = new ArrayList<>();
+    
+    @Option(name = "--images-ci")
+    @EndsWith(ignoreCase = true, suffixes = { ".jpg", ".png", ".gif" })
+    public List<String> imagesCaseInsensitive = new ArrayList<>();
+    
+    @Option(name = "--urls")
+    @StartsWith(prefixes = { "http", "https", "ftp" })
+    public List<String> urls = new ArrayList<>();
+    
+    @Option(name = "--urls-ci")
+    @StartsWith(ignoreCase = true, prefixes = { "http", "https", "ftp" })
+    public List<String> urlsCaseInsensitive = new ArrayList<>();
     
     @Inject
     public HelpOption<Strings> helpOption = new HelpOption<>();

@@ -62,7 +62,12 @@ public abstract class AbstractPlaceholderLocator extends FileLocator {
                     } else {
                         // Valid placeholder
                         String placeholder = new String(cs, i + 2, j - i - 2);
-                        output.append(resolvePlaceholder(placeholder));
+                        String resolved = resolvePlaceholder(placeholder);
+                        if (resolved == null) {
+                            // If a placeholder fails to resolve then the whole location should fail to resolve
+                            return searchLocation;
+                        }
+                        output.append(resolved);
                         i = j;
                         continue;
                     }

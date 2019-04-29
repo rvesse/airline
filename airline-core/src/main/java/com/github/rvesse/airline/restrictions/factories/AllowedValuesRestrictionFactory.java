@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.github.rvesse.airline.annotations.restrictions.AllowedEnumValues;
 import com.github.rvesse.airline.annotations.restrictions.AllowedRawValues;
 import com.github.rvesse.airline.annotations.restrictions.AllowedValues;
 import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
+import com.github.rvesse.airline.restrictions.common.AllowedEnumValuesRestriction;
 import com.github.rvesse.airline.restrictions.common.AllowedRawValuesRestriction;
 import com.github.rvesse.airline.restrictions.common.AllowedValuesRestriction;
 
@@ -42,6 +44,9 @@ public class AllowedValuesRestrictionFactory implements OptionRestrictionFactory
         } else if (annotation instanceof AllowedValues) {
             AllowedValues allowedValues = (AllowedValues) annotation;
             return new AllowedValuesRestriction(allowedValues.allowedValues());
+        } else if (annotation instanceof AllowedEnumValues) {
+            AllowedEnumValues allowedEnumValues = (AllowedEnumValues) annotation;
+            return new AllowedEnumValuesRestriction(allowedEnumValues.value());
         }
 
         return null;
@@ -61,6 +66,7 @@ public class AllowedValuesRestrictionFactory implements OptionRestrictionFactory
         List<Class<? extends Annotation>> supported = new ArrayList<>();
         supported.add(AllowedRawValues.class);
         supported.add(AllowedValues.class);
+        supported.add(AllowedEnumValues.class);
         return supported;
     }
 

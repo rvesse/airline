@@ -18,6 +18,8 @@ package com.github.rvesse.airline.restrictions;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.annotations.restrictions.PathKind;
+import com.github.rvesse.airline.annotations.restrictions.Directory;
+import com.github.rvesse.airline.annotations.restrictions.File;
 import com.github.rvesse.airline.annotations.restrictions.Path;
 
 @Command(name = "paths")
@@ -28,11 +30,11 @@ public class Paths {
     public String pathMustExist;
     
     @Option(name = "--file", arity = 1)
-    @Path(mustExist = true, kind = PathKind.FILE)
+    @File(mustExist = true)
     public String fileMustExit;
     
     @Option(name = "--directory", arity = 1)
-    @Path(mustExist = true, kind = PathKind.DIRECTORY)
+    @Directory(mustExist = true)
     public String dirMustExist;
     
     @Option(name = "--readable", arity = 1)

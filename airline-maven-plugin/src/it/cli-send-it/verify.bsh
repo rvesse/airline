@@ -1,0 +1,20 @@
+import java.io.*;
+import org.apache.maven.it.*;
+
+Verifier verifier = new Verifier( basedir.getAbsolutePath() );
+
+// Verify output files
+String outputFile = verifier.getBasedir() + "/target/help/send-it.bash";
+verifier.assertFilePresent(outputFile);
+verifier.assertFileMatches(outputFile, "(?s).*_complete_sendit_command_price.*");
+verifier.assertFileMatches(outputFile, "(?s).*_complete_sendit_command_checkaddress.*");
+outputFile = verifier.getBasedir() + "/target/help/send-it.1";
+verifier.assertFilePresent(outputFile);
+outputFile = verifier.getBasedir() + "/target/help/send-it-price.1";
+verifier.assertFilePresent(outputFile);
+
+// Verify log file
+String logFile = verifier.getBasedir() + "/build.log";
+verifier.assertFilePresent(logFile);
+verifier.assertFileMatches(logFile, "(?s).*Generated CLI help for class com.github.rvesse.airline.examples.sendit.SendItCli in format BASH to file.*");
+verifier.assertFileMatches(logFile, "(?s).*Generated CLI help for class com.github.rvesse.airline.examples.sendit.SendItCli in format MAN to file.*");

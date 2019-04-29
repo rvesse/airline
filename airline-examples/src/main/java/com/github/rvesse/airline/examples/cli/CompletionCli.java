@@ -25,6 +25,7 @@ import com.github.rvesse.airline.examples.inheritance.Child;
 import com.github.rvesse.airline.examples.inheritance.GoodGrandchild;
 import com.github.rvesse.airline.examples.inheritance.Parent;
 import com.github.rvesse.airline.examples.simple.Simple;
+import com.github.rvesse.airline.examples.userguide.help.bash.FileInfo;
 
 /**
  * An example of creating a CLI using command groups
@@ -55,6 +56,7 @@ public class CompletionCli {
         builder.withCommand(Help.class)
                // Add a command that uses the Help APIs to generate a completion script for our CLI
                .withCommand(BashCompletion.class)
+               .withCommand(FileInfo.class)
                // Make help the default command
                .withDefaultCommand(Help.class);
         //@formatter:on

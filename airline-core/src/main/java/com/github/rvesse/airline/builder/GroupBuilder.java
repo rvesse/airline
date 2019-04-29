@@ -153,8 +153,8 @@ public class GroupBuilder<C>
 
     @Override
     public CommandGroupMetadata build() {
-        CommandMetadata groupDefault = MetadataLoader.loadCommand(defaultCommand);
-        List<CommandMetadata> groupCommands = MetadataLoader.loadCommands(commands);
+        CommandMetadata groupDefault = MetadataLoader.loadCommand(defaultCommand, this.parent().baseHelpSections);
+        List<CommandMetadata> groupCommands = MetadataLoader.loadCommands(commands, this.parent().baseHelpSections);
         List<CommandGroupMetadata> subGroups = new ArrayList<CommandGroupMetadata>();
         for (GroupBuilder<C> builder : this.subGroups.values()) {
             subGroups.add(builder.build());

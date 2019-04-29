@@ -17,9 +17,11 @@ package com.github.rvesse.airline.builder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
 
@@ -27,6 +29,7 @@ import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.ListUtils;
 
 import com.github.rvesse.airline.CommandLineInterface;
+import com.github.rvesse.airline.help.sections.HelpSection;
 import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
@@ -50,6 +53,7 @@ public class CliBuilder<C> extends AbstractBuilder<CommandLineInterface<C>> {
     protected final Map<String, GroupBuilder<C>> groups = new HashMap<>();
     protected final List<GlobalRestriction> restrictions = new ArrayList<>();
     protected final ParserBuilder<C> parserBuilder = new ParserBuilder<C>();
+    protected final Map<String, HelpSection> baseHelpSections = new HashMap<>();
 
     public CliBuilder(String name) {
         checkNotBlank(name, "Program name");
@@ -75,8 +79,8 @@ public class CliBuilder<C> extends AbstractBuilder<CommandLineInterface<C>> {
     @SuppressWarnings("unchecked")
     public CliBuilder<C> withCommands(Class<? extends C> command, Class<? extends C>... moreCommands) {
         this.defaultCommandGroupCommands.add(command);
-        this.defaultCommandGroupCommands.addAll(ListUtils.unmodifiableList(IteratorUtils.toList(IteratorUtils
-                .arrayIterator(moreCommands))));
+        this.defaultCommandGroupCommands
+                .addAll(ListUtils.unmodifiableList(IteratorUtils.toList(IteratorUtils.arrayIterator(moreCommands))));
         return this;
     }
 
@@ -140,16 +144,24 @@ public class CliBuilder<C> extends AbstractBuilder<CommandLineInterface<C>> {
         return parserBuilder;
     }
 
+    public CliBuilder<C> withHelpSection(HelpSection section) {
+        if (section == null)
+            return this;
+        baseHelpSections.put(section.getTitle().toLowerCase(Locale.ENGLISH), section);
+        return this;
+    }
+
     @Override
     public CommandLineInterface<C> build() {
         CommandMetadata defaultCommandMetadata = null;
         List<CommandMetadata> allCommands = new ArrayList<CommandMetadata>();
         if (defaultCommand != null) {
-            defaultCommandMetadata = MetadataLoader.loadCommand(defaultCommand);
+            defaultCommandMetadata = MetadataLoader.loadCommand(defaultCommand, baseHelpSections);
         }
 
-        List<CommandMetadata> defaultCommandGroup = defaultCommandGroupCommands != null ? MetadataLoader
-                .loadCommands(defaultCommandGroupCommands) : new ArrayList<CommandMetadata>();
+        List<CommandMetadata> defaultCommandGroup = defaultCommandGroupCommands != null
+                ? MetadataLoader.loadCommands(defaultCommandGroupCommands, baseHelpSections)
+                : new ArrayList<CommandMetadata>();
 
         allCommands.addAll(defaultCommandGroup);
         if (defaultCommandMetadata != null)
@@ -189,7 +201,8 @@ public class CliBuilder<C> extends AbstractBuilder<CommandLineInterface<C>> {
         // annotations
         // rather than change the entire way metadata is loaded, I figured just
         // post-processing was an easier, yet uglier, way to go
-        MetadataLoader.loadCommandsIntoGroupsByAnnotation(allCommands, commandGroups, defaultCommandGroup);
+        MetadataLoader.loadCommandsIntoGroupsByAnnotation(allCommands, commandGroups, defaultCommandGroup,
+                baseHelpSections);
 
         // Build restrictions
         // Use defaults if none specified
@@ -202,7 +215,8 @@ public class CliBuilder<C> extends AbstractBuilder<CommandLineInterface<C>> {
         // Build metadata objects
         GlobalMetadata<C> metadata = MetadataLoader.<C> loadGlobal(name, description, defaultCommandMetadata,
                 ListUtils.unmodifiableList(defaultCommandGroup), ListUtils.unmodifiableList(commandGroups),
-                ListUtils.unmodifiableList(restrictions), this.parserBuilder.build());
+                ListUtils.unmodifiableList(restrictions), Collections.unmodifiableCollection(baseHelpSections.values()),
+                this.parserBuilder.build());
 
         return new CommandLineInterface<C>(metadata);
     }
