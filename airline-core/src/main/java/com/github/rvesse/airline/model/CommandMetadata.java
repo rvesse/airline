@@ -60,7 +60,7 @@ public class CommandMetadata {
             throw new IllegalArgumentException("Command name may not be null/empty");
         if (StringUtils.containsWhitespace(name))
             throw new IllegalArgumentException("Command name may not contain whitespace");
-        
+
         this.name = name;
         this.description = description;
         this.hidden = hidden;
@@ -135,6 +135,12 @@ public class CommandMetadata {
         return metadataInjections;
     }
 
+    /**
+     * Gets the command type i.e. the class that will be instantiated to
+     * represent and execute this command
+     * 
+     * @return Command type
+     */
     public Class<?> getType() {
         return type;
     }
@@ -146,6 +152,7 @@ public class CommandMetadata {
     public List<Group> getGroups() {
         return groups;
     }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -162,15 +169,17 @@ public class CommandMetadata {
         sb.append('}');
         return sb.toString();
     }
-    
+
     @Override
     public boolean equals(Object other) {
-        if (this == other) return true;
-        
-        if (!(other instanceof CommandMetadata)) return false;
-        
+        if (this == other)
+            return true;
+
+        if (!(other instanceof CommandMetadata))
+            return false;
+
         CommandMetadata cmd = (CommandMetadata) other;
-        
+
         // TODO This should ideally be more robust
         return StringUtils.equals(this.name, cmd.name) && this.type.equals(cmd.type);
     }

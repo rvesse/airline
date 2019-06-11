@@ -24,6 +24,7 @@ import com.github.rvesse.airline.builder.ParserBuilder;
 import com.github.rvesse.airline.model.ParserMetadata;
 import com.github.rvesse.airline.parser.ParseResult;
 import com.github.rvesse.airline.parser.errors.ParseException;
+import com.github.rvesse.airline.restrictions.Some;
 import com.github.rvesse.airline.restrictions.Strings;
 
 public class TestErrorHandlers {
@@ -47,6 +48,19 @@ public class TestErrorHandlers {
         Assert.assertFalse(result.wasSuccessful());
         Assert.assertEquals(result.getErrors().size(), 1);
         Assert.assertNotNull(result.getCommand());
+    }
+    
+    @Test
+    public void errorHandlerCollectAllDuplicates() {
+        ParseResult<Some> result = SingleCommand
+                .<Some> singleCommand(Some.class, this.<Some> prepareParser(new CollectAll()))
+                .parseWithResult();
+        Assert.assertFalse(result.wasSuccessful());
+        Assert.assertEquals(result.getErrors().size(), 1);
+        Assert.assertNotNull(result.getCommand());
+        
+        Throwable e = result.getErrors().iterator().next();
+        Assert.assertEquals(e.getSuppressed().length, 2);
     }
 
     @Test
