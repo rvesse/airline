@@ -15,8 +15,6 @@
  */
 package com.github.rvesse.airline.parser.options;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.collections4.iterators.PeekingIterator;
 import org.apache.commons.lang3.StringUtils;
@@ -28,8 +26,13 @@ import com.github.rvesse.airline.parser.errors.ParseOptionMissingValueException;
 import com.github.rvesse.airline.parser.errors.ParseOptionUnexpectedException;
 
 /**
- * An options parser that requires the values to be a
+ * An options parser that expects the name and value(s) to be white space
+ * separated e.g. {@code --name value} but which allows for the values to be a
  * non-whitespace separated list
+ * <p>
+ * This is less strict than {@link ListValueOptionParser} which requires that
+ * values be non-whitespace separated
+ * </p>
  * <p>
  * So for example {@code --name foo,bar} would be treated as the values
  * {@code foo} and {@code bar} passed to the {@code --name} option. This parser
@@ -52,27 +55,14 @@ import com.github.rvesse.airline.parser.errors.ParseOptionUnexpectedException;
  * </p>
  *
  */
-public class ListValueOptionParser<T> extends AbstractOptionParser<T> {
+public class MaybeListValueOptionParser<T> extends ListValueOptionParser<T> {
 
-    private static final char DEFAULT_SEPARATOR = ',';
-    private final char separator;
-
-    public ListValueOptionParser() {
-        this(DEFAULT_SEPARATOR);
+    public MaybeListValueOptionParser() {
+        super();
     }
 
-    public ListValueOptionParser(char separator) {
-        if (Character.isWhitespace(separator))
-            throw new IllegalArgumentException("List separator character cannot be a whitespace character");
-        this.separator = separator;
-    }
-
-    protected final List<String> getValues(String list) {
-        List<String> values = new ArrayList<>();
-        for (String value : StringUtils.split(list, this.separator)) {
-            values.add(value);
-        }
-        return values;
+    public MaybeListValueOptionParser(char separator) {
+        super(separator);
     }
 
     @Override
@@ -120,10 +110,38 @@ public class ListValueOptionParser<T> extends AbstractOptionParser<T> {
             }
 
             // Parse value as a list
+            List<String> listValues = getValues(list);
+            
+            // Parse additional values until we hit another option, the end
+            // of values or the correct number of values
+            while (tokens.hasNext()) {
+                String nextValue = tokens.peek();
+                
+                // Check we haven't reached an option
+                OptionMetadata nextOption = findOption(state, allowedOptions, nextValue);
+                if (nextOption == null) {
+                    // Check if we are looking at a non-separated short form
+                    // option
+                    if (hasShortNamePrefix(nextValue) && nextValue.length() > 2) {
+                        String shortName = nextValue.substring(0, 2);
+                        nextOption = findOption(state, allowedOptions, shortName);
+                        noSep = nextOption != null;
+                    }
+                }
+
+                // Reached the next recognised option
+                if (nextOption != null) {
+                    break;
+                }
+
+                // A value we can consume, may itself be in list form
+                nextValue = tokens.next();
+                listValues.addAll(getValues(nextValue));
+            }
+
             // Check the size of the list
             // Must receive either the exact arity of the option OR an exact
             // multiple of the arity of the option
-            List<String> listValues = getValues(list);
             if (listValues.size() < option.getArity()) {
                 // Too few arguments
                 state.getParserConfiguration().getErrorHandler().handleError(new ParseOptionMissingValueException(
