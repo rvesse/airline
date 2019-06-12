@@ -22,7 +22,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
+import com.github.rvesse.airline.annotations.DefaultOption;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsUnexpectedException;
@@ -42,13 +44,28 @@ public class TestOptionParsing {
     public static class OptionParsing {
 
         @Option(name = { "-a", "--alpha" })
-        private boolean alpha;
+        boolean alpha;
 
         @Option(name = { "-b", "--beta" }, arity = 1)
-        private String beta;
+        String beta;
 
-        @Option(name = { "-c", "--charlie" }, arity = 2)
-        private List<String> charlie = new ArrayList<String>();
+        @Option(name = { "-c", "--charlie" }, arity = 2) 
+        List<String> charlie = new ArrayList<String>();
+    }
+    
+    @Command(name = "OptionParsing1")
+    public static class OptionAndArgumentParsing extends OptionParsing {
+        
+        @Arguments
+        List<String> args;
+    }
+    
+    @Command(name = "OptionParsing1")
+    public static class OptionAndDefaultParsing extends OptionParsing {
+        
+        @Option(name = { "-d", "--delta" }, arity = 1)
+        @DefaultOption
+        String delta;
     }
 
     private <T> T testParsing(Cli<T> parser, String... args) {
@@ -414,6 +431,12 @@ public class TestOptionParsing {
         testParsing(parser, "OptionParsing1", "-c", "one", "two", "three", "-afoo");
     }
     
+    @Test(expectedExceptions = ParseOptionUnexpectedException.class, expectedExceptionsMessageRegExp = "Too many.*")
+    public void option_parsing_maybe_list_value_bad_09() {
+        Cli<OptionAndArgumentParsing> parser = createMaybeListValueParser(OptionAndArgumentParsing.class, ',');
+        testParsing(parser, "OptionParsing1", "-c", "one", "two,three", "--", "foo");
+    }
+    
     @Test
     public void option_parsing_maybe_list_value_01() {
         Cli<OptionParsing> parser = createMaybeListValueParser(OptionParsing.class, ',');
@@ -504,6 +527,80 @@ public class TestOptionParsing {
         Assert.assertEquals(cmd.charlie.get(1), "two");
         Assert.assertEquals(cmd.charlie.get(2), "three");
         Assert.assertEquals(cmd.charlie.get(3), "four");
+    }
+    
+    @Test
+    public void option_parsing_maybe_list_value_10() {
+        Cli<OptionAndArgumentParsing> parser = createMaybeListValueParser(OptionAndArgumentParsing.class, ',');
+        OptionAndArgumentParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one,two", "three", "four");
+
+        Assert.assertEquals(cmd.charlie.size(), 2);
+        Assert.assertEquals(cmd.charlie.get(0), "one");
+        Assert.assertEquals(cmd.charlie.get(1), "two");
+        Assert.assertEquals(cmd.args.size(), 2);
+        Assert.assertEquals(cmd.args.get(0), "three");
+        Assert.assertEquals(cmd.args.get(1), "four");
+    }
+    
+    @Test
+    public void option_parsing_maybe_list_value_11() {
+        Cli<OptionAndArgumentParsing> parser = createMaybeListValueParser(OptionAndArgumentParsing.class, ',');
+        OptionAndArgumentParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two,three", "four");
+
+        Assert.assertEquals(cmd.charlie.size(), 4);
+        Assert.assertEquals(cmd.charlie.get(0), "one");
+        Assert.assertEquals(cmd.charlie.get(1), "two");
+        Assert.assertEquals(cmd.charlie.get(2), "three");
+        Assert.assertEquals(cmd.charlie.get(3), "four");
+    }
+    
+    @Test
+    public void option_parsing_maybe_list_value_12() {
+        Cli<OptionAndArgumentParsing> parser = createMaybeListValueParser(OptionAndArgumentParsing.class, ',');
+        OptionAndArgumentParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two", "three", "four");
+
+        Assert.assertEquals(cmd.charlie.size(), 2);
+        Assert.assertEquals(cmd.charlie.get(0), "one");
+        Assert.assertEquals(cmd.charlie.get(1), "two");
+        Assert.assertEquals(cmd.args.size(), 2);
+        Assert.assertEquals(cmd.args.get(0), "three");
+        Assert.assertEquals(cmd.args.get(1), "four");
+    }
+    
+    @Test
+    public void option_parsing_maybe_list_value_13() {
+        Cli<OptionAndArgumentParsing> parser = createMaybeListValueParser(OptionAndArgumentParsing.class, ',');
+        OptionAndArgumentParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two", "--", "three", "four");
+
+        Assert.assertEquals(cmd.charlie.size(), 2);
+        Assert.assertEquals(cmd.charlie.get(0), "one");
+        Assert.assertEquals(cmd.charlie.get(1), "two");
+        Assert.assertEquals(cmd.args.size(), 2);
+        Assert.assertEquals(cmd.args.get(0), "three");
+        Assert.assertEquals(cmd.args.get(1), "four");
+    }
+    
+    @Test
+    public void option_parsing_maybe_list_value_14() {
+        Cli<OptionAndDefaultParsing> parser = createMaybeListValueParser(OptionAndDefaultParsing.class, ',');
+        OptionAndDefaultParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two", "three", "four");
+
+        Assert.assertEquals(cmd.charlie.size(), 2);
+        Assert.assertEquals(cmd.charlie.get(0), "one");
+        Assert.assertEquals(cmd.charlie.get(1), "two");
+        Assert.assertEquals(cmd.delta, "four");
+    }
+    
+    @Test
+    public void option_parsing_maybe_list_value_15() {
+        Cli<OptionAndDefaultParsing> parser = createMaybeListValueParser(OptionAndDefaultParsing.class, ',');
+        OptionAndDefaultParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two", "-b", "three", "four");
+
+        Assert.assertEquals(cmd.charlie.size(), 2);
+        Assert.assertEquals(cmd.charlie.get(0), "one");
+        Assert.assertEquals(cmd.charlie.get(1), "two");
+        Assert.assertEquals(cmd.beta, "three");
+        Assert.assertEquals(cmd.delta, "four");
     }
     
     @Test

@@ -114,9 +114,19 @@ public class MaybeListValueOptionParser<T> extends ListValueOptionParser<T> {
             
             // Parse additional values until we hit another option, the end
             // of values or the correct number of values
+            // Whether we can search greedily depends on whether or not there are arguments/default option in play
+            boolean greedySearch = state.getCommand().getArguments() == null && state.getCommand().getDefaultOption() == null;
             while (tokens.hasNext()) {
-                String nextValue = tokens.peek();
+                // If not a greedy search abort as soon as we hit the right number of values
+                if (!greedySearch) {
+                    if (listValues.size() % option.getArity() == 0) {
+                        break;
+                    }
+                        
+                }
                 
+                String nextValue = tokens.peek();
+             
                 // Check we haven't reached an option
                 OptionMetadata nextOption = findOption(state, allowedOptions, nextValue);
                 if (nextOption == null) {
@@ -133,8 +143,13 @@ public class MaybeListValueOptionParser<T> extends ListValueOptionParser<T> {
                 if (nextOption != null) {
                     break;
                 }
+                
+                // Might hit an arguments separator
+                if (StringUtils.equals(nextValue, state.getParserConfiguration().getArgumentsSeparator())) {
+                    break;
+                }
 
-                // A value we can consume, may itself be in list form
+                // Otherwise a value we can consume, may itself be in list form
                 nextValue = tokens.next();
                 listValues.addAll(getValues(nextValue));
             }
