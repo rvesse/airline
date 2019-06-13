@@ -83,6 +83,7 @@
     <module>airline-examples</module>
     <module>airline-io</module>
     <module>airline-help</module>
+    <module>airline-prompts</module>
   </modules>
 
   <dependencyManagement>
