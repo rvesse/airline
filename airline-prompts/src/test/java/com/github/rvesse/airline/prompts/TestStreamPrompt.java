@@ -16,8 +16,19 @@
 
 package com.github.rvesse.airline.prompts;
 
-public enum PromptType {
-    KEY,
-    LINE,
-    SECURE
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.testng.annotations.Test;
+
+import com.github.rvesse.airline.prompts.console.StreamPrompt;
+
+@Test
+public class TestStreamPrompt extends AbstractPromptTests {
+
+    @Override
+    protected PromptProvider getProvider(InputStream input, OutputStream output) {
+        return new StreamPrompt(output, input);
+    }
+
 }

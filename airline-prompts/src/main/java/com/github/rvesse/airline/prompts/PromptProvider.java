@@ -16,9 +16,12 @@
 
 package com.github.rvesse.airline.prompts;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * A provider of prompting
+ *
+ */
 public interface PromptProvider {
 
     /**
