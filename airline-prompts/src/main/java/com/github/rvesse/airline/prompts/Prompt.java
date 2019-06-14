@@ -27,57 +27,53 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.github.rvesse.airline.io.printers.UsagePrinter;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Predicate;
+import org.apache.commons.lang3.StringUtils;
+
 import com.github.rvesse.airline.prompts.errors.PromptException;
+import com.github.rvesse.airline.prompts.formatters.PromptFormatter;
 import com.github.rvesse.airline.types.DefaultTypeConverter;
 import com.github.rvesse.airline.types.TypeConverter;
 
 public class Prompt<TOption> {
 
     private final PromptProvider provider;
+    private final PromptFormatter formatter;
     private final long timeout;
     private final TimeUnit timeoutUnit;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final List<TOption> options;
     private final String message;
     private final TypeConverter converter;
-    private final boolean withNumbering, withZeroIndex;
-    private final int columns;
 
-    public Prompt(PromptProvider provider, long timeout, TimeUnit timeoutUnit, String promptMessage,
-            Collection<TOption> options, boolean showOptionNumbers, boolean useZeroIndexing, int columns, TypeConverter converter) {
+    public Prompt(PromptProvider provider, PromptFormatter formatter, long timeout, TimeUnit timeoutUnit,
+            String promptMessage, Collection<TOption> options, TypeConverter converter) {
         this.provider = provider;
+        this.formatter = formatter;
         this.timeout = timeout;
         this.timeoutUnit = timeoutUnit;
         this.message = promptMessage;
         this.options = new ArrayList<>(options);
-        this.withNumbering = showOptionNumbers;
-        this.withZeroIndex = useZeroIndexing;
-        this.columns = columns;
         this.converter = converter != null ? converter : new DefaultTypeConverter();
     }
 
-    private void displayPrompt() {
-        UsagePrinter printer = new UsagePrinter(this.provider.getPromptStream(), this.columns);
-        printer.append(String.format("%s: ", this.message));
-        printer.flush();
-        
-        UsagePrinter optionPrinter = printer.newIndentedPrinter(2);
-        
-        int index = this.withZeroIndex ? 0 : 1;
-        for (TOption option : this.options) {
-            if (this.withNumbering) {
-                optionPrinter.append(String.format("- %d) %s", index, option.toString()));
-                index++;
-            } else {
-                optionPrinter.append(String.format("- %s", option.toString()));
-            }
-            optionPrinter.newline();
-        }
-        optionPrinter.flush();
-        printer.flush();
+    public PromptProvider getProvider() {
+        return this.provider;
     }
-    
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public List<TOption> getOptions() {
+        return this.options;
+    }
+
+    private void displayPrompt() {
+        this.formatter.displayPrompt(this);
+    }
+
     protected <T> T waitForPromptResponse(Future<T> future) throws PromptException {
         try {
             return future.get(this.timeout, this.timeoutUnit);
@@ -92,7 +88,7 @@ public class Prompt<TOption> {
 
     public int promptForKey() throws PromptException {
         this.displayPrompt();
-        
+
         if (this.timeout > 0) {
             Callable<Integer> bgPrompt = new Callable<Integer>() {
                 @Override
@@ -109,7 +105,7 @@ public class Prompt<TOption> {
 
     public String promptForLine() throws PromptException {
         this.displayPrompt();
-        
+
         if (this.timeout > 0) {
             Callable<String> bgPrompt = new Callable<String>() {
                 @Override
@@ -124,20 +120,61 @@ public class Prompt<TOption> {
         }
     }
 
+    public TOption promptForOption(boolean secure) throws PromptException {
+        final String value = secure ? new String(this.promptForSecure()) : this.promptForLine();
+
+        try {
+            // Allow users to specify an option index using a 1-based index so
+            // need to adjust accordingly
+            int index = Integer.parseInt(value);
+            index = index - 1;
+
+            if (index >= 0 && index < this.options.size()) {
+                return this.options.get(index);
+            }
+        } catch (NumberFormatException e) {
+            // Ignore and fall back to simple string matching
+        }
+
+        // Find any matching options
+        List<TOption> foundOptions = new ArrayList<>(this.options);
+        CollectionUtils.<TOption> filter(foundOptions, new Predicate<TOption>() {
+
+            @Override
+            public boolean evaluate(TOption object) {
+                String optionStr = object.toString();
+                return StringUtils.equals(value, optionStr) || optionStr.startsWith(value);
+            }
+        });
+
+        if (foundOptions.size() == 0) {
+            throw new PromptException(
+                    String.format("User provided prompt response '%s' which is not a valid response", value));
+        } else if (foundOptions.size() > 1) {
+            throw new PromptException(String.format(
+                    "User provided prompt response '%s' which is does not unambiguously identify a valid response",
+                    value));
+        } else {
+            return foundOptions.get(0);
+        }
+    }
+
     @SuppressWarnings("unchecked")
-    public <T> T promptForValue(Class<T> cls) throws PromptException {
-        return (T) this.converter.convert("", cls, this.promptForLine());
+    public <T> T promptForValue(Class<T> cls, boolean secure) throws PromptException {
+        String value = secure ? new String(this.promptForSecure()) : this.promptForLine();
+
+        return (T) this.converter.convert("", cls, value);
     }
 
     public char[] promptForSecure() throws PromptException {
         if (!this.provider.supportsSecureReads())
             throw new PromptException("Underlying prompt provider does not support secure reads");
-        
+
         this.displayPrompt();
-        
+
         if (this.timeout > 0) {
             Callable<char[]> bgPrompt = new Callable<char[]>() {
-                
+
                 @Override
                 public char[] call() throws Exception {
                     return provider.readSecureLine();

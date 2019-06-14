@@ -14,26 +14,30 @@
  * limitations under the License.
  */
 
-package com.github.rvesse.airline.prompts;
+package com.github.rvesse.airline.prompts.builders;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.github.rvesse.airline.builder.AbstractBuilder;
+import com.github.rvesse.airline.prompts.Prompt;
+import com.github.rvesse.airline.prompts.PromptProvider;
+import com.github.rvesse.airline.prompts.formatters.ListFormat;
+import com.github.rvesse.airline.prompts.formatters.PromptFormatter;
 import com.github.rvesse.airline.types.DefaultTypeConverter;
 import com.github.rvesse.airline.types.TypeConverter;
 
 public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     private PromptProvider provider;
+    private PromptFormatter formatter;
+    private PromptFormatBuilder<TOption> formatBuilder = new ListFormatBuilder<>(this);
     private long timeout = 0;
     private TimeUnit timeoutUnit = TimeUnit.SECONDS;
     private List<TOption> options = new ArrayList<TOption>();
     private String message = null;
     private TypeConverter converter = new DefaultTypeConverter();
-    private boolean withNumbering = false, withZeroIndex = false;
-    private int columns = 80;
     
     public PromptBuilder() { }
     
@@ -80,11 +84,41 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
         this.message = message;
         return this;
     }
+    
+    public PromptBuilder<TOption> withFormatter(PromptFormatter formatter) {
+        this.formatter = formatter;
+        this.formatBuilder = null;
+        return this;
+    }
+    
+    public PromptBuilder<TOption> withFormatterBuilder(PromptFormatBuilder<TOption> formatBuilder) {
+        this.formatter = null;
+        this.formatBuilder = formatBuilder;
+        return this;
+    }
+    
+    public ListFormatBuilder<TOption> withListFormatter() {
+        this.formatBuilder = new ListFormatBuilder<>(this);
+        return (ListFormatBuilder<TOption>) this.formatBuilder;
+    }
+    
+    public PromptBuilder<TOption> withDefaultFormatter() {
+        this.formatter = new ListFormat<TOption>();
+        this.formatBuilder = null;
+        return this;
+    }
 
     @Override
     public Prompt<TOption> build() {
-        return new Prompt<>(this.provider, timeout, timeoutUnit, this.message, options, this.withNumbering,
-                this.withZeroIndex, columns, converter);
+        PromptFormatter promptFormatter = this.formatter;
+        if (promptFormatter == null) {
+            if (this.formatBuilder != null) {
+                promptFormatter = this.formatBuilder.build();
+            } else {
+                throw new IllegalStateException("No prompt format specified");
+            }
+        }
+        return new Prompt<>(this.provider, promptFormatter, timeout, timeoutUnit, this.message, options, converter);
     }
 
 }

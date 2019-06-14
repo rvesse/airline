@@ -26,8 +26,8 @@ import java.util.concurrent.TimeUnit;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.github.rvesse.airline.io.AnsiControlCodes;
 import com.github.rvesse.airline.io.decorations.BasicDecoration;
+import com.github.rvesse.airline.prompts.builders.PromptBuilder;
 import com.github.rvesse.airline.prompts.errors.PromptException;
 import com.github.rvesse.airline.prompts.utils.DelayedInputStream;
 
@@ -135,5 +135,197 @@ public abstract class AbstractPromptTests {
         
         String outputData = new String(output.toByteArray(), StandardCharsets.UTF_8);
         Assert.assertTrue(outputData.contains(BasicDecoration.CONCEAL.getAnsiDecorationEnabledControlCode()));
+    }
+    
+    @Test
+    public void option_01() throws PromptException {
+        byte[] data = "b".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("a", "b", "c")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        String option = prompt.promptForOption(false);
+        Assert.assertEquals(option, "b");
+    }
+    
+    @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*does not unambiguously.*")
+    public void option_02() throws PromptException {
+        byte[] data = "a".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("aardvark", "anteater", "another")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        prompt.promptForOption(false);
+    }
+    
+    @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*does not unambiguously.*")
+    public void option_03() throws PromptException {
+        byte[] data = "an".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("aardvark", "anteater", "another")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        prompt.promptForOption(false);
+    }
+    
+    @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*not a valid response.*")
+    public void option_04() throws PromptException {
+        byte[] data = "b".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("aardvark", "anteater", "another")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        prompt.promptForOption(false);
+    }
+    
+    @Test
+    public void option_05() throws PromptException {
+        byte[] data = "aa".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("aardvark", "anteater", "another")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        String option = prompt.promptForOption(false);
+        Assert.assertEquals(option, "aardvark");
+    }
+    
+    @Test
+    public void option_06() throws PromptException {
+        byte[] data = "aardvark".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("aardvark", "anteater", "another")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        String option = prompt.promptForOption(false);
+        Assert.assertEquals(option, "aardvark");
+    }
+    
+    @Test
+    public void option_numeric_01() throws PromptException {
+        byte[] data = "1".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("aardvark", "anteater", "another")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        String option = prompt.promptForOption(false);
+        Assert.assertEquals(option, "aardvark");
+    }
+    
+    @Test
+    public void option_numeric_02() throws PromptException {
+        byte[] data = "2".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("aardvark", "anteater", "another")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        String option = prompt.promptForOption(false);
+        Assert.assertEquals(option, "anteater");
+    }
+    
+    @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*not a valid response.*")
+    public void option_numeric_03() throws PromptException {
+        byte[] data = "4".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("aardvark", "anteater", "another")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        prompt.promptForOption(false);
+    }
+    
+    @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*not a valid response.*")
+    public void option_numeric_04() throws PromptException {
+        byte[] data = "-1".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("aardvark", "anteater", "another")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        prompt.promptForOption(false);
+    }
+    
+    @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*not a valid response.*")
+    public void option_numberic_05() throws PromptException {
+        byte[] data = "0".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("aardvark", "anteater", "another")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        prompt.promptForOption(false);
     }
 }
