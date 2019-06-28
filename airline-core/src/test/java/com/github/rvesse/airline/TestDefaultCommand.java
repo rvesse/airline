@@ -109,6 +109,83 @@ public class TestDefaultCommand {
         Assert.assertEquals(cmd.args.get(0), "foo");
     }
     
+    @Test
+    public void default_command_abbreviation_01() {
+        //@formatter:off
+        CliBuilder<Args> builder 
+            = new CliBuilder<Args>("test")
+                        .withDefaultCommand(Args.class);
+        builder.withParser()
+               .withCommandAbbreviation();
+        Cli<Args> cli = builder.build();
+        //@formatter:on
+        Args cmd = cli.parse("foo");
+        Assert.assertNotNull(cmd);
+        Assert.assertFalse(cmd.args.isEmpty());
+        Assert.assertEquals(cmd.args.size(), 1);
+        Assert.assertEquals(cmd.args.get(0), "foo");
+    }
+    
+    @Test
+    public void default_command_abbreviation_02() {
+        //@formatter:off
+        CliBuilder<Args> builder 
+            = new CliBuilder<Args>("test")
+                        .withDefaultCommand(Args.class)
+                        .withCommand(Args.class);
+        builder.withParser()
+               .withCommandAbbreviation();
+        Cli<Args> cli = builder.build();
+        //@formatter:on
+        Args cmd = cli.parse("foo");
+        Assert.assertNotNull(cmd);
+        Assert.assertFalse(cmd.args.isEmpty());
+        Assert.assertEquals(cmd.args.size(), 1);
+        Assert.assertEquals(cmd.args.get(0), "foo");
+    }
+    
+    @Test
+    public void default_command_abbreviation_03() {
+        //@formatter:off
+        CliBuilder<Args> builder 
+            = new CliBuilder<Args>("test")
+                        .withGroup("group")
+                            .withDefaultCommand(Args.class)
+                            .withCommand(Args.class)
+                            .parent();
+        builder.withParser()
+               .withCommandAbbreviation();
+        Cli<Args> cli = builder.build();
+        //@formatter:on
+        Args cmd = cli.parse("group", "foo");
+        Assert.assertNotNull(cmd);
+        Assert.assertFalse(cmd.args.isEmpty());
+        Assert.assertEquals(cmd.args.size(), 1);
+        Assert.assertEquals(cmd.args.get(0), "foo");
+    }
+    
+    @Test
+    public void default_command_abbreviation_04() {
+        //@formatter:off
+        CliBuilder<Args> builder 
+            = new CliBuilder<Args>("test")
+                        .withGroup("group")
+                            .withDefaultCommand(Args.class)
+                            .withCommand(Args.class)
+                            .parent();
+        builder.withParser()
+               .withCommandAbbreviation();
+        Cli<Args> cli = builder.build();
+        //@formatter:on
+        
+        // As a valid abbreviation this actually selects the command rather than the default
+        Args cmd = cli.parse("group", "ar", "foo");
+        Assert.assertNotNull(cmd);
+        Assert.assertFalse(cmd.args.isEmpty());
+        Assert.assertEquals(cmd.args.size(), 1);
+        Assert.assertEquals(cmd.args.get(0), "foo");
+    }
+    
     @Command(name = "args")
     public static final class ArgsWithDefaultOption {
         @Option(name = "-a")
