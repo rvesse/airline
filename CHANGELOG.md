@@ -2,6 +2,9 @@
 
 ## 2.8.0
 
+
+## 2.7.1
+
 - Bug Fixes
     - `CollectAll` handler collected multiple duplicates of the same error when certain restrictions were used.  Now instead duplicates are combined into a single exception (#94)
     - CLIs could allow command classes with the same declared command name in their `@Command` annotation to silently override each other.  Now instead an error will be thrown reporting the problem (#95)
