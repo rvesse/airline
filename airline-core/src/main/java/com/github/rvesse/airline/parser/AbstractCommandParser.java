@@ -148,8 +148,12 @@ public abstract class AbstractCommandParser<T> extends AbstractParser<T> {
                     state = state.withUnparsedInput(tokens.next());
                 }
             } else {
+                // Only consume the token if it is:
+                // 1) Exactly the command name
+                // 2) We're not using the default command and it isn't an allowed abbreviation of a command
                 if (tokens.peek().equals(command.getName())
-                        || (!usingDefault && state.getParserConfiguration().allowsAbbreviatedCommands())) {
+                        || (!usingDefault && state.getParserConfiguration().allowsAbbreviatedCommands()
+                                && command.getName().startsWith(tokens.peek()))) {
                     tokens.next();
                 }
 

@@ -58,9 +58,9 @@
     <plugin.buildnumber>1.4</plugin.buildnumber>
     <plugin.compiler>3.7.0</plugin.compiler>
     <plugin.coveralls>4.3.0</plugin.coveralls>
-    <plugin.enforcer>1.4.1</plugin.enforcer>
+    <plugin.enforcer>3.0.0-M2</plugin.enforcer>
     <plugin.license>2.11</plugin.license>
-    <plugin.jacoco>0.8.1</plugin.jacoco>
+    <plugin.jacoco>0.8.4</plugin.jacoco>
     <plugin.jar>3.1.0</plugin.jar>
     <plugin.source>3.0.1</plugin.source>
     <plugin.javadoc>3.0.1</plugin.javadoc>
@@ -179,7 +179,7 @@
         <artifactId>license-maven-plugin</artifactId>
         <version>${plugin.license}</version>
         <configuration>
-          <header>${license.header.path}/license-header.txt</header>
+          <header>${license.header.path}/code-header.txt</header>
           <failIfMissing>true</failIfMissing>
           <aggregate>false</aggregate>
           <useDefaultMapping>true</useDefaultMapping>
