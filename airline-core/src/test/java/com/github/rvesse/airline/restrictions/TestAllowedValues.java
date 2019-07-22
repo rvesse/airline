@@ -35,11 +35,22 @@ public class TestAllowedValues {
             Assert.assertEquals(cmd.raw, value);
         }
     }
-    
+        
     @Test(expectedExceptions = ParseOptionIllegalValueException.class)
     public void allowed_raw_02() {
         SingleCommand<Allowable> parser = SingleCommand.singleCommand(Allowable.class);
         parser.parse("--raw", "other");
+    }
+    
+    @Test
+    public void allowed_raw_03() {
+        String[] allowed = new String[] { "upper", "LOWER", "mIXEDcASE" };
+        
+        SingleCommand<Allowable> parser = SingleCommand.singleCommand(Allowable.class);
+        for (String value : allowed) {
+            Allowable cmd = parser.parse("--case", value);
+            Assert.assertEquals(cmd.caseInsensitive, value);
+        }
     }
     
     @Test

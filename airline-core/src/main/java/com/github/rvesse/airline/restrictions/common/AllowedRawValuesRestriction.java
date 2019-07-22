@@ -49,6 +49,11 @@ public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestrictio
         if (rawValues.isEmpty())
             return;
 
+        // Normalize to lower case when ignoring case
+        if (this.caseInsensitive) {
+            value = value.toLowerCase(locale);
+        }
+
         // Check in list of values
         if (!IterableUtils.matchesAny(this.rawValues, new LocaleSensitiveStringFinder(value, this.locale)))
             throw new ParseOptionIllegalValueException(option.getTitle(), value, asObjects(rawValues));
@@ -60,9 +65,15 @@ public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestrictio
         if (rawValues.isEmpty())
             return;
 
+        // Normalize to lower case when ignoring case
+        if (this.caseInsensitive) {
+            value = value.toLowerCase(locale);
+        }
+
         // Check in list of values
         if (!IterableUtils.matchesAny(this.rawValues, new LocaleSensitiveStringFinder(value, this.locale))) {
-            throw new ParseArgumentsIllegalValueException(AbstractCommonRestriction.getArgumentTitle(state, arguments), value, asObjects(rawValues));
+            throw new ParseArgumentsIllegalValueException(AbstractCommonRestriction.getArgumentTitle(state, arguments),
+                    value, asObjects(rawValues));
         }
     }
 }

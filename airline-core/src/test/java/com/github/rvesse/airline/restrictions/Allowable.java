@@ -37,4 +37,8 @@ public class Allowable {
     @Option(name = "--enum")
     @AllowedEnumValues(TimeUnit.class)
     public TimeUnit enumTyped;
+    
+    @Option(name = "--case")
+    @AllowedRawValues(allowedValues = { "UPPER", "lower", "MixedCase" }, ignoreCase = true)
+    public String caseInsensitive;
 }
