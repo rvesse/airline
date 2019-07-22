@@ -44,7 +44,7 @@ public class TestAllowedValues {
     
     @Test
     public void allowed_raw_03() {
-        String[] allowed = new String[] { "upper", "LOWER", "mIXEDcASE" };
+        String[] allowed = new String[] { "upper", "LOWER", "mIXEDcASE", "UPPER", "UPPer", "loweR", "mIXeDcAsE" };
         
         SingleCommand<Allowable> parser = SingleCommand.singleCommand(Allowable.class);
         for (String value : allowed) {
