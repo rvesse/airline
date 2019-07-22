@@ -2,6 +2,13 @@
 
 ## 2.8.0
 
+## 2.7.2
+
+- Bug Fixes
+    - `@AllowedEnumValues` incorrectly provides help hint that values are case insensitive when they are actually case sensitive (#100)
+    - `@AllowedRawValues` does not handle case insensitive mode correctly (#100)
+    - `@Option` with `type = OptionType.GLOBAL` and `type = OptionType.GROUP` are not correctly parsed at the command level (#101)
+
 
 ## 2.7.1
 
