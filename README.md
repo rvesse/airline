@@ -103,7 +103,7 @@ From 2.7.0 onwards builds include contributions from our user community to enabl
 
 ## Maven Artifacts
 
-This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `2.7.1`
+This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `2.7.2`
 
 Use the following maven dependency declaration:
 
@@ -111,7 +111,7 @@ Use the following maven dependency declaration:
 <dependency>
     <groupId>com.github.rvesse</groupId>
     <artifactId>airline</artifactId>
-    <version>2.7.1</version>
+    <version>2.7.2</version>
 </dependency>
 ```
 
