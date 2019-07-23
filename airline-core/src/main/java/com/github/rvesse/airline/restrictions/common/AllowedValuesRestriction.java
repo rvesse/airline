@@ -34,7 +34,7 @@ public class AllowedValuesRestriction extends AbstractAllowedValuesRestriction {
     private Set<Object> allowedValues = null;
 
     public AllowedValuesRestriction(String... rawValues) {
-        super(false);
+        super(CASE_SENSITIVE);
         this.rawValues.addAll(Arrays.asList(rawValues));
     }
 

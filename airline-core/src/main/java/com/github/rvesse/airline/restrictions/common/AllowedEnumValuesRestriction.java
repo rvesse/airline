@@ -29,7 +29,7 @@ import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 public class AllowedEnumValuesRestriction extends AbstractAllowedValuesRestriction {
 
     public AllowedEnumValuesRestriction(Class<? extends Enum<?>> cls) {
-        super(true);
+        super(CASE_SENSITIVE);
         this.rawValues.addAll(getValues(cls));
     }
 
