@@ -28,12 +28,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.rvesse.airline.prompts.errors.PromptException;
 import com.github.rvesse.airline.prompts.formatters.PromptFormatter;
+import com.github.rvesse.airline.prompts.matchers.DefaultMatcher;
+import com.github.rvesse.airline.prompts.matchers.PromptOptionMatcher;
 import com.github.rvesse.airline.types.DefaultTypeConverter;
 import com.github.rvesse.airline.types.TypeConverter;
 
@@ -48,14 +46,17 @@ public class Prompt<TOption> {
     private final PromptProvider provider;
     private final PromptFormatter formatter;
     private final long timeout;
+    private final boolean allowNumericOptionSelection;
     private final TimeUnit timeoutUnit;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final List<TOption> options;
+    private final PromptOptionMatcher<TOption> optionMatcher;
     private final String message;
     private final TypeConverter converter;
 
     public Prompt(PromptProvider provider, PromptFormatter formatter, long timeout, TimeUnit timeoutUnit,
-            String promptMessage, Collection<TOption> options, TypeConverter converter) {
+            String promptMessage, Collection<TOption> options, PromptOptionMatcher<TOption> optionMatcher,
+            boolean allowNumericOptionSelection, TypeConverter converter) {
         this.provider = provider;
         this.formatter = formatter;
         this.timeout = timeout;
@@ -63,6 +64,8 @@ public class Prompt<TOption> {
         this.message = promptMessage;
         this.options = options == null ? Collections.<TOption> emptyList()
                 : Collections.unmodifiableList(new ArrayList<TOption>(options));
+        this.optionMatcher = optionMatcher != null ? optionMatcher : new DefaultMatcher<TOption>();
+        this.allowNumericOptionSelection = allowNumericOptionSelection;
         this.converter = converter != null ? converter : new DefaultTypeConverter();
     }
 
@@ -85,12 +88,35 @@ public class Prompt<TOption> {
     }
 
     /**
+     * Gets whether options can be selected numerically when using
+     * {@link #promptForOption(boolean)}
+     * 
+     * @return True if numeric selection enabled, false otherwise
+     */
+    public boolean allowsNumericOptionSelection() {
+        return this.allowNumericOptionSelection;
+    }
+
+    /**
      * Gets the available options (if any)
      * 
      * @return Options
      */
     public List<TOption> getOptions() {
         return this.options;
+    }
+
+    public PromptOptionMatcher<TOption> getOptionMatcher() {
+        return this.optionMatcher;
+    }
+
+    /**
+     * Gets the configured type converter
+     * 
+     * @return Type converter
+     */
+    public TypeConverter getTypeConverter() {
+        return this.converter;
     }
 
     /**
@@ -182,41 +208,7 @@ public class Prompt<TOption> {
 
         final String value = secure ? new String(this.promptForSecure()) : this.promptForLine();
 
-        try {
-            // Allow users to specify an option index using a 1-based index so
-            // need to adjust accordingly
-            int index = Integer.parseInt(value);
-            index = index - 1;
-
-            if (index >= 0 && index < this.options.size()) {
-                return this.options.get(index);
-            }
-        } catch (NumberFormatException e) {
-            // Ignore and fall back to simple string matching because our
-            // options could be numeric values
-        }
-
-        // Find any matching options
-        List<TOption> foundOptions = new ArrayList<>(this.options);
-        CollectionUtils.<TOption> filter(foundOptions, new Predicate<TOption>() {
-
-            @Override
-            public boolean evaluate(TOption object) {
-                String optionStr = object.toString();
-                return StringUtils.equals(value, optionStr) || optionStr.startsWith(value);
-            }
-        });
-
-        if (foundOptions.size() == 0) {
-            throw new PromptException(
-                    String.format("User provided prompt response '%s' which is not a valid response", value));
-        } else if (foundOptions.size() > 1) {
-            throw new PromptException(String.format(
-                    "User provided prompt response '%s' which is does not unambiguously identify a valid response",
-                    value));
-        } else {
-            return foundOptions.get(0);
-        }
+        return this.optionMatcher.match(this, value);
     }
 
     /**

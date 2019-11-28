@@ -43,7 +43,7 @@ public class ListFormat<TOption> implements PromptFormatter {
         
         int index = 1;
         for (T option : prompt.getOptions()) {
-            if (this.withNumbering) {
+            if (this.withNumbering && prompt.allowsNumericOptionSelection()) {
                 optionPrinter.append(String.format("- %d) %s", index, option.toString()));
                 index++;
             } else {

@@ -25,6 +25,8 @@ import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.PromptProvider;
 import com.github.rvesse.airline.prompts.formatters.ListFormat;
 import com.github.rvesse.airline.prompts.formatters.PromptFormatter;
+import com.github.rvesse.airline.prompts.matchers.DefaultMatcher;
+import com.github.rvesse.airline.prompts.matchers.PromptOptionMatcher;
 import com.github.rvesse.airline.types.DefaultTypeConverter;
 import com.github.rvesse.airline.types.TypeConverter;
 
@@ -35,33 +37,36 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
     private PromptFormatBuilder<TOption> formatBuilder = new ListFormatBuilder<>(this);
     private long timeout = 0;
     private TimeUnit timeoutUnit = TimeUnit.SECONDS;
+    private boolean allowsNumericOptionSelection = true;
     private List<TOption> options = new ArrayList<TOption>();
+    private PromptOptionMatcher<TOption> optionMatcher = new DefaultMatcher<>();
     private String message = null;
     private TypeConverter converter = new DefaultTypeConverter();
-    
-    public PromptBuilder() { }
-    
+
+    public PromptBuilder() {
+    }
+
     public PromptBuilder<TOption> withPromptProvider(PromptProvider provider) {
         this.provider = provider;
         return this;
     }
-    
+
     public PromptBuilder<TOption> withTimeoutUnit(TimeUnit unit) {
         this.timeoutUnit = unit;
         return this;
     }
-    
+
     public PromptBuilder<TOption> withTimeout(long timeout) {
         this.timeout = timeout;
         return this;
     }
-    
+
     public PromptBuilder<TOption> withTimeout(long timeout, TimeUnit unit) {
         this.timeout = timeout;
         this.timeoutUnit = unit;
         return this;
     }
-    
+
     @SuppressWarnings("unchecked")
     public PromptBuilder<TOption> withOptions(TOption... options) {
         for (TOption opt : options) {
@@ -69,42 +74,62 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
         }
         return this;
     }
-    
+
     public PromptBuilder<TOption> withOption(TOption option) {
         this.options.add(option);
         return this;
     }
-    
+
     public PromptBuilder<TOption> clearOptions() {
         this.options.clear();
         return this;
     }
-    
+
+    public PromptBuilder<TOption> withNumericOptionSelection() {
+        this.allowsNumericOptionSelection = true;
+        return this;
+    }
+
+    public PromptBuilder<TOption> withoutNumericOptionSelection() {
+        this.allowsNumericOptionSelection = false;
+        return this;
+    }
+
+    public PromptBuilder<TOption> withOptionMatcher(PromptOptionMatcher<TOption> matcher) {
+        this.optionMatcher = matcher;
+        return this;
+    }
+
     public PromptBuilder<TOption> withPromptMessage(String message) {
         this.message = message;
         return this;
     }
-    
+
     public PromptBuilder<TOption> withFormatter(PromptFormatter formatter) {
         this.formatter = formatter;
         this.formatBuilder = null;
         return this;
     }
-    
+
     public PromptBuilder<TOption> withFormatterBuilder(PromptFormatBuilder<TOption> formatBuilder) {
         this.formatter = null;
         this.formatBuilder = formatBuilder;
         return this;
     }
-    
+
     public ListFormatBuilder<TOption> withListFormatter() {
         this.formatBuilder = new ListFormatBuilder<>(this);
         return (ListFormatBuilder<TOption>) this.formatBuilder;
     }
-    
+
     public PromptBuilder<TOption> withDefaultFormatter() {
         this.formatter = new ListFormat<TOption>();
         this.formatBuilder = null;
+        return this;
+    }
+    
+    public PromptBuilder<TOption> withTypeConverter(TypeConverter converter) {
+        this.converter = converter;
         return this;
     }
 
@@ -118,7 +143,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
                 throw new IllegalStateException("No prompt format specified");
             }
         }
-        return new Prompt<>(this.provider, promptFormatter, timeout, timeoutUnit, this.message, options, converter);
+        return new Prompt<>(this.provider, promptFormatter, this.timeout, this.timeoutUnit, this.message, this.options,
+                this.optionMatcher, this.allowsNumericOptionSelection, this.converter);
     }
 
 }
