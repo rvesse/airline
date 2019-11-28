@@ -23,18 +23,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import com.github.rvesse.airline.io.decorations.AnsiDecorationProvider;
 import com.github.rvesse.airline.io.decorations.BasicDecoration;
 import com.github.rvesse.airline.io.decorations.sources.AnsiDecorationSource;
 import com.github.rvesse.airline.io.output.AnsiBasicColorizedOutputStream;
-import com.github.rvesse.airline.io.output.AnsiOutputStream;
 import com.github.rvesse.airline.io.output.OutputStreamControlTracker;
-import com.github.rvesse.airline.io.writers.AnsiWriter;
 import com.github.rvesse.airline.prompts.PromptProvider;
-import com.github.rvesse.airline.prompts.errors.PromptException;
 
 public class StreamPrompt implements PromptProvider {
 
+    @SuppressWarnings("unused")
     private final OutputStream rawOutput;
     private final OutputStreamControlTracker<BasicDecoration> concealer;
     private final AnsiBasicColorizedOutputStream ansiOutput;

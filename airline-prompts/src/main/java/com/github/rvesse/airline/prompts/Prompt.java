@@ -18,6 +18,7 @@ package com.github.rvesse.airline.prompts;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +37,12 @@ import com.github.rvesse.airline.prompts.formatters.PromptFormatter;
 import com.github.rvesse.airline.types.DefaultTypeConverter;
 import com.github.rvesse.airline.types.TypeConverter;
 
+/**
+ * Represents a prompt
+ *
+ * @param <TOption>
+ *            Option type
+ */
 public class Prompt<TOption> {
 
     private final PromptProvider provider;
@@ -54,26 +61,55 @@ public class Prompt<TOption> {
         this.timeout = timeout;
         this.timeoutUnit = timeoutUnit;
         this.message = promptMessage;
-        this.options = new ArrayList<>(options);
+        this.options = options == null ? Collections.<TOption> emptyList()
+                : Collections.unmodifiableList(new ArrayList<TOption>(options));
         this.converter = converter != null ? converter : new DefaultTypeConverter();
     }
 
+    /**
+     * Gets the prompt provider
+     * 
+     * @return Provider
+     */
     public PromptProvider getProvider() {
         return this.provider;
     }
 
+    /**
+     * Gets the prompt message
+     * 
+     * @return Message
+     */
     public String getMessage() {
         return this.message;
     }
 
+    /**
+     * Gets the available options (if any)
+     * 
+     * @return Options
+     */
     public List<TOption> getOptions() {
         return this.options;
     }
 
+    /**
+     * Displays the prompt
+     */
     private void displayPrompt() {
         this.formatter.displayPrompt(this);
     }
 
+    /**
+     * Wait for a prompt response
+     * 
+     * @param <T>
+     *            Response type
+     * @param future
+     *            Future
+     * @return Response type
+     * @throws PromptException
+     */
     protected <T> T waitForPromptResponse(Future<T> future) throws PromptException {
         try {
             return future.get(this.timeout, this.timeoutUnit);
@@ -86,6 +122,12 @@ public class Prompt<TOption> {
         }
     }
 
+    /**
+     * Prompts for a single key
+     * 
+     * @return Key code
+     * @throws PromptException
+     */
     public int promptForKey() throws PromptException {
         this.displayPrompt();
 
@@ -103,6 +145,12 @@ public class Prompt<TOption> {
         }
     }
 
+    /**
+     * Prompts for a line of input
+     * 
+     * @return Input line
+     * @throws PromptException
+     */
     public String promptForLine() throws PromptException {
         this.displayPrompt();
 
@@ -120,7 +168,18 @@ public class Prompt<TOption> {
         }
     }
 
+    /**
+     * Prompts for option
+     * 
+     * @param secure
+     *            Does the response need to be secure?
+     * @return Option value
+     * @throws PromptException
+     */
     public TOption promptForOption(boolean secure) throws PromptException {
+        if (this.options.isEmpty())
+            throw new PromptException("Cannot prompt for options as no options were configured");
+
         final String value = secure ? new String(this.promptForSecure()) : this.promptForLine();
 
         try {
@@ -133,7 +192,8 @@ public class Prompt<TOption> {
                 return this.options.get(index);
             }
         } catch (NumberFormatException e) {
-            // Ignore and fall back to simple string matching
+            // Ignore and fall back to simple string matching because our
+            // options could be numeric values
         }
 
         // Find any matching options
@@ -159,6 +219,18 @@ public class Prompt<TOption> {
         }
     }
 
+    /**
+     * Prompts for a value
+     * 
+     * @param <T>
+     *            Value type
+     * @param cls
+     *            Value type class
+     * @param secure
+     *            Does the response need to be secure?
+     * @return Value
+     * @throws PromptException
+     */
     @SuppressWarnings("unchecked")
     public <T> T promptForValue(Class<T> cls, boolean secure) throws PromptException {
         String value = secure ? new String(this.promptForSecure()) : this.promptForLine();
@@ -166,6 +238,12 @@ public class Prompt<TOption> {
         return (T) this.converter.convert("", cls, value);
     }
 
+    /**
+     * Prompts for a secure input line
+     * 
+     * @return Input line
+     * @throws PromptException
+     */
     public char[] promptForSecure() throws PromptException {
         if (!this.provider.supportsSecureReads())
             throw new PromptException("Underlying prompt provider does not support secure reads");

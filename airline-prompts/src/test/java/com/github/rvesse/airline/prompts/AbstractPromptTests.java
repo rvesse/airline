@@ -29,6 +29,7 @@ import org.testng.annotations.Test;
 import com.github.rvesse.airline.io.decorations.BasicDecoration;
 import com.github.rvesse.airline.prompts.builders.PromptBuilder;
 import com.github.rvesse.airline.prompts.errors.PromptException;
+import com.github.rvesse.airline.prompts.formatters.QuestionFormat;
 import com.github.rvesse.airline.prompts.utils.DelayedInputStream;
 
 public abstract class AbstractPromptTests {
@@ -242,6 +243,22 @@ public abstract class AbstractPromptTests {
         Assert.assertEquals(option, "aardvark");
     }
     
+    @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*no options were configured.*")
+    public void option_07() throws PromptException {
+        byte[] data = "foo".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        prompt.promptForOption(false);
+    }
+    
     @Test
     public void option_numeric_01() throws PromptException {
         byte[] data = "1".getBytes(StandardCharsets.UTF_8);
@@ -313,7 +330,7 @@ public abstract class AbstractPromptTests {
     }
     
     @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*not a valid response.*")
-    public void option_numberic_05() throws PromptException {
+    public void option_numeric_05() throws PromptException {
         byte[] data = "0".getBytes(StandardCharsets.UTF_8);
         InputStream input = new ByteArrayInputStream(data);
         OutputStream output = new ByteArrayOutputStream();
@@ -327,5 +344,129 @@ public abstract class AbstractPromptTests {
         //@formatter:on
         
         prompt.promptForOption(false);
+    }
+    
+    @Test
+    public void question_01() throws PromptException {
+        byte[] data = "Y".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = Prompts.newYesNoPrompt("Proceed?")
+                .withPromptProvider(this.getProvider(input, output))
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        int key = prompt.promptForKey();
+        Assert.assertNotEquals(key, -1);
+        Assert.assertEquals((char) key, 'Y');
+    }
+    
+    @Test
+    public void question_02() throws PromptException {
+        byte[] data = "Y".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = Prompts.newYesNoPrompt("Proceed?")
+                .withPromptProvider(this.getProvider(input, output))
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        String response = prompt.promptForOption(false);
+        Assert.assertEquals(response, "Yes");
+    }
+    
+    @Test
+    public void question_03() throws PromptException {
+        byte[] data = "No".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = Prompts.newYesNoPrompt("Proceed?")
+                .withPromptProvider(this.getProvider(input, output))
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        String response = prompt.promptForOption(false);
+        Assert.assertEquals(response, "No");
+    }
+    
+    @Test
+    public void question_04() throws PromptException {
+        byte[] data = "Abort".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = Prompts.newYesNoAbortPrompt("Proceed?")
+                .withPromptProvider(this.getProvider(input, output))
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        String response = prompt.promptForOption(false);
+        Assert.assertEquals(response, "Abort");
+    }
+    
+    @Test
+    public void question_05() throws PromptException {
+        byte[] data = "Cancel".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = Prompts.newYesNoCancelPrompt("Proceed?")
+                .withPromptProvider(this.getProvider(input, output))
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        String response = prompt.promptForOption(false);
+        Assert.assertEquals(response, "Cancel");
+    }
+    
+    @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*not a valid response.*")
+    public void question_06() throws PromptException {
+        byte[] data = "foo".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        OutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = Prompts.newYesNoAbortPrompt("Proceed?")
+                .withPromptProvider(this.getProvider(input, output))
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        prompt.promptForOption(false);
+    }
+    
+    @Test
+    public void question_07() throws PromptException {
+        byte[] data = "a".getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withFormatter(new QuestionFormat<>())
+                .withOptions("alpha", "beta")
+                .withPromptMessage("Which option?")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+        
+        String response = prompt.promptForOption(false);
+        Assert.assertEquals(response, "alpha");
+        String outputData = new String(output.toByteArray(), StandardCharsets.UTF_8);
+        Assert.assertTrue(outputData.contains("Which option?"));
     }
 }
