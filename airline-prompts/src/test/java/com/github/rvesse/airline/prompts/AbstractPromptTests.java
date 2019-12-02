@@ -24,10 +24,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import org.testng.Assert;
+import org.testng.SkipException;
 import org.testng.annotations.Test;
 
 import com.github.rvesse.airline.annotations.OptionType;
-import com.github.rvesse.airline.io.decorations.BasicDecoration;
 import com.github.rvesse.airline.prompts.builders.PromptBuilder;
 import com.github.rvesse.airline.prompts.errors.PromptException;
 import com.github.rvesse.airline.prompts.formatters.QuestionFormat;
@@ -136,11 +136,35 @@ public abstract class AbstractPromptTests {
                 .build();
         //@formatter:on
 
-        char[] secure = prompt.promptForSecure();
-        Assert.assertEquals(secure.length, 8);
+        if (!prompt.getProvider().supportsSecureReads()) {
+            throw new SkipException("Test prompt provider does not support secure reads");
+        } else {
+            char[] secure = prompt.promptForSecure();
+            Assert.assertEquals(secure.length, 8);
+            Assert.assertFalse(output.toString().contains(password));
+        }
+    }
+    
+    @Test(expectedExceptions = PromptException.class)
+    public void secure_unsupported_01() throws PromptException {
+        String password = "password";
+        byte[] data = password.getBytes(StandardCharsets.UTF_8);
+        InputStream input = new ByteArrayInputStream(data);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        String outputData = new String(output.toByteArray(), StandardCharsets.UTF_8);
-        Assert.assertTrue(outputData.contains(BasicDecoration.CONCEAL.getAnsiDecorationEnabledControlCode()));
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+
+        if (!prompt.getProvider().supportsSecureReads()) {
+            char[] secure = prompt.promptForSecure();
+            Assert.assertNull(secure);
+        } else {
+            throw new SkipException("Test prompt provider supports secure reads");
+        }
     }
 
     @Test
@@ -605,11 +629,11 @@ public abstract class AbstractPromptTests {
                 .withTimeout(100, TimeUnit.MILLISECONDS)
                 .build();
         //@formatter:on
-        
+
         Long value = prompt.promptForValue(Long.class, false);
         Assert.assertEquals(value.longValue(), 8192l);
     }
-    
+
     @Test
     public void value_02() throws PromptException {
         byte[] data = "16M".getBytes(StandardCharsets.UTF_8);
@@ -625,11 +649,11 @@ public abstract class AbstractPromptTests {
                 .withTimeout(100, TimeUnit.MILLISECONDS)
                 .build();
         //@formatter:on
-        
+
         Long value = prompt.promptForValue(Long.class, false);
         Assert.assertEquals(value.longValue(), 16l * 1024l * 1024l);
     }
-    
+
     @Test
     public void value_03() throws PromptException {
         byte[] data = "16M".getBytes(StandardCharsets.UTF_8);
@@ -645,11 +669,11 @@ public abstract class AbstractPromptTests {
                 .withTimeout(100, TimeUnit.MILLISECONDS)
                 .build();
         //@formatter:on
-        
+
         Long value = prompt.promptForValue(Long.class, false);
         Assert.assertEquals(value.longValue(), 16l * 1000l * 1000l);
     }
-    
+
     @Test
     public void value_04() throws PromptException {
         byte[] data = OptionType.GROUP.name().getBytes(StandardCharsets.UTF_8);
@@ -664,7 +688,7 @@ public abstract class AbstractPromptTests {
                 .withTimeout(100, TimeUnit.MILLISECONDS)
                 .build();
         //@formatter:on
-        
+
         OptionType value = prompt.promptForValue(OptionType.class, false);
         Assert.assertEquals(value, OptionType.GROUP);
     }

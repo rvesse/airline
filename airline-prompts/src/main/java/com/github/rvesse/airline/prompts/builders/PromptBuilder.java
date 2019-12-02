@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import com.github.rvesse.airline.builder.AbstractBuilder;
 import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.PromptProvider;
+import com.github.rvesse.airline.prompts.Prompts;
 import com.github.rvesse.airline.prompts.formatters.ListFormat;
 import com.github.rvesse.airline.prompts.formatters.PromptFormatter;
 import com.github.rvesse.airline.prompts.matchers.DefaultMatcher;
@@ -44,6 +45,11 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
     private TypeConverter converter = new DefaultTypeConverter();
 
     public PromptBuilder() {
+    }
+    
+    public PromptBuilder<TOption> withDefaultProvider() {
+        this.provider = Prompts.defaultProvider();
+        return this;
     }
 
     public PromptBuilder<TOption> withPromptProvider(PromptProvider provider) {
