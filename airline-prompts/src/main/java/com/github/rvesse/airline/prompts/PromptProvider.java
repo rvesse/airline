@@ -29,7 +29,7 @@ public interface PromptProvider {
      * 
      * @return Prompt writer
      */
-    public PrintWriter getPromptStream();
+    public PrintWriter getPromptWriter();
 
     /**
      * Reads a line from the prompts source

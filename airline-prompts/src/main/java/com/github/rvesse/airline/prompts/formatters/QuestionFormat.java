@@ -41,7 +41,7 @@ public class QuestionFormat<TOption> implements PromptFormatter {
 
     @Override
     public <T> void displayPrompt(Prompt<T> prompt) {
-        UsagePrinter printer = new UsagePrinter(prompt.getProvider().getPromptStream(), this.columns);
+        UsagePrinter printer = new UsagePrinter(prompt.getProvider().getPromptWriter(), this.columns);
         printer.append(String.format("%s? [%s] ", prompt.getMessage(), StringUtils.join(prompt.getOptions(), "/")));
         printer.flush();
     }

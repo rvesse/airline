@@ -47,7 +47,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
     public PromptBuilder() {
     }
     
-    public PromptBuilder<TOption> withDefaultProvider() {
+    public PromptBuilder<TOption> withDefaultPromptProvider() {
         this.provider = Prompts.defaultProvider();
         return this;
     }

@@ -39,7 +39,7 @@ public class ConsolePrompt implements PromptProvider {
     }
 
     @Override
-    public PrintWriter getPromptStream() {
+    public PrintWriter getPromptWriter() {
         return this.console.writer();
     }
 
