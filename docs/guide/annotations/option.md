@@ -50,7 +50,7 @@ private String alphabet;
 
 This provides users with some information about what an option actually does that will be included in [Help](../help/).
 
-{% include req-ver.html version="2.8.0" %}
+{% include req-ver.md version="2.8.0" %}
 
 If we have an option with an arity greater than 1 we can specify an array of titles e.g.
 
