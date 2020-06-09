@@ -20,26 +20,36 @@ import java.util.Set;
 import com.github.rvesse.airline.utils.AirlineUtils;
 
 /**
- * Exception thrown when the value for an option is not in a specific set of
- * allowed values
+ * Exception thrown when the value for an option is not in a specific set of allowed values
  */
 public class ParseOptionIllegalValueException extends ParseRestrictionViolatedException {
     private static final long serialVersionUID = 810812151673279427L;
 
-    private final String optionTitle;
+    private final String optionName, optionTitle;
     private final Object illegalValue;
     private final Set<Object> allowedValues;
-    
-    public ParseOptionIllegalValueException(String optionTitle, Object value, Set<Object> allowedValues) {
-        super("Value for option '%s' was given as '%s' which is not in the list of allowed values: %s", optionTitle,
-                value, allowedValues);
+
+    public ParseOptionIllegalValueException(String optionName, String optionTitle, Object value,
+            Set<Object> allowedValues) {
+        super("Value for option %s value '%s' was given as '%s' which is not in the list of allowed values: %s",
+                optionName, optionTitle, value, allowedValues);
+        this.optionName = optionName;
         this.optionTitle = optionTitle;
         this.illegalValue = value;
         this.allowedValues = AirlineUtils.unmodifiableSetCopy(allowedValues);
     }
-    
+
     /**
-     * Gets the option title
+     * Gets the option name i.e. the flag used to specify this option
+     * 
+     * @return Option name
+     */
+    public String getOptionName() {
+        return optionName;
+    }
+
+    /**
+     * Gets the option value title
      * 
      * @return Option title
      */

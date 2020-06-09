@@ -25,6 +25,7 @@ import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsIllegalValueException;
 import com.github.rvesse.airline.parser.errors.ParseOptionIllegalValueException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
+import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.LocaleSensitiveStringFinder;
 
 public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestriction {
@@ -56,7 +57,7 @@ public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestrictio
 
         // Check in list of values
         if (!IterableUtils.matchesAny(this.rawValues, new LocaleSensitiveStringFinder(value, this.locale)))
-            throw new ParseOptionIllegalValueException(option.getTitle(), value, asObjects(rawValues));
+            throw new ParseOptionIllegalValueException(AirlineUtils.first(option.getOptions()), AbstractCommonRestriction.getOptionTitle(state, option), value, asObjects(rawValues));
     }
 
     @Override

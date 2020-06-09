@@ -619,11 +619,15 @@ public class MetadataLoader {
                 DefaultOption defaultOptionAnnotation = field.getAnnotation(DefaultOption.class);
                 if (optionAnnotation != null) {
                     OptionType optionType = optionAnnotation.type();
-                    String name;
-                    if (!optionAnnotation.title().isEmpty()) {
-                        name = optionAnnotation.title();
+                    List<String> titles;
+                    if (optionAnnotation.title().length > 0) {
+                        if (optionAnnotation.title().length == 1 && StringUtils.isBlank(optionAnnotation.title()[0])) {
+                            titles = Collections.singletonList(field.getName());
+                        } else {
+                            titles = Arrays.asList(optionAnnotation.title());
+                        }
                     } else {
-                        name = field.getName();
+                        titles = Collections.singletonList(field.getName());
                     }
 
                     List<String> options = Arrays.asList(optionAnnotation.name());
@@ -631,7 +635,7 @@ public class MetadataLoader {
 
                     int arity = optionAnnotation.arity();
                     if (arity < 0 && arity != Integer.MIN_VALUE)
-                        throw new IllegalArgumentException(String.format("Invalid arity for option %s", name));
+                        throw new IllegalArgumentException(String.format("Invalid arity for option %s", titles.get(0)));
 
                     if (optionAnnotation.arity() >= 0) {
                         arity = optionAnnotation.arity();
@@ -674,7 +678,7 @@ public class MetadataLoader {
                     //@formatter:off
                     OptionMetadata optionMetadata = new OptionMetadata(optionType, 
                                                                        options,
-                                                                       name, 
+                                                                       titles, 
                                                                        description, 
                                                                        arity,
                                                                        hidden, 

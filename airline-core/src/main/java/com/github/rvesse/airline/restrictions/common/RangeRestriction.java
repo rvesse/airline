@@ -71,7 +71,7 @@ public class RangeRestriction extends AbstractCommonRestriction implements HelpH
             return;
         
         if (!inRange(value))
-            throw new ParseOptionOutOfRangeException(option.getTitle(), value, min, minInclusive, max, maxInclusive);
+            throw new ParseOptionOutOfRangeException(AbstractCommonRestriction.getOptionTitle(state, option), value, min, minInclusive, max, maxInclusive);
     }
     
     @Override

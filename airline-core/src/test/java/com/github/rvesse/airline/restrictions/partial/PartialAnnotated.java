@@ -28,7 +28,7 @@ import com.github.rvesse.airline.annotations.restrictions.Partial;
 @Command(name = "partial")
 public class PartialAnnotated {
 
-    @Option(name = "--kvp", arity = 2)
+    @Option(name = "--kvp", arity = 2, title = { "Key", "Value" })
     @Partial(appliesTo = { 0 }, restriction = NotBlank.class)
     @NotBlank
     public List<String> kvps = new ArrayList<>();

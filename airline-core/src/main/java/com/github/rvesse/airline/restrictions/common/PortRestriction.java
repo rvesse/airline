@@ -28,6 +28,7 @@ import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
+import com.github.rvesse.airline.utils.AirlineUtils;
 
 public class PortRestriction extends AbstractCommonRestriction implements HelpHint {
     private static final int MIN_PORT = 0, MAX_PORT = 65535;
@@ -43,23 +44,24 @@ public class PortRestriction extends AbstractCommonRestriction implements HelpHi
         if (acceptablePorts.isEmpty())
             return;
 
+        String title = AbstractCommonRestriction.getOptionTitle(state, option);
         if (value instanceof Long) {
             if (!isValid(((Long) value).longValue()))
-                invalidOptionPort(option, value);
+                invalidOptionPort(option, title, value);
         } else if (value instanceof Integer) {
             if (!isValid(((Integer) value).intValue()))
-                invalidOptionPort(option, value);
+                invalidOptionPort(option, title, value);
         } else if (value instanceof Short) {
             if (!isValid(((Short) value).shortValue()))
-                invalidOptionPort(option, value);
+                invalidOptionPort(option, title, value);
         } else {
             throw new ParseInvalidRestrictionException("Cannot apply a @Port restriction to an option of type %s",
                     option.getJavaType());
         }
     }
 
-    protected void invalidOptionPort(OptionMetadata option, Object value) {
-        invalidPort(String.format("Option '%s'", option.getTitle()), value);
+    protected void invalidOptionPort(OptionMetadata option, String title, Object value) {
+        invalidPort(String.format("Option '%s'", title), value);
     }
 
     protected void invalidArgumentsPort(ArgumentsMetadata arguments, String title, Object value) {
@@ -68,7 +70,7 @@ public class PortRestriction extends AbstractCommonRestriction implements HelpHi
 
     protected void invalidPort(String title, Object value) {
         throw new ParseRestrictionViolatedException(
-                "%s which takes a port number was given a value '%s' which not in the range of acceptable ports: %s",
+                "Option '%s' which takes a port number was given a value '%s' which not in the range of acceptable ports: %s",
                 title, value, PortType.toRangesString(acceptablePorts));
     }
 

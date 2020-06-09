@@ -43,14 +43,18 @@ public @interface Option {
 
     /**
      * Name use to identify the option value in documentation and error messages
+     * <p>
+     * If your option has {@link #arity()} greater than 1 then you can specify titles for each parameter by specifying
+     * an array of titles. If there are fewer titles than the arity then the last title in the list will be used for all
+     * subsequent options
+     * </p>
      * 
      * @return Title
      */
-    String title() default "";
+    String[] title() default "";
 
     /**
-     * An array of allowed command line parameters e.g. {@code -n},
-     * {@code --name}, etc...
+     * An array of allowed command line parameters e.g. {@code -n}, {@code --name}, etc...
      * 
      * @return Names
      */
@@ -64,8 +68,8 @@ public @interface Option {
     String description() default "";
 
     /**
-     * How many parameter values this option will consume. For example, an arity
-     * of 2 will allow {@code -pair value1 value2}
+     * How many parameter values this option will consume. For example, an arity of 2 will allow
+     * {@code -pair value1 value2}
      * 
      * @return Arity
      */
@@ -79,17 +83,14 @@ public @interface Option {
     boolean hidden() default false;
 
     /**
-     * If true this parameter can override parameters of the same name (set via
-     * the {@link Option#name()} property) declared by parent classes assuming
-     * the option definitions are compatible.
+     * If true this parameter can override parameters of the same name (set via the {@link Option#name()} property)
+     * declared by parent classes assuming the option definitions are compatible.
      * <p>
-     * See
-     * {@link OptionMetadata#override(java.util.Set, OptionMetadata, OptionMetadata)}
-     * for legal overrides
+     * See {@link OptionMetadata#override(java.util.Set, OptionMetadata, OptionMetadata)} for legal overrides
      * </p>
      * <p>
-     * Note that where the child option definition is an exact duplicate of the
-     * parent then overriding is implicitly permitted
+     * Note that where the child option definition is an exact duplicate of the parent then overriding is implicitly
+     * permitted
      * </p>
      * 
      * @return True if an override, false otherwise
@@ -97,19 +98,17 @@ public @interface Option {
     boolean override() default false;
 
     /**
-     * If true this parameter cannot be overridden by parameters of the same
-     * name declared in child classes regardless of whether the child class
-     * declares the {@link #override()} property to be true
+     * If true this parameter cannot be overridden by parameters of the same name declared in child classes regardless
+     * of whether the child class declares the {@link #override()} property to be true
      * 
      * @return True if sealed, false otherwise
      */
     boolean sealed() default false;
 
     /**
-     * Sets an alternative type converter provider for the option. This allows
-     * the type converter for an option to be customised appropriately. By
-     * default this will defer to using the type converter provided in the
-     * parser configuration.
+     * Sets an alternative type converter provider for the option. This allows the type converter for an option to be
+     * customised appropriately. By default this will defer to using the type converter provided in the parser
+     * configuration.
      * 
      * @return Type converter provider
      */
