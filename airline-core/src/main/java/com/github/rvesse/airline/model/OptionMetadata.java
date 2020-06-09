@@ -126,12 +126,25 @@ public class OptionMetadata {
         return titles;
     }
 
+    /**
+     * Gets the first title
+     * 
+     * @deprecated Options now support multiple titles, use {@link #getTitle(int)} to get a specific title or
+     *             {@link #getTitles()} to get all titles
+     * @return First title
+     */
+    @Deprecated
+    public String getTitle() {
+        return AirlineUtils.first(titles);
+    }
+
     public String getTitle(int index) {
         if (arity == 0)
             return titles.get(0);
-        
+
         if (index < 0 || index >= arity)
-            throw new IllegalArgumentException(String.format("Title index must be between 0 and %d (got %d)", arity, index));
+            throw new IllegalArgumentException(
+                    String.format("Title index must be between 0 and %d (got %d)", arity, index));
 
         // Return the appropriate title if the index has an explicit title, otherwise return the last title
         return index < titles.size() ? titles.get(index) : titles.get(titles.size() - 1);
