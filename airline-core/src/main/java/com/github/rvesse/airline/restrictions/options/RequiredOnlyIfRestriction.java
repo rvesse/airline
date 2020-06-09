@@ -63,7 +63,7 @@ public class RequiredOnlyIfRestriction implements OptionRestriction, HelpHint {
 
             for (String name : this.names) {
                 if (otherOption.getLeft().getOptions().contains(name))
-                    throw new ParseOptionMissingException(option.getTitle());
+                    throw new ParseOptionMissingException(option.getTitle(0));
             }
         }
     }

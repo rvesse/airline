@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collections;
 
 import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.Git.Add;
@@ -29,6 +30,7 @@ import com.github.rvesse.airline.Git.RemoteAdd;
 import com.github.rvesse.airline.Git.RemoteShow;
 import com.github.rvesse.airline.SingleCommand;
 import com.github.rvesse.airline.args.Args1;
+import com.github.rvesse.airline.args.ArgsArityString;
 import com.github.rvesse.airline.args.ArgsCopyrightAndLicense;
 import com.github.rvesse.airline.args.ArgsExamples;
 import com.github.rvesse.airline.args.ArgsExitCodes;
@@ -1093,6 +1095,45 @@ public class TestHelpMan {
                         "Missing version information",
                         ""
                 }, '\n'));
+        //@formatter:on
+    }
+    
+    @Test
+    public void testArgsAritySting() throws IOException {
+        //@formatter:off
+        SingleCommand<ArgsArityString> command = singleCommand(ArgsArityString.class);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        new ManCommandUsageGenerator().usage(null, null, "test", command.getCommandMetadata(), null, out);
+        assertEquals(new String(out.toByteArray(), utf8),
+                ".TH \"test\" \"1\" \"\" \"\" \"\"\n" + 
+                ".SH NAME\n" + 
+                ".IP \"\" 0\n" + 
+                "\\fBtest\\fR\n" + 
+                ".SH SYNOPSIS\n" + 
+                ".IP \"\" 0\n" + 
+                "\\fBtest\\fR [ \\fB\\-pairs\\fR \\fIKey\\fR \\fIValue\\fR\\fI...\\fR ] [ \\fB\\-\\-\\fR ] [ \\fIrest\\fR ]\n" + 
+                ".SH OPTIONS\n" + 
+                ".RS\n" + 
+                ".TP\n" + 
+                "\\fB\\-pairs\\fR \\fIKey\\fR \\fIValue\\fR\n" + 
+                ".RS\n" + 
+                ".IP \"\" 4\n" + 
+                "Pairs\n" + 
+                ".RE\n" + 
+                ".TP\n" + 
+                "\\fB\\-\\-\\fR\n" + 
+                ".RS\n" + 
+                ".IP \"\" 4\n" + 
+                "This option can be used to separate command\\-line options from the list of arguments (useful when arguments might be mistaken for command\\-line options)\n" + 
+                ".RE\n" + 
+                ".TP\n" + 
+                "\\fIrest\\fR\n" + 
+                ".RS\n" + 
+                ".IP \"\" 4\n" + 
+                "Rest\n" + 
+                ".RE\n" + 
+                ".IP \"\" 0\n");
         //@formatter:on
     }
 }

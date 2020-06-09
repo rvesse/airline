@@ -214,13 +214,6 @@ public class AbstractUsageGenerator {
             stringBuilder.append('{');
         }
 
-        final String argumentString;
-        if (option.getArity() > 0) {
-            argumentString = String.format("<%s>", option.getTitle());
-        } else {
-            argumentString = null;
-        }
-
         boolean first = true;
         for (String name : options) {
             if (!first) {
@@ -235,8 +228,10 @@ public class AbstractUsageGenerator {
             stringBuilder.append('}');
         }
 
-        if (argumentString != null) {
-            stringBuilder.append(" " + argumentString);
+        if (option.getArity() > 0) {
+            for (int i = 0; i < option.getArity(); i++) {
+                stringBuilder.append(" <").append(option.getTitle(i)).append('>');
+            }
         }
 
         if (option.isMultiValued()) {
@@ -268,13 +263,6 @@ public class AbstractUsageGenerator {
         Set<String> options = option.getOptions();
         StringBuilder stringBuilder = new StringBuilder();
 
-        final String argumentString;
-        if (option.getArity() > 0) {
-            argumentString = String.format("<%s>", option.getTitle());
-        } else {
-            argumentString = null;
-        }
-
         boolean first = true;
         for (String name : options) {
             if (!first) {
@@ -283,9 +271,9 @@ public class AbstractUsageGenerator {
                 first = false;
             }
             stringBuilder.append(name);
-            if (argumentString != null) {
+            if (option.getArity() > 0) {
                 for (int i = 0; i < option.getArity(); i++) {
-                    stringBuilder.append(' ').append(argumentString);
+                    stringBuilder.append(" <").append(option.getTitle(i)).append('>');
                 }
             }
         }

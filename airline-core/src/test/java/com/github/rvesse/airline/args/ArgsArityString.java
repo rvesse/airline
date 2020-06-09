@@ -30,7 +30,7 @@ import com.github.rvesse.airline.annotations.Option;
 public class ArgsArityString
 {
 
-    @Option(name = "-pairs", arity = 2, description = "Pairs")
+    @Option(name = "-pairs", arity = 2, description = "Pairs", title = { "Key", "Value" })
     public List<String> pairs;
 
     @Arguments(description = "Rest")

@@ -22,6 +22,7 @@ import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
+import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.comparators.ByteComparator;
 import com.github.rvesse.airline.utils.comparators.DoubleComparator;
 import com.github.rvesse.airline.utils.comparators.FloatComparator;
@@ -103,15 +104,15 @@ public class PositiveNegativeRestriction extends AbstractCommonRestriction imple
     @Override
     public <T> void postValidate(ParseState<T> state, OptionMetadata option, Object value) {
         if (!this.isValid(value)) {
-            throw new ParseRestrictionViolatedException("Option '%s' must have a %s value (%s) but got %s",
-                    option.getTitle(), this.type, this.range, value);
+            throw new ParseRestrictionViolatedException("Option %s value '%s' must have a %s value (%s) but got %s",
+                    AirlineUtils.first(option.getOptions()), AbstractCommonRestriction.getOptionTitle(state, option), this.type, this.range, value);
         }
     }
 
     @Override
     public <T> void postValidate(ParseState<T> state, ArgumentsMetadata arguments, Object value) {
         if (!this.isValid(value)) {
-            throw new ParseRestrictionViolatedException("Option '%s' must have a %s value (%s) but got %s",
+            throw new ParseRestrictionViolatedException("Argument '%s' must have a %s value (%s) but got %s",
                     AbstractCommonRestriction.getArgumentTitle(state, arguments), this.type, this.range, value);
         }
     }

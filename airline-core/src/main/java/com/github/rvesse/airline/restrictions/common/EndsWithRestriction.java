@@ -26,6 +26,7 @@ import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
+import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.SuffixMatcher;
 
 /**
@@ -53,8 +54,8 @@ public class EndsWithRestriction extends AbstractLocaleAndCaseStringRestriction 
     @Override
     protected <T> ParseRestrictionViolatedException violated(ParseState<T> state, OptionMetadata option, String value) {
         throw new ParseRestrictionViolatedException(
-                "Option '%s' has value '%s' which does not end with one of the permitted suffixes: %s",
-                option.getTitle(), value, StringUtils.join(this.suffixes, ", "));
+                "Option %s value '%s' has value '%s' which does not end with one of the permitted suffixes: %s",
+                AirlineUtils.first(option.getOptions()), AbstractCommonRestriction.getOptionTitle(state, option), value, StringUtils.join(this.suffixes, ", "));
     }
 
     @Override

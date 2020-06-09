@@ -25,7 +25,7 @@ public class NoMissingOptionValuesRestriction implements GlobalRestriction {
     @Override
     public <T> void validate(ParseState<T> state) {
         if (state.getLocation() == Context.OPTION) {
-            throw new ParseOptionMissingValueException(state.getCurrentOption().getTitle());
+            throw new ParseOptionMissingValueException(state.getCurrentOption().getTitle(0));
         }
     }
 }
