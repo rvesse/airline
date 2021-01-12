@@ -71,7 +71,7 @@
     <plugin.moditect>1.0.0.Beta2</plugin.moditect>
 
     <!-- Dependency Versions -->
-    <dependency.javax-inject>1</dependency.javax-inject>
+    <dependency.javax-inject>1.0.3</dependency.javax-inject>
     <dependency.junit>4.12</dependency.junit>
     <dependency.testng>6.8.8</dependency.testng>
     <dependency.commons-lang3>3.7</dependency.commons-lang3>
@@ -88,8 +88,8 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
+        <groupId>jakarta.inject</groupId>
+        <artifactId>jakarta.inject-api</artifactId>
         <version>${dependency.javax-inject}</version>
       </dependency>
 
