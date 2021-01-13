@@ -1,5 +1,10 @@
 # Airline - Change Log
 
+## 2.8.1
+
+- Bug Fixes
+    - Fix for using Airline in JPMS environments (#102) (thanks to @jfallows)
+
 ## 2.8.0
 
 - Core Improvements
