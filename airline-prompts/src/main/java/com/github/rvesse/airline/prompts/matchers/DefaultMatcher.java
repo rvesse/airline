@@ -111,7 +111,7 @@ public class DefaultMatcher<TOption> implements PromptOptionMatcher<TOption> {
             }
 
             throw new PromptException(String.format(
-                    "User provided prompt response '%s' which is does not unambiguously identify a single response",
+                    "User provided prompt response '%s' which does not unambiguously identify a single response",
                     response));
         } else {
             return foundOptions.get(0);

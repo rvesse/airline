@@ -24,8 +24,8 @@ import com.github.rvesse.airline.builder.AbstractBuilder;
 import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.PromptProvider;
 import com.github.rvesse.airline.prompts.Prompts;
-import com.github.rvesse.airline.prompts.formatters.ListFormat;
 import com.github.rvesse.airline.prompts.formatters.PromptFormatter;
+import com.github.rvesse.airline.prompts.formatters.QuestionFormat;
 import com.github.rvesse.airline.prompts.matchers.DefaultMatcher;
 import com.github.rvesse.airline.prompts.matchers.PromptOptionMatcher;
 import com.github.rvesse.airline.types.DefaultTypeConverter;
@@ -117,25 +117,60 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
         return this;
     }
 
-    public PromptBuilder<TOption> withFormatterBuilder(PromptFormatBuilder<TOption> formatBuilder) {
+    public PromptBuilder<TOption> withFormatBuilder(PromptFormatBuilder<TOption> formatBuilder) {
         this.formatter = null;
         this.formatBuilder = formatBuilder;
         return this;
     }
+    
+    public PromptFormatBuilder<TOption> withFormatBuilder() {
+        if (this.formatBuilder != null) {
+            return this.formatBuilder;
+        } else {
+            return this.withListFormatBuilder();
+        }
+    }
+    
+    public ListFormatBuilder<TOption> withListFormatBuilder() {
+        if (this.formatBuilder != null) {
+            if (this.formatBuilder instanceof ListFormatBuilder<?>) {
+                return (ListFormatBuilder<TOption>) this.formatBuilder;
+            } else {
+                this.formatBuilder = null;
+                return withListFormatBuilder();
+            }
+        } else {
+            this.formatter = null;
+            this.formatBuilder = new ListFormatBuilder<>(this);
+            return withListFormatter().withListFormatBuilder();
+        }
+    }
 
-    public ListFormatBuilder<TOption> withListFormatter() {
+    public PromptBuilder<TOption> withListFormatter() {
         this.formatBuilder = new ListFormatBuilder<>(this);
-        return (ListFormatBuilder<TOption>) this.formatBuilder;
+        this.formatter = null;
+        return this;
+    }
+    
+    public PromptBuilder<TOption> withQuestionFormatter() {
+        this.formatBuilder = null;
+        this.formatter = new QuestionFormat<>();
+        return this;
     }
 
     public PromptBuilder<TOption> withDefaultFormatter() {
-        this.formatter = new ListFormat<TOption>();
-        this.formatBuilder = null;
+        this.formatter = null;
+        this.formatBuilder = new ListFormatBuilder<>(this);
         return this;
     }
     
     public PromptBuilder<TOption> withTypeConverter(TypeConverter converter) {
         this.converter = converter;
+        return this;
+    }
+    
+    public PromptBuilder<TOption> withDefaultTypeConverter() {
+        this.converter = new DefaultTypeConverter();
         return this;
     }
 
@@ -149,7 +184,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
                 throw new IllegalStateException("No prompt format specified");
             }
         }
-        return new Prompt<>(this.provider, promptFormatter, this.timeout, this.timeoutUnit, this.message, this.options,
+        return new Prompt<TOption>(this.provider, promptFormatter, this.timeout, this.timeoutUnit, this.message, this.options,
                 this.optionMatcher, this.allowsNumericOptionSelection, this.converter);
     }
 

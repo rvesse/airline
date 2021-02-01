@@ -3,9 +3,9 @@ layout: page
 title: Prompts
 ---
 
-{% include req-ver.md version="2.8.0" %}
+{% include req-ver.md version="2.9.0" %}
 
-Often command line applications may need to prompt users for input e.g. asking for a password, obtaining a missing value, asking for a Yes/No response etc.  From 2.8.0 onwards we provide the `airline-prompts` module which provides a library for doing this in a consistent manner, this includes features such as:
+Often command line applications may need to prompt users for input e.g. asking for a password, obtaining a missing value, asking for a Yes/No response etc.  From 2.9.0 onwards we provide the `airline-prompts` module which provides a library for doing this in a consistent manner, this includes features such as:
 
 - Prompt timeouts so non-interactive apps don't hang forever
 - Configurable prompt sources
@@ -121,6 +121,7 @@ The options functionality allows you to create prompts that provide users with a
 Prompt<String> prompt 
   = new PromptBuilder<String>()
            .withPromptProvider(new ConsolePrompt())
+           .withPromptMessage("What's your favourite animal?")
            .withOptions("Aardvark", "Badger", "Cougar")
            .withListFormatter()
            .withTimeout(30, TimeUnit.SECONDS)
@@ -131,7 +132,7 @@ Here we configure three string options and we can then use `promptForOption()` t
 
 #### Type Conversion
 
-As with the rest of Airline we use our standard [Type Converter](types.html) API to control how options and input values are converted where necessary.  This is configured on a prompt builder via the `withTypeConverter(TypeConverter)` method.
+As with the rest of Airline we use our standard [Type Converter](types.html) API to control how options and input values are converted where necessary.  This is configured on a prompt builder via the `withTypeConverter(TypeConverter)` method.  If no type converter is explicitly configured then our standard `DefaultTypeConverter` is used.
 
 #### Option Matching
 
@@ -139,4 +140,18 @@ TODO
 
 ### Formatters
 
-TODO
+Formatters, defined via the `PromptFormatter` interface, display actual prompts to the user.  Airline provides two implementations of this:
+
+- `QuestionFormat` which displays a simple question prompt
+- `ListFormat` which displays a list of options for the user to select from
+
+You can specify the desired formatter via the `withListFormatter()` or `withQuestionFormatter()` methods on your `PromptBuilder<T>` instance e.g.
+
+```java
+Prompt<String> prompt 
+  = new PromptBuilder<String>()
+        .withPromptProvider(new ConsolePrompt())
+        .withPromptMessage("Please enter your name")
+        .withQuestionFormatter()
+        .build();
+```

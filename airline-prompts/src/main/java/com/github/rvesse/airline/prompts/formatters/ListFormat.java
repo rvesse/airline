@@ -19,17 +19,20 @@ package com.github.rvesse.airline.prompts.formatters;
 import com.github.rvesse.airline.io.printers.UsagePrinter;
 import com.github.rvesse.airline.prompts.Prompt;
 
+/**
+ * A prompt formatter that presents a list of options
+ *
+ * @param <TOption>
+ */
 public class ListFormat<TOption> implements PromptFormatter {
     
-    private final boolean withNumbering;
     private final int columns;
     
     public ListFormat() {
-        this(true, 80);
+        this(80);
     }
     
-    public ListFormat(boolean showOptionNumbers, int columns) {
-        this.withNumbering = showOptionNumbers;
+    public ListFormat(int columns) {
         this.columns = columns;
     }
 
@@ -41,11 +44,10 @@ public class ListFormat<TOption> implements PromptFormatter {
         
         UsagePrinter optionPrinter = printer.newIndentedPrinter(2);
         
-        int index = 1;
+        int index = 0;
         for (T option : prompt.getOptions()) {
-            if (this.withNumbering && prompt.allowsNumericOptionSelection()) {
-                optionPrinter.append(String.format("- %d) %s", index, option.toString()));
-                index++;
+            if (prompt.allowsNumericOptionSelection()) {
+                optionPrinter.append(String.format("- %d) %s", ++index, option.toString()));
             } else {
                 optionPrinter.append(String.format("- %s", option.toString()));
             }

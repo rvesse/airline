@@ -18,18 +18,35 @@ package com.github.rvesse.airline.prompts.builders;
 
 import com.github.rvesse.airline.prompts.formatters.ListFormat;
 
+/**
+ * A builder that helps building list formats
+ *
+ * @param <TOption> Option type
+ */
 public class ListFormatBuilder<TOption> extends PromptFormatBuilder<TOption> {
 
-    private boolean withNumbering = false;
-    private int columns = 80;
+    /**
+     * Default columns used to display list options
+     */
+    public static final int DEFAULT_COLUMNS = 80;
+    private int columns = DEFAULT_COLUMNS;
 
     public ListFormatBuilder(PromptBuilder<TOption> parentBuilder) {
         super(parentBuilder);
     }
+    
+    public ListFormatBuilder<TOption> withColumns(int columns) {
+        this.columns = columns;
+        return this;
+    }
+    
+    public ListFormatBuilder<TOption> withDefaultColumns() {
+        return withColumns(80);
+    }
 
     @Override
     public ListFormat<TOption> build() {
-        return new ListFormat<>(this.withNumbering, columns);
+        return new ListFormat<>(columns);
     }
 
 }
