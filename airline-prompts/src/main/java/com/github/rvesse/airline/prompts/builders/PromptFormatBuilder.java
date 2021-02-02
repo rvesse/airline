@@ -20,6 +20,12 @@ import com.github.rvesse.airline.builder.AbstractChildBuilder;
 import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.formatters.ListFormat;
 
+/**
+ * A prompt format builder is a child builder of a {@link PromptBuilder} used to define the prompt format in a fluent
+ * style
+ * 
+ * @param <TOption> Option type
+ */
 public abstract class PromptFormatBuilder<TOption>
         extends AbstractChildBuilder<ListFormat<TOption>, Prompt<TOption>, PromptBuilder<TOption>> {
 

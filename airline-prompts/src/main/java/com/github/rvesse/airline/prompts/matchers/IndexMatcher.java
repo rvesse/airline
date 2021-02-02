@@ -19,6 +19,11 @@ package com.github.rvesse.airline.prompts.matchers;
 import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.errors.PromptException;
 
+/**
+ * An option matcher that matches options based on the numeric index of the option using 1 based indexes
+ *
+ * @param <TOption> Option type
+ */
 public class IndexMatcher<TOption> implements PromptOptionMatcher<TOption> {
 
     @Override

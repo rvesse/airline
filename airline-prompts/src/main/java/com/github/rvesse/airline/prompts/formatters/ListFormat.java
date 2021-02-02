@@ -18,20 +18,31 @@ package com.github.rvesse.airline.prompts.formatters;
 
 import com.github.rvesse.airline.io.printers.UsagePrinter;
 import com.github.rvesse.airline.prompts.Prompt;
+import com.github.rvesse.airline.prompts.builders.ListFormatBuilder;
 
 /**
  * A prompt formatter that presents a list of options
+ * <p>
+ * This will format the options as a list, using columns
+ * </p>
  *
- * @param <TOption>
+ * @param <TOption> Option type
  */
 public class ListFormat<TOption> implements PromptFormatter {
     
     private final int columns;
     
+    /**
+     * Creates a new list format with default columns
+     */
     public ListFormat() {
-        this(80);
+        this(ListFormatBuilder.DEFAULT_COLUMNS);
     }
     
+    /**
+     * Creates a new list format with the specified number of columns
+     * @param columns
+     */
     public ListFormat(int columns) {
         this.columns = columns;
     }
@@ -42,7 +53,7 @@ public class ListFormat<TOption> implements PromptFormatter {
         printer.append(String.format("%s: ", prompt.getMessage()));
         printer.flush();
         
-        UsagePrinter optionPrinter = printer.newIndentedPrinter(2);
+        UsagePrinter optionPrinter = printer.newIndentedPrinter(2).newPrinterWithHangingIndent(2);
         
         int index = 0;
         for (T option : prompt.getOptions()) {

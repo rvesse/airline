@@ -132,7 +132,7 @@ Here we configure three string options and we can then use `promptForOption()` t
 
 #### Type Conversion
 
-As with the rest of Airline we use our standard [Type Converter](types.html) API to control how options and input values are converted where necessary.  This is configured on a prompt builder via the `withTypeConverter(TypeConverter)` method.  If no type converter is explicitly configured then our standard `DefaultTypeConverter` is used.
+As with the rest of Airline we use our standard [Type Converter](types.html) API to control how options and input values are converted where necessary.  This is configured on a prompt builder via the `withTypeConverter(TypeConverter)` method.  If no type converter is explicitly configured  our standard `DefaultTypeConverter` is used.
 
 #### Option Matching
 

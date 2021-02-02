@@ -21,7 +21,8 @@ import com.github.rvesse.airline.prompts.formatters.ListFormat;
 /**
  * A builder that helps building list formats
  *
- * @param <TOption> Option type
+ * @param <TOption>
+ *            Option type
  */
 public class ListFormatBuilder<TOption> extends PromptFormatBuilder<TOption> {
 
@@ -34,12 +35,24 @@ public class ListFormatBuilder<TOption> extends PromptFormatBuilder<TOption> {
     public ListFormatBuilder(PromptBuilder<TOption> parentBuilder) {
         super(parentBuilder);
     }
-    
+
+    /**
+     * Specifies the desired number of columns for the listed options
+     * 
+     * @param columns
+     *            Columns
+     * @return Format builder
+     */
     public ListFormatBuilder<TOption> withColumns(int columns) {
         this.columns = columns;
         return this;
     }
-    
+
+    /**
+     * Specifies that the default number of columns (see {@link #DEFAULT_COLUMNS}) will be used
+     * 
+     * @return Format builder
+     */
     public ListFormatBuilder<TOption> withDefaultColumns() {
         return withColumns(80);
     }

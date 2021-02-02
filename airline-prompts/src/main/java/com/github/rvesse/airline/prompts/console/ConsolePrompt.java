@@ -22,19 +22,31 @@ import java.io.PrintWriter;
 
 import com.github.rvesse.airline.prompts.PromptProvider;
 
+/**
+ * A prompt that is backed by {@link System#console()}
+ *
+ */
 public class ConsolePrompt implements PromptProvider {
-    
+
     private final Console console;
-    
+
+    /**
+     * Creates a new console prompt using the default {@link System#console()}
+     */
     public ConsolePrompt() {
         this(System.console());
     }
 
+    /**
+     * Creates a new console prompt using the specified console
+     * 
+     * @param console
+     *            Console
+     */
     public ConsolePrompt(Console console) {
         if (console == null)
-            throw new NullPointerException(
-                    "Unable to create a Console prompt as a null console was provided");
-        
+            throw new NullPointerException("Unable to create a Console prompt as a null console was provided");
+
         this.console = System.console();
     }
 

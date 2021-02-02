@@ -16,8 +16,15 @@
 
 package com.github.rvesse.airline.prompts.console;
 
+/**
+ * A prompt backed by {@link System#out} and {@link System#in}
+ *
+ */
 public class StdIOPrompt extends StreamPrompt {
 
+    /**
+     * Creates a new standard IO prompt
+     */
     public StdIOPrompt() {
         super(System.out, System.in);
     }

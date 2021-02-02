@@ -21,8 +21,6 @@ import java.util.concurrent.TimeUnit;
 import com.github.rvesse.airline.prompts.builders.PromptBuilder;
 import com.github.rvesse.airline.prompts.console.ConsolePrompt;
 import com.github.rvesse.airline.prompts.console.StdIOPrompt;
-import com.github.rvesse.airline.prompts.formatters.ListFormat;
-import com.github.rvesse.airline.prompts.formatters.QuestionFormat;
 
 /**
  * Provides builds for some common
@@ -33,9 +31,8 @@ public class Prompts {
     /**
      * Gets the default provider
      * <p>
-     * If {@link System#console()} is not {@code null} then
-     * {@link ConsolePrompt} will be used, otherwise {@code StdIOPrompt} will be
-     * used
+     * If {@link System#console()} is not {@code null} then {@link ConsolePrompt} will be used, otherwise
+     * {@code StdIOPrompt} will be used
      * <p>
      * 
      * @return Default prompt provider
@@ -49,8 +46,7 @@ public class Prompts {
     }
 
     /**
-     * Creates a simple prompt using the default provider and a 30 second
-     * timeout
+     * Creates a simple prompt using the default provider (from {@link #defaultProvider()} and a 30 second timeout
      * 
      * @param <TOption>
      *            Option type
@@ -61,6 +57,21 @@ public class Prompts {
         return new PromptBuilder<TOption>()
                     .withPromptProvider(defaultProvider())
                     .withTimeout(30, TimeUnit.SECONDS);
+        //@formatter:on
+    }
+
+    /**
+     * Creates a free form question prompt
+     * 
+     * @param question
+     *            Prompt question
+     * @return Prompt builder
+     */
+    public static PromptBuilder<String> newFreeFormPrompt(String question) {
+        //@formatter:off
+        return Prompts.<String> defaultPrompt()
+                      .withPromptMessage(question)
+                      .withQuestionFormatter();
         //@formatter:on
     }
 
@@ -76,7 +87,7 @@ public class Prompts {
         return Prompts.<String>defaultPrompt()
                     .withPromptMessage(question)
                     .withOptions("Yes", "No")
-                    .withFormatter(new QuestionFormat<>());
+                    .withQuestionFormatter();
         //@formatter:on
     }
 
@@ -92,7 +103,7 @@ public class Prompts {
         return Prompts.<String>defaultPrompt()
                     .withPromptMessage(question)
                     .withOptions("Yes", "No", "Abort")
-                    .withFormatter(new QuestionFormat<>());
+                    .withQuestionFormatter();
         //@formatter:on
     }
 
@@ -108,7 +119,7 @@ public class Prompts {
         return Prompts.<String>defaultPrompt()
                     .withPromptMessage(question)
                     .withOptions("Yes", "No", "Cancel")
-                    .withFormatter(new QuestionFormat<>());
+                    .withQuestionFormatter();
         //@formatter:on
     }
 
@@ -129,7 +140,7 @@ public class Prompts {
         return Prompts.<TOption>defaultPrompt()
                     .withPromptMessage(message)
                     .withOptions(options)
-                    .withFormatter(new ListFormat<>());
+                    .withListFormatter();
         //@formatter:on
     }
 }

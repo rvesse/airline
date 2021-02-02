@@ -18,12 +18,19 @@ package com.github.rvesse.airline.prompts.formatters;
 
 import com.github.rvesse.airline.prompts.Prompt;
 
+/**
+ * Interface for prompt formatters
+ *
+ */
 public interface PromptFormatter {
 
     /**
      * Displays the prompt
-     * @param <TOption> Option type
-     * @param prompt Prompt
+     * 
+     * @param <TOption>
+     *            Option type
+     * @param prompt
+     *            Prompt
      */
     public <TOption> void displayPrompt(Prompt<TOption> prompt);
 }

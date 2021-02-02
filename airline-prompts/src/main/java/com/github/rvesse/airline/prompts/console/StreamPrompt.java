@@ -25,6 +25,10 @@ import java.io.PrintWriter;
 
 import com.github.rvesse.airline.prompts.PromptProvider;
 
+/**
+ * Creates a new prompt backed by arbitrary streams
+ *
+ */
 public class StreamPrompt implements PromptProvider {
 
     @SuppressWarnings("unused")
@@ -32,6 +36,14 @@ public class StreamPrompt implements PromptProvider {
     private final PrintWriter writer;
     private final BufferedReader reader;
 
+    /**
+     * Creates a new stream prompt
+     * 
+     * @param output
+     *            Output stream
+     * @param input
+     *            Input stream
+     */
     public StreamPrompt(OutputStream output, InputStream input) {
         this.rawOutput = output;
         this.writer = new PrintWriter(output);

@@ -18,16 +18,21 @@ package com.github.rvesse.airline.prompts.matchers;
 
 import org.apache.commons.collections4.Predicate;
 
+/**
+ * An option matcher that ignores case
+ *
+ * @param <TOption> Option type
+ */
 public class IgnoresCaseMatcher<TOption> extends DefaultMatcher<TOption> {
 
     @Override
     protected Predicate<TOption> getExactMatcher(String response) {
-        return new ExactIgnoresCase<>(response);
+        return new MatcherUtils.ExactIgnoresCase<>(response);
     }
 
     @Override
     protected Predicate<TOption> getExactOrPartialMatcher(String response) {
-        return new ExactOrStartsWithIgnoresCase<>(response);
+        return new MatcherUtils.ExactOrStartsWithIgnoresCase<>(response);
     }
 
 }

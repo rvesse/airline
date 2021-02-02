@@ -54,6 +54,28 @@ public class Prompt<TOption> {
     private final String message;
     private final TypeConverter converter;
 
+    /**
+     * Creates a new prompt
+     * 
+     * @param provider
+     *            Prompt Provider
+     * @param formatter
+     *            Prompt Formatter
+     * @param timeout
+     *            Timeout
+     * @param timeoutUnit
+     *            Timeout Unit
+     * @param promptMessage
+     *            Prompt Message
+     * @param options
+     *            Options
+     * @param optionMatcher
+     *            Option matcher
+     * @param allowNumericOptionSelection
+     *            Whether numeric option selection is allowed
+     * @param converter
+     *            Type converter
+     */
     public Prompt(PromptProvider provider, PromptFormatter formatter, long timeout, TimeUnit timeoutUnit,
             String promptMessage, Collection<TOption> options, PromptOptionMatcher<TOption> optionMatcher,
             boolean allowNumericOptionSelection, TypeConverter converter) {
@@ -88,8 +110,7 @@ public class Prompt<TOption> {
     }
 
     /**
-     * Gets whether options can be selected numerically when using
-     * {@link #promptForOption(boolean)}
+     * Gets whether options can be selected numerically when using {@link #promptForOption(boolean)}
      * 
      * @return True if numeric selection enabled, false otherwise
      */

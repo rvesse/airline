@@ -20,8 +20,8 @@ import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.errors.PromptException;
 
 /**
- * Interfaces for option matchers that controls how options are matched to the
- * prompt response when using {@link Prompt#promptForOption(boolean)}
+ * Interfaces for option matchers that controls how options are matched to the prompt response when using
+ * {@link Prompt#promptForOption(boolean)}
  *
  * @param <TOption>
  *            Option type
@@ -37,7 +37,8 @@ public interface PromptOptionMatcher<TOption> {
      *            Response value that has been read from the prompt
      * @return Matched option
      * @throws PromptException
-     *             Thrown if the response value does not match any option
+     *             Thrown if the response value does not match any option, or if the matcher is not compatible with the
+     *             prompt
      */
     public TOption match(Prompt<TOption> prompt, String response) throws PromptException;
 }

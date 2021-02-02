@@ -22,7 +22,7 @@ public class ExactIgnoresCaseMatcher<TOption> extends ExactMatcher<TOption> {
 
     @Override
     protected Predicate<TOption> getExactOrPartialMatcher(String response) {
-        return new Exact<TOption>(response);
+        return new MatcherUtils.Exact<TOption>(response);
     }
 
 }

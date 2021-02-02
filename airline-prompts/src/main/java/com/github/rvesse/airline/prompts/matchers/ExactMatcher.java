@@ -22,7 +22,7 @@ public class ExactMatcher<TOption> extends DefaultMatcher<TOption> {
 
     @Override
     protected Predicate<TOption> getExactOrPartialMatcher(String response) {
-        return new Exact<TOption>(response);
+        return new MatcherUtils.Exact<TOption>(response);
     }
 
 }

@@ -19,10 +19,24 @@ package com.github.rvesse.airline.prompts.matchers;
 import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.errors.PromptException;
 
+/**
+ * An option matcher that matches based on actual value rather than strings
+ * <p>
+ * This allows for matching options where there are multiple ways of writing down a value. For example if you have an
+ * option that is specified as a numeric value there could be multiple ways to specify the number e.g. {@code 1.0},
+ * {@code 1}, {@code 01}
+ * </p>
+ *
+ * @param <TOption> Option type
+ */
 public class ValueMatcher<TOption> implements PromptOptionMatcher<TOption> {
 
     private final Class<TOption> optionType;
 
+    /**
+     * Creates a new value matcher
+     * @param optionType Option class
+     */
     public ValueMatcher(Class<TOption> optionType) {
         if (optionType == null)
             throw new NullPointerException("optionType cannot be null");

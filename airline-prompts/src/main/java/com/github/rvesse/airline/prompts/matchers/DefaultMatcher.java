@@ -18,73 +18,24 @@ package com.github.rvesse.airline.prompts.matchers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
-import org.apache.commons.lang3.StringUtils;
 
 import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.errors.PromptException;
 
+/**
+ * Default prompt option matcher
+ * <p>
+ * This matcher tries to find the most likely options using either exact matching or partial matching. It also allows
+ * for numeric option selection when the prompt has enabled that feature.
+ * </p>
+ *
+ * @param <TOption>
+ *            Option type
+ */
 public class DefaultMatcher<TOption> implements PromptOptionMatcher<TOption> {
-
-    protected static final class Exact<TOption> implements Predicate<TOption> {
-        private final String response;
-
-        protected Exact(String response) {
-            this.response = response;
-        }
-
-        @Override
-        public boolean evaluate(TOption object) {
-            String optionStr = object.toString();
-            return StringUtils.equals(response, optionStr);
-        }
-    }
-
-    protected static final class ExactIgnoresCase<TOption> implements Predicate<TOption> {
-        private final String response;
-
-        protected ExactIgnoresCase(String response) {
-            this.response = response;
-        }
-
-        @Override
-        public boolean evaluate(TOption object) {
-            String optionStr = object.toString();
-            return StringUtils.equalsIgnoreCase(response, optionStr);
-        }
-    }
-
-    protected static final class ExactOrStartsWith<TOption> implements Predicate<TOption> {
-        private final String response;
-
-        protected ExactOrStartsWith(String response) {
-            this.response = response;
-        }
-
-        @Override
-        public boolean evaluate(TOption object) {
-            String optionStr = object.toString();
-            return StringUtils.equals(response, optionStr) || optionStr.startsWith(response);
-        }
-    }
-
-    protected static final class ExactOrStartsWithIgnoresCase<TOption> implements Predicate<TOption> {
-        private final String response;
-
-        protected ExactOrStartsWithIgnoresCase(String response) {
-            this.response = response;
-        }
-
-        @Override
-        public boolean evaluate(TOption object) {
-            String optionStr = object.toString();
-            return StringUtils.equalsIgnoreCase(response, optionStr)
-                    || optionStr.toLowerCase(Locale.ROOT).startsWith(response.toLowerCase(Locale.ROOT));
-        }
-    }
 
     @Override
     public TOption match(Prompt<TOption> prompt, final String response) throws PromptException {
@@ -118,12 +69,26 @@ public class DefaultMatcher<TOption> implements PromptOptionMatcher<TOption> {
         }
     }
 
+    /**
+     * Gets an exact matcher
+     * 
+     * @param response
+     *            User response to match options against
+     * @return Exact matcher
+     */
     protected Predicate<TOption> getExactMatcher(final String response) {
-        return new Exact<TOption>(response);
+        return new MatcherUtils.Exact<TOption>(response);
     }
 
+    /**
+     * Gets an exact or partial matcher
+     * 
+     * @param response
+     *            User response to match options against
+     * @return Exact or partial matcher
+     */
     protected Predicate<TOption> getExactOrPartialMatcher(final String response) {
-        return new ExactOrStartsWith<TOption>(response);
+        return new MatcherUtils.ExactOrStartsWith<TOption>(response);
     }
 
 }

@@ -16,13 +16,15 @@
 
 package com.github.rvesse.airline.prompts.formatters;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.rvesse.airline.io.printers.UsagePrinter;
 import com.github.rvesse.airline.prompts.Prompt;
+import com.github.rvesse.airline.prompts.builders.ListFormatBuilder;
 
 /**
- * Prompt format for simple questions with a limited number of options
+ * Prompt format for simple questions with either a free-form response or with a limited number of options
  *
  * @param <TOption>
  *            Option type
@@ -31,10 +33,19 @@ public class QuestionFormat<TOption> implements PromptFormatter {
 
     private final int columns;
 
+    /**
+     * Creates a new question format with default columns
+     */
     public QuestionFormat() {
-        this(80);
+        this(ListFormatBuilder.DEFAULT_COLUMNS);
     }
 
+    /**
+     * Creates a new question format with the specified columns
+     * 
+     * @param columns
+     *            Columns
+     */
     public QuestionFormat(int columns) {
         this.columns = columns;
     }
@@ -42,7 +53,11 @@ public class QuestionFormat<TOption> implements PromptFormatter {
     @Override
     public <T> void displayPrompt(Prompt<T> prompt) {
         UsagePrinter printer = new UsagePrinter(prompt.getProvider().getPromptWriter(), this.columns);
-        printer.append(String.format("%s? [%s] ", prompt.getMessage(), StringUtils.join(prompt.getOptions(), "/")));
+        if (CollectionUtils.isNotEmpty(prompt.getOptions())) {
+            printer.append(String.format("%s? [%s] ", prompt.getMessage(), StringUtils.join(prompt.getOptions(), "/")));
+        } else {
+            printer.append(String.format("%s?", prompt.getMessage()));
+        }
         printer.flush();
     }
 
