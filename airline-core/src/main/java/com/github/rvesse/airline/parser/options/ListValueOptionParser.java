@@ -15,6 +15,7 @@
  */
 package com.github.rvesse.airline.parser.options;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.collections4.iterators.PeekingIterator;
@@ -25,10 +26,10 @@ import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseOptionMissingValueException;
 import com.github.rvesse.airline.parser.errors.ParseOptionUnexpectedException;
+import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 
 /**
- * An options parser that expects the name and value(s) to be white space
- * separated e.g. {@code --name value} but which allows for the values to be a
+ * An options parser that requires the values to be a
  * non-whitespace separated list
  * <p>
  * So for example {@code --name foo,bar} would be treated as the values
@@ -68,7 +69,11 @@ public class ListValueOptionParser<T> extends AbstractOptionParser<T> {
     }
 
     protected final List<String> getValues(String list) {
-        return Arrays.asList(StringUtils.split(list, this.separator));
+        List<String> values = new ArrayList<>();
+        for (String value : StringUtils.split(list, this.separator)) {
+            values.add(value);
+        }
+        return values;
     }
 
     @Override
@@ -124,7 +129,7 @@ public class ListValueOptionParser<T> extends AbstractOptionParser<T> {
                 // Too few arguments
                 state.getParserConfiguration().getErrorHandler().handleError(new ParseOptionMissingValueException(
                         "Too few option values received for option %s in list value '%s' (%d values expected but only found %d)",
-                        option.getTitle(), option.getOptions().iterator().next(), list, option.getArity(),
+                        option.getOptions().iterator().next(), option.getOptions().iterator().next(), list, option.getArity(),
                         listValues.size()));
                 return state;
             }

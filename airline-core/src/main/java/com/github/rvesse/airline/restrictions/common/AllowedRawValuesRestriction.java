@@ -25,6 +25,7 @@ import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsIllegalValueException;
 import com.github.rvesse.airline.parser.errors.ParseOptionIllegalValueException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
+import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.LocaleSensitiveStringFinder;
 
 public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestriction {
@@ -49,9 +50,14 @@ public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestrictio
         if (rawValues.isEmpty())
             return;
 
+        // Normalize to lower case when ignoring case
+        if (this.caseInsensitive) {
+            value = value.toLowerCase(locale);
+        }
+
         // Check in list of values
         if (!IterableUtils.matchesAny(this.rawValues, new LocaleSensitiveStringFinder(value, this.locale)))
-            throw new ParseOptionIllegalValueException(option.getTitle(), value, asObjects(rawValues));
+            throw new ParseOptionIllegalValueException(AirlineUtils.first(option.getOptions()), AbstractCommonRestriction.getOptionTitle(state, option), value, asObjects(rawValues));
     }
 
     @Override
@@ -60,9 +66,15 @@ public class AllowedRawValuesRestriction extends AbstractAllowedValuesRestrictio
         if (rawValues.isEmpty())
             return;
 
+        // Normalize to lower case when ignoring case
+        if (this.caseInsensitive) {
+            value = value.toLowerCase(locale);
+        }
+
         // Check in list of values
         if (!IterableUtils.matchesAny(this.rawValues, new LocaleSensitiveStringFinder(value, this.locale))) {
-            throw new ParseArgumentsIllegalValueException(AbstractCommonRestriction.getArgumentTitle(state, arguments), value, asObjects(rawValues));
+            throw new ParseArgumentsIllegalValueException(AbstractCommonRestriction.getArgumentTitle(state, arguments),
+                    value, asObjects(rawValues));
         }
     }
 }

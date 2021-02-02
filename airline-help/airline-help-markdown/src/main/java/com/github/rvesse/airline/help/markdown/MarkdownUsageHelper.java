@@ -366,7 +366,9 @@ public class MarkdownUsageHelper extends AbstractUsageGenerator {
         }
 
         if (option.getArity() > 0) {
-            printer.append(String.format("*%s*", option.getTitle()));
+            for (int i = 0; i < option.getArity(); i++) {
+                printer.append(String.format(" *%s*", option.getTitle(i)));
+            }
         }
 
         if (option.isMultiValued()) {
@@ -397,7 +399,9 @@ public class MarkdownUsageHelper extends AbstractUsageGenerator {
         for (String name : option.getOptions()) {
             printer.append(String.format("`%s`", name));
             if (option.getArity() > 0) {
-                printer.append(String.format("*%s*", option.getTitle()));
+                for (int index = 0; index < option.getArity(); index++) {
+                    printer.append(String.format(" *%s*", option.getTitle(index)));
+                }
             }
             if (i < option.getOptions().size() - 1)
                 printer.append(",");

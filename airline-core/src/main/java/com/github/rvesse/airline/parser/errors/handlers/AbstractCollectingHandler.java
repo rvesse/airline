@@ -18,6 +18,8 @@ package com.github.rvesse.airline.parser.errors.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.github.rvesse.airline.parser.errors.ParseException;
 
 public abstract class AbstractCollectingHandler implements ParserErrorHandler {
@@ -30,6 +32,14 @@ public abstract class AbstractCollectingHandler implements ParserErrorHandler {
 
     @Override
     public void handleError(ParseException e) {
+        // Check for duplicate messages
+        for (ParseException existing : this.errors) {
+            if (StringUtils.equals(existing.getMessage(), e.getMessage())) {
+                existing.addSuppressed(e);
+                return;
+            }
+        }
+        
         this.errors.add(e);
     }
 

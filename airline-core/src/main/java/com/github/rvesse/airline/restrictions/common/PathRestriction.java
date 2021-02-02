@@ -72,7 +72,7 @@ public class PathRestriction extends AbstractCommonRestriction implements HelpHi
 
         if (this.mustExist && !f.exists())
             throw new ParseRestrictionViolatedException(
-                    "%s was given value '%s' which is not a path to an existing file/directory", title, path);
+                    "Option value '%s' was given value '%s' which is not a path to an existing file/directory", title, path);
 
         if (this.mustExist && f.exists()) {
             // Some things require the file to exist in order for direct
@@ -161,7 +161,7 @@ public class PathRestriction extends AbstractCommonRestriction implements HelpHi
 
     @Override
     public <T> void preValidate(ParseState<T> state, OptionMetadata option, String value) {
-        this.validate(String.format("Option '%s'", option.getTitle()), value);
+        this.validate(String.format("Option '%s'", AbstractCommonRestriction.getOptionTitle(state, option)), value);
     }
 
     @Override

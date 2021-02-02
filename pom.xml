@@ -58,9 +58,9 @@
     <plugin.buildnumber>1.4</plugin.buildnumber>
     <plugin.compiler>3.7.0</plugin.compiler>
     <plugin.coveralls>4.3.0</plugin.coveralls>
-    <plugin.enforcer>1.4.1</plugin.enforcer>
+    <plugin.enforcer>3.0.0-M2</plugin.enforcer>
     <plugin.license>2.11</plugin.license>
-    <plugin.jacoco>0.8.1</plugin.jacoco>
+    <plugin.jacoco>0.8.4</plugin.jacoco>
     <plugin.jar>3.1.0</plugin.jar>
     <plugin.source>3.0.1</plugin.source>
     <plugin.javadoc>3.0.1</plugin.javadoc>
@@ -71,7 +71,7 @@
     <plugin.moditect>1.0.0.Beta2</plugin.moditect>
 
     <!-- Dependency Versions -->
-    <dependency.javax-inject>1</dependency.javax-inject>
+    <dependency.javax-inject>1.0.3</dependency.javax-inject>
     <dependency.junit>4.12</dependency.junit>
     <dependency.testng>6.8.8</dependency.testng>
     <dependency.commons-lang3>3.7</dependency.commons-lang3>
@@ -91,8 +91,8 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
+        <groupId>jakarta.inject</groupId>
+        <artifactId>jakarta.inject-api</artifactId>
         <version>${dependency.javax-inject}</version>
       </dependency>
 
@@ -193,7 +193,7 @@
         <artifactId>license-maven-plugin</artifactId>
         <version>${plugin.license}</version>
         <configuration>
-          <header>${license.header.path}/license-header.txt</header>
+          <header>${license.header.path}/code-header.txt</header>
           <failIfMissing>true</failIfMissing>
           <aggregate>false</aggregate>
           <useDefaultMapping>true</useDefaultMapping>

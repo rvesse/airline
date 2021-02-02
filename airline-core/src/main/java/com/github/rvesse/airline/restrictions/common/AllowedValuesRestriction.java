@@ -25,8 +25,10 @@ import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsIllegalValueException;
 import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
 import com.github.rvesse.airline.parser.errors.ParseOptionIllegalValueException;
+import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 import com.github.rvesse.airline.types.DefaultTypeConverter;
 import com.github.rvesse.airline.types.TypeConverter;
+import com.github.rvesse.airline.utils.AirlineUtils;
 
 public class AllowedValuesRestriction extends AbstractAllowedValuesRestriction {
 
@@ -34,7 +36,7 @@ public class AllowedValuesRestriction extends AbstractAllowedValuesRestriction {
     private Set<Object> allowedValues = null;
 
     public AllowedValuesRestriction(String... rawValues) {
-        super(false);
+        super(CASE_SENSITIVE);
         this.rawValues.addAll(Arrays.asList(rawValues));
     }
 
@@ -44,10 +46,10 @@ public class AllowedValuesRestriction extends AbstractAllowedValuesRestriction {
         if (this.rawValues.isEmpty())
             return;
 
-        Set<Object> allowedValues = createAllowedValues(state, option.getTitle(), option.getJavaType(),
+        Set<Object> allowedValues = createAllowedValues(state, AbstractCommonRestriction.getOptionTitle(state, option), option.getJavaType(),
                 option.getTypeConverterProvider().getTypeConverter(option, state));
         if (!allowedValues.contains(value)) {
-            throw new ParseOptionIllegalValueException(option.getTitle(), value, allowedValues);
+            throw new ParseOptionIllegalValueException(AirlineUtils.first(option.getOptions()), AbstractCommonRestriction.getOptionTitle(state, option), value, allowedValues);
         }
     }
 

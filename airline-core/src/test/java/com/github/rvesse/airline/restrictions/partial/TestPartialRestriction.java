@@ -18,6 +18,7 @@ package com.github.rvesse.airline.restrictions.partial;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -168,8 +169,8 @@ public class TestPartialRestriction {
         restrictions.add(restriction);
         List<Field> fields = Collections.singletonList(PartialUnannotated.class.getField("kvps"));
 
-        OptionMetadata option = new OptionMetadata(OptionType.COMMAND, names, "Key Value", "", 2, false, false, false,
-                restrictions, null, fields);
+        OptionMetadata option = new OptionMetadata(OptionType.COMMAND, names, Arrays.asList("Key", "Value"), "", 2,
+                false, false, false, restrictions, null, fields);
 
         ParseState<PartialUnannotated> state = ParseState.newInstance();
         state = state.withOptionValue(option, "a");
@@ -201,34 +202,34 @@ public class TestPartialRestriction {
     public void partial_annotated_notblank_01() throws NoSuchFieldException, SecurityException {
         SingleCommand<PartialAnnotated> parser = SingleCommand.singleCommand(PartialAnnotated.class);
         PartialAnnotated cmd = parser.parse(new String[] { "--kvp", "text", "" });
-        
+
         Assert.assertEquals(cmd.kvps.size(), 2);
         Assert.assertEquals(cmd.kvps.get(0), "text");
         Assert.assertEquals(cmd.kvps.get(1), "");
     }
 
-    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*'kvps' requires a non-blank value.*")
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*--kvp value '<Key>' requires a non-blank value.*")
     public void partial_annotated_notblank_02() throws NoSuchFieldException, SecurityException {
         SingleCommand<PartialAnnotated> parser = SingleCommand.singleCommand(PartialAnnotated.class);
         parser.parse(new String[] { "--kvp", "", "text" });
     }
-    
+
     @Test
     public void partials_annotated_01() {
         SingleCommand<PartialsAnnotated> parser = SingleCommand.singleCommand(PartialsAnnotated.class);
         PartialsAnnotated cmd = parser.parse(new String[] { "--kvp", "server", "remote.com" });
-        
+
         Assert.assertEquals(cmd.kvps.size(), 2);
         Assert.assertEquals(cmd.kvps.get(0), "server");
         Assert.assertEquals(cmd.kvps.get(1), "remote.com");
     }
-    
+
     @Test(expectedExceptions = ParseRestrictionViolatedException.class)
     public void partials_annotated_02() {
         SingleCommand<PartialsAnnotated> parser = SingleCommand.singleCommand(PartialsAnnotated.class);
         parser.parse(new String[] { "--kvp", "other", "remote.com" });
     }
-    
+
     @Test(expectedExceptions = ParseRestrictionViolatedException.class)
     public void partials_annotated_03() {
         SingleCommand<PartialsAnnotated> parser = SingleCommand.singleCommand(PartialsAnnotated.class);

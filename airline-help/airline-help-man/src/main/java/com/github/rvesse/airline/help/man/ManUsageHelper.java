@@ -175,7 +175,8 @@ public class ManUsageHelper extends AbstractUsageGenerator {
      *            Troff printer
      * @param section
      *            Help section
-     * @throws IOException Thrown if there is a problem generating usage output
+     * @throws IOException
+     *             Thrown if there is a problem generating usage output
      */
     public void outputHelpSection(TroffPrinter printer, HelpSection section) throws IOException {
         if (section.getFormat() == HelpFormat.NONE_PRINTABLE)
@@ -319,8 +320,10 @@ public class ManUsageHelper extends AbstractUsageGenerator {
         }
 
         if (option.getArity() > 0) {
-            printer.print(" ");
-            printer.printItalic(option.getTitle());
+            for (int i = 0; i < option.getArity(); i++) {
+                printer.print(" ");
+                printer.printItalic(option.getTitle(i));
+            }
         }
 
         if (option.isMultiValued()) {
@@ -352,8 +355,10 @@ public class ManUsageHelper extends AbstractUsageGenerator {
         for (String name : option.getOptions()) {
             printer.printBold(name);
             if (option.getArity() > 0) {
-                printer.print(" ");
-                printer.printItalic(option.getTitle());
+                for (int index = 0; index < option.getArity(); index++) {
+                    printer.print(" ");
+                    printer.printItalic(option.getTitle(index));
+                }
             }
             if (i < option.getOptions().size() - 1)
                 printer.print(", ");
