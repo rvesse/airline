@@ -32,6 +32,7 @@ import com.github.rvesse.airline.parser.errors.ParseArgumentsMissingException;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.parser.errors.ParseTooManyArgumentsException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
+import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.parser.ParsedOptionFinder;
 
 public class OccurrencesRestriction extends AbstractCommonRestriction implements HelpHint {
@@ -54,11 +55,11 @@ public class OccurrencesRestriction extends AbstractCommonRestriction implements
 
         if (maximum && parsedOptions.size() > this.occurrences) {
             throw new ParseRestrictionViolatedException(
-                    "Option '%s' may be specified a maximum of %d times but was found %d times", option.getTitle(),
+                    "Option %s may be specified a maximum of %d times but was found %d times", AirlineUtils.first(option.getOptions()),
                     this.occurrences, parsedOptions.size());
         } else if (!maximum && parsedOptions.size() < this.occurrences) {
             throw new ParseRestrictionViolatedException(
-                    "Option '%s' must be specified at least %d times but was only found %d times", option.getTitle(),
+                    "Option %s must be specified at least %d times but was only found %d times", AirlineUtils.first(option.getOptions()),
                     occurrences, parsedOptions.size());
         }
     }

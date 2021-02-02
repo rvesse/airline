@@ -26,11 +26,12 @@ import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsIllegalValueException;
 import com.github.rvesse.airline.parser.errors.ParseOptionIllegalValueException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
+import com.github.rvesse.airline.utils.AirlineUtils;
 
 public class AllowedEnumValuesRestriction extends AbstractAllowedValuesRestriction {
 
     public AllowedEnumValuesRestriction(Class<? extends Enum<?>> cls) {
-        super(true);
+        super(CASE_SENSITIVE);
         this.rawValues.addAll(getValues(cls));
     }
 
@@ -53,7 +54,7 @@ public class AllowedEnumValuesRestriction extends AbstractAllowedValuesRestricti
 
         // Check in list of values
         if (!this.rawValues.contains(value))
-            throw new ParseOptionIllegalValueException(option.getTitle(), value, asObjects(rawValues));
+            throw new ParseOptionIllegalValueException(AirlineUtils.first(option.getOptions()), AbstractCommonRestriction.getOptionTitle(state, option), value, asObjects(rawValues));
     }
 
     @Override

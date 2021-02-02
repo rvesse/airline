@@ -23,9 +23,11 @@ import com.github.rvesse.airline.help.sections.HelpHint;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 
 public abstract class AbstractAllowedValuesRestriction extends AbstractCommonRestriction implements HelpHint {
+    
+    protected static final boolean CASE_SENSITIVE = false, CASE_INSENSITIVE = true;
 
     protected final Set<String> rawValues = new LinkedHashSet<String>();
-    private final boolean caseInsensitive;
+    protected final boolean caseInsensitive;
 
     public AbstractAllowedValuesRestriction(boolean caseInsensitive) {
         this.caseInsensitive = caseInsensitive;

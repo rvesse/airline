@@ -522,10 +522,10 @@ public class TestHelp {
                 "        test partial -",
                 "",
                 "SYNOPSIS",
-                "        test partial [ --kvp <kvps>... ] [--] [ <args>... ]",
+                "        test partial [ --kvp <Key> <Value>... ] [--] [ <args>... ]",
                 "",
                 "OPTIONS",
-                "        --kvp <kvps> <kvps>",
+                "        --kvp <Key> <Value>",
                 "",
                 "",
                 "            The following restriction only applies to the 1st value:",
@@ -563,10 +563,10 @@ public class TestHelp {
                 "        test ArgsArityString -\n" +
                 "\n" +
                 "SYNOPSIS\n" +
-                "        test ArgsArityString [ -pairs <pairs>... ] [--] [ <rest>... ]\n" +
+                "        test ArgsArityString [ -pairs <Key> <Value>... ] [--] [ <rest>... ]\n" +
                 "\n" +
                 "OPTIONS\n" +
-                "        -pairs <pairs> <pairs>\n" +
+                "        -pairs <Key> <Value>\n" +
                 "            Pairs\n" +
                 "\n" +
                 "        --\n" +

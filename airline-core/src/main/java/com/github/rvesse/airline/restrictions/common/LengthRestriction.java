@@ -24,6 +24,7 @@ import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseInvalidRestrictionException;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
+import com.github.rvesse.airline.utils.AirlineUtils;
 
 /**
  * A restriction that requires string values meet length constraints
@@ -42,8 +43,7 @@ public class LengthRestriction extends AbstractStringRestriction implements Help
      * @param length
      *            Length
      * @param maximum
-     *            True if the {@code length} is a maximum, false if it is a
-     *            minimum
+     *            True if the {@code length} is a maximum, false if it is a minimum
      */
     public LengthRestriction(int length, boolean maximum) {
         this.min = maximum ? Integer.MIN_VALUE : length;
@@ -82,49 +82,51 @@ public class LengthRestriction extends AbstractStringRestriction implements Help
 
     @Override
     protected <T> ParseRestrictionViolatedException violated(ParseState<T> state, OptionMetadata option, String value) {
+        String title = AbstractCommonRestriction.getOptionTitle(state, option);
+        String name = AirlineUtils.first(option.getOptions());
         if (this.maximum) {
             return new ParseRestrictionViolatedException(
-                    "Option '%s' was given value '%s' that has length %d which exceeds the maximum permitted length of %d",
-                    option.getTitle(), value, value.length(), this.max);
+                    "Option %s value '%s' was given value '%s' that has length %d which exceeds the maximum permitted length of %d",
+                    name, title, value, value.length(), this.max);
         } else if (this.range) {
             if (this.min == this.max) {
                 return new ParseRestrictionViolatedException(
-                        "Option '%s' was given value '%s' that has length %d which does not match the required length of %d",
-                        option.getTitle(), value, value.length(), this.max);
+                        "Option %s value '%s' was given value '%s' that has length %d which does not match the required length of %d",
+                        name, title, value, value.length(), this.max);
             } else {
                 return new ParseRestrictionViolatedException(
-                        "Option '%s' was given value '%s' that has length %d which is not in the accepted length range of %d to %d characters",
-                        option.getTitle(), value, value.length(), this.min, this.max);
+                        "Option %s value '%s' was given value '%s' that has length %d which is not in the accepted length range of %d to %d characters",
+                        name, title, value, value.length(), this.min, this.max);
             }
         } else {
             return new ParseRestrictionViolatedException(
-                    "Option '%s' was given value '%s' that has length %d which is below the minimum required length of %d",
-                    option.getTitle(), value, value.length(), this.min);
+                    "Option %s value '%s' was given value '%s' that has length %d which is below the minimum required length of %d",
+                    name, title, value, value.length(), this.min);
         }
     }
 
     @Override
     protected <T> ParseRestrictionViolatedException violated(ParseState<T> state, ArgumentsMetadata arguments,
             String value) {
+        String title = AbstractCommonRestriction.getArgumentTitle(state, arguments);
         if (this.maximum) {
             return new ParseRestrictionViolatedException(
                     "Argument '%s' was given value '%s' that has length %d which exceeds the maximum permitted length of %d",
-                    AbstractCommonRestriction.getArgumentTitle(state, arguments), value, value.length(), this.max);
+                    title, value, value.length(), this.max);
         } else if (this.range) {
             if (this.min == this.max) {
                 return new ParseRestrictionViolatedException(
                         "Argument '%s' was given value '%s' that has length %d which exceeds the maximum permitted length of %d",
-                        AbstractCommonRestriction.getArgumentTitle(state, arguments), value, value.length(), this.max);
+                        title, value, value.length(), this.max);
             } else {
                 return new ParseRestrictionViolatedException(
                         "Argument '%s' was given value '%s' that has length %d which is not in the accepted length range of %d to %d characters",
-                        AbstractCommonRestriction.getArgumentTitle(state, arguments), value, value.length(), this.min,
-                        this.max);
+                        title, value, value.length(), this.min, this.max);
             }
         } else {
             return new ParseRestrictionViolatedException(
                     "Argument '%s' was given value '%s' that has length %d which is below the minimum required length of %d",
-                    AbstractCommonRestriction.getArgumentTitle(state, arguments), value, value.length(), this.min);
+                    title, value, value.length(), this.min);
         }
     }
 

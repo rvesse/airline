@@ -15,6 +15,11 @@
  */
 package com.github.rvesse.airline.restrictions;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.collections4.Predicate;
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.model.PositionalArgumentMetadata;
@@ -65,6 +70,10 @@ public abstract class AbstractCommonRestriction implements OptionRestriction, Ar
     @Override
     public <T> void finalValidate(ParseState<T> state, PositionalArgumentMetadata arguments) {
         // Does no validation
+    }
+
+    public static <T> String getOptionTitle(ParseState<T> state, final OptionMetadata option) {
+        return option.getTitle(state.getOptionValuesSeen(option) % option.getArity());
     }
 
     public static <T> String getArgumentTitle(ParseState<T> state, ArgumentsMetadata arguments) {

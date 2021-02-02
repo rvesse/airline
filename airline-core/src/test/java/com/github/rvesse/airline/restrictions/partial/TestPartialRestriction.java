@@ -18,6 +18,7 @@ package com.github.rvesse.airline.restrictions.partial;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -172,8 +173,8 @@ public class TestPartialRestriction {
         restrictions.add(restriction);
         List<Field> fields = Collections.singletonList(PartialUnannotated.class.getField("kvps"));
 
-        OptionMetadata option = new OptionMetadata(OptionType.COMMAND, names, "Key Value", "", 2, false, false, false,
-                restrictions, null, fields);
+        OptionMetadata option = new OptionMetadata(OptionType.COMMAND, names, Arrays.asList("Key", "Value"), "", 2,
+                false, false, false, restrictions, null, fields);
 
         ParseState<PartialUnannotated> state = ParseState.newInstance();
         state = state.withOptionValue(option, "a");
@@ -211,7 +212,7 @@ public class TestPartialRestriction {
         Assert.assertEquals(cmd.kvps.get(1), "");
     }
 
-    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*'kvps' requires a non-blank value.*")
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*--kvp value '<Key>' requires a non-blank value.*")
     public void partial_annotated_notblank_02() throws NoSuchFieldException, SecurityException {
         SingleCommand<PartialAnnotated> parser = SingleCommand.singleCommand(PartialAnnotated.class);
         parser.parse(new String[] { "--kvp", "", "text" });

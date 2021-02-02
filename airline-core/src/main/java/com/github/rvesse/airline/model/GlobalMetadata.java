@@ -15,7 +15,9 @@
  */
 package com.github.rvesse.airline.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -57,6 +59,59 @@ public class GlobalMetadata<T> {
         this.restrictions = AirlineUtils.unmodifiableListCopy(restrictions);
         this.baseHelpSections = AirlineUtils.unmodifiableListCopy(baseHelpSections);
         this.parserConfig = parserConfig != null ? parserConfig : ParserBuilder.<T> defaultConfiguration();
+
+        // Look for duplicate command names on different classes
+        checkForSuppressedCommands(this.defaultGroupCommands, this.defaultCommand, "");
+        for (CommandGroupMetadata group : this.commandGroups) {
+            checkForSuppressedCommands(group, "");
+        }
+    }
+
+    private static void checkForSuppressedCommands(CommandGroupMetadata group, String groupPath) {
+        StringBuilder groupName = new StringBuilder();
+        if (groupPath.length() > 0) {
+            groupName.append(groupPath);
+            groupName.append(' ');
+        }
+        groupName.append(group.getName());
+
+        checkForSuppressedCommands(group.getCommands(), group.getDefaultCommand(), groupName.toString());
+
+        for (CommandGroupMetadata subGroup : group.getSubGroups()) {
+            checkForSuppressedCommands(subGroup, groupName.toString());
+        }
+    }
+
+    private static void checkForSuppressedCommands(List<CommandMetadata> commands, CommandMetadata defaultCommand,
+            String groupName) {
+        Map<String, Class<?>> nameToClass = new HashMap<>();
+
+        for (CommandMetadata cmd : commands) {
+            Class<?> cls = nameToClass.get(cmd.getName());
+            if (cls == null) {
+                nameToClass.put(cmd.getName(), cmd.getType());
+            } else {
+                // If a different command class this is illegal
+                // Duplicate command classes are fine (although non-sensical)
+                if (!cls.equals(cmd.getType())) {
+                    suppressedCommand(cls, cmd, groupName);
+                }
+            }
+        }
+
+        if (defaultCommand != null) {
+            Class<?> cls = nameToClass.get(defaultCommand.getName());
+            if (cls != null && !cls.equals(defaultCommand.getType())) {
+                suppressedCommand(cls, defaultCommand, groupName);
+            }
+        }
+    }
+
+    private static void suppressedCommand(Class<?> cls, CommandMetadata cmd, String groupName) {
+        throw new IllegalArgumentException(String.format(
+                "Command classes '%s' and '%s' both declare the command name '%s' and are both in the %s and as such one of these commands would be inaccessible.  Please correct your @Command annotations to use distinct command names.",
+                cls, cmd.getType(), cmd.getName(),
+                groupName != null ? String.format("group '%s'", groupName) : "default group"));
     }
 
     /**

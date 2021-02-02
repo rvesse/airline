@@ -25,6 +25,7 @@ import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
+import com.github.rvesse.airline.utils.AirlineUtils;
 
 public class NotEmptyRestriction extends AbstractStringRestriction implements HelpHint {
 
@@ -35,7 +36,8 @@ public class NotEmptyRestriction extends AbstractStringRestriction implements He
 
     @Override
     protected <T> ParseRestrictionViolatedException violated(ParseState<T> state, OptionMetadata option, String value) {
-        return new ParseRestrictionViolatedException("Option '%s' requires a non-empty value", option.getTitle());
+        return new ParseRestrictionViolatedException("Option %s value '%s' requires a non-empty value",
+                AirlineUtils.first(option.getOptions()), AbstractCommonRestriction.getOptionTitle(state, option));
     }
 
     @Override
@@ -69,8 +71,9 @@ public class NotEmptyRestriction extends AbstractStringRestriction implements He
 
     @Override
     public String[] getContentBlock(int blockNumber) {
-        if (blockNumber != 0) throw new IndexOutOfBoundsException();
-        
+        if (blockNumber != 0)
+            throw new IndexOutOfBoundsException();
+
         return new String[] { "This options value cannot be empty" };
     }
 }

@@ -35,7 +35,8 @@ import org.apache.commons.collections4.SetUtils;
 public class OptionMetadata {
     private final OptionType optionType;
     private final Set<String> options;
-    private final String title, description;
+    private final List<String> titles;
+    private final String description;
     private final int arity;
     private final boolean hidden, overrides, sealed;
     private final List<OptionRestriction> restrictions;
@@ -45,7 +46,7 @@ public class OptionMetadata {
     //@formatter:off
     public OptionMetadata(OptionType optionType, 
                           Iterable<String> options, 
-                          String title, 
+                          Iterable<String> titles, 
                           String description, 
                           int arity,
                           boolean hidden, 
@@ -61,18 +62,21 @@ public class OptionMetadata {
             throw new NullPointerException("options cannot be null");
         if (!options.iterator().hasNext())
             throw new NullPointerException("options cannot be empty");
-        if (title == null)
+        if (titles == null)
             throw new NullPointerException("title cannot be null");
+        if (!titles.iterator().hasNext())
+            throw new NullPointerException("titles cannot be empty");
 
         this.optionType = optionType;
         this.options = AirlineUtils.unmodifiableSetCopy(options);
-        this.title = title;
+        this.titles = AirlineUtils.unmodifiableListCopy(titles);
         this.description = description;
         this.arity = arity;
         this.hidden = hidden;
         this.overrides = overrides;
         this.sealed = sealed;
-        this.restrictions = restrictions != null ? AirlineUtils.unmodifiableListCopy(restrictions) : Collections.<OptionRestriction>emptyList();
+        this.restrictions = restrictions != null ? AirlineUtils.unmodifiableListCopy(restrictions)
+                : Collections.<OptionRestriction> emptyList();
         this.provider = typeConverterProvider != null ? typeConverterProvider : new DefaultTypeConverterProvider();
 
         if (path != null) {
@@ -90,7 +94,7 @@ public class OptionMetadata {
 
         this.optionType = option.optionType;
         this.options = option.options;
-        this.title = option.title;
+        this.titles = option.titles;
         this.description = option.description;
         this.arity = option.arity;
         this.hidden = option.hidden;
@@ -118,8 +122,32 @@ public class OptionMetadata {
         return options;
     }
 
+    public List<String> getTitles() {
+        return titles;
+    }
+
+    /**
+     * Gets the first title
+     * 
+     * @deprecated Options now support multiple titles, use {@link #getTitle(int)} to get a specific title or
+     *             {@link #getTitles()} to get all titles
+     * @return First title
+     */
+    @Deprecated
     public String getTitle() {
-        return title;
+        return AirlineUtils.first(titles);
+    }
+
+    public String getTitle(int index) {
+        if (arity == 0)
+            return titles.get(0);
+
+        if (index < 0 || index >= arity)
+            throw new IllegalArgumentException(
+                    String.format("Title index must be between 0 and %d (got %d)", arity, index));
+
+        // Return the appropriate title if the index has an explicit title, otherwise return the last title
+        return index < titles.size() ? titles.get(index) : titles.get(titles.size() - 1);
     }
 
     public String getDescription() {
@@ -160,11 +188,11 @@ public class OptionMetadata {
         }
         return accessors;
     }
-    
+
     public List<OptionRestriction> getRestrictions() {
         return this.restrictions;
     }
-    
+
     public TypeConverterProvider getTypeConverterProvider() {
         return this.provider;
     }
@@ -201,7 +229,7 @@ public class OptionMetadata {
         if (!options.equals(that.options)) {
             return false;
         }
-        if (!title.equals(that.title)) {
+        if (!titles.equals(that.titles)) {
             return false;
         }
 
@@ -212,7 +240,7 @@ public class OptionMetadata {
     public int hashCode() {
         int result = optionType.hashCode();
         result = 31 * result + options.hashCode();
-        result = 31 * result + title.hashCode();
+        result = 31 * result + titles.hashCode();
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + arity;
         result = 31 * result + (hidden ? 1 : 0);
@@ -227,7 +255,7 @@ public class OptionMetadata {
         sb.append("OptionMetadata");
         sb.append("{optionType=").append(optionType);
         sb.append(", options=").append(options);
-        sb.append(", title='").append(title).append('\'');
+        sb.append(", title=").append(titles);
         sb.append(", description='").append(description).append('\'');
         sb.append(", arity=").append(arity);
         sb.append(", hidden=").append(hidden);
@@ -239,9 +267,8 @@ public class OptionMetadata {
     }
 
     /**
-     * Tries to merge the option metadata together such that the child metadata
-     * takes precedence. Not all options can be successfully overridden and an
-     * error may be thrown in cases where merging is not possible
+     * Tries to merge the option metadata together such that the child metadata takes precedence. Not all options can be
+     * successfully overridden and an error may be thrown in cases where merging is not possible
      * <p>
      * The following pieces of metadata may be overridden:
      * </p>
@@ -260,13 +287,13 @@ public class OptionMetadata {
     public static OptionMetadata override(Set<String> names, OptionMetadata parent, OptionMetadata child) {
         // Cannot change option type, arity or names
         if (parent.optionType != child.optionType)
-            throw new IllegalArgumentException(String.format("Cannot change optionType when overriding option %s",
-                    names));
+            throw new IllegalArgumentException(
+                    String.format("Cannot change optionType when overriding option %s", names));
         if (parent.arity != child.arity)
             throw new IllegalArgumentException(String.format("Cannot change arity when overriding option %s", names));
         if (!parent.options.equals(child.options))
-            throw new IllegalArgumentException(String.format("Cannot change option names when overriding option %s",
-                    names));
+            throw new IllegalArgumentException(
+                    String.format("Cannot change option names when overriding option %s", names));
 
         // Also cannot change the type of the option unless the change is a
         // narrowing conversion
@@ -278,16 +305,14 @@ public class OptionMetadata {
                     // A widening conversion exists but this is illegal however
                     // we can give a slightly more informative error in this
                     // case
-                    throw new IllegalArgumentException(
-                            String.format(
-                                    "Cannot change the Java type from %s to %s when overriding option %s as this is a widening type change - only narrowing type changes are permitted",
-                                    parentType, childType, names));
+                    throw new IllegalArgumentException(String.format(
+                            "Cannot change the Java type from %s to %s when overriding option %s as this is a widening type change - only narrowing type changes are permitted",
+                            parentType, childType, names));
                 } else {
                     // No conversion exists
-                    throw new IllegalArgumentException(
-                            String.format(
-                                    "Cannot change the Java type from %s to %s when overriding option %s - only narrowing type changes where a valid cast exists are permitted",
-                                    parentType, childType, names));
+                    throw new IllegalArgumentException(String.format(
+                            "Cannot change the Java type from %s to %s when overriding option %s - only narrowing type changes where a valid cast exists are permitted",
+                            parentType, childType, names));
                 }
             }
         }
@@ -298,21 +323,21 @@ public class OptionMetadata {
         // Parent must not state it is sealed UNLESS it is a duplicate which can
         // happen when using @Inject to inject options via delegates
         if (parent.sealed && !isDuplicate)
-            throw new IllegalArgumentException(String.format(
-                    "Cannot override option %s as parent option declares it to be sealed", names));
+            throw new IllegalArgumentException(
+                    String.format("Cannot override option %s as parent option declares it to be sealed", names));
 
         // Child must explicitly state that it overrides otherwise we cannot
         // override UNLESS it is the case that this is a duplicate which
         // can happen when using @Inject to inject options via delegates
         if (!child.overrides && !isDuplicate)
-            throw new IllegalArgumentException(String.format(
-                    "Cannot override option %s unless child option sets overrides to true", names));
+            throw new IllegalArgumentException(
+                    String.format("Cannot override option %s unless child option sets overrides to true", names));
 
         OptionMetadata merged;
         //@formatter:off
         merged = new OptionMetadata(child.optionType, 
                                     child.options, 
-                                    child.title != null ? child.title : parent.title,
+                                    child.titles != null ? child.titles : parent.titles,
                                     child.description != null ? child.description : parent.description, 
                                     child.arity, 
                                     child.hidden, 

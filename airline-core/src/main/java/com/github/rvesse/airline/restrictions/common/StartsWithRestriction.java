@@ -27,6 +27,7 @@ import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseRestrictionViolatedException;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
+import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.PrefixMatcher;
 
 /**
@@ -54,8 +55,8 @@ public class StartsWithRestriction extends AbstractLocaleAndCaseStringRestrictio
     @Override
     protected <T> ParseRestrictionViolatedException violated(ParseState<T> state, OptionMetadata option, String value) {
         throw new ParseRestrictionViolatedException(
-                "Option '%s' has value '%s' which does not start with one of the permitted prefixes: %s",
-                option.getTitle(), value, StringUtils.join(this.prefixes, ", "));
+                "Option %s value '%s' has value '%s' which does not start with one of the permitted prefixes: %s",
+                AirlineUtils.first(option.getOptions()), AbstractCommonRestriction.getOptionTitle(state, option), value, StringUtils.join(this.prefixes, ", "));
     }
 
     @Override

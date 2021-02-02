@@ -49,7 +49,7 @@ public class MultipleOfRestriction extends AbstractCommonRestriction implements 
 
     @Override
     public <T> void postValidate(ParseState<T> state, OptionMetadata option, Object value) {
-        validate(state, "Option", option.getTitle(), value);
+        validate(state, "Option", AbstractCommonRestriction.getOptionTitle(state, option), value);
     }
 
     @Override

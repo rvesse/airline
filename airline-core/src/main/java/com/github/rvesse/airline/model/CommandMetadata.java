@@ -194,6 +194,12 @@ public class CommandMetadata {
         return metadataInjections;
     }
 
+    /**
+     * Gets the command type i.e. the class that will be instantiated to
+     * represent and execute this command
+     * 
+     * @return Command type
+     */
     public Class<?> getType() {
         return type;
     }

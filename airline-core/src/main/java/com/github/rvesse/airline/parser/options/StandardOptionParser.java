@@ -24,6 +24,7 @@ import com.github.rvesse.airline.Context;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseOptionMissingValueException;
+import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 
 /**
  * An options parser that expects the name and value(s) to be white space
@@ -77,7 +78,7 @@ public class StandardOptionParser<T> extends AbstractOptionParser<T> {
                 state.getParserConfiguration().getErrorHandler()
                         .handleError(new ParseOptionMissingValueException(
                                 "Too few option values received for option %s (%d values expected but only found %d)",
-                                option.getTitle(), option.getOptions().iterator().next(), option.getArity(), count));
+                                option.getOptions().iterator().next(), option.getOptions().iterator().next(), option.getArity(), count));
                 return state;
 
             }

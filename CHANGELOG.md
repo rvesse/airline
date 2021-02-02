@@ -24,9 +24,17 @@ API refactoring based on several years of deployed production usage and communit
 - Help Improvements
     - Generates help for positional arguments (#91)
 
-## 2.8.0
 
-## 2.7.0
+# 2.x Releases
+=======
+
+## 2.8.2
+
+
+## 2.8.1
+
+- Bug Fixes
+    - Fix for using Airline in JPMS environments (#102) (thanks to @jfallows)
 
 - Bug Fixes
     - `EnvVarLocator` and `JvmSystemPropertyLocator` could resolve locations incorrectly if some placeholders were undefined
@@ -36,6 +44,24 @@ API refactoring based on several years of deployed production usage and communit
     - **`ArgumentsRestriction ` can also be applied to positional arguments
         - All built-in implementations support this
         - This is a **BREAKING** change for users writing Custom Restrictions, your implementations may need to implement additional methods to work with positional arguments    
+
+- Core Improvements
+    - `@Option` annotation now allows an array of values for the `title` field allowing options with `arity` > 1 to have distinct titles shown for each value the option accepts
+
+
+## 2.7.2
+
+- Bug Fixes
+    - `@AllowedEnumValues` incorrectly provides help hint that values are case insensitive when they are actually case sensitive (#100)
+    - `@AllowedRawValues` does not handle case insensitive mode correctly (#100)
+    - `@Option` with `type = OptionType.GLOBAL` and `type = OptionType.GROUP` are not correctly parsed at the command level (#101)
+
+## 2.7.1
+
+- Bug Fixes
+    - `CollectAll` handler collected multiple duplicates of the same error when certain restrictions were used.  Now instead duplicates are combined into a single exception (#94)
+    - CLIs could allow command classes with the same declared command name in their `@Command` annotation to silently override each other.  Now instead an error will be thrown reporting the problem (#95)
+    - When using group default commands and command abbreviation we can incorrectly ignore a value (#99)
 
 ## 2.7.0
 

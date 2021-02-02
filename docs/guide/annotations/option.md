@@ -50,6 +50,16 @@ private String alphabet;
 
 This provides users with some information about what an option actually does that will be included in [Help](../help/).
 
+{% include req-ver.md version="2.8.0" %}
+
+If we have an option with an arity greater than 1 we can specify an array of titles e.g.
+
+```java
+@Option(name = "--kvp", arity = 2, title = { "Key", "Value" })
+private List<String> kvps;
+```
+Here we have an option with arity 2 and separate titles for each value that the option accepts.
+
 #### Hidden Options
 
 As with `@Command` annotations we can add a `hidden` field to specify that an option is hidden e.g.

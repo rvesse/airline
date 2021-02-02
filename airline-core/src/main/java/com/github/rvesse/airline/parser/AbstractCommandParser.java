@@ -37,6 +37,7 @@ import com.github.rvesse.airline.utils.predicates.parser.GroupFinder;
 import java.util.List;
 
 import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.iterators.PeekingIterator;
 
@@ -152,8 +153,13 @@ public abstract class AbstractCommandParser<T> extends AbstractParser<T> {
                     state = state.withUnparsedInput(tokens.next());
                 }
             } else {
+                // Only consume the token if it is:
+                // 1) Exactly the command name
+                // 2) We're not using the default command and it isn't an
+                // allowed abbreviation of a command
                 if (tokens.peek().equals(command.getName())
-                        || (!usingDefault && state.getParserConfiguration().allowsAbbreviatedCommands())) {
+                        || (!usingDefault && state.getParserConfiguration().allowsAbbreviatedCommands()
+                                && command.getName().startsWith(tokens.peek()))) {
                     tokens.next();
                 }
 
@@ -168,7 +174,7 @@ public abstract class AbstractCommandParser<T> extends AbstractParser<T> {
     protected ParseState<T> parseCommandOptionsAndArguments(PeekingIterator<String> tokens, ParseState<T> state,
             CommandMetadata command) {
         while (tokens.hasNext()) {
-            state = parseOptions(tokens, state, command.getCommandOptions());
+            state = parseOptions(tokens, state, command.getAllOptions());
 
             state = parseArgs(state, tokens, command.getPositionalArguments(), command.getArguments(), command.getDefaultOption());
         }
@@ -187,7 +193,8 @@ public abstract class AbstractCommandParser<T> extends AbstractParser<T> {
             if (group != null) {
                 tokens.next();
                 state = state.withGroup(group).pushContext(Context.GROUP);
-                state = parseOptions(tokens, state, state.getGroup().getOptions());
+                state = parseOptions(tokens, state,
+                        ListUtils.union(state.getGlobal().getOptions(), state.getGroup().getOptions()));
 
                 // Possibly may have sub-groups specified
                 while (tokens.hasNext() && state.getGroup().getSubGroups().size() > 0) {
@@ -200,7 +207,8 @@ public abstract class AbstractCommandParser<T> extends AbstractParser<T> {
                     if (group != null) {
                         tokens.next();
                         state = state.withGroup(group).pushContext(Context.GROUP);
-                        state = parseOptions(tokens, state, state.getGroup().getOptions());
+                        state = parseOptions(tokens, state,
+                                ListUtils.union(state.getGlobal().getOptions(), state.getGroup().getOptions()));
                     } else {
                         // Either a group that has a mixture of sub-groups and
                         // commands in which case we need to break out of this
