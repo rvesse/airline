@@ -1,9 +1,18 @@
 # Airline - Change Log
 
+## 2.8.2
+
+
+
+## 2.8.1
+
+- Bug Fixes
+    - Fix for using Airline in JPMS environments (#102) (thanks to @jfallows)
+
 ## 2.8.0
 
 - Core Improvements
-    - `@Option` annotation now allows an array of values for the `title` field allowing options with arity > 1 to have distinct titles shown for each value the option accepts
+    - `@Option` annotation now allows an array of values for the `title` field allowing options with `arity` > 1 to have distinct titles shown for each value the option accepts
 
 
 ## 2.7.2

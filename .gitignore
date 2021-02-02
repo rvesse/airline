@@ -28,3 +28,6 @@ release.properties
 Gemfile.lock
 _site/
 *-SNAPSHOT/
+docs/dist-version.txt
+docs/find.xslt
+docs/maven-metadata.xml
