@@ -5,7 +5,9 @@ title: Prompts
 
 {% include req-ver.md version="2.9.0" %}
 
-Often command line applications may need to prompt users for input e.g. asking for a password, obtaining a missing value, asking for a Yes/No response etc.  From 2.9.0 onwards we provide the `airline-prompts` module which provides a library for doing this in a consistent manner, this includes features such as:
+Often command line applications may need to prompt users for input e.g. asking for a password, obtaining a missing value, 
+asking for a Yes/No response etc.  From 2.9.0 onwards we provide the `airline-prompts` module which provides a library for 
+doing this in a consistent manner, this includes features such as:
 
 - Prompt timeouts so non-interactive apps don't hang forever
 - Configurable prompt sources
@@ -16,11 +18,15 @@ Often command line applications may need to prompt users for input e.g. asking f
 
 ## Prompting
 
-Prompting is done by creating an instance of a `Prompt<T>` where `T` is the type used for strongly typed option prompts.  Prompts can be manually instantiated or created using the `PromptBuilder<T>` which is described later on this page.  Once you have a prompt you can ask for a variety of different inputs depending on what your application needs to do.
+Prompting is done by creating an instance of a `Prompt<T>` where `T` is the type used for strongly typed option prompts.  
+Prompts can be manually instantiated or created using the `PromptBuilder<T>` (the recommended method) which is described 
+later on this page.  Once you have a prompt you can ask for a variety of different inputs depending on what your application 
+needs to do.
 
 ### Prompting for a Key
 
-The `prompt.promptForKey()` method reads a single character from the configured provider and returns its character code as an `int` e.g.
+The `prompt.promptForKey()` method reads a single character from the configured provider and returns its character code 
+as an `int` e.g.
 
 ```java
 int key = prompt.promptForKey();
@@ -35,17 +41,25 @@ String line = prompt.promptForLine();
  
 ### Prompting for a Password
 
-The `prompt.promptForSecure()` method securely reads a line of input as a `char[]` from the configured provider assuming that it is capable of reading securely i.e. this may not work with all providers.
+The `prompt.promptForSecure()` method securely reads a line of input as a `char[]` from the configured provider 
+assuming that it is capable of reading securely i.e. this may not work with all providers.
 
 ```java
 char[] password = prompt.promptForSecure();
 ```
 
+Secure read means that it reads the data in such a way to as ensure that it does not echo any data back to the output.
+
 ### Prompting for an Option
 
-The `prompt.promptForOption()` method reads a line of input and attempts to match that to one of the configured options using the configured option matcher.  This can allow for matching values using custom logic, allowing the user to select options by numeric index etc.  See the section on Option Matching later on this page for more detail on this.
+The `prompt.promptForOption()` method reads a line of input and attempts to match that to one of the configured 
+options using the configured option matcher.  This can allow for matching values using custom logic, allowing the 
+user to select options by numeric index etc.  See the section on Option Matching later on this page for more detail 
+on this.
 
-This method takes a `boolean` parameter indicating whether the method calls `promptForLine()` or `promptForSecure()` prior to attempting to match the input to an option.  The type returned from this method will be the type parameter used for the prompt and the configured options.
+This method takes a `boolean` parameter indicating whether the method calls `promptForLine()` or 
+`promptForSecure()` prior to attempting to match the input to an option.  The type returned from this method will 
+be the type parameter used for the prompt and the configured options.
 
 ```java
 String option = prompt.promptForOption(false);
@@ -53,7 +67,8 @@ String option = prompt.promptForOption(false);
 
 ### Prompting for a Value
 
-You can also prompt for any strongly typed value assuming that your configured [Type Converter](types.html) supports it e.g.
+You can also prompt for any strongly typed value assuming that your configured [Type Converter](types.html) 
+supports it e.g.
 
 ```java
 MyCustomType value = prompt.promptForValue(MyCustomType.class, false);
@@ -61,7 +76,7 @@ MyCustomType value = prompt.promptForValue(MyCustomType.class, false);
 
 ## Prompt Builder
 
-Generally a `PromptBuilder<T>` is used to specify the desired prompt.  For example consider the following simple example:
+Generally a `PromptBuilder<T>` is used to specify the desired prompt.  For example consider the following:
 
 ```java
 Prompt<String> prompt 
@@ -72,9 +87,11 @@ Prompt<String> prompt
                 .withTimeout(10, TimeUnit.SECONDS)
                 .build();
 ```
-This builds a prompt with option type `String` that uses `ConsolePrompt` for the provider, has three options and a timeout of 10 seconds.
+This builds a prompt with option type `String` that uses `ConsolePrompt` for the provider, has three options 
+and a timeout of 10 seconds.
 
-Alternatively we could use the static methods in `Prompts` to provide a builder for some common prompts, e.g. the above could be written as follows:
+Alternatively we could use the static methods in `Prompts` to provide a builder for some common prompts, 
+e.g. the above could be written as follows:
 
 ```java
 Prompt<String> prompt 
@@ -87,15 +104,21 @@ The following sections cover how to configure different aspects of your prompt v
 
 ### Provider
 
-The `PromptProvider` provides the ability to output prompt messages and read user input.  This can be configured using the `withPromptProvider(PromptProvider)` method on the builder as seen in the earlier example.
+The `PromptProvider` provides the ability to output prompt messages and read user input.  This can be 
+configured using the `withPromptProvider(PromptProvider)` method on the builder as seen in the earlier example.
 
-Alternatively you can use `withDefaultPromptProvider()` to configure with the default provider for your environment.  This will be `ConsolePrompt` if the JVM `System.console()` is available or `StdIOPrompt` otherwise.
+Alternatively you can use `withDefaultPromptProvider()` to configure with the default provider for your 
+environment.  This will be `ConsolePrompt` if the JVM `System.console()` is available or `StdIOPrompt` otherwise.
 
-The choice of provider may impact what functionality you can use, in particular whether a provider returns `true` or `false` for `supportsSecureReads()` controls whether you can use the `promptForSecure()` method of a prompt.
+The choice of provider may impact what functionality you can use, in particular whether a provider returns 
+`true` or `false` for `supportsSecureReads()` controls whether you can use the `promptForSecure()` method 
+of a prompt.
 
 ### Timeouts
 
-The timeout controls how long users have to respond to prompts.  Having a timeout can be useful because it prevents your application from hanging indefinitely if run in a non-interactive environment and/or allows you to fallback to alternative behaviour, fail fast etc. when no prompt response is received.
+The timeout controls how long users have to respond to prompts.  Having a timeout can be useful because it 
+prevents your application from hanging indefinitely if run in a non-interactive environment and/or allows you to 
+fallback to alternative behaviour, fail fast etc. when no prompt response is received.
 
 The timeout can be set with the `withTimeout()` method and `withTimeoutUnit()` methods e.g.
 
@@ -120,7 +143,9 @@ A prompt that does not receive a response within the timeout throws a `PromptTim
 
 ### Options
 
-The options functionality allows you to create prompts that provide users with a choice of options and determine which option the user selected.  Options are a strongly typed API that is configured when you create your prompt by the type parameter used for your `PromptBuilder<T>` instance.  We can configure one/more options like so:
+The options functionality allows you to create prompts that provide users with a choice of options and determine 
+which option the user selected.  Options are a strongly typed API that is configured when you create your prompt 
+by the type parameter used for your `PromptBuilder<T>` instance.  We can configure one/more options like so:
 
 ```java
 Prompt<String> prompt 
@@ -133,19 +158,28 @@ Prompt<String> prompt
            .build();
 ```
 
-Here we configure three string options and we can then use `promptForOption()` to prompt the user to select from those options.  Note that we also use `withListFormatter()` which applies a formatter that will display those options to the user in a list.  We'll discuss formatters more later in this page.
+Here we configure three string options and we can then use `promptForOption()` to prompt the user to select from 
+those options.  Note that we also use `withListFormatter()` which applies a formatter that will display those options 
+to the user in a list.  We'll discuss formatters more later in this page.
 
 #### Type Conversion
 
-As with the rest of Airline we use our standard [Type Converter](types.html) API to control how options and input values are converted where necessary.  This is configured on a prompt builder via the `withTypeConverter(TypeConverter)` method.  If no type converter is explicitly configured  our standard `DefaultTypeConverter` is used.
+As with the rest of Airline we use our standard [Type Converter](types.html) API to control how options and input 
+values are converted where necessary.  This is configured on a prompt builder via the 
+`withTypeConverter(TypeConverter)` method.  If no type converter is explicitly configured  our standard 
+`DefaultTypeConverter` is used.
 
 #### Option Matcher
 
-Option matching is used when the `promptForOption()` method is called on a prompt, it is provided by the `PromptOptionMatcher` interface.  It controls how the prompt takes the raw input response, provided by `promptForLine()` or `promptForSecure()` and turns it into a strongly type option value from the list of options provided when you configured your prompt.
+Option matching is used when the `promptForOption()` method is called on a prompt, it is provided by the 
+`PromptOptionMatcher` interface.  It controls how the prompt takes the raw input response, provided by 
+`promptForLine()` or `promptForSecure()` and turns it into a strongly type option value from the list of options 
+provided when you configured the prompt.
 
 The default implementation is the `DefaultMatcher`, this has the following behaviour:
 
-- If the prompt was configured with `withNumericOptionSelection()` then first see if the response is a 1 based index for one of the options
+- If the prompt was configured with `withNumericOptionSelection()` then first see if the response is a 1 based 
+  index for one of the options
     - If a valid index to an option return it
 - Then see if the raw response partially/exactly matches the string representations of any of the options
     - If no options match error as invalid response
@@ -160,10 +194,13 @@ The following additional matchers are also provided:
 
 - `ExactMatcher` - Only match exact string representations.
 - `ExactIgnoresCaseMatch` - Only match exact string representations allowing for case insensitivity.
-- `IndexMatcher` - Treat response as a 1 based index to an option, requires a prompt configured `withNumericOptionSelection()`
-- `ValueMatcher` - Converts response into the option type and compares values directly, useful when the string representation of an option can be given in multiple ways e.g. floating point numbers.
+- `IndexMatcher` - Treat response as a 1 based index to an option, requires a prompt configured 
+  `withNumericOptionSelection()`
+- `ValueMatcher` - Converts response into the option type and compares values directly, useful when the string 
+  representation of an option can be given in multiple ways e.g. floating point numbers.
 
-The matcher is configured by using the `withOptionMatcher(PromptOptionMatcher)` method of the `PromptBuilder`, or `withDefaultOptionMatcher()` to use the default matcher e.g.
+The matcher is configured by using the `withOptionMatcher(PromptOptionMatcher)` method of the `PromptBuilder`, 
+or `withDefaultOptionMatcher()` to use the default matcher e.g.
 
 ```java
    Prompt<Double> prompt 
@@ -179,11 +216,13 @@ The matcher is configured by using the `withOptionMatcher(PromptOptionMatcher)` 
 Double scalingFactor = prompt.promptForOption(false);
 ```
 
-Here we are prompting for a scaling factor as a `Double`, since `Double` values can be written down in multiple ways e.g. `1`, `1.0`, `0.1e1` etc we use `ValueMatcher` to match the prompt response to one of our valid options
+Here we are prompting for a scaling factor as a `Double`, since `Double` values can be written down in multiple 
+ways e.g. `1`, `1.0`, `0.1e1` etc we use `ValueMatcher` to match the prompt response to one of our valid options
  
 ### Formatters
 
-Formatters, defined via the `PromptFormatter` interface, display actual prompts to the user.  Airline provides two implementations of this:
+Formatters, defined via the `PromptFormatter` interface, display actual prompts to the user.  Airline provides two 
+implementations of this out of the box:
 
 - `QuestionFormat` which displays a simple question prompt
 - `ListFormat` which displays a list of options for the user to select from
@@ -199,4 +238,6 @@ Prompt<String> prompt
         .build();
 ```
 
-If no formatter is explicitly specified then the builder selects one of the two default formats depending on whether any options have been specified.  If options have been specified then the list formatter is used, if no options the question formatter is used.
+If no formatter is explicitly specified then the builder selects one of the two default formats depending on whether 
+any options have been specified.  If options have been specified then the list formatter is used, if no options the 
+question formatter is used.
