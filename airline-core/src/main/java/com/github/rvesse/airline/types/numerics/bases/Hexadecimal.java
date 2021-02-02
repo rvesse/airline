@@ -20,8 +20,6 @@ import com.github.rvesse.airline.types.numerics.NumericCandidate;
 
 /**
  * A type converter that supports hexadecimal numbers
- * 
- * @author rvesse
  *
  */
 public class Hexadecimal extends ComplexNumericTypeConverter {

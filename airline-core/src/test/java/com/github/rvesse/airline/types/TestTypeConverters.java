@@ -15,6 +15,8 @@
  */
 package com.github.rvesse.airline.types;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Random;
 
 import org.testng.Assert;
@@ -32,11 +34,11 @@ import com.github.rvesse.airline.types.numerics.bases.Octal;
 
 public class TestTypeConverters {
 
-    private static final int NUMBER_RANDOM_TESTS = 25000;
+    private static final int NUMBER_RANDOM_TESTS = 100000;
     private static final Class<?>[] NUMERIC_TYPES = new Class<?>[] { Long.class, Integer.class, Short.class, Byte.class,
-            Double.class, Float.class };
+            Double.class, Float.class, BigInteger.class, BigDecimal.class };
     private static final Class<?>[] INTEGER_TYPES = new Class<?>[] { Long.class, Integer.class, Short.class,
-            Byte.class };
+            Byte.class, BigInteger.class };
 
     @Test
     public void numeric_default_bad_01() {
@@ -85,6 +87,19 @@ public class TestTypeConverters {
             ConvertResult result = converter.tryConvertNumerics("test", Integer.class, Integer.toString(number));
             Assert.assertTrue(result.wasSuccessfull());
             Assert.assertEquals((int) result.getConvertedValue(), number);
+        }
+    }
+    
+    @Test
+    public void numeric_default_big_integer_01() {
+        NumericTypeConverter converter = new DefaultNumericConverter();
+
+        Random random = new Random();
+        for (int i = 0; i < NUMBER_RANDOM_TESTS; i++) {
+            long number = random.nextLong();
+            ConvertResult result = converter.tryConvertNumerics("test", BigInteger.class, BigInteger.valueOf(number).toString());
+            Assert.assertTrue(result.wasSuccessfull());
+            Assert.assertEquals(((BigInteger)result.getConvertedValue()).longValue(), number);
         }
     }
 
@@ -168,6 +183,19 @@ public class TestTypeConverters {
         Assert.assertTrue(result.wasSuccessfull());
         Assert.assertEquals(result.getConvertedValue(), Double.NaN);
     }
+    
+    @Test
+    public void numeric_default_big_decimal_01() {
+        NumericTypeConverter converter = new DefaultNumericConverter();
+
+        Random random = new Random();
+        for (int i = 0; i < NUMBER_RANDOM_TESTS; i++) {
+            double number = random.nextDouble();
+            ConvertResult result = converter.tryConvertNumerics("test", BigDecimal.class, new BigDecimal(number).toString());
+            Assert.assertTrue(result.wasSuccessfull());
+            Assert.assertEquals(((BigDecimal) result.getConvertedValue()).doubleValue(), number);
+        }
+    }
 
     private void checkIntegerAbbreviationKilo(NumericTypeConverter converter, long multiplier, long min, long max,
             Class<?> type, long divisor, String suffix) {
@@ -190,7 +218,11 @@ public class TestTypeConverters {
                     System.out.println(String.format("Expected abbreviation %d%s to expand to %d but failed",
                             number / divisor, suffix, number));
                 Assert.assertTrue(result.wasSuccessfull());
-                Assert.assertEquals(result.getConvertedValue(), number);
+                if (type.equals(BigInteger.class)) {
+                    Assert.assertEquals((BigInteger)result.getConvertedValue(), BigInteger.valueOf(number));
+                } else {
+                    Assert.assertEquals(result.getConvertedValue(), number);
+                }
                 good++;
             }
         }
@@ -221,6 +253,29 @@ public class TestTypeConverters {
         checkGoodConversion(converter, "1k", Short.class, (short) 1000);
         checkGoodConversion(converter, "10k", Short.class, (short) 10000);
         checkBadConversion(converter, "100k", Short.class);
+    }
+    
+    @Test
+    public void numeric_kilo_1000_big_integer_01() {
+        checkIntegerAbbreviationKilo(new KiloAs1000(), 1000, Long.MIN_VALUE, Long.MAX_VALUE, BigInteger.class, 1000l, "k");
+    }
+
+    @Test
+    public void numeric_kilo_1000_big_integer_02() {
+        checkIntegerAbbreviationKilo(new KiloAs1000(), 1000, Long.MIN_VALUE, Long.MAX_VALUE, BigInteger.class, 1000l * 1000l,
+                "m");
+    }
+
+    @Test
+    public void numeric_kilo_1000_big_integer_03() {
+        checkIntegerAbbreviationKilo(new KiloAs1000(), 1000, Long.MIN_VALUE, Long.MAX_VALUE, BigInteger.class,
+                1000l * 1000l * 1000l, "b");
+    }
+
+    @Test
+    public void numeric_kilo_1000_big_integer_04() {
+        checkIntegerAbbreviationKilo(new KiloAs1000(), 1000, Long.MIN_VALUE, Long.MAX_VALUE, BigInteger.class,
+                1000l * 1000l * 1000l * 1000l, "t");
     }
 
     @Test
@@ -348,7 +403,11 @@ public class TestTypeConverters {
                     System.out.println(String.format("Expected radix %d representation %s to expand to %d but failed",
                             radix, Long.toString(number, radix), number));
                 Assert.assertTrue(result.wasSuccessfull());
-                Assert.assertEquals(result.getConvertedValue(), number);
+                if (type.equals(BigInteger.class)) {
+                    Assert.assertEquals((BigInteger)result.getConvertedValue(), BigInteger.valueOf(number));
+                } else {
+                    Assert.assertEquals(result.getConvertedValue(), number);
+                }
                 good++;
             }
         }
@@ -363,6 +422,7 @@ public class TestTypeConverters {
         checkAlternateRadix(converter, radix, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.class);
         checkAlternateRadix(converter, radix, Short.MIN_VALUE, Short.MAX_VALUE, Short.class);
         checkAlternateRadix(converter, radix, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.class);
+        checkAlternateRadix(converter, radix, Long.MIN_VALUE, Long.MAX_VALUE, BigInteger.class);
     }
 
     @Test
