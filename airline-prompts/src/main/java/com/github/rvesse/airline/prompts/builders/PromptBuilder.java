@@ -20,10 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import com.github.rvesse.airline.builder.AbstractBuilder;
 import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.PromptProvider;
 import com.github.rvesse.airline.prompts.Prompts;
+import com.github.rvesse.airline.prompts.formatters.ListFormat;
 import com.github.rvesse.airline.prompts.formatters.PromptFormatter;
 import com.github.rvesse.airline.prompts.formatters.QuestionFormat;
 import com.github.rvesse.airline.prompts.matchers.DefaultMatcher;
@@ -184,6 +187,16 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
     }
 
     /**
+     * Specifies that the default option matcher be used
+     * 
+     * @return Builder
+     */
+    public PromptBuilder<TOption> withDefaultOptionMatcher() {
+        this.optionMatcher = null;
+        return this;
+    }
+
+    /**
      * Specifies the prompt message to display
      * 
      * @param message
@@ -316,7 +329,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
             if (this.formatBuilder != null) {
                 promptFormatter = this.formatBuilder.build();
             } else {
-                throw new IllegalStateException("No prompt format specified");
+                promptFormatter = CollectionUtils.isNotEmpty(this.options) ? new ListFormat<>() : new QuestionFormat<>();
             }
         }
         return new Prompt<TOption>(this.provider, promptFormatter, this.timeout, this.timeoutUnit, this.message,

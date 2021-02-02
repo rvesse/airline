@@ -56,7 +56,7 @@ public class QuestionFormat<TOption> implements PromptFormatter {
         if (CollectionUtils.isNotEmpty(prompt.getOptions())) {
             printer.append(String.format("%s? [%s] ", prompt.getMessage(), StringUtils.join(prompt.getOptions(), "/")));
         } else {
-            printer.append(String.format("%s?", prompt.getMessage()));
+            printer.append(String.format("%s? ", prompt.getMessage()));
         }
         printer.flush();
     }

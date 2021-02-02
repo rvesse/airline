@@ -43,7 +43,7 @@ char[] password = prompt.promptForSecure();
 
 ### Prompting for an Option
 
-The `prompt.promptForOption()` method reads a line of input and attempts to match that to one of the configured options using the configured option matcher.  This can allow for matching values using custom logic, allowing the user to select options by numeric index etc.
+The `prompt.promptForOption()` method reads a line of input and attempts to match that to one of the configured options using the configured option matcher.  This can allow for matching values using custom logic, allowing the user to select options by numeric index etc.  See the section on Option Matching later on this page for more detail on this.
 
 This method takes a `boolean` parameter indicating whether the method calls `promptForLine()` or `promptForSecure()` prior to attempting to match the input to an option.  The type returned from this method will be the type parameter used for the prompt and the configured options.
 
@@ -69,18 +69,21 @@ Prompt<String> prompt
                 .withPromptProvider(new ConsolePrompt())
                 .withOptions("a", "b", "c")
                 .withListFormatter()
-                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .withTimeout(10, TimeUnit.SECONDS)
                 .build();
 ```
-This builds a prompt with option type `String` that uses `ConsolePrompt` for the provider, has three options and a timeout of 100 milliseconds.
+This builds a prompt with option type `String` that uses `ConsolePrompt` for the provider, has three options and a timeout of 10 seconds.
 
 Alternatively we could use the static methods in `Prompts` to provide a builder for some common prompts, e.g. the above could be written as follows:
 
 ```java
 Prompt<String> prompt 
   = Prompts.newOptionsPrompt("Choose an option", "a", "b", "c")
+           .withTimeout(10, TimeUnit.SECONDS)
            .build();
 ```
+
+The following sections cover how to configure different aspects of your prompt via the builder interface.
 
 ### Provider
 
@@ -92,7 +95,7 @@ The choice of provider may impact what functionality you can use, in particular 
 
 ### Timeouts
 
-The timeout controls how long users have to respond to prompts.  Having a timeout can be useful because it can prevent your application from hanging indefinitely if run in a non-interactive environment or allow you to fallback to alternative behaviour, fail fast etc. when no prompt response is received.
+The timeout controls how long users have to respond to prompts.  Having a timeout can be useful because it prevents your application from hanging indefinitely if run in a non-interactive environment and/or allows you to fallback to alternative behaviour, fail fast etc. when no prompt response is received.
 
 The timeout can be set with the `withTimeout()` method and `withTimeoutUnit()` methods e.g.
 
@@ -112,6 +115,8 @@ Prompt<String> prompt
            .withTimeout(30, TimeUnit.SECONDS)
            .build();
 ```
+
+A prompt that does not receive a response within the timeout throws a `PromptTimeoutException` to indicate this.
 
 ### Options
 
@@ -134,10 +139,48 @@ Here we configure three string options and we can then use `promptForOption()` t
 
 As with the rest of Airline we use our standard [Type Converter](types.html) API to control how options and input values are converted where necessary.  This is configured on a prompt builder via the `withTypeConverter(TypeConverter)` method.  If no type converter is explicitly configured  our standard `DefaultTypeConverter` is used.
 
-#### Option Matching
+#### Option Matcher
 
-TODO
+Option matching is used when the `promptForOption()` method is called on a prompt, it is provided by the `PromptOptionMatcher` interface.  It controls how the prompt takes the raw input response, provided by `promptForLine()` or `promptForSecure()` and turns it into a strongly type option value from the list of options provided when you configured your prompt.
 
+The default implementation is the `DefaultMatcher`, this has the following behaviour:
+
+- If the prompt was configured with `withNumericOptionSelection()` then first see if the response is a 1 based index for one of the options
+    - If a valid index to an option return it
+- Then see if the raw response partially/exactly matches the string representations of any of the options
+    - If no options match error as invalid response
+    - If multiple options are matched check if it exactly matches only one option
+        - If exactly one match return it
+        - Otherwise error as ambiguous response
+    - If only one option is matched return it
+
+Note that this is case sensitive matching, if you prefer case insensitive matching use `IgnoresCaseMatcher` instead.
+
+The following additional matchers are also provided:
+
+- `ExactMatcher` - Only match exact string representations.
+- `ExactIgnoresCaseMatch` - Only match exact string representations allowing for case insensitivity.
+- `IndexMatcher` - Treat response as a 1 based index to an option, requires a prompt configured `withNumericOptionSelection()`
+- `ValueMatcher` - Converts response into the option type and compares values directly, useful when the string representation of an option can be given in multiple ways e.g. floating point numbers.
+
+The matcher is configured by using the `withOptionMatcher(PromptOptionMatcher)` method of the `PromptBuilder`, or `withDefaultOptionMatcher()` to use the default matcher e.g.
+
+```java
+   Prompt<Double> prompt 
+     = new PromptBuilder<Double>()
+           .withPromptProvider(this.getProvider(input, output))
+           .withListFormatter()
+           .withOptions(1.0, 2.0, 4.0, 8.0, 16.0)
+           .withOptionMatcher(new ValueMatcher<>(Double.class))
+           .withPromptMessage("What scaling factor?")
+           .withTimeout(100, TimeUnit.MILLISECONDS)
+           .build();
+           
+Double scalingFactor = prompt.promptForOption(false);
+```
+
+Here we are prompting for a scaling factor as a `Double`, since `Double` values can be written down in multiple ways e.g. `1`, `1.0`, `0.1e1` etc we use `ValueMatcher` to match the prompt response to one of our valid options
+ 
 ### Formatters
 
 Formatters, defined via the `PromptFormatter` interface, display actual prompts to the user.  Airline provides two implementations of this:
@@ -155,3 +198,5 @@ Prompt<String> prompt
         .withQuestionFormatter()
         .build();
 ```
+
+If no formatter is explicitly specified then the builder selects one of the two default formats depending on whether any options have been specified.  If options have been specified then the list formatter is used, if no options the question formatter is used.

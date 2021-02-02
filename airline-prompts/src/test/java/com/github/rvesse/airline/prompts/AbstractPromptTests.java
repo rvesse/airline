@@ -30,6 +30,7 @@ import org.testng.annotations.Test;
 import com.github.rvesse.airline.annotations.OptionType;
 import com.github.rvesse.airline.prompts.builders.PromptBuilder;
 import com.github.rvesse.airline.prompts.errors.PromptException;
+import com.github.rvesse.airline.prompts.errors.PromptTimeoutException;
 import com.github.rvesse.airline.prompts.formatters.QuestionFormat;
 import com.github.rvesse.airline.prompts.matchers.IgnoresCaseMatcher;
 import com.github.rvesse.airline.prompts.matchers.ValueMatcher;
@@ -93,7 +94,7 @@ public abstract class AbstractPromptTests {
         Assert.assertEquals(key, -1);
     }
 
-    @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*timeout.*")
+    @Test(expectedExceptions = PromptTimeoutException.class, expectedExceptionsMessageRegExp = ".*timeout.*")
     public void key_03() throws PromptException {
         byte[] data = new byte[0];
         InputStream input = new DelayedInputStream(new ByteArrayInputStream(data), 110);
@@ -334,7 +335,7 @@ public abstract class AbstractPromptTests {
         Assert.assertEquals(option, "aardvark");
     }
     
-    @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*timeout.*")
+    @Test(expectedExceptions = PromptTimeoutException.class, expectedExceptionsMessageRegExp = ".*timeout.*")
     public void option_10() throws PromptException {
         byte[] data = "Aardvark".getBytes(StandardCharsets.UTF_8);
         InputStream input = new DelayedInputStream(new ByteArrayInputStream(data), 110);

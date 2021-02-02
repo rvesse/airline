@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.github.rvesse.airline.prompts.errors.PromptException;
+import com.github.rvesse.airline.prompts.errors.PromptTimeoutException;
 import com.github.rvesse.airline.prompts.formatters.PromptFormatter;
 import com.github.rvesse.airline.prompts.matchers.DefaultMatcher;
 import com.github.rvesse.airline.prompts.matchers.PromptOptionMatcher;
@@ -81,7 +82,7 @@ public class Prompt<TOption> {
             boolean allowNumericOptionSelection, TypeConverter converter) {
         this.provider = provider;
         this.formatter = formatter;
-        this.timeout = timeout;
+        this.timeout = timeout > 0 ? timeout : 0;
         this.timeoutUnit = timeoutUnit;
         this.message = promptMessage;
         this.options = options == null ? Collections.<TOption> emptyList()
@@ -139,6 +140,22 @@ public class Prompt<TOption> {
     public TypeConverter getTypeConverter() {
         return this.converter;
     }
+    
+    /**
+     * Gets the configured timeout
+     * @return Configured timeout or 0 if no timeout
+     */
+    public long getTimeout() {
+        return this.timeout;
+    }
+    
+    /**
+     * Gets the timeout unit
+     * @return Timeout unit
+     */
+    public TimeUnit getTimeoutUnit() {
+        return this.timeoutUnit;
+    }
 
     /**
      * Displays the prompt
@@ -165,7 +182,7 @@ public class Prompt<TOption> {
         } catch (ExecutionException e) {
             throw new PromptException("Failed to get prompt response", e);
         } catch (TimeoutException e) {
-            throw new PromptException("Failed to receive a response to prompt within specified timeout", e);
+            throw new PromptTimeoutException(this, e);
         }
     }
 
