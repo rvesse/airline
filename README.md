@@ -85,15 +85,15 @@ Our source code is Java 7 compliant.
 
 ### Build
 
-Airline can be built with Java 7, 8, 9 or 10 and our `pom.xml` contains appropriate profile customisations to enable this.  Regardless of the version built the `pom.xml` will target Java 7 byte code.  Our official releases are built with Java 7 to maximise version compatibility.
+Airline can be built with Java 7 through 11 and our `pom.xml` contains appropriate profile customisations to enable this.  Regardless of the version built the `pom.xml` will target Java 7 byte code.  Our official releases are built with Java 8 but targeting Java 7 bytecode to maximise version compatibility.
 
-Airline cannot currently be built with Java 11 due to Maven plugin compatibility issues.
+It may be possible to build with newer Java versions than those stated here but those have not been tested by the developers.
 
-**NB** - If you are trying to build older versions from source the relevant `pom.xml` customisations may not have existed at that time.
+**NB** - If you are trying to build older versions from source the relevant `pom.xml` customisations may not have existed at that time.  Also you may encounter SSL errors trying to download Maven plugins using older versions of Java, you may need to first build with a newer version of Java to successfully download relevant Maven plugins before then building with the desired version of Java.
 
 ### Runtime
 
-Airline is built with Java 7 so can be used with Java 7 or above.
+Airline releases are configured to build Java 7 compatible bytecode so can be used with Java 7 or above.
 
 #### JPMS
 
