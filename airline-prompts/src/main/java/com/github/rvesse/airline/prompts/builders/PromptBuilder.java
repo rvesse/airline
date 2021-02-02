@@ -118,6 +118,16 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
     }
 
     /**
+     * Specifies that no timeout should be used
+     * 
+     * @return Builder
+     */
+    public PromptBuilder<TOption> withoutTimeout() {
+        this.timeout = 0;
+        return this;
+    }
+
+    /**
      * Specifies one/more options for the prompt
      * 
      * @param options
@@ -329,7 +339,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
             if (this.formatBuilder != null) {
                 promptFormatter = this.formatBuilder.build();
             } else {
-                promptFormatter = CollectionUtils.isNotEmpty(this.options) ? new ListFormat<>() : new QuestionFormat<>();
+                promptFormatter = CollectionUtils.isNotEmpty(this.options) ? new ListFormat<>()
+                        : new QuestionFormat<>();
             }
         }
         return new Prompt<TOption>(this.provider, promptFormatter, this.timeout, this.timeoutUnit, this.message,

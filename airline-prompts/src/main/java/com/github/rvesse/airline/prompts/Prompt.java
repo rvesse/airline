@@ -140,17 +140,19 @@ public class Prompt<TOption> {
     public TypeConverter getTypeConverter() {
         return this.converter;
     }
-    
+
     /**
      * Gets the configured timeout
+     * 
      * @return Configured timeout or 0 if no timeout
      */
     public long getTimeout() {
         return this.timeout;
     }
-    
+
     /**
      * Gets the timeout unit
+     * 
      * @return Timeout unit
      */
     public TimeUnit getTimeoutUnit() {

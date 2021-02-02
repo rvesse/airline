@@ -74,6 +74,17 @@ supports it e.g.
 MyCustomType value = prompt.promptForValue(MyCustomType.class, false);
 ```
 
+## Example
+
+An example command that uses several different prompts can be found in the `airline-examples` module at 
+<a href="{{ site.github.repo }}/tree/master/airline-examples/src/main/java/com/github/rvesse/airline/examples/userguide">GitHub</a>.  
+If you have the code checked out and compiled locally you can use the provided `runExample` script to launch an example e.g.
+
+```
+airline-examples> ./runExample PromptsDemo
+```
+You can view the example {% include github-ref.md class="PromptsDemo" module="airline-examples" package="com.github.rvesse.airline.examples.userguide.prompts" %} on GitHub.
+
 ## Prompt Builder
 
 Generally a `PromptBuilder<T>` is used to specify the desired prompt.  For example consider the following:
@@ -140,6 +151,12 @@ Prompt<String> prompt
 ```
 
 A prompt that does not receive a response within the timeout throws a `PromptTimeoutException` to indicate this.
+
+{% include alert.html %}
+If a prompt timeout occurs then the underlying prompt provider may still be blocked waiting for user input in the
+background.  Please ensure that you catch and handle these errors by asking the user to press enter or pumping
+a new line into the prompt input if you control it.
+{% include end-alert.html %}
 
 ### Options
 

@@ -9,7 +9,7 @@ title: Introduction to Airline
 
 Welcome to the Airline Users Guide, this guide is intended to show you how to use every aspect of Airline.
 
-Many of the examples contained in this user guide may be found in compilable form in our Git repository at <a href="{{ site.github.repo }}/tree/master/airline-examples/src/main/java/com/github/rvesse/airline/examples/userguide">GitHub</a>.  If you have the code checked out and compiled locally you can use the provided `runExamples` script to launch an example e.g.
+Many of the examples contained in this user guide may be found in compilable form in our Git repository at <a href="{{ site.github.repo }}/tree/master/airline-examples/src/main/java/com/github/rvesse/airline/examples/userguide">GitHub</a>.  If you have the code checked out and compiled locally you can use the provided `runExample` script to launch an example e.g.
 
 ```
 airline-examples> ./runExample GettingStarted

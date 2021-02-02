@@ -51,6 +51,7 @@ public class ListFormat<TOption> implements PromptFormatter {
     public <T> void displayPrompt(Prompt<T> prompt) {
         UsagePrinter printer = new UsagePrinter(prompt.getProvider().getPromptWriter(), this.columns);
         printer.append(String.format("%s: ", prompt.getMessage()));
+        printer.newline();
         printer.flush();
         
         UsagePrinter optionPrinter = printer.newIndentedPrinter(2).newPrinterWithHangingIndent(2);

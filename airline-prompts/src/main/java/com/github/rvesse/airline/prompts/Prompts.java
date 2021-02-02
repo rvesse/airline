@@ -67,9 +67,9 @@ public class Prompts {
      *            Prompt question
      * @return Prompt builder
      */
-    public static PromptBuilder<String> newFreeFormPrompt(String question) {
+    public static <TOption> PromptBuilder<TOption> newFreeFormPrompt(String question) {
         //@formatter:off
-        return Prompts.<String> defaultPrompt()
+        return Prompts.<TOption> defaultPrompt()
                       .withPromptMessage(question)
                       .withQuestionFormatter();
         //@formatter:on
