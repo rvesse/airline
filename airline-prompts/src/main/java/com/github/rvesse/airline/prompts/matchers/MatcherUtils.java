@@ -21,6 +21,8 @@ import java.util.Locale;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
 
+import com.github.rvesse.airline.prompts.errors.PromptException;
+
 /**
  * Option matcher utility functions
  *
@@ -29,11 +31,11 @@ public class MatcherUtils {
 
     public static final class Exact<TOption> implements Predicate<TOption> {
         private final String response;
-    
+
         protected Exact(String response) {
             this.response = response;
         }
-    
+
         @Override
         public boolean evaluate(TOption object) {
             String optionStr = object.toString();
@@ -43,11 +45,11 @@ public class MatcherUtils {
 
     public static final class ExactIgnoresCase<TOption> implements Predicate<TOption> {
         private final String response;
-    
+
         protected ExactIgnoresCase(String response) {
             this.response = response;
         }
-    
+
         @Override
         public boolean evaluate(TOption object) {
             String optionStr = object.toString();
@@ -57,11 +59,11 @@ public class MatcherUtils {
 
     public static final class ExactOrStartsWith<TOption> implements Predicate<TOption> {
         private final String response;
-    
+
         protected ExactOrStartsWith(String response) {
             this.response = response;
         }
-    
+
         @Override
         public boolean evaluate(TOption object) {
             String optionStr = object.toString();
@@ -71,17 +73,41 @@ public class MatcherUtils {
 
     public static final class ExactOrStartsWithIgnoresCase<TOption> implements Predicate<TOption> {
         private final String response;
-    
+
         protected ExactOrStartsWithIgnoresCase(String response) {
             this.response = response;
         }
-    
+
         @Override
         public boolean evaluate(TOption object) {
             String optionStr = object.toString();
             return StringUtils.equalsIgnoreCase(response, optionStr)
                     || optionStr.toLowerCase(Locale.ROOT).startsWith(response.toLowerCase(Locale.ROOT));
         }
+    }
+
+    /**
+     * Provides an error indicating that the response was ambiguous i.e. did not identify a single option
+     * 
+     * @param response
+     *            Response
+     * @return Prompt error
+     */
+    public static PromptException ambiguousResponse(final String response) {
+        return new PromptException(String.format(
+                "User provided prompt response '%s' which does not unambiguously identify a single option", response));
+    }
+
+    /**
+     * Provides an error indicating that the response was invalid
+     * 
+     * @param response
+     *            Response
+     * @return Prompt error
+     */
+    public static PromptException invalidResponse(final String response) {
+        return new PromptException(
+                String.format("User provided prompt response '%s' which is not a valid option", response));
     }
 
 }

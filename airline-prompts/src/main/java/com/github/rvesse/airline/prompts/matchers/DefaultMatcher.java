@@ -16,10 +16,11 @@
 
 package com.github.rvesse.airline.prompts.matchers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
 
 import com.github.rvesse.airline.prompts.Prompt;
@@ -48,24 +49,26 @@ public class DefaultMatcher<TOption> implements PromptOptionMatcher<TOption> {
             }
         }
 
-        List<TOption> foundOptions = new ArrayList<>(prompt.getOptions());
+        Set<TOption> foundOptions = new HashSet<>(prompt.getOptions());
         CollectionUtils.filter(foundOptions, getExactOrPartialMatcher(response));
 
         if (foundOptions.size() == 0) {
-            throw new PromptException(
-                    String.format("User provided prompt response '%s' which is not a valid response", response));
+            // No matches
+            throw MatcherUtils.invalidResponse(response);
         } else if (foundOptions.size() > 1) {
+            // Multiple possible matches
             // Was there instead a single exact match?
             CollectionUtils.<TOption> filter(foundOptions, getExactMatcher(response));
             if (foundOptions.size() == 1) {
-                return foundOptions.get(0);
+                // One exact match
+                return IterableUtils.first(foundOptions);
             }
 
-            throw new PromptException(String.format(
-                    "User provided prompt response '%s' which does not unambiguously identify a single response",
-                    response));
+            // Ambiguous match
+            throw MatcherUtils.ambiguousResponse(response);
         } else {
-            return foundOptions.get(0);
+            // Exactly one match
+            return IterableUtils.first(foundOptions);
         }
     }
 

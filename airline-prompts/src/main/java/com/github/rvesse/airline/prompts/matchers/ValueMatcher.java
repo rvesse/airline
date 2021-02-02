@@ -16,6 +16,12 @@
 
 package com.github.rvesse.airline.prompts.matchers;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import org.apache.commons.collections4.IterableUtils;
+
 import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.errors.PromptException;
 
@@ -24,10 +30,11 @@ import com.github.rvesse.airline.prompts.errors.PromptException;
  * <p>
  * This allows for matching options where there are multiple ways of writing down a value. For example if you have an
  * option that is specified as a numeric value there could be multiple ways to specify the number e.g. {@code 1.0},
- * {@code 1}, {@code 01}
+ * {@code 1}, {@code 1.0e0} etc.
  * </p>
  *
- * @param <TOption> Option type
+ * @param <TOption>
+ *            Option type
  */
 public class ValueMatcher<TOption> implements PromptOptionMatcher<TOption> {
 
@@ -35,7 +42,9 @@ public class ValueMatcher<TOption> implements PromptOptionMatcher<TOption> {
 
     /**
      * Creates a new value matcher
-     * @param optionType Option class
+     * 
+     * @param optionType
+     *            Option class
      */
     public ValueMatcher(Class<TOption> optionType) {
         if (optionType == null)
@@ -46,13 +55,28 @@ public class ValueMatcher<TOption> implements PromptOptionMatcher<TOption> {
     @SuppressWarnings("unchecked")
     @Override
     public TOption match(Prompt<TOption> prompt, String response) throws PromptException {
+        TOption responseValue = null;
         try {
-            return (TOption) prompt.getTypeConverter().convert("", this.optionType, response);
+            responseValue = (TOption) prompt.getTypeConverter().convert("", this.optionType, response);
         } catch (Throwable e) {
             throw new PromptException(
                     String.format("User provided prompt response '%s' which cannot be converted to the target type %s",
                             response, this.optionType.getCanonicalName()));
         }
+        
+        Set<TOption> foundOptions = new HashSet<>();
+        for (TOption option : prompt.getOptions()) {
+            if (Objects.equals(responseValue, option))
+                foundOptions.add(option);
+        }
+
+        if (foundOptions.size() == 0)
+            throw MatcherUtils.invalidResponse(response);
+        if (foundOptions.size() > 1)
+            throw MatcherUtils.ambiguousResponse(response);
+
+        return IterableUtils.first(foundOptions);
+
     }
 
 }

@@ -256,6 +256,7 @@ public class Prompt<TOption> {
      * 
      * @return Input line
      * @throws PromptException
+     *             Thrown if the underlying prompt provider does not support secure reads
      */
     public char[] promptForSecure() throws PromptException {
         if (!this.provider.supportsSecureReads())
