@@ -1,8 +1,13 @@
 # Airline - Change Log
 
-## 2.8.2
+## 2.9.0
 
-
+- New `airline-prompts` module provides a Fluent API for defining user prompts 
+    - Prompt timeouts so non-interactive apps don't hang forever
+    - Configurable prompt sources
+    - Configurable prompt formatting
+    - Prompt for keys, strings, passwords, options (from a pre-configured list) or a strongly typed value
+    - Integrates with Airline's type conversion
 
 ## 2.8.1
 
