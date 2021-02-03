@@ -37,8 +37,8 @@ public class TestTypeConverters {
     private static final int NUMBER_RANDOM_TESTS = 100000;
     private static final Class<?>[] NUMERIC_TYPES = new Class<?>[] { Long.class, Integer.class, Short.class, Byte.class,
             Double.class, Float.class, BigInteger.class, BigDecimal.class };
-    private static final Class<?>[] INTEGER_TYPES = new Class<?>[] { Long.class, Integer.class, Short.class,
-            Byte.class, BigInteger.class };
+    private static final Class<?>[] INTEGER_TYPES = new Class<?>[] { Long.class, Integer.class, Short.class, Byte.class,
+            BigInteger.class };
 
     @Test
     public void numeric_default_bad_01() {
@@ -89,7 +89,7 @@ public class TestTypeConverters {
             Assert.assertEquals((int) result.getConvertedValue(), number);
         }
     }
-    
+
     @Test
     public void numeric_default_big_integer_01() {
         NumericTypeConverter converter = new DefaultNumericConverter();
@@ -97,9 +97,10 @@ public class TestTypeConverters {
         Random random = new Random();
         for (int i = 0; i < NUMBER_RANDOM_TESTS; i++) {
             long number = random.nextLong();
-            ConvertResult result = converter.tryConvertNumerics("test", BigInteger.class, BigInteger.valueOf(number).toString());
+            ConvertResult result = converter.tryConvertNumerics("test", BigInteger.class,
+                    BigInteger.valueOf(number).toString());
             Assert.assertTrue(result.wasSuccessfull());
-            Assert.assertEquals(((BigInteger)result.getConvertedValue()).longValue(), number);
+            Assert.assertEquals(((BigInteger) result.getConvertedValue()).longValue(), number);
         }
     }
 
@@ -183,7 +184,7 @@ public class TestTypeConverters {
         Assert.assertTrue(result.wasSuccessfull());
         Assert.assertEquals(result.getConvertedValue(), Double.NaN);
     }
-    
+
     @Test
     public void numeric_default_big_decimal_01() {
         NumericTypeConverter converter = new DefaultNumericConverter();
@@ -191,7 +192,8 @@ public class TestTypeConverters {
         Random random = new Random();
         for (int i = 0; i < NUMBER_RANDOM_TESTS; i++) {
             double number = random.nextDouble();
-            ConvertResult result = converter.tryConvertNumerics("test", BigDecimal.class, new BigDecimal(number).toString());
+            ConvertResult result = converter.tryConvertNumerics("test", BigDecimal.class,
+                    new BigDecimal(number).toString());
             Assert.assertTrue(result.wasSuccessfull());
             Assert.assertEquals(((BigDecimal) result.getConvertedValue()).doubleValue(), number);
         }
@@ -219,7 +221,7 @@ public class TestTypeConverters {
                             number / divisor, suffix, number));
                 Assert.assertTrue(result.wasSuccessfull());
                 if (type.equals(BigInteger.class)) {
-                    Assert.assertEquals((BigInteger)result.getConvertedValue(), BigInteger.valueOf(number));
+                    Assert.assertEquals((BigInteger) result.getConvertedValue(), BigInteger.valueOf(number));
                 } else {
                     Assert.assertEquals(result.getConvertedValue(), number);
                 }
@@ -254,16 +256,17 @@ public class TestTypeConverters {
         checkGoodConversion(converter, "10k", Short.class, (short) 10000);
         checkBadConversion(converter, "100k", Short.class);
     }
-    
+
     @Test
     public void numeric_kilo_1000_big_integer_01() {
-        checkIntegerAbbreviationKilo(new KiloAs1000(), 1000, Long.MIN_VALUE, Long.MAX_VALUE, BigInteger.class, 1000l, "k");
+        checkIntegerAbbreviationKilo(new KiloAs1000(), 1000, Long.MIN_VALUE, Long.MAX_VALUE, BigInteger.class, 1000l,
+                "k");
     }
 
     @Test
     public void numeric_kilo_1000_big_integer_02() {
-        checkIntegerAbbreviationKilo(new KiloAs1000(), 1000, Long.MIN_VALUE, Long.MAX_VALUE, BigInteger.class, 1000l * 1000l,
-                "m");
+        checkIntegerAbbreviationKilo(new KiloAs1000(), 1000, Long.MIN_VALUE, Long.MAX_VALUE, BigInteger.class,
+                1000l * 1000l, "m");
     }
 
     @Test
@@ -404,7 +407,7 @@ public class TestTypeConverters {
                             radix, Long.toString(number, radix), number));
                 Assert.assertTrue(result.wasSuccessfull());
                 if (type.equals(BigInteger.class)) {
-                    Assert.assertEquals((BigInteger)result.getConvertedValue(), BigInteger.valueOf(number));
+                    Assert.assertEquals((BigInteger) result.getConvertedValue(), BigInteger.valueOf(number));
                 } else {
                     Assert.assertEquals(result.getConvertedValue(), number);
                 }
@@ -447,26 +450,50 @@ public class TestTypeConverters {
     public void command_mixed_converters_01() {
         SingleCommand<ArgsRadix> cmd = SingleCommand.singleCommand(ArgsRadix.class);
         long value = 47000;
-        ArgsRadix radix = cmd.parse("--normal", Long.toString(value), "--hex", Long.toString(value, 16), "--octal",
-                Long.toString(value, 8), "--binary", Long.toString(value, 2), "--kilo", (value / 1000) + "k");
+        //@formatter:off
+        ArgsRadix radix 
+            = cmd.parse(
+                    "--normal", Long.toString(value), 
+                    "--hex", Long.toString(value, 16), 
+                    "--octal", Long.toString(value, 8), 
+                    "--binary", Long.toString(value, 2), 
+                    "--kilo", (value / 1000) + "k",
+                    "--big-octal", BigInteger.valueOf(value).toString(8), 
+                    "--big-hex", BigInteger.valueOf(value).toString(16), 
+                    "--big-binary", BigInteger.valueOf(value).toString(2)
+                );
+        //@formatter:on
 
         Assert.assertEquals(radix.normal, value);
         Assert.assertEquals(radix.hex, value);
         Assert.assertEquals(radix.octal, value);
         Assert.assertEquals(radix.binary, value);
         Assert.assertEquals(radix.abbrev, value);
+        Assert.assertEquals(radix.bigBinary, BigInteger.valueOf(value));
+        Assert.assertEquals(radix.bigHex, BigInteger.valueOf(value));
+        Assert.assertEquals(radix.bigOctal, BigInteger.valueOf(value));
     }
 
     @Test
     public void command_mixed_converters_02() {
         SingleCommand<ArgsRadix> cmd = SingleCommand.singleCommand(ArgsRadix.class);
         long value = 47000;
-        ArgsRadix radix = cmd.parse("--normal", Long.toString(value), "--hex", Long.toString(value), "--octal",
-                Long.toString(value));
+        //@formatter:off
+        ArgsRadix radix 
+            = cmd.parse(
+                    "--normal", Long.toString(value), 
+                    "--hex", Long.toString(value), 
+                    "--octal", Long.toString(value),
+                    "--big-octal", BigInteger.valueOf(value).toString(),
+                    "--big-hex", BigInteger.valueOf(value).toString()
+                );
+        //@formatter:on
 
         Assert.assertEquals(radix.normal, value);
         Assert.assertEquals(radix.hex, Long.parseLong(Long.toString(value), 16));
         Assert.assertEquals(radix.octal, Long.parseLong(Long.toString(value), 8));
+        Assert.assertEquals(radix.bigHex, new BigInteger(Long.toString(value), 16));
+        Assert.assertEquals(radix.bigOctal, new BigInteger(Long.toString(value), 8));
     }
 
     @Test
