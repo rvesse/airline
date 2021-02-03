@@ -24,6 +24,13 @@ All of the following common Java types and any derived type that may be assigned
 - `Float`
 - `Double`
 
+{% include req-ver.md version="2.9.0" %}
+
+From 2.9.0 onwards the additional common Java types are supported:
+
+- `BigInteger`
+- `BigDecimal`
+
 ### `enum`
 
 Any Java `enum` is automatically supported because the Java compiler provides a static `valueOf(String)` method that Airline can invoke to turn the string argument into an `enum` member.

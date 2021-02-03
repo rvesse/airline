@@ -115,7 +115,7 @@ Use the following maven dependency declaration:
 </dependency>
 ```
 
-Snapshot artifacts of the latest source are also available using the version `2.8.2-SNAPSHOT` from the [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
+Snapshot artifacts of the latest source are also available using the version `2.9.0-SNAPSHOT` from the [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
 
 ## Build Status
 

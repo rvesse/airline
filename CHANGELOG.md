@@ -8,6 +8,8 @@
     - Configurable prompt formatting
     - Prompt for keys, strings, passwords, options (from a pre-configured list) or a strongly typed value
     - Integrates with Airline's type conversion
+- Core Improvements
+    - First class support for `BigInteger` and `BigDecimal` as numeric types
 
 ## 2.8.1
 
