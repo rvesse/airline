@@ -21,6 +21,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.help.sections.common.ExitCodesSection;
 import com.github.rvesse.airline.help.sections.common.ProseSection;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
@@ -28,21 +29,49 @@ import static com.github.rvesse.airline.help.sections.TestHelpSectionDetection.H
 
 public class TestExternalHelpSections {
 
-    @Test
-    public void help_section_external_cli_01() {
+    public CommandMetadata loadCommand() {
         Cli<Object> cli = new Cli<>(CliWithExternalSections.class);
         CommandFinder finder = new CommandFinder("Args1");
         CommandMetadata cmd = IterableUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
         Assert.assertNotNull(cmd);
 
-        Assert.assertEquals(cmd.getHelpSections().size(), 1);
+        Assert.assertEquals(cmd.getHelpSections().size(), 2);
+        return cmd;
+    }
+
+    @Test
+    public void help_section_external_discussion_01() {
+        CommandMetadata cmd = loadCommand();
+        
         HelpSection section = IterableUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Discussion"));
         Assert.assertTrue(section instanceof ProseSection);
+        
         ProseSection discussion = (ProseSection) section;
         String[] paragraphs = discussion.getContentBlock(0);
         Assert.assertEquals(paragraphs.length, 3);
         Assert.assertEquals(paragraphs[0], "This is the first paragraph");
         Assert.assertEquals(paragraphs[1], "A blank line starts a new paragraph");
         Assert.assertEquals(paragraphs[2], "Multiple blank lines are compacted");
+    }
+
+    @Test
+    public void help_section_external_exit_codes_01() {
+        CommandMetadata cmd = loadCommand();
+        
+        HelpSection section = IterableUtils.find(cmd.getHelpSections(), new HelpSectionFinder("Exit Codes"));
+        Assert.assertTrue(section instanceof ExitCodesSection);
+        
+        ExitCodesSection exitCodes = (ExitCodesSection) section;
+        Assert.assertEquals(exitCodes.numContentBlocks(), 2);
+        String[] codes = exitCodes.getContentBlock(0);
+        String[] descriptions = exitCodes.getContentBlock(1);
+
+        Assert.assertEquals(codes[0], "0");
+        Assert.assertEquals(codes[1], "1");
+        Assert.assertEquals(codes[2], "2");
+        Assert.assertEquals(codes[3], "127");
+
+        Assert.assertEquals(descriptions[0], "Success");
+        Assert.assertEquals(descriptions[3], "Catastrophic Failure");
     }
 }

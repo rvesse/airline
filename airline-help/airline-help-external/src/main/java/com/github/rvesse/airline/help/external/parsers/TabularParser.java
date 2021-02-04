@@ -17,25 +17,13 @@
 package com.github.rvesse.airline.help.external.parsers;
 
 import java.io.InputStream;
+import java.util.List;
 
-/**
- * Parser that translates input into a series of paragraphs
- * <p>
- * A paragraph is a series of blocks of text separated by one/more blank lines.
- * </p>
- *
- */
-public interface ParagraphsParser {
+public interface TabularParser {
 
     /**
-     * Parses input into a series of paragraphs
-     * 
-     * @param resource
-     *            Resource name
-     * @param input
-     *            Input
-     * @return Paragraphs
+     * Parsers a list of rows from a resource
+     * @return List of rows
      */
-    String[] parseParagraphs(String resource, InputStream input);
-
+    public List<List<String>> parseRows(String resource, InputStream input);
 }

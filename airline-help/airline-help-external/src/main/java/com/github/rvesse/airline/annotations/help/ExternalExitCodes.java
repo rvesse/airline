@@ -13,54 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.rvesse.airline.annotations.help;
 
 import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.github.rvesse.airline.help.external.parsers.ParagraphsParser;
+import com.github.rvesse.airline.help.external.parsers.TabularParser;
 import com.github.rvesse.airline.help.external.parsers.defaults.DefaultExternalHelpParser;
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.FileLocator;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
 
 /**
- * Defines a prose section where the prose content is provided in a text file on the classpath
+ * Annotation that indicates the exit codes section for a commands help
+ * 
+ * @author rvesse
  *
  */
-@Retention(RUNTIME)
-@Target(TYPE)
-public @interface ExternalProse {
+@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@Target({ TYPE })
+@Documented
+public @interface ExternalExitCodes {
 
     /**
-     * Title of the section
-     * 
-     * @return Title
-     */
-    public String title();
-
-    /**
-     * Source containing the prose content
+     * Source containing the table of exit codes and their descriptions
      * 
      * @return Source
      */
     public String source();
-
-    /**
-     * Suggested order in which the help section should be placed relative to other help sections
-     * <p>
-     * Values less than zero will typically place the section before the standard sections while values greater than or
-     * equal to zero will place the section after the standard sections.
-     * </p>
-     * 
-     * @return Suggested order
-     */
-    int suggestedOrder() default 0;
-
+    
     /**
      * Resource locators used to find the resources specified in {@link #source()}
      * 
@@ -73,5 +57,5 @@ public @interface ExternalProse {
      * 
      * @return Paragraph parser
      */
-    Class<? extends ParagraphsParser> parser() default DefaultExternalHelpParser.class;
+    Class<? extends TabularParser> parser() default DefaultExternalHelpParser.class;
 }

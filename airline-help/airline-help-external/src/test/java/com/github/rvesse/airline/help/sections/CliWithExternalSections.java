@@ -16,6 +16,7 @@
 package com.github.rvesse.airline.help.sections;
 
 import com.github.rvesse.airline.annotations.Cli;
+import com.github.rvesse.airline.annotations.help.ExternalExitCodes;
 import com.github.rvesse.airline.annotations.help.ExternalProse;
 import com.github.rvesse.airline.args.Args1;
 import com.github.rvesse.airline.command.CommandRemove;
@@ -23,7 +24,8 @@ import com.github.rvesse.airline.help.Help;
 import com.github.rvesse.airline.help.sections.common.CommonSections;
 
 @Cli(defaultCommand = Help.class, commands = { Help.class, Args1.class, CommandRemove.class }, name = "test")
-@ExternalProse(title = "Discussion", suggestedOrder = CommonSections.ORDER_DISCUSSION, resource = "/com/github/rvesse/airline/help/external/discussion.txt")
+@ExternalProse(title = "Discussion", suggestedOrder = CommonSections.ORDER_DISCUSSION, source = "/com/github/rvesse/airline/help/external/discussion.txt")
+@ExternalExitCodes(source = "/com/github/rvesse/airline/help/external/exit-codes.csv")
 public class CliWithExternalSections {
 
 }

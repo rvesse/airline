@@ -185,11 +185,12 @@
           <useDefaultMapping>true</useDefaultMapping>
           <strictCheck>true</strictCheck>
           <excludes>
-            <exclude>license.txt</exclude>
+            <exclude>*.txt</exclude>
+            <exclude>**/*.txt</exclude>
             <exclude>pom.xml</exclude>
             <exclude>**/pom.xml</exclude>
-	    <exclude>**/*.config</exclude>
-	    <exclude>**/*.bat</exclude>
+	        <exclude>**/*.config</exclude>
+	        <exclude>**/*.bat</exclude>
 
             <!-- Integration Tests -->
             <exclude>**/verify.bsh</exclude>
