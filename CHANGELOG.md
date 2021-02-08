@@ -10,6 +10,9 @@
     - Integrates with Airline's type conversion
 - Core Improvements
     - First class support for `BigInteger` and `BigDecimal` as numeric types
+- Dependency Updates
+    - Apache Commons Collections upgraded to 4.4
+    - Apache Commons Lang upgraded to 3.11
 
 ## 2.8.1
 
