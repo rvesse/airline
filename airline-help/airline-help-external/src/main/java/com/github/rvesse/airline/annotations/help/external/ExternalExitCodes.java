@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline.annotations.help;
+package com.github.rvesse.airline.annotations.help.external;
 
 import static java.lang.annotation.ElementType.TYPE;
 

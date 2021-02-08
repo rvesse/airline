@@ -2,12 +2,14 @@
 
 ## 2.9.0
 
-- New `airline-prompts` module provides a Fluent API for defining user prompts 
+- New `airline-prompts` module provides a Fluent API for defining user prompts (#92)
     - Prompt timeouts so non-interactive apps don't hang forever
     - Configurable prompt sources
     - Configurable prompt formatting
     - Prompt for keys, strings, passwords, options (from a pre-configured list) or a strongly typed value
     - Integrates with Airline's type conversion
+- New `airline-help-external` modules provides new help annotations that allow more complex help to be provided via classpath/file resources rather than directly in the annotations.  This is a generalisation of the mechanism already used by `@Version` annotation. (#52)
+    - Adds `@ExternalProse`, `@ExternalExitCodes`, `@ExternalExamples` and `@ExternalExamplesTabular` annotations
 - Core Improvements
     - First class support for `BigInteger` and `BigDecimal` as numeric types
 
