@@ -47,7 +47,7 @@ This will look for the specified resource on either the classpath or the filesys
 ```
 If you want the resource to be loaded from a different location you can customise the [Resource Locators](../practise/resource-locators.html) via the `sourceLocators` property e.g.
 
-```
+```java
 @ExternalExitCodes(
   source = "${MY_DOCS}/exit-codes.csv",
   sourceLocators = { EnvVarLocator.class }

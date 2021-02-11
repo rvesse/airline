@@ -52,7 +52,7 @@ And so forth...
 
 If you want the resource to be loaded from a different location you can customise the [Resource Locators](../practise/resource-locators.html) via the `sourceLocators` property e.g.
 
-```
+```java
 @ExternalProse(
   title = "Additional Information",
   suggestedOrder = 55,
