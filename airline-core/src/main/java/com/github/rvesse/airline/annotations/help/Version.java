@@ -67,7 +67,7 @@ public @interface Version {
     String versionProperty() default "version";
 
     /**
-     * Sets the proeprty used to find build information (if any)
+     * Sets the property used to find build information (if any)
      * 
      * @return Build property
      */

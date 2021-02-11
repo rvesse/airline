@@ -31,7 +31,7 @@ import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 
 public class TestHelpSectionDetection {
     
-    private static class HelpSectionFinder implements Predicate<HelpSection> {
+    public static class HelpSectionFinder implements Predicate<HelpSection> {
         private final String title;
         
         public HelpSectionFinder(String title) {

@@ -1,0 +1,3 @@
+args-examples-textual -v 7
+
+args-examples-textual -debug
