@@ -23,7 +23,7 @@ The optional `suggestedOrder` field is used to control where the section appears
 
 ## `@ExternalProse`
 
-{% include req-ver.md version="2.9.0" %}
+{% include req-ver.md version="2.9.0" module="airline-help-external" %}
 
 If your application has a lot of additional sections you wish to add and they are quite wordy it may be easier to provide this as a separate resource that Airline loads rather than directly in an annotation.  This can be done via the `@ExternalProse` annotation e.g.
 
