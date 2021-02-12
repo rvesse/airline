@@ -26,7 +26,7 @@ author:
 
 # Custom vars
 version: 2.8.1
-dev_version: "2.8.2-SNAPSHOT"
+dev_version: "2.9.0-SNAPSHOT"
 
 github:
   repo: https://github.com/rvesse/airline
@@ -36,9 +36,17 @@ github:
 #
 # text - Text for both display and tooltip
 # url - URL for the link, relative to the sites base URL and any path from the parent item
-# kind - Group for groups, Link for links
-# path - Relative URL for items in the group, relatives to the sites Base URL
+# kind - Controls how that item is rendered
+#           Group - A group with child items
+#           ExternalLink - A link not relative to the site itself
+#           LatestJavadoc - A group with the latest release Javadoc
+#           DevJavadoc - A group with the development Javadoc
+#           OldJavadoc - A group with the Javadoc for a past version
+# path - Relative URL for items in the group, relatives to the sites Base URL.  
+#           Path is inherited from parent item if not specified again on child groups
+# version - Javadoc version to use, only relevant when kind: OldJavadoc
 # items - Collection of child items
+# 
 side_nav:
   items:
     - text: "Home"
@@ -75,22 +83,31 @@ side_nav:
             - text: "Help Annotations"
               kind: Group
               items:
-                - text: "@Copyright"
-                  url: "copyright.html"
-                - text: "@Discussion"
-                  url: "discussion.html"
-                - text: "@Examples"
-                  url: "examples.html"
-                - text: "@ExitCodes and @ExternalExitCodes"
-                  url: "exit-codes.html"
-                - text: "@License"
-                  url: "license.html"
-                - text: "@Version"
-                  url: "version.html"
-                - text: "@ProseSection and @ExternalProse"
-                  url: "prose-section.html"
                 - text: "@HideSection"
                   url: "hide-section.html"
+                - text: "Legal Information"
+                  kind: Group
+                  items:
+                    - text: "@Copyright"
+                      url: "copyright.html"
+                    - text: "@License"
+                      url: "license.html"
+                    - text: "@Version"
+                      url: "version.html"
+                - text: "Discussion Sections"
+                  kind: Group
+                  items:
+                    - text: "@Discussion"
+                      url: "discussion.html"
+                    - text: "@ProseSection and @ExternalProse"
+                      url: "prose-section.html"
+                - text: "Examples"
+                  kind: Group
+                  items:
+                    - text: "@Examples, @ExternalExamples and @ExternalTabularExamples"
+                      url: "examples.html"
+                - text: "@ExitCodes and @ExternalExitCodes"
+                  url: "exit-codes.html"
             - text: "Restriction Annotations"
               kind: Group
               items:
