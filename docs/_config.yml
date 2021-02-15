@@ -108,6 +108,8 @@ side_nav:
                       url: "examples.html"
                 - text: "@ExitCodes and @ExternalExitCodes"
                   url: "exit-codes.html"
+                - text: "@SeeAlso"
+                  url: "see-also.html"
             - text: "Restriction Annotations"
               kind: Group
               items:

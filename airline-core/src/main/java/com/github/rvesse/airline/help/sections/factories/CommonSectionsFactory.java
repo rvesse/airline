@@ -16,10 +16,12 @@
 package com.github.rvesse.airline.help.sections.factories;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.rvesse.airline.annotations.help.Copyright;
@@ -28,6 +30,7 @@ import com.github.rvesse.airline.annotations.help.Examples;
 import com.github.rvesse.airline.annotations.help.HideSection;
 import com.github.rvesse.airline.annotations.help.License;
 import com.github.rvesse.airline.annotations.help.ProseSection;
+import com.github.rvesse.airline.annotations.help.SeeAlso;
 import com.github.rvesse.airline.annotations.help.Version;
 import com.github.rvesse.airline.annotations.help.ExitCodes;
 import com.github.rvesse.airline.help.sections.HelpFormat;
@@ -45,6 +48,21 @@ import com.github.rvesse.airline.parser.resources.ResourceLocator;
  * A help section factory that implements the common sections built into Airline
  */
 public class CommonSectionsFactory implements HelpSectionFactory {
+
+    //@formatter:off
+    private static final List<Class<? extends Annotation>> SUPPORTED 
+        = Arrays.asList(
+            Examples.class,
+            Discussion.class,
+            ExitCodes.class,
+            HideSection.class,
+            ProseSection.class,
+            Copyright.class,
+            License.class,
+            Version.class,
+            SeeAlso.class
+        );
+    //@formatter:on
 
     @Override
     public HelpSection createSection(Annotation annotation) {
@@ -95,22 +113,23 @@ public class CommonSectionsFactory implements HelpSectionFactory {
                     version.versionProperty(), version.buildProperty(), version.dateProperty(),
                     version.additionalProperties(), version.additionalTitles(), version.suppressOnError(),
                     version.tabular());
+        } else if (annotation instanceof SeeAlso) {
+            // See Also section
+            SeeAlso seeAlso = (SeeAlso) annotation;
+            Set<String> cmds = new LinkedHashSet<>();
+            CollectionUtils.addAll(cmds, seeAlso.internalCommands());
+            CollectionUtils.addAll(cmds, seeAlso.externalCommands());
+            if (cmds.size() > 0) {
+                return new com.github.rvesse.airline.help.sections.common.ProseSection(CommonSections.TITLE_SEE_ALSO,
+                        CommonSections.ORDER_SEE_ALSO, new String[] { StringUtils.join(cmds, ", ") });
+            }
         }
         return null;
     }
 
     @Override
     public List<Class<? extends Annotation>> supportedAnnotations() {
-        List<Class<? extends Annotation>> supported = new ArrayList<>();
-        supported.add(Examples.class);
-        supported.add(Discussion.class);
-        supported.add(ExitCodes.class);
-        supported.add(HideSection.class);
-        supported.add(ProseSection.class);
-        supported.add(Copyright.class);
-        supported.add(License.class);
-        supported.add(Version.class);
-        return supported;
+        return SUPPORTED;
     }
 
 }

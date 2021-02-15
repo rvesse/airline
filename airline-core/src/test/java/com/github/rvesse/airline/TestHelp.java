@@ -1260,6 +1260,9 @@ public class TestHelp {
                 "        Foo\n" + 
                 "\n" + 
                 "        Bar\n" +
+                "\n" + 
+                "SEE ALSO\n" + 
+                "        test help, man, grep\n" +
                 "\n");
         //@formatter:on
     }
@@ -1285,6 +1288,9 @@ public class TestHelp {
                 "        Foo\n" + 
                 "\n" + 
                 "        Bar\n" +
+                "\n" +
+                "SEE ALSO\n" + 
+                "        test help, man, grep\n" +
                 "\n");
         //@formatter:on
     }

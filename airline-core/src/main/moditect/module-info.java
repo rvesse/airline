@@ -83,6 +83,9 @@ module com.github.rvesse.airline
       com.github.rvesse.airline.restrictions.factories.RequireFromRestrictionFactory,
       com.github.rvesse.airline.restrictions.factories.SimpleRestrictionsFactory,
       com.github.rvesse.airline.restrictions.factories.StringRestrictionFactory;
+  
+  provides com.githug.rvesse.airline.ChannelFactory with
+      com.github.rvesse.airline.SystemChannelFactory;
 
   uses com.github.rvesse.airline.ChannelFactory;
   uses com.github.rvesse.airline.help.sections.factories.HelpSectionFactory;
