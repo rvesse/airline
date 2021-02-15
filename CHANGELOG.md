@@ -12,9 +12,18 @@
     - Adds `@ExternalProse`, `@ExternalExitCodes`, `@ExternalExamples` and `@ExternalExamplesTabular` annotations
 - Core Improvements
     - First class support for `BigInteger` and `BigDecimal` as numeric types
+- Help Improvements
+    - Added an `@SeeAlso` annotation to Airline Core (#51)
 - Dependency Updates
     - Apache Commons Collections upgraded to 4.4
     - Apache Commons Lang upgraded to 3.11
+    - Various build plugins updated to latest available versions (this only impacts developers building the library from source)
+
+### Forthcoming 2.x Deprecation
+
+2.9.0, and any subsequent patch releases, are intended to be the last supported releases of Airline 2.x
+
+Future releases will start to focus on the 3.x builds which include some important new features e.g. first class positional argument support, better DI framework integration, that are not possible under 2.x without making breaking changes.  You can see progress on 3.x by following the `3x` branch and its `CHANGELOG.md` and `MIGRATING.md`
 
 ## 2.8.1
 
