@@ -24,9 +24,9 @@ module com.github.rvesse.airline.help.external
     exports com.github.rvesse.airline.annotations.help.external;
     exports com.github.rvesse.airline.help.external.factories;
     exports com.github.rvesse.airline.help.external.parsers;
-    exports com.github.rvesse.airline.help.external.parsers.default;
+    exports com.github.rvesse.airline.help.external.parsers.defaults;
     
     provides com.github.rvesse.airline.help.sections.factories.HelpSectionFactory with
         com.github.rvesse.airline.help.external.factories.ExternalHelpFactory;
-    
+
 }
