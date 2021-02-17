@@ -6,6 +6,7 @@
     - First class support for `BigInteger` and `BigDecimal` as numeric types
 - Help Improvements
     - Added an `@SeeAlso` annotation to Airline Core (#51)
+    - **BREAKING** - `airline-help-bash` has moved `@BashCompletion` annotation into `com.github.rvesse.airline.annotations.help.bash` to avoid package collisions between this module and the core in order to allow this module to become a JPMS module
 - Dependency Updates
     - Apache Commons Collections upgraded to 4.4
     - Apache Commons Lang upgraded to 3.11
