@@ -40,9 +40,15 @@ CLASS="${CLASS#${SCRIPT_DIR}/src/main/java/}"
 CLASS="${CLASS//\//.}"
 CLASS="${CLASS%.java}"
 
+JAVA_MAJOR_VERSION=$(java -version 2>&1 | awk -F '"' '{print $2}' | awk -F '.' '{print $1}')
+if [ ${JAVA_MAJOR_VERSION} -lt 9 ]; then
+  echo "This script requires using Java 9 or later, please set JAVA_HOME to point to a newer JRE"
+  exit 1
+fi
+
 if [ ! -f "${JAR_FILE}" ]; then
   echo "Examples JAR ${JAR_FILE} does not yet exist, please run mvn package to build"
   exit 1
 fi
 
-java -cp "${SCRIPT_DIR}/target/modules/*:${JAR_FILE}" ${CLASS} "$@"
+java --module-path "${SCRIPT_DIR}/target/modules:${JAR_FILE}" -m "com.github.rvesse.airline.examples/${CLASS}" "$@"
