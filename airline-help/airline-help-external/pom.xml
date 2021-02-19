@@ -34,6 +34,7 @@
       <artifactId>airline</artifactId>
       <classifier>tests</classifier>
       <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

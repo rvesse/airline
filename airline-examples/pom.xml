@@ -37,7 +37,25 @@
 
     <dependency>
       <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-help-html</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
       <artifactId>airline-help-man</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-help-markdown</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-help-external</artifactId>
       <version>${project.version}</version>
     </dependency>
 

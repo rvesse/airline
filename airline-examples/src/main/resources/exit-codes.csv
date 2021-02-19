@@ -1,0 +1,4 @@
+0,Successfully displayed help to user
+1,IO Error attempting to display help
+127,Error parsing command, options and/or arguments
+128,Unexpected Error

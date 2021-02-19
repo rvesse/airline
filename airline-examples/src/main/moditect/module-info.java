@@ -16,12 +16,17 @@
 module com.github.rvesse.airline.examples
 {
     requires org.apache.commons.collections4;
+    // TODO Current Commons CSV release is quite old and doesn't have Automatic-Module-Name
+    //requires org.apache.commons.csv;
     requires org.apache.commons.lang3;
     requires java.inject;
     requires com.github.rvesse.airline.io;
     requires com.github.rvesse.airline;
     requires com.github.rvesse.airline.help.bash;
+    requires com.github.rvesse.airline.help.external;
+    requires com.github.rvesse.airline.help.html;
     requires com.github.rvesse.airline.help.man;
+    requires com.github.rvesse.airline.help.markdown;
     requires com.github.rvesse.airline.prompts;
     
     exports com.github.rvesse.airline.examples;
