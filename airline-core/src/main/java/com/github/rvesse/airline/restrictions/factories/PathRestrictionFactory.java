@@ -19,9 +19,9 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.rvesse.airline.annotations.restrictions.Directory;
-import com.github.rvesse.airline.annotations.restrictions.File;
-import com.github.rvesse.airline.annotations.restrictions.Path;
+import com.github.rvesse.airline.annotations.restrictions.IsDirectory;
+import com.github.rvesse.airline.annotations.restrictions.IsFile;
+import com.github.rvesse.airline.annotations.restrictions.IsPath;
 import com.github.rvesse.airline.annotations.restrictions.PathKind;
 import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
@@ -30,16 +30,16 @@ import com.github.rvesse.airline.restrictions.common.PathRestriction;
 public class PathRestrictionFactory implements OptionRestrictionFactory, ArgumentsRestrictionFactory {
 
     protected final PathRestriction createCommon(Annotation annotation) {
-        if (annotation instanceof Path) {
-            Path path = (Path) annotation;
+        if (annotation instanceof IsPath) {
+            IsPath path = (IsPath) annotation;
             return new PathRestriction(path.mustExist(), path.readable(), path.writable(), path.executable(),
                     path.kind());
-        } else if (annotation instanceof File) {
-            File path = (File) annotation;
+        } else if (annotation instanceof IsFile) {
+            IsFile path = (IsFile) annotation;
             return new PathRestriction(path.mustExist(), path.readable(), path.writable(), path.executable(),
                     PathKind.FILE);
-        } else if (annotation instanceof Directory) {
-            Directory path = (Directory) annotation;
+        } else if (annotation instanceof IsDirectory) {
+            IsDirectory path = (IsDirectory) annotation;
             return new PathRestriction(path.mustExist(), path.readable(), path.writable(), path.executable(),
                     PathKind.DIRECTORY);
         }
@@ -58,9 +58,9 @@ public class PathRestrictionFactory implements OptionRestrictionFactory, Argumen
     
     protected List<Class<? extends Annotation>> supportedAnnotations() {
         ArrayList<Class<? extends Annotation>> supported = new ArrayList<>();
-        supported.add(Path.class);
-        supported.add(File.class);
-        supported.add(Directory.class);
+        supported.add(IsPath.class);
+        supported.add(IsFile.class);
+        supported.add(IsDirectory.class);
         return supported;
     }
 

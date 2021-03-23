@@ -18,38 +18,38 @@ package com.github.rvesse.airline.restrictions;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.annotations.restrictions.PathKind;
-import com.github.rvesse.airline.annotations.restrictions.Directory;
-import com.github.rvesse.airline.annotations.restrictions.File;
-import com.github.rvesse.airline.annotations.restrictions.Path;
+import com.github.rvesse.airline.annotations.restrictions.IsDirectory;
+import com.github.rvesse.airline.annotations.restrictions.IsFile;
+import com.github.rvesse.airline.annotations.restrictions.IsPath;
 
 @Command(name = "paths")
 public class Paths {
 
     @Option(name = "--path", arity = 1)
-    @Path(mustExist = true)
+    @IsPath(mustExist = true)
     public String pathMustExist;
     
     @Option(name = "--file", arity = 1)
-    @File(mustExist = true)
+    @IsFile(mustExist = true)
     public String fileMustExit;
     
     @Option(name = "--directory", arity = 1)
-    @Directory(mustExist = true)
+    @IsDirectory(mustExist = true)
     public String dirMustExist;
     
     @Option(name = "--readable", arity = 1)
-    @Path(mustExist = false, readable = true, writable = false, executable = false)
+    @IsPath(mustExist = false, readable = true, writable = false, executable = false)
     public String readable;
     
     @Option(name = "--writable", arity = 1)
-    @Path(mustExist = false, writable = true, readable = false, executable = false)
+    @IsPath(mustExist = false, writable = true, readable = false, executable = false)
     public String writable;
     
     @Option(name = "--executable", arity = 1)
-    @Path(mustExist = false, executable = true, readable = false, writable = false)
+    @IsPath(mustExist = false, executable = true, readable = false, writable = false)
     public String executable;
     
     @Option(name = "--any", arity = 1)
-    @Path(mustExist = false, readable = false, writable = false, executable = false, kind = PathKind.ANY)
+    @IsPath(mustExist = false, readable = false, writable = false, executable = false, kind = PathKind.ANY)
     public String anyPath;
 }
