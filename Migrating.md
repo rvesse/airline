@@ -2,6 +2,14 @@
 
 TODO - Migration information will be added as breaking API changes are made
 
+## `@Path`/`@File`/`@Directory` annotations
+
+These annotations were renamed to add an `Is` prefix to avoid naming collisions with common Java classes:
+
+- `@Path` is now `@IsPath`
+- `@File` is now `@IsFile`
+- `@Directory` is now `@IsDirectory`
+
 # Migration to Airline 2.2 from Airline 2.1
 
 Airline 2.2 has some minor breaking changes versus Airline 2.1
