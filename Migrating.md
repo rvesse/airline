@@ -1,6 +1,6 @@
 # Migration to Airline 3 from Airline 2.x
 
-TODO - Migration information will be added as breaking API changes are made
+Airline 3.x is a major upgrade to Airline that takes the oppurtunity of a major version bump to make various breaking changes that were necessary to enable new features and address long term pain points for users.
 
 ## `@Path`/`@File`/`@Directory` annotations
 
@@ -9,6 +9,8 @@ These annotations were renamed to add an `Is` prefix to avoid naming collisions 
 - `@Path` is now `@IsPath`
 - `@File` is now `@IsFile`
 - `@Directory` is now `@IsDirectory`
+
+---
 
 # Migration to Airline 2.2 from Airline 2.1
 
