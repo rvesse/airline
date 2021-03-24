@@ -8,7 +8,7 @@
     <parent>
         <artifactId>airline-parent</artifactId>
         <groupId>com.github.rvesse</groupId>
-        <version>3.0.0-alpha-1-SNAPSHOT</version>
+        <version>3.0.0-alpha-2-SNAPSHOT</version>
     </parent>
 
     <artifactId>airline-guice</artifactId>

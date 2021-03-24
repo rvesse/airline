@@ -121,7 +121,7 @@ Use the following maven dependency declaration:
 
 Snapshot artifacts of the latest source are also available using the version `2.8.2-SNAPSHOT` from the [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
 
-For 3.x Alpha artifacts use the version `3.0.0-alpha-1-SNAPSHOT` from the same SNAPSHOT repositories
+For 3.x Alpha artifacts use the version `3.0.0-alpha-2-SNAPSHOT` from the same SNAPSHOT repositories
 
 ## Build Status
 
