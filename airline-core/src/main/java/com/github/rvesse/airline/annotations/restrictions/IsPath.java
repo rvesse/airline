@@ -22,38 +22,45 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation that marks that an options value must be a valid path to a
- * directory
+ * file/directory
  *
  */
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 @Target({ FIELD })
-public @interface Directory {
+public @interface IsPath {
 
     /**
-     * Gets/Sets whether the given directory must exist
+     * Gets/Sets whether the given file must exist
      * 
      * @return True if it must exist, false otherwise
      */
     public boolean mustExist() default false;
 
     /**
-     * Gets/Sets whether the given directory must be writable
+     * Gets/Sets whether the given file must be writable
      * 
      * @return True if must be writable, false otherwise
      */
     public boolean writable() default true;
 
     /**
-     * Gets/Sets whether the given directory must be readable
+     * Gets/Sets whether the given file must be readable
      * 
      * @return True if must be readable, false otherwise
      */
     public boolean readable() default true;
 
     /**
-     * Gets/Sets whether the given directory must be executable
+     * Gets/Sets whether the given file must be executable
      * 
      * @return True if must be executable, false otherwise
      */
     public boolean executable() default false;
+
+    /**
+     * Gets/Sets the kind of file that is expected
+     * 
+     * @return Expected file kind
+     */
+    public PathKind kind() default PathKind.ANY;
 }

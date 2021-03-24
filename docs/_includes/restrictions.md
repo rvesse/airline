@@ -25,7 +25,7 @@ The following annotations are used to specify restrictions on the values for opt
 - The [`@MinLength`]({{ include.path }}min-length.html) annotation specifies the minimum length of the value that may be given
 - The [`@NotBlank`]({{ include.path }}not-blank.html) annotation specifies that a value may not consist entirely of white space
 - The [`@NotEmpty`]({{ include.path }}not-empty.html) annotation specifies that the value may not be an empty string
-- The [`@Path`]({{ include.path }}path.html) annotation specifies restrictions on values that refer to files and/or directories
+- The [`@IsPath`]({{ include.path }}path.html) annotation specifies restrictions on values that refer to files and/or directories
 - The [`@Pattern`]({{ include.path }}pattern.html) annotation specifies that a value must match a regular expression
 - The [`@Port`]({{ include.path }}port.html) annotation specifies restrictions on values that represent port numbers
 
