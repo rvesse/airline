@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  */
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 @Target({ FIELD })
-public @interface File {
+public @interface IsFile {
 
     /**
      * Gets/Sets whether the given file must exist

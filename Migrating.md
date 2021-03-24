@@ -1,7 +1,6 @@
-
 # Migration to Airline 3.x from Airline 2.x
 
-Airline 3.x takes the opportunity to make breaking API changes in order to streamline the API, introduce new features and improve support for dependency injection frameworks.
+Airline 3.x takes the opportunity to make breaking API changes in order to streamline the API, introduce new features, address user pain points and improve support for dependency injection frameworks.
 
 ## Improvements to `CommandFactory`
 
@@ -60,6 +59,22 @@ Users who are using various extension points of the library, such as creating cu
 ### Updating Custom Help Generators for Positional Arguments
 
 If you are writing custom help generators you should now take into account the positional arguments present on the `CommandMetadata` when writing your implementation.
+
+## Annotation Changes
+
+Some annotation changes were made that will require existing annotations to be updated.
+
+### `@Path`/`@File`/`@Directory` annotations renamed
+
+These annotations were renamed to add an `Is` prefix to avoid naming collisions with common Java classes:
+
+- `@Path` is now `@IsPath`
+- `@File` is now `@IsFile`
+- `@Directory` is now `@IsDirectory`
+
+User code should import the new annotations as the old ones are no longer available.
+
+---
 
 # Migration to Airline 2.2 from Airline 2.1
 
