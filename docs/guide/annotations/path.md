@@ -2,7 +2,7 @@
 layout: page
 title: IsPath, IsFile and IsDirectory Annotations
 ---
-{% include req-migration.md old-version="2.x" version="3.0.0" message="These annotations were renamed to add an `Is` prefix to avoid name collisions with common Java types" %}
+{% include req-migration.md old-version="2.x" version="3.0.0" message="These annotations were renamed to add an `Is` prefix to avoid name collisions with common Java types, user should update their annotations accordingly." %}
 
 ## `@IsPath`
 
