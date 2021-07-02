@@ -53,10 +53,6 @@ public class StandardOptionParser<T> extends AbstractOptionParser<T> {
                     && StringUtils.startsWith(optionName, state.getParserConfiguration().getFlagNegationPrefix())
                             ? Boolean.FALSE.toString() : Boolean.TRUE.toString();
             state = state.withOptionValue(option, rawBooleanValue).popContext();
-        } else if (option.getArity() == 1) {
-            if (tokens.hasNext()) {
-                state = state.withOptionValue(option, tokens.next()).popContext();
-            }
         } else {
             int count = 0;
 
