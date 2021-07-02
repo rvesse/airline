@@ -22,9 +22,7 @@ import org.apache.commons.collections4.iterators.PeekingIterator;
 import com.github.rvesse.airline.Context;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
-import com.github.rvesse.airline.parser.errors.ParseOptionMissingValueException;
 import com.github.rvesse.airline.parser.errors.ParseOptionUnexpectedException;
-import com.github.rvesse.airline.utils.AirlineUtils;
 
 /**
  * An options parsing that parses options given in classic get-opt style where multiple options may be concatenated
@@ -126,36 +124,5 @@ public class ClassicGetOptParser<T> extends AbstractOptionParser<T> {
         tokens.next();
 
         return nextState;
-    }
-
-    protected void noValueForOption(ParseState<T> state, OptionMetadata option) {
-        state.getParserConfiguration().getErrorHandler()
-                .handleError(new ParseOptionMissingValueException("No value received for option %s",
-                        option.getTitle(0), AirlineUtils.first(option.getOptions())));
-    }
-
-    /**
-     * Checks whether the next value is an arguments separator or option
-     * 
-     * @param state
-     *            Parse State
-     * @param allowedOptions
-     *            Allowed options
-     * @param argsSeparator
-     *            Arguments separator
-     * @param shortForm
-     *            Whether to test only for short form, if {@code true} only consider the first character of
-     *            {@code peekedToken}
-     * @param peekedToken
-     *            The peeked token to check whether it is the arguments separator or an option
-     * @return True if the peeked token represents an arguments separator or an option
-     */
-    protected boolean isSeparatorOrOption(ParseState<T> state, List<OptionMetadata> allowedOptions,
-            String argsSeparator, boolean shortForm, String peekedToken) {
-        boolean hasSeparator = peekedToken.equals(argsSeparator);
-        boolean foundNextOption = (shortForm ? findOption(state, allowedOptions, "-" + peekedToken.substring(0, 1))
-                : findOption(state, allowedOptions, peekedToken)) != null;
-        final boolean separatorOrOption = hasSeparator || foundNextOption;
-        return separatorOrOption;
     }
 }

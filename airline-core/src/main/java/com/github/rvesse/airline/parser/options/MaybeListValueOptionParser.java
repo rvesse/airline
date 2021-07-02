@@ -104,6 +104,12 @@ public class MaybeListValueOptionParser<T> extends ListValueOptionParser<T> {
                 // Can't parse list value if there are no further tokens
                 if (!tokens.hasNext())
                     return state;
+                
+                // Can't parse list value if the next value is another option/arguments separator
+                if (isSeparatorOrOption(state, allowedOptions, state.getParserConfiguration().getArgumentsSeparator(), false, tokens.peek())) {
+                    noValueForOption(state, option);
+                    return state;
+                }
 
                 // Consume the value immediately, this option parser will now
                 // either succeed to parse the option or will error

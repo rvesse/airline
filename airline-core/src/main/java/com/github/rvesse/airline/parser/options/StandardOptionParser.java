@@ -24,7 +24,6 @@ import com.github.rvesse.airline.Context;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseOptionMissingValueException;
-import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 
 /**
  * An options parser that expects the name and value(s) to be white space
