@@ -6,7 +6,8 @@ permalink: index.html
 
 # Airline
 
-Airline is an annotation-driven Java library for building Command Line Interfaces (CLIs), it supports simple commands all the way through to complex Git style CLIs with groups and user defined command aliases.
+Airline is an annotation-driven Java library for building Command Line Interfaces (CLIs), it supports simple commands
+all the way through to complex Git style CLIs with groups and user defined command aliases.
 
 Airline aims to reduce the boiler plate code typically associated with CLIs in Java, many common behaviours can be achieved purely with annotations and zero user code.  Let's take a look at an ultra simple example:
 
