@@ -18,9 +18,6 @@ package com.github.rvesse.airline;
 
 import static com.github.rvesse.airline.SingleCommand.singleCommand;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -125,4 +122,5 @@ public class TestArityGreediness {
                         "--debug");
         Assert.assertNotEquals(args.open, "--debug", "Parser erroneously consumed --debug option as value for --open");
     }
+    
 }

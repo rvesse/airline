@@ -2,7 +2,8 @@
 
 ## 2.8.2
 
-
+- Bug Fixes
+    - Fix for some option parsers being overly greedy for arity=1 options and incorrectly consuming subsequent options (#110)
 
 ## 2.8.1
 
