@@ -26,9 +26,12 @@ import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.utils.AirlineUtils;
 
 /**
- * Abstract option parser for options that are specified in {@code --name=value}
- * style while the separator character (in this example {@code =}) can be
- * configured as desired.
+ * Abstract option parser for options that are specified in {@code --name=value} style while the separator character (in
+ * this example {@code =}) can be configured as desired.
+ * 
+ * <p>
+ * The separator must be a non-whitespace character.
+ * </p>
  * 
  * @author rvesse
  *
@@ -38,17 +41,35 @@ public abstract class AbstractNameValueOptionParser<T> extends AbstractOptionPar
     private static final char DEFAULT_SEPARATOR = '=';
     private final char separator;
 
+    /**
+     * Creates a new parser with the default separator ({@code =})
+     */
     public AbstractNameValueOptionParser() {
         this(DEFAULT_SEPARATOR);
     }
 
+    /**
+     * Creates a new parser with the desired separator character
+     * 
+     * @param sep
+     *            Separator character, must be non-whitespace
+     */
     public AbstractNameValueOptionParser(char sep) {
         this.separator = sep;
+
+        // This parser explicitly requires a non-whitespace separator and will not function anyway if created with a
+        // whitespace one
+        if (Character.isWhitespace(this.separator)) {
+            throw new IllegalArgumentException(
+                    "AbstractNameValueOptionParser may only be instantiated with a non-whitespace separator");
+        }
     }
 
     @Override
-    public ParseState<T> parseOptions(PeekingIterator<String> tokens, ParseState<T> state, List<OptionMetadata> allowedOptions) {
-        List<String> parts = AirlineUtils.unmodifiableListCopy(StringUtils.split(tokens.peek(), new String(new char[] { this.separator }), 2));
+    public ParseState<T> parseOptions(PeekingIterator<String> tokens, ParseState<T> state,
+            List<OptionMetadata> allowedOptions) {
+        List<String> parts = AirlineUtils
+                .unmodifiableListCopy(StringUtils.split(tokens.peek(), new String(new char[] { this.separator }), 2));
         if (parts.size() != 2) {
             return null;
         }

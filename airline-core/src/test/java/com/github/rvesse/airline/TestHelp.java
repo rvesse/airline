@@ -33,6 +33,7 @@ import com.github.rvesse.airline.args.Args1;
 import com.github.rvesse.airline.args.Args2;
 import com.github.rvesse.airline.args.ArgsAllowedValues;
 import com.github.rvesse.airline.args.ArgsArityString;
+import com.github.rvesse.airline.args.ArgsArityStringPartialTitles;
 import com.github.rvesse.airline.args.ArgsBooleanArity;
 import com.github.rvesse.airline.args.ArgsCopyrightAndLicense;
 import com.github.rvesse.airline.args.ArgsExamples;
@@ -567,6 +568,41 @@ public class TestHelp {
                 "\n" +
                 "OPTIONS\n" +
                 "        -pairs <Key> <Value>\n" +
+                "            Pairs\n" +
+                "\n" +
+                "        --\n" +
+                "            This option can be used to separate command-line options from the\n" +
+                "            list of arguments (useful when arguments might be mistaken for\n" +
+                "            command-line options)\n" +
+                "\n" +
+                "        <rest>\n" +
+                "            Rest\n" +
+                "\n");
+        //@formatter:on
+    }
+    
+    @Test
+    public void testArgsArityStingPartialTitles() throws IOException {
+        //@formatter:off
+        CliBuilder<Object> builder = Cli.builder("test")
+                .withDescription("Test commandline")
+                .withDefaultCommand(Help.class)
+                .withCommands(Help.class,
+                        ArgsArityStringPartialTitles.class);
+
+        Cli<Object> parser = builder.build();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Help.help(parser.getMetadata(), Collections.singletonList("ArgsArityStringPartialTitles"), out);
+        assertEquals(new String(out.toByteArray(), utf8),
+                "NAME\n" +
+                "        test ArgsArityStringPartialTitles -\n" +
+                "\n" +
+                "SYNOPSIS\n" +
+                "        test ArgsArityStringPartialTitles [ -pairs <Value> <Value>... ] [--] [ <rest>... ]\n" +
+                "\n" +
+                "OPTIONS\n" +
+                "        -pairs <Value> <Value>\n" +
                 "            Pairs\n" +
                 "\n" +
                 "        --\n" +

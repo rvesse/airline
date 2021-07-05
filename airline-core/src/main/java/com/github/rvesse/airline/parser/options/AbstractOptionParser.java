@@ -23,13 +23,13 @@ import org.apache.commons.collections4.Predicate;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.AbstractParser;
 import com.github.rvesse.airline.parser.ParseState;
+import com.github.rvesse.airline.parser.errors.ParseOptionMissingValueException;
 import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.parser.AbbreviatedOptionFinder;
 import com.github.rvesse.airline.utils.predicates.parser.OptionFinder;
 
 /**
- * Abstract option parser that provides some useful helper methods to derived
- * classes
+ * Abstract option parser that provides some useful helper methods to derived classes
  */
 public abstract class AbstractOptionParser<T> extends AbstractParser<T> implements OptionParser<T> {
 
@@ -76,10 +76,9 @@ public abstract class AbstractOptionParser<T> extends AbstractParser<T> implemen
     }
 
     /**
-     * Return true if the option has a short name prefix i.e. starts with a
-     * single {@code -} character. This does not mean that it actually is a
-     * short option since definitions of what are considered a short option will
-     * vary by concrete implementation
+     * Return true if the option has a short name prefix i.e. starts with a single {@code -} character. This does not
+     * mean that it actually is a short option since definitions of what are considered a short option will vary by
+     * concrete implementation
      * 
      * @param name
      *            Option name
@@ -87,5 +86,47 @@ public abstract class AbstractOptionParser<T> extends AbstractParser<T> implemen
      */
     protected boolean hasShortNamePrefix(String name) {
         return SHORT_OPTIONS_PREFIX.matcher(name).matches();
+    }
+
+    /**
+     * Reports that no/insufficient values were provided for an option
+     * 
+     * @param state
+     *            Parser state
+     * @param option
+     *            Option whose value(s) are missing
+     */
+    protected void noValueForOption(ParseState<T> state, OptionMetadata option) {
+        state.getParserConfiguration().getErrorHandler().handleError(new ParseOptionMissingValueException(
+                "No value received for option %s", option.getTitle(0), AirlineUtils.first(option.getOptions())));
+    }
+
+    /**
+     * Checks whether the next value is an arguments separator or option
+     * <p>
+     * This helps option parsers ensure they are not overly greedy when trying to consume options and their values when
+     * they should instead be raising an error because no value is provided for an option.
+     * </p>
+     * 
+     * @param state
+     *            Parse State
+     * @param allowedOptions
+     *            Allowed options
+     * @param argsSeparator
+     *            Arguments separator
+     * @param shortForm
+     *            Whether to test only for short form, if {@code true} only consider the first character of
+     *            {@code peekedToken}
+     * @param peekedToken
+     *            The peeked token to check whether it is the arguments separator or an option
+     * @return True if the peeked token represents an arguments separator or an option
+     */
+    protected boolean isSeparatorOrOption(ParseState<T> state, List<OptionMetadata> allowedOptions,
+            String argsSeparator, boolean shortForm, String peekedToken) {
+        boolean hasSeparator = peekedToken.equals(argsSeparator);
+        boolean foundNextOption = (shortForm ? findOption(state, allowedOptions, "-" + peekedToken.substring(0, 1))
+                : findOption(state, allowedOptions, peekedToken)) != null;
+        final boolean separatorOrOption = hasSeparator || foundNextOption;
+        return separatorOrOption;
     }
 }

@@ -16,7 +16,6 @@
 package com.github.rvesse.airline.parser.options;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.collections4.iterators.PeekingIterator;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +25,6 @@ import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseOptionMissingValueException;
 import com.github.rvesse.airline.parser.errors.ParseOptionUnexpectedException;
-import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 
 /**
  * An options parser that requires the values to be a
@@ -114,6 +112,12 @@ public class ListValueOptionParser<T> extends AbstractOptionParser<T> {
                 // Can't parse list value if there are no further tokens
                 if (!tokens.hasNext())
                     return state;
+                
+                // Can't parse list value if the next value is another option/arguments separator
+                if (isSeparatorOrOption(state, allowedOptions, state.getParserConfiguration().getArgumentsSeparator(), false, tokens.peek())) {
+                    noValueForOption(state, option);
+                    return state;
+                }
 
                 // Consume the value immediately, this option parser will now
                 // either succeed to parse the option or will error

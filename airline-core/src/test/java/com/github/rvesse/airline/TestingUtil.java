@@ -15,14 +15,18 @@
  */
 package com.github.rvesse.airline;
 
-import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.builder.CliBuilder;
+import com.github.rvesse.airline.model.ParserMetadata;
 
 public class TestingUtil
 {
     public static <T> SingleCommand<T> singleCommandParser(Class<T> commandClass)
     {
         return SingleCommand.singleCommand(commandClass);
+    }
+    
+    public static <T> SingleCommand<T> singleCommandParser(Class<T> commandClass, ParserMetadata<T> parser) {
+        return SingleCommand.singleCommand(commandClass, parser);
     }
     
     public static <T> Cli<T> singleCli(Class<T> commandClass)
