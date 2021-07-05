@@ -78,23 +78,26 @@ Users may create their own option parsers if desired as discussed on the [Custom
 
 The classic `getopt` style parser only works with short form options i.e. those with a single character name e.g. `-a`.
 However, it is particularly useful for flag options, those which do not take a value (arity 0), in that it allows users
-to specify multiple options together.  For example the user input `-abcd` can be parsed into setting the `-a`, `-b`,
-`-c` and `-d` flag (arity zero) options.
+to specify multiple options together.  For example the user input `-ac` can be parsed into setting the `-a` and `-c`
+options assuming they are arity 0 i.e. flag options.
 
 It also allows for a value to be provided to the final option in the sequence provided that it is an arity 1 option e.g.
-`-abe value` sets the `-a` and `-b` options and sets the `-e` option to `value`.
+`-abe` sets the `-a` and `-b` options value as `e`.  Optionally the value to the last option in the sequence may be
+provided as a separate value i.e. `-ab e` is treated the same.
 
-{% include version="2.8.2" %}
+###### Parser Greediness
 
-As of 2.8.2 a bug fix to option parsers was made that made them less greedy when parsing options with values.  Prior to
+{% include req-ver.md version="2.8.2" %}
+
+As of 2.8.2 a bug fix to option parsers was made to make them less greedy when parsing options with values.  Prior to
 this change they could incorrectly parse a token that was intended to represent an option as a value.  Considering the
-above example if you had `-abc` where `-a` is a flag option and `-b` has arity 1 the parser would previously have set
-the value of `-b` to be `c` even if you also had a `-c` option defined.  From that release onwards this would now result
-in an error if `c` may itself be an option.
+above example if you had `-abe` where `-a` is a flag option and `-b` has arity 1 the parser would previously have set
+the value of `-b` to be `e` even if you also had a `-e` option defined.  From that release onwards this would now result
+in an error if `e` may itself be an option.ß
 
 ##### `GreedyClassicGetOptParser`
 
-{% include version="2.8.2" %}
+{% include req-ver.md version="2.8.2" %}
 
 As of 2.8.2 a bug fix to option parsers was made that made them less greedy when parsing options with values, see the
 example given for `ClassicGetOptParser` above.  While for most parsers this changes only impact was that parsing errors
@@ -102,8 +105,8 @@ were detected and reporting more reliably for the `ClassicGetOptParser` this cou
 In order to allow users the choice to preseve the old behaviour if needed a new 
 {% include javadoc-ref.md class="GreedyClassicGetOptParser" package="parser.options" %} was provided in this release.
 
-Per the above example with the greedy parser `-abc` will set `-a` and the value of `-b` to `c` regardless of whether
-there is a `-c` option defined.
+Per the above example with the greedy parser `-abe` will set `-a` and the value of `-b` to `e` regardless of whether
+there is a `-e` option defined.
 
 ##### `MaybePairValueOptionParser`
 
