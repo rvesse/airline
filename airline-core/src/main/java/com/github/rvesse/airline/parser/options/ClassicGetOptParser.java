@@ -22,15 +22,26 @@ import org.apache.commons.collections4.iterators.PeekingIterator;
 import com.github.rvesse.airline.Context;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
+import com.github.rvesse.airline.parser.errors.ParseOptionMissingValueException;
 import com.github.rvesse.airline.parser.errors.ParseOptionUnexpectedException;
 
 /**
  * An options parsing that parses options given in classic get-opt style where multiple options may be concatenated
- * together
+ * together, potentially including a value for the last option in the concatenation.
  * <p>
- * For example {@code -abc} could potentially set the option {@code -a}, {@code -b} and {@code -c} however
- * interpretation is contextual depending on the option configuration. Say option {@code -a} has arity of 1 then the
- * remainder of the token (the {@code bc}) would be interpreted as being the value passed to the {@code -a} option.
+ * This is the default variant of the parser used by default configuration and since 2.8.2 was updated to be non-greedy
+ * in its value consumption for {@code arity = 1} options. For the old greedy behaviour please use
+ * {@link GreedyClassicGetOptParser} instead.
+ * </p>
+ * <p>
+ * For example consider a command that defines options {@code -a}, {@code -b} and {@code -c} where {@code -b} takes a
+ * value (i.e. {@code arity = 1}) and the others are flag options. With that definition a user can provide the options
+ * as {@code -abc} and that would result in an error because the {@code c} is considered an option and not a value for
+ * {@code -b} resulting in a {@link ParseOptionMissingValueException} being generated.
+ * </p>
+ * <p>
+ * However an input of {@code -acbfoo} would set the {@code -a} and {@code -c} flags while setting the value of
+ * {@code -b} to {@code foo}.
  * </p>
  *
  * @param <T>
@@ -86,10 +97,10 @@ public class ClassicGetOptParser<T> extends AbstractOptionParser<T> {
                         noValueForOption(nextState, option);
                         return nextState;
                     }
-                    
+
                     // Otherwise consume the options value
                     nextState = nextState.withOptionValue(option, remainingToken).popContext();
-                    
+
                 } else if (tokens.hasNext()) {
                     // Check the next token is not itself an option or the arguments separator
                     String peekedToken = tokens.peek();
@@ -102,6 +113,7 @@ public class ClassicGetOptParser<T> extends AbstractOptionParser<T> {
                     nextState = nextState.withOptionValue(option, tokens.next()).popContext();
                 }
 
+                first = false;
                 return nextState;
             }
 

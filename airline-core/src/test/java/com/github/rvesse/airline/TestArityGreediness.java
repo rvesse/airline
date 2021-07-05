@@ -44,7 +44,7 @@ public class TestArityGreediness {
         Assert.assertNotEquals(args.open, "--debug", "Parser erroneously consumed --debug option as value for --open");
     }
 
-    private <T> ParserMetadata<T> useSpecificOptionParser(OptionParser<T> optionParser) {
+    public static <T> ParserMetadata<T> useSpecificOptionParser(OptionParser<T> optionParser) {
         ParserBuilder<T> builder = new ParserBuilder<T>().withOptionParser(optionParser);
         ParserMetadata<T> parser = builder.build();
         assertEquals(parser.getOptionParsers().size(), 1);

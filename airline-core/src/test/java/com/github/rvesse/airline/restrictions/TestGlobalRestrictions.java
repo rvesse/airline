@@ -53,7 +53,7 @@ public class TestGlobalRestrictions {
         Assert.assertNull(cmd);
     }
 
-    @Test
+    @Test(expectedExceptions = ParseOptionMissingValueException.class)
     public void global_restrictions_unrestricted_missing_option_value() {
         com.github.rvesse.airline.Cli<Object> parser = new com.github.rvesse.airline.Cli<>(UnrestrictedCli.class);
         Object cmd = parser.parse(new String[] { "Args1", "-long" });
