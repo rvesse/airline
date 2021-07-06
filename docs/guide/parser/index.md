@@ -82,8 +82,8 @@ to specify multiple options together.  For example the user input `-ac` can be p
 options assuming they are arity 0 i.e. flag options.
 
 It also allows for a value to be provided to the final option in the sequence provided that it is an arity 1 option e.g.
-`-abe` sets the `-a` and `-b` options value as `e`.  Optionally the value to the last option in the sequence may be
-provided as a separate value i.e. `-ab e` is treated the same.
+`-abe` sets the `-a` option to true and the `-b` options value as `e`.  Optionally the value to the last option in the
+sequence may be provided as a separate value i.e. `-ab e` is treated the same as `-abe`
 
 ###### Parser Greediness
 
@@ -93,7 +93,7 @@ As of 2.8.2 a bug fix to option parsers was made to make them less greedy when p
 this change they could incorrectly parse a token that was intended to represent an option as a value.  Considering the
 above example if you had `-abe` where `-a` is a flag option and `-b` has arity 1 the parser would previously have set
 the value of `-b` to be `e` even if you also had a `-e` option defined.  From that release onwards this would now result
-in an error if `e` may itself be an option.ß
+in an error if `e` may itself be an option.
 
 ##### `GreedyClassicGetOptParser`
 

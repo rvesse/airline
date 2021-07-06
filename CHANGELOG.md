@@ -13,6 +13,8 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
 - Core Improvements
   - First class support for `BigInteger` and `BigDecimal` as numeric types
   - First class support for `Path`
+  - Provided corrected spelling for `ConvertResult.wasSuccessful()`, old mis-spelt method preserved but marked as
+    deprecated
 - Help Improvements
   - Added an `@SeeAlso` annotation to Airline Core (#51)
 - Fluent API Improvements

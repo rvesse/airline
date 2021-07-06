@@ -16,9 +16,8 @@
 package com.github.rvesse.airline.types;
 
 /**
- * Helper class used to represent the result of an attempted conversion.
- * Primarily used internally by {@link DefaultTypeConverter} but may be
- * generally useful for implementing custom {@link TypeConverter}
+ * Helper class used to represent the result of an attempted conversion. Primarily used internally by
+ * {@link DefaultTypeConverter} but may be generally useful for implementing custom {@link TypeConverter}
  * implementations or extending the {@linkplain DefaultTypeConverter}
  *
  */
@@ -32,6 +31,9 @@ public class ConvertResult {
      */
     public static final ConvertResult FAILURE = new ConvertResult();
 
+    /**
+     * Creates a basic convert result that indicates failure
+     */
     private ConvertResult() {
         this.value = null;
         this.success = false;
@@ -50,6 +52,12 @@ public class ConvertResult {
         this.cause = null;
     }
 
+    /**
+     * Creates a new conversion result that indicates failure
+     * 
+     * @param cause
+     *            Cause of the failure
+     */
     public ConvertResult(Throwable cause) {
         this.value = null;
         this.success = false;
@@ -59,8 +67,14 @@ public class ConvertResult {
     /**
      * Whether the conversion was successful
      * 
+     * @return True if successful, false otherwise public boolean wasSuccessful() { return this.success; }
+     * 
+     *         /** Whether the conversion was successful
+     * 
      * @return True if successful, false otherwise
+     * @deprecated Use correctly spelled {@link #wasSuccessful()} instead
      */
+    @Deprecated
     public boolean wasSuccessfull() {
         return this.success;
     }
