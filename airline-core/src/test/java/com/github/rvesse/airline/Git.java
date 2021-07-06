@@ -41,6 +41,9 @@ public class Git
                     .withDefaultCommand(RemoteShow.class)
                     .withCommand(RemoteShow.class)
                     .withCommand(RemoteAdd.class)
+                    .parent()
+                .withParser()
+                    .withCommandAbbreviation()
                     .parent();
         //@formatter:on
 

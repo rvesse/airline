@@ -20,6 +20,7 @@ import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,4 +54,7 @@ public class Args1
 
     @Option(name = "-date", description = "An ISO 8601 formatted date.")
     public Date date;
+    
+    @Option(name = "-path", description = "A Path")
+    public Path path;
 }
