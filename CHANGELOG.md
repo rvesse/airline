@@ -1,29 +1,38 @@
 # Airline - Change Log
 
-## 2.9.0
-
-- Core Improvements
-    - First class support for `BigInteger` and `BigDecimal` as numeric types
-- Help Improvements
-    - Added an `@SeeAlso` annotation to Airline Core (#51)
-- Dependency Updates
-    - Apache Commons Collections upgraded to 4.4
-    - Apache Commons Lang upgraded to 3.11
-    - Various build plugins updated to latest available versions (this only impacts developers building the library from source)
-- New `airline-prompts` module provides a Fluent API for defining user prompts (#92)
-    - Prompt timeouts so non-interactive apps don't hang forever
-    - Configurable prompt sources
-    - Configurable prompt formatting
-    - Prompt for keys, strings, passwords, options (from a pre-configured list) or a strongly typed value
-    - Integrates with Airline's type conversion
-- New `airline-help-external` modules provides new help annotations that allow more complex help to be provided via classpath/file resources rather than directly in the annotations.  This is a generalisation of the mechanism already used by `@Version` annotation. (#52)
-    - Adds `@ExternalProse`, `@ExternalExitCodes`, `@ExternalExamples` and `@ExternalExamplesTabular` annotations
-
 ### Forthcoming 2.x Deprecation
 
 2.9.0, and any subsequent patch releases, are intended to be the last supported releases of Airline 2.x
 
-Future releases will start to focus on the 3.x builds which include some important new features e.g. first class positional argument support, better DI framework integration, that are not possible under 2.x without making breaking changes.  You can see progress on 3.x by following the `3x` branch and its `CHANGELOG.md` and `MIGRATING.md`
+Future releases will start to focus on the 3.x builds which include some important new features e.g. first class
+positional argument support, better DI framework integration, that are not possible under 2.x without making breaking
+changes.  You can see progress on 3.x by following the `3x` branch and its `CHANGELOG.md` and `MIGRATING.md`
+
+## 2.9.0
+
+- Core Improvements
+  - First class support for `BigInteger` and `BigDecimal` as numeric types
+  - First class support for `Path`
+- Help Improvements
+  - Added an `@SeeAlso` annotation to Airline Core (#51)
+- Fluent API Improvements
+  - A `ParserBuilder` created by calling `withParser()` on a `CliBuilder` can now return control back to its parent via
+    the `parent()` method for cleaner Fluid CLI definitionå
+- Dependency Updates
+  - Apache Commons Collections upgraded to 4.4
+  - Apache Commons Lang upgraded to 3.11
+  - Various build plugins updated to latest available versions (this only impacts developers building the library from
+    source)
+- New `airline-prompts` module provides a Fluent API for defining user prompts (#92)
+  - Prompt timeouts so non-interactive apps don't hang forever
+  - Configurable prompt sources
+  - Configurable prompt formatting
+  - Prompt for keys, strings, passwords, options (from a pre-configured list) or a strongly typed value
+  - Integrates with Airline's type conversion
+- New `airline-help-external` modules provides new help annotations that allow more complex help to be provided via
+  classpath/file resources rather than directly in the annotations.  This is a generalisation of the mechanism already
+  used by `@Version` annotation. (#52)
+  - Adds `@ExternalProse`, `@ExternalExitCodes`, `@ExternalExamples` and `@ExternalExamplesTabular` annotations
 
 ## 2.8.2
 
