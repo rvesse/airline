@@ -21,6 +21,8 @@ import com.github.rvesse.airline.types.numerics.NumericTypeConverter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * The default type converter
@@ -175,6 +177,8 @@ public class DefaultTypeConverter extends DefaultTypeConverterProvider implement
                 return new ConvertResult(value);
             } else if (Boolean.class.isAssignableFrom(type) || Boolean.TYPE.isAssignableFrom(type)) {
                 return new ConvertResult(Boolean.valueOf(value));
+            } else if (Path.class.isAssignableFrom(type)) {
+                return new ConvertResult(Paths.get(value));
             } else if (this.numericConverter != null) {
                 return this.numericConverter.tryConvertNumerics(name, type, value);
             }

@@ -23,6 +23,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.github.rvesse.airline.SingleCommand;
+import com.github.rvesse.airline.args.Args1;
 import com.github.rvesse.airline.parser.errors.ParseOptionConversionException;
 import com.github.rvesse.airline.types.numerics.DefaultNumericConverter;
 import com.github.rvesse.airline.types.numerics.NumericTypeConverter;
@@ -510,5 +511,19 @@ public class TestTypeConverters {
         SingleCommand<ArgsRadix> cmd = SingleCommand.singleCommand(ArgsRadix.class);
         long value = 47000;
         cmd.parse("--binary", Long.toString(value));
+    }
+    
+    @Test
+    public void path_01() {
+        SingleCommand<Args1> cmd = SingleCommand.singleCommand(Args1.class);
+        Args1 args = cmd.parse("-path", "/foo");
+        Assert.assertEquals(args.path.toString(), "/foo");
+    }
+    
+    @Test
+    public void path_02() {
+        SingleCommand<Args1> cmd = SingleCommand.singleCommand(Args1.class);
+        Args1 args = cmd.parse("-path", "");
+        Assert.assertEquals(args.path.toString(), "");
     }
 }

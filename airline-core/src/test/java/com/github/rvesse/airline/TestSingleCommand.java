@@ -48,6 +48,7 @@ import com.github.rvesse.airline.model.ParserMetadata;
 import com.github.rvesse.airline.parser.errors.ParseException;
 import com.github.rvesse.airline.parser.errors.ParseOptionGroupException;
 import com.github.rvesse.airline.parser.options.ClassicGetOptParser;
+import com.github.rvesse.airline.parser.options.GreedyClassicGetOptParser;
 import com.github.rvesse.airline.parser.options.StandardOptionParser;
 import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
@@ -133,16 +134,16 @@ public class TestSingleCommand {
 
     @Test
     public void classicGetoptArgs1() throws ParseException {
-        ArgsSingleChar args = singleCommand(ArgsSingleChar.class).parse("-lg", "-dsn", "-pa-p", "-2f", "-z", "--Dfoo");
+        ArgsSingleChar args = singleCommand(ArgsSingleChar.class).parse("-lg", "-dsm", "-pa-p", "-2", "-f-x", "--Dfoo");
 
         assertTrue(args.l);
         assertTrue(args.g);
         assertTrue(args.d);
-        assertEquals(args.s, "n");
+        assertEquals(args.s, "m");
         assertEquals(args.p, "a-p");
         assertFalse(args.n);
         assertTrue(args.two);
-        assertEquals(args.f, "-z");
+        assertEquals(args.f, "-x");
         assertFalse(args.z);
         assertEquals(args.dir, null);
         assertEquals(args.parameters, Arrays.asList("--Dfoo"));
@@ -156,7 +157,7 @@ public class TestSingleCommand {
         // another parser configuration in favour of our explicitly passed
         // configuration
         ParserMetadata<ArgsSingleCharCustomParser> parser = new ParserBuilder<ArgsSingleCharCustomParser>()
-                .withOptionParsers(new ClassicGetOptParser<ArgsSingleCharCustomParser>(),
+                .withOptionParsers(new GreedyClassicGetOptParser<ArgsSingleCharCustomParser>(),
                         new StandardOptionParser<ArgsSingleCharCustomParser>())
                 .build();
         ArgsSingleCharCustomParser args = singleCommand(ArgsSingleCharCustomParser.class, parser).parse("-lg", "-dsn",
@@ -221,7 +222,7 @@ public class TestSingleCommand {
         SingleCommand<Args1> parser = singleCommand(Args1.class);
         CommandMetadata command = CollectionUtils.find(Collections.singletonList(parser.getCommandMetadata()),
                 new CommandFinder("Args1"));
-        assertEquals(command.getAllOptions().size(), 8);
+        assertEquals(command.getAllOptions().size(), 9);
     }
 
     /**
