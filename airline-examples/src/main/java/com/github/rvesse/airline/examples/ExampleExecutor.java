@@ -47,9 +47,11 @@ public class ExampleExecutor {
             execute(cmd);
         } catch (ParseException e) {
             System.err.println("Parser error: " + e.getMessage());
+            System.exit(127);
         } catch (Throwable e) {
             System.err.println("Unexpected error: " + e.getMessage());
             e.printStackTrace(System.err);
+            System.exit(128);
         }
     }
     
@@ -60,9 +62,11 @@ public class ExampleExecutor {
             execute(cmd);
         } catch (ParseException e) {
             System.err.println("Parser error: " + e.getMessage());
+            System.exit(127);
         } catch (Throwable e) {
             System.err.println("Unexpected error: " + e.getMessage());
             e.printStackTrace(System.err);
+            System.exit(128);
         }
     }
 
@@ -72,9 +76,11 @@ public class ExampleExecutor {
             execute(cmd);
         } catch (ParseException e) {
             System.err.println("Parser error: " + e.getMessage());
+            System.exit(127);
         } catch (Throwable e) {
             System.err.println("Unexpected error: " + e.getMessage());
             e.printStackTrace(System.err);
+            System.exit(128);
         }
     }
 }

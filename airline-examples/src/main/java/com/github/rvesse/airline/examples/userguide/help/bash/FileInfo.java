@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
-import com.github.rvesse.airline.annotations.help.BashCompletion;
+import com.github.rvesse.airline.annotations.help.bash.BashCompletion;
 import com.github.rvesse.airline.annotations.restrictions.Required;
 import com.github.rvesse.airline.examples.ExampleRunnable;
 import com.github.rvesse.airline.help.cli.bash.CompletionBehaviour;

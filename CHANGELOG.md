@@ -17,6 +17,9 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
     deprecated
 - Help Improvements
   - Added an `@SeeAlso` annotation to Airline Core (#51)
+  - **BREAKING** - `airline-help-bash` has moved `@BashCompletion` annotation into
+    `com.github.rvesse.airline.annotations.help.bash` to avoid package collisions between this module and the core in
+    order to allow this module to become a JPMS module
 - Fluent API Improvements
   - A `ParserBuilder` created by calling `withParser()` on a `CliBuilder` can now return control back to its parent via
     the `parent()` method for cleaner Fluid CLI definitionå
@@ -35,6 +38,11 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
   classpath/file resources rather than directly in the annotations.  This is a generalisation of the mechanism already
   used by `@Version` annotation. (#52)
   - Adds `@ExternalProse`, `@ExternalExitCodes`, `@ExternalExamples` and `@ExternalExamplesTabular` annotations
+- Build and Release Improvements
+  - All Airline modules are now fully fledged JPMS modules meaning they can be used on the JVM Module Path instead of
+    the Classpath where preferred
+    - See `airline-examples` module for examples of constructing a `module-info.java` that pulls in other Airline
+      modules and see `modularExample` script for examples of invoking an Airline based app using the Module Path
 
 ## 2.8.2
 
