@@ -71,6 +71,11 @@ Additionally the following alternative styles are supported:
 - {% include javadoc-ref.md class="ListValueOptionParser" package="parser.options" %} - Options that may be specified
   multiple times can be specified in a compact comma separated list form e.g. `--name foo,bar` sets the option `--name`
   to the values `foo` and `bar`
+- {% include javadoc-ref.md class="MaybeListValueOptionParser" package="parser.options" %} - Options that may be
+  specified multiple times can be specified in a compact comma separated list form or whitespace separated e.g. e.g.
+  `--name foo,bar` and `--name foo bar` both sets the option `--name` to the values `foo` and `bar`
+- {% include javadoc-ref.md class="GreedyMaybeListValueOptionParser" package="parser.options" %} - Similar to the above
+  `MaybeListValueOptionParser` but greedy in how it consumes values for the list.
 
 Users may create their own option parsers if desired as discussed on the [Custom Option Parsers](options.html) page.
 
@@ -93,7 +98,7 @@ As of 2.8.2 a bug fix to option parsers was made to make them less greedy when p
 this change they could incorrectly parse a token that was intended to represent an option as a value.  Considering the
 above example if you had `-abe` where `-a` is a flag option and `-b` has arity 1 the parser would previously have set
 the value of `-b` to be `e` even if you also had a `-e` option defined.  From that release onwards this would now result
-in an error if `e` may itself be an option.ß
+in an error if `e` may itself be an option.
 
 ##### `GreedyClassicGetOptParser`
 
@@ -120,6 +125,21 @@ So both `--conf key=value` and `--conf key value` are acceptable to set the `--c
 
 This parser requires that the list of values provided be an exact multiple of the arity of the option being set.  So for
 example if option `--conf` has arity 2 it would allow `--conf foo,bar` but not `--conf foo,bar,faz`
+
+##### `MaybeListValueOptionParser`
+
+Similar to the above `ListValueOptionParser` except that it allows for whitespace separated values as well.  So for
+example if option `--conf` has arity 2 it would allow `--conf foo,bar` and `--conf foo bar`
+
+This parser is non-greedy so when used with commands that also use [`@Arguments`](../annotations/arguments.html) or
+[`@DefaultOption`](../annotations/default-option.html) it will not continue parsing list values that are whitespace
+separated if those subsequent values could be considered as arguments/default option values.
+
+##### `GreedyMaybeListValueOptionParser`
+
+A greedy variant of the `MaybeListValueOptionParser` that will continue to parse list values until it sees another
+explicit option or the arguments separator.  This could cause some values to be incorrectly interpreted so should be
+used with care.
 
 #### Value Conversion
 

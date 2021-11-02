@@ -1,5 +1,10 @@
 # Airline - Change Log
 
+## 2.8.3
+
+- Parser Improvements
+  - Added a `GreedyMaybeListValueOptionParser` to cover more cases where greedy parsing behaviour is desired (#110)
+
 ## 2.8.2
 
 - Bug Fixes
