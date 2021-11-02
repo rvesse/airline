@@ -17,8 +17,7 @@ module com.github.rvesse.airline.help.external
 {
     requires org.apache.commons.collections4;
     requires org.apache.commons.lang3;
-    // TODO Current Commons CSV release is quite old and doesn't have Automatic-Module-Name
-    //requires org.apache.commons.csv;
+    requires org.apache.commons.csv;
     requires com.github.rvesse.airline.io;
     requires com.github.rvesse.airline;
     

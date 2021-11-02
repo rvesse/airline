@@ -16,8 +16,7 @@
 module com.github.rvesse.airline.examples
 {
     requires org.apache.commons.collections4;
-    // TODO Current Commons CSV release is quite old and doesn't have Automatic-Module-Name
-    //requires org.apache.commons.csv;
+    requires org.apache.commons.csv;
     requires org.apache.commons.lang3;
     requires java.inject;
     requires com.github.rvesse.airline.io;
@@ -50,6 +49,8 @@ module com.github.rvesse.airline.examples
     exports com.github.rvesse.airline.examples.userguide.restrictions;
     exports com.github.rvesse.airline.examples.userguide.restrictions.custom;
     
+    // As Airline is driven by reflection over the annotations on your classes you need 
+    // to open packages containing Airline annotated types to the com.github.rvesse.airline package
     opens com.github.rvesse.airline.examples.cli to com.github.rvesse.airline;
     opens com.github.rvesse.airline.examples.cli.aliases to com.github.rvesse.airline;
     opens com.github.rvesse.airline.examples.cli.commands to com.github.rvesse.airline;

@@ -76,6 +76,7 @@
     <dependency.testng>6.14.3</dependency.testng>
     <dependency.commons-lang3>3.11</dependency.commons-lang3>
     <dependency.commons-collections4>4.4</dependency.commons-collections4>
+    <dependency.commons-csv>1.9.0-SNAPSHOT</dependency.commons-csv>
   </properties>
 
   <modules>
