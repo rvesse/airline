@@ -282,4 +282,56 @@ public class TestStrings {
         Assert.assertEquals(cmd.urlsCaseInsensitive.size(), 1);
         Assert.assertEquals(cmd.urlsCaseInsensitive.get(0), "HTTP://test.com");
     }
+    
+    @Test
+    public void no_option_like_01() {
+        Strings cmd = parser().parse("--not-option-like", "foo", "--not-option-like", "bar");
+        Assert.assertEquals(cmd.notOptionLike.size(), 2);
+        Assert.assertEquals(cmd.notOptionLike.get(0), "foo");
+        Assert.assertEquals(cmd.notOptionLike.get(1), "bar");
+    }
+    
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_02() {
+        parser().parse("--not-option-like", "--foo");
+    }
+    
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_03() {
+        parser().parse("--not-option-like", "-f");
+    }
+
+    @Test
+    public void no_option_like_04() {
+        // Using @NotOptionLikeValues but restricting the option prefixes to -- so short form style options are allowed
+        Strings cmd = parser().parse("--not-option-like-long", "-f");
+        Assert.assertEquals(cmd.notOptionLikeLong.size(), 1);
+        Assert.assertEquals(cmd.notOptionLikeLong.get(0), "-f");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_05() {
+        // Using @NotOptionLikeValues but restricting the option prefixes to -- so long form style options are forbidden
+        parser().parse("--not-option-like-long", "--foo");
+    }
+
+    @Test
+    public void no_option_like_06() {
+        Strings cmd = parser().parse("foo", "bar");
+        Assert.assertEquals(cmd.args.size(), 2);
+        Assert.assertEquals(cmd.args.get(0), "foo");
+        Assert.assertEquals(cmd.args.get(1), "bar");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_07() {
+        // Using @NotOptionLikeValues on arguments so unrecognized options are rejected
+        parser().parse("--unrecognized");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_08() {
+        // Using @NotOptionLikeValues on arguments so unrecognized options are rejected
+        parser().parse("--foo");
+    }
 }

@@ -21,12 +21,14 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.github.rvesse.airline.HelpOption;
+import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.annotations.restrictions.EndsWith;
 import com.github.rvesse.airline.annotations.restrictions.ExactLength;
 import com.github.rvesse.airline.annotations.restrictions.MaxLength;
 import com.github.rvesse.airline.annotations.restrictions.MinLength;
+import com.github.rvesse.airline.annotations.restrictions.NoOptionLikeValues;
 import com.github.rvesse.airline.annotations.restrictions.NotBlank;
 import com.github.rvesse.airline.annotations.restrictions.NotEmpty;
 import com.github.rvesse.airline.annotations.restrictions.Pattern;
@@ -87,6 +89,18 @@ public class Strings {
     @Option(name = "--urls-ci")
     @StartsWith(ignoreCase = true, prefixes = { "http", "https", "ftp" })
     public List<String> urlsCaseInsensitive = new ArrayList<>();
+    
+    @Option(name = "--not-option-like")
+    @NoOptionLikeValues
+    public List<String> notOptionLike = new ArrayList<>();
+
+    @Option(name = "--not-option-like-long")
+    @NoOptionLikeValues(optionPrefixes = { "--" })
+    public List<String> notOptionLikeLong = new ArrayList<>();
+
+    @Arguments
+    @NoOptionLikeValues
+    public List<String> args = new ArrayList<>();
     
     @Inject
     public HelpOption<Strings> helpOption = new HelpOption<>();

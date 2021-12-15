@@ -24,6 +24,7 @@ import com.github.rvesse.airline.annotations.restrictions.EndsWith;
 import com.github.rvesse.airline.annotations.restrictions.ExactLength;
 import com.github.rvesse.airline.annotations.restrictions.MaxLength;
 import com.github.rvesse.airline.annotations.restrictions.MinLength;
+import com.github.rvesse.airline.annotations.restrictions.NoOptionLikeValues;
 import com.github.rvesse.airline.annotations.restrictions.NotBlank;
 import com.github.rvesse.airline.annotations.restrictions.NotEmpty;
 import com.github.rvesse.airline.annotations.restrictions.Pattern;
@@ -31,12 +32,7 @@ import com.github.rvesse.airline.annotations.restrictions.StartsWith;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
-import com.github.rvesse.airline.restrictions.common.EndsWithRestriction;
-import com.github.rvesse.airline.restrictions.common.LengthRestriction;
-import com.github.rvesse.airline.restrictions.common.NotBlankRestriction;
-import com.github.rvesse.airline.restrictions.common.NotEmptyRestriction;
-import com.github.rvesse.airline.restrictions.common.PatternRestriction;
-import com.github.rvesse.airline.restrictions.common.StartsWithRestriction;
+import com.github.rvesse.airline.restrictions.common.*;
 
 public class StringRestrictionFactory implements ArgumentsRestrictionFactory, OptionRestrictionFactory {
 
@@ -63,6 +59,9 @@ public class StringRestrictionFactory implements ArgumentsRestrictionFactory, Op
         } else if (annotation instanceof ExactLength) {
             ExactLength el = (ExactLength) annotation;
             return new LengthRestriction(el.length(), el.length());
+        } else if (annotation instanceof NoOptionLikeValues) {
+            NoOptionLikeValues noOptionLikeValues = (NoOptionLikeValues) annotation;
+            return new NoOptionLikeValuesRestriction(noOptionLikeValues.optionPrefixes());
         } else if (annotation instanceof NotBlank) {
             return new NotBlankRestriction();
         } else if (annotation instanceof NotEmpty) {
@@ -83,6 +82,7 @@ public class StringRestrictionFactory implements ArgumentsRestrictionFactory, Op
         supported.add(MaxLength.class);
         supported.add(MinLength.class);
         supported.add(ExactLength.class);
+        supported.add(NoOptionLikeValues.class);
         supported.add(NotBlank.class);
         supported.add(NotEmpty.class);
         supported.add(EndsWith.class);
