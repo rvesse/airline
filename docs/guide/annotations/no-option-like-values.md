@@ -16,7 +16,7 @@ annotated fields rather than any kind of error being issued.
 public List<String> args = new ArrayList<>();
 ```
 
-Here is a user tries to pass `--foo` into our command, and that isn't an option, it would result in an error.  If 
+Here if a user tries to pass `--foo` into our command, and that isn't an option, it would result in an error.  If 
 `@NoOptionLikeValues` is not applied then `--foo` would have been captured as an argument.
 
 ### Customising Option Prefixes
