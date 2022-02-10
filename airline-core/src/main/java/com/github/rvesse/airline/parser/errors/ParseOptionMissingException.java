@@ -31,6 +31,11 @@ public class ParseOptionMissingException extends ParseRestrictionViolatedExcepti
         this.optionTitle = optionTitle;
     }
 
+    public ParseOptionMissingException(String optionTitle, String unlessCondition) {
+        super("Required option '%s' is missing and %s", optionTitle, unlessCondition);
+        this.optionTitle = optionTitle;
+    }
+
     public String getOptionTitle()
     {
         return optionTitle;
