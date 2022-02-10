@@ -1,14 +1,17 @@
 /**
  * Copyright (C) 2010-16 the original author or authors.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.github.rvesse.airline.restrictions;
 
@@ -165,20 +168,15 @@ public class TestRequired {
         Assert.assertEquals(cmd.args.get(0), "some-arg");
     }
 
-    @Test(expectedExceptions = ParseOptionMissingException.class, expectedExceptionsMessageRegExp = "Required option.*no default values.*FOO, FOO_BAR")
+    @Test(expectedExceptions = ParseOptionMissingException.class, expectedExceptionsMessageRegExp = "Required option.*is missing.*no default values.*FOO, FOO_BAR")
     public void required_unless_env_03() {
         SingleCommand<Unless> parser = TestingUtil.singleCommandParser(Unless.class);
-        Unless cmd = parser.parse();
-        Assert.assertEquals(cmd.path, System.getenv("PATH"));
-        Assert.assertEquals(cmd.foo, "test");
+        parser.parse("some-arg");
     }
 
-    @Test(expectedExceptions = ParseArgumentsMissingException.class)
+    @Test(expectedExceptions = ParseArgumentsMissingException.class,expectedExceptionsMessageRegExp = "Required arguments.*are missing.*no default values.*ARGS, ARGUMENTS")
     public void required_unless_env_04() {
         SingleCommand<Unless> parser = TestingUtil.singleCommandParser(Unless.class);
-        Unless cmd = parser.parse("--foo", "test");
-        Assert.assertEquals(cmd.path, System.getenv("PATH"));
-        Assert.assertEquals(cmd.foo, "test");
-        Assert.assertEquals(cmd.args.size(), 0);
+        parser.parse("--foo", "test");
     }
 }
