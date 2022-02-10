@@ -4,7 +4,7 @@
 
 - Restriction Improvements
     - New `@NoOptionLikeValues` restriction for explicitly rejecting values that look like options i.e. start with
-      `-` or `--` but didn't match a defined option (#112)
+      `-` or `--` but didn't match a defined option e.g. user typos (#112)
 
 ## 2.8.3
 
