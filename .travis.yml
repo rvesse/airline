@@ -3,8 +3,6 @@ sudo: false
 install: true
 jdk: 
   - openjdk8
-  - openjdk9
-  - openjdk10
   - openjdk11
 env:
   - MAVEN_OPTS="-Dhttps.protocol=TLSv1.2"

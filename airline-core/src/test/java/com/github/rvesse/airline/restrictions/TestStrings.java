@@ -15,6 +15,7 @@
  */
 package com.github.rvesse.airline.restrictions;
 
+import com.github.rvesse.airline.args.Args1;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -26,6 +27,10 @@ public class TestStrings {
 
     private SingleCommand<Strings> parser() {
         return TestingUtil.singleCommandParser(Strings.class);
+    }
+
+    private SingleCommand<StringsNotOptionLike> parserNotOptionLike() {
+        return TestingUtil.singleCommandParser(StringsNotOptionLike.class);
     }
 
     @Test
@@ -115,7 +120,7 @@ public class TestStrings {
     public void exact_length_invalid_02() {
         parser().parse("--exact", "foo");
     }
-    
+
     @Test
     public void range_exact_length_valid() {
         Strings cmd = parser().parse("--range-exact", "foob");
@@ -170,14 +175,14 @@ public class TestStrings {
     public void pattern_case_insensitive_invalid() {
         parser().parse("--other", "test");
     }
-    
+
     @Test
     public void ends_with_01() {
         Strings cmd = parser().parse("--images", "test.jpg");
         Assert.assertEquals(cmd.images.size(), 1);
         Assert.assertEquals(cmd.images.get(0), "test.jpg");
     }
-    
+
     @Test
     public void ends_with_02() {
         Strings cmd = parser().parse("--images", "test.jpg", "--images", "test.png", "--images", "test.gif");
@@ -186,25 +191,25 @@ public class TestStrings {
         Assert.assertEquals(cmd.images.get(1), "test.png");
         Assert.assertEquals(cmd.images.get(2), "test.gif");
     }
-    
+
     @Test(expectedExceptions = ParseRestrictionViolatedException.class)
     public void ends_with_03() {
         parser().parse("--images", "test.txt");
     }
-    
+
     @Test(expectedExceptions = ParseRestrictionViolatedException.class)
     public void ends_with_04() {
         // Case sensitive so fails
         parser().parse("--images", "test.JPG");
     }
-    
+
     @Test
     public void ends_with_case_insensitive_01() {
         Strings cmd = parser().parse("--images-ci", "test.jpg");
         Assert.assertEquals(cmd.imagesCaseInsensitive.size(), 1);
         Assert.assertEquals(cmd.imagesCaseInsensitive.get(0), "test.jpg");
     }
-    
+
     @Test
     public void ends_with_case_insensitive_02() {
         Strings cmd = parser().parse("--images-ci", "test.jpg", "--images-ci", "test.PNG", "--images-ci", "test.GiF");
@@ -213,12 +218,12 @@ public class TestStrings {
         Assert.assertEquals(cmd.imagesCaseInsensitive.get(1), "test.PNG");
         Assert.assertEquals(cmd.imagesCaseInsensitive.get(2), "test.GiF");
     }
-    
+
     @Test(expectedExceptions = ParseRestrictionViolatedException.class)
     public void ends_with_case_insensitive_03() {
         parser().parse("--images-ci", "test.txt");
     }
-    
+
     @Test
     public void ends_with_case_insensitive_04() {
         // Case insensitive so passes
@@ -226,60 +231,181 @@ public class TestStrings {
         Assert.assertEquals(cmd.imagesCaseInsensitive.size(), 1);
         Assert.assertEquals(cmd.imagesCaseInsensitive.get(0), "test.JPG");
     }
-    
+
     @Test
     public void starts_with_01() {
         Strings cmd = parser().parse("--urls", "http://test.com");
         Assert.assertEquals(cmd.urls.size(), 1);
         Assert.assertEquals(cmd.urls.get(0), "http://test.com");
     }
-    
+
     @Test
     public void starts_with_02() {
-        Strings cmd = parser().parse("--urls", "http://test.com", "--urls", "https://secure.com", "--urls", "ftp://uploads.com");
+        Strings cmd = parser().parse("--urls", "http://test.com", "--urls", "https://secure.com", "--urls",
+                                     "ftp://uploads.com");
         Assert.assertEquals(cmd.urls.size(), 3);
         Assert.assertEquals(cmd.urls.get(0), "http://test.com");
         Assert.assertEquals(cmd.urls.get(1), "https://secure.com");
         Assert.assertEquals(cmd.urls.get(2), "ftp://uploads.com");
     }
-    
+
     @Test(expectedExceptions = ParseRestrictionViolatedException.class)
     public void starts_with_03() {
         parser().parse("--urls", "test.txt");
     }
-    
+
     @Test(expectedExceptions = ParseRestrictionViolatedException.class)
     public void starts_with_04() {
         // Case sensitive so fails
         parser().parse("--urls", "HTTP://test.com");
     }
-    
+
     @Test
     public void starts_with_case_insensitive_01() {
         Strings cmd = parser().parse("--urls-ci", "http://test.com");
         Assert.assertEquals(cmd.urlsCaseInsensitive.size(), 1);
         Assert.assertEquals(cmd.urlsCaseInsensitive.get(0), "http://test.com");
     }
-    
+
     @Test
     public void starts_with_case_insensitive_02() {
-        Strings cmd = parser().parse("--urls-ci", "http://test.com", "--urls-ci", "HTTPS://secure.com", "--urls-ci", "FtP://uploads.com");
+        Strings cmd = parser().parse("--urls-ci", "http://test.com", "--urls-ci", "HTTPS://secure.com", "--urls-ci",
+                                     "FtP://uploads.com");
         Assert.assertEquals(cmd.urlsCaseInsensitive.size(), 3);
         Assert.assertEquals(cmd.urlsCaseInsensitive.get(0), "http://test.com");
         Assert.assertEquals(cmd.urlsCaseInsensitive.get(1), "HTTPS://secure.com");
         Assert.assertEquals(cmd.urlsCaseInsensitive.get(2), "FtP://uploads.com");
     }
-    
+
     @Test(expectedExceptions = ParseRestrictionViolatedException.class)
     public void starts_with_case_insensitive_03() {
         parser().parse("--urls-ci", "urn:foo");
     }
-    
+
     @Test
     public void starts_with_case_insensitive_04() {
         // Case insensitive so passes
         Strings cmd = parser().parse("--urls-ci", "HTTP://test.com");
         Assert.assertEquals(cmd.urlsCaseInsensitive.size(), 1);
         Assert.assertEquals(cmd.urlsCaseInsensitive.get(0), "HTTP://test.com");
+    }
+
+    @Test
+    public void no_option_like_01() {
+        Strings cmd = parser().parse("--not-option-like", "foo", "--not-option-like", "bar");
+        Assert.assertEquals(cmd.notOptionLike.size(), 2);
+        Assert.assertEquals(cmd.notOptionLike.get(0), "foo");
+        Assert.assertEquals(cmd.notOptionLike.get(1), "bar");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_02() {
+        parser().parse("--not-option-like", "--foo");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_03() {
+        parser().parse("--not-option-like", "-f");
+    }
+
+    @Test
+    public void no_option_like_04() {
+        // Using @NotOptionLikeValues but restricting the option prefixes to -- so short form style options are allowed
+        Strings cmd = parser().parse("--not-option-like-long", "-f");
+        Assert.assertEquals(cmd.notOptionLikeLong.size(), 1);
+        Assert.assertEquals(cmd.notOptionLikeLong.get(0), "-f");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_05() {
+        // Using @NotOptionLikeValues but restricting the option prefixes to -- so long form style options are forbidden
+        parser().parse("--not-option-like-long", "--foo");
+    }
+
+    @Test
+    public void no_option_like_06() {
+        Strings cmd = parser().parse("foo", "bar");
+        Assert.assertEquals(cmd.args.size(), 2);
+        Assert.assertEquals(cmd.args.get(0), "foo");
+        Assert.assertEquals(cmd.args.get(1), "bar");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_07() {
+        // Using @NotOptionLikeValues on arguments so unrecognized options are rejected
+        parser().parse("--unrecognized");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_08() {
+        // Using @NotOptionLikeValues on arguments so unrecognized options are rejected
+        parser().parse("--foo");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_global_01() {
+        parserNotOptionLike().parse("--not-empty", "--foo");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_global_02() {
+        parserNotOptionLike().parse("--not-blank", "--foo");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_global_03() {
+        parserNotOptionLike().parse("--min", "--foo");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_global_04() {
+        // Both an option and global restriction apply
+        parserNotOptionLike().parse("--not-option-like", "--foo");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_global_05() {
+        // Here both an option and global restriction apply
+        // The option restriction will pass since it only looks for the -- prefix but the global restriction will
+        // reject it because it is using the default of both - and -- prefixes
+        parserNotOptionLike().parse("--not-option-like-long", "-foo");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_global_06() {
+        // Here both an option and global restriction apply
+        parserNotOptionLike().parse("-foo");
+    }
+
+    @Test
+    public void no_option_like_global_07() {
+        SingleCommand<Args1> parser = TestingUtil.singleCommandParser(Args1.class);
+        // No restrictions on this so allowed
+        Args1 cmd = parser.parse("-foo");
+        Assert.assertEquals(cmd.parameters.size(), 1);
+        Assert.assertEquals(cmd.parameters.get(0), "-foo");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_global_08() {
+        SingleCommand<Args1NotOptionLike> parser = TestingUtil.singleCommandParser(Args1NotOptionLike.class);
+        // Global restriction so rejected
+        parser.parse("-foo");
+    }
+
+    @Test(expectedExceptions = ParseRestrictionViolatedException.class, expectedExceptionsMessageRegExp = ".*appears to be an option.*")
+    public void no_option_like_numerics_01() {
+        SingleCommand<NumbersNoOptionLike> parser = TestingUtil.singleCommandParser(NumbersNoOptionLike.class);
+        // Negative number is rejected because @NoOptionLikeValues is directly applied so inspects the raw value
+        parser.parse("--long", "-1");
+    }
+
+    @Test
+    public void no_option_like_numerics_02() {
+        SingleCommand<NumbersNoOptionLikeGlobal> parser = TestingUtil.singleCommandParser(NumbersNoOptionLikeGlobal.class);
+        // Negative number is allowed because when used as a global restriction it inspects the typed values and ignores
+        // anything that is not a string
+        NumbersNoOptionLikeGlobal cmd = parser.parse("--long", "-1");
+        Assert.assertEquals(cmd.l, -1L);
     }
 }
