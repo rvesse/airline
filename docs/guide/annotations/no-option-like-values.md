@@ -1,5 +1,6 @@
 ---
-layout: page title: NoOptionLikeValues Annotation
+layout: page 
+title: NoOptionLikeValues Annotation
 ---
 
 ## `@NoOptionLikeValues`
