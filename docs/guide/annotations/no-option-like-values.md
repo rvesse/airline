@@ -5,6 +5,8 @@ title: NoOptionLikeValues Annotation
 
 ## `@NoOptionLikeValues`
 
+{% include req-ver.md version="2.8.4" %}
+
 The `@NoOptionLikeValues` annotation can be used to require that values don't look like options. Note that the Airline
 parsers are non-greedy so won't consume values that are clearly options. However, sometimes users may make typos when
 providing options in which case those values would get consumed by other `@Option`/`@Arguments`
