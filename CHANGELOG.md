@@ -1,5 +1,11 @@
 # Airline - Change Log
 
+## 2.8.5
+
+- Restriction Improvements
+    - New `@RequiredUnlessEnvironment` restriction for making an option/argument required only if one/more 
+      environment variables are not set
+
 ## 2.8.4
 
 - Restriction Improvements
