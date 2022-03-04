@@ -48,15 +48,15 @@ public class Unless {
         return new ArrayList<>();
     }
     
-    @Option(name = "--path")
+    @Option(name = "--path", description = "Sets the PATH.")
     @RequiredUnlessEnvironment(variables = "PATH")
     public String path = fromEnv("PATH");
     
-    @Option(name = "--foo")
+    @Option(name = "--foo", description = "Foo something?")
     @RequiredUnlessEnvironment(variables = { "FOO", "FOO_BAR" })
     public String foo = fromEnv("FOO", "FOO_BAR");
 
-    @Arguments(title = "arg")
+    @Arguments(title = "arg", description = "Provides additional arguments.")
     @RequiredUnlessEnvironment(variables = { "ARGS", "ARGUMENTS" })
     public List<String> args = new ArrayList<>(fromEnvAsList("ARGS", "ARGUMENTS"));
 }

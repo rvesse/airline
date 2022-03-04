@@ -66,6 +66,7 @@ import com.github.rvesse.airline.help.sections.common.VersionSection;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
+import com.github.rvesse.airline.restrictions.Unless;
 import com.github.rvesse.airline.restrictions.partial.PartialAnnotated;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 
@@ -750,6 +751,59 @@ public class TestHelp {
                 "        --required <requiredOption>\n" +
                 "\n" +
                 "\n");
+        //@formatter:on
+    }
+
+    @Test
+    public void testOptionsRequiredUnless() throws IOException {
+        //@formatter:off
+        CliBuilder<Object> builder = Cli.builder("test")
+                                        .withDescription("Test commandline")
+                                        .withDefaultCommand(Help.class)
+                                        .withCommands(Help.class,
+                                                      Unless.class);
+
+        Cli<Object> parser = builder.build();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Help.help(parser.getMetadata(), Collections.singletonList("unless"), out);
+        assertEquals(new String(out.toByteArray(), utf8),
+                     "NAME\n" +
+                             "        test unless -\n" +
+                             "\n" +
+                             "SYNOPSIS\n" +
+                             "        test unless [ --foo <foo> ] [ --path <path> ] [--] [ <arg>... ]" +
+                             "\n" +
+                             "\n" +
+                             "OPTIONS\n" +
+                             "        --foo <foo>\n" +
+                             "            Foo something?\n" +
+                             "\n" +
+                             "            This option is required unless one of the following environment\n" +
+                             "            variables is set:\n" +
+                             "                FOO\n" +
+                             "                FOO_BAR\n" +
+                             "\n" +
+                             "        --path <path>\n" +
+                             "            Sets the PATH.\n" +
+                             "\n" +
+                             "            This option is required unless the environment variable PATH is\n" +
+                             "            set.\n" +
+                             "\n" +
+                             "\n" +
+                             "        --\n" +
+                             "            This option can be used to separate command-line options from the\n" +
+                             "            list of arguments (useful when arguments might be mistaken for\n" +
+                             "            command-line options)\n" +
+                             "\n" +
+                             "        <arg>\n" +
+                             "            Provides additional arguments.\n" +
+                             "\n" +
+                             "            This option is required unless one of the following environment\n" +
+                             "            variables is set:\n" +
+                             "                ARGS\n" +
+                             "                ARGUMENTS\n" +
+                             "\n");
         //@formatter:on
     }
 
