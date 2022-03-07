@@ -17,16 +17,20 @@ package com.github.rvesse.airline.restrictions.factories;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.github.rvesse.airline.annotations.restrictions.MutuallyExclusiveWith;
 import com.github.rvesse.airline.annotations.restrictions.RequireOnlyOne;
 import com.github.rvesse.airline.annotations.restrictions.RequireSome;
+import com.github.rvesse.airline.annotations.restrictions.RequiredUnlessEnvironment;
+import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
 import com.github.rvesse.airline.restrictions.options.MutuallyExclusiveRestriction;
 import com.github.rvesse.airline.restrictions.options.RequireFromRestriction;
+import com.github.rvesse.airline.restrictions.options.RequiredUnlessEnvironmentRestriction;
 
-public class RequireFromRestrictionFactory implements OptionRestrictionFactory {
+public class RequireFromRestrictionFactory implements OptionRestrictionFactory, ArgumentsRestrictionFactory {
 
     @Override
     public OptionRestriction createOptionRestriction(Annotation annotation) {
@@ -39,6 +43,9 @@ public class RequireFromRestrictionFactory implements OptionRestrictionFactory {
         } else if (annotation instanceof MutuallyExclusiveWith) {
             MutuallyExclusiveWith mutExcl = (MutuallyExclusiveWith) annotation;
             return new MutuallyExclusiveRestriction(mutExcl.tag());
+        } else if (annotation instanceof RequiredUnlessEnvironment) {
+            RequiredUnlessEnvironment reqUnless = (RequiredUnlessEnvironment) annotation;
+            return new RequiredUnlessEnvironmentRestriction(reqUnless.variables());
         }
         return null;
     }
@@ -49,7 +56,21 @@ public class RequireFromRestrictionFactory implements OptionRestrictionFactory {
         supported.add(RequireSome.class);
         supported.add(RequireOnlyOne.class);
         supported.add(MutuallyExclusiveWith.class);
+        supported.add(RequiredUnlessEnvironment.class);
         return supported;
     }
 
+    @Override
+    public ArgumentsRestriction createArgumentsRestriction(Annotation annotation) {
+        if (annotation instanceof RequiredUnlessEnvironment) {
+            RequiredUnlessEnvironment reqUnless = (RequiredUnlessEnvironment) annotation;
+            return new RequiredUnlessEnvironmentRestriction(reqUnless.variables());
+        }
+        return null;
+    }
+
+    @Override
+    public List<Class<? extends Annotation>> supportedArgumentsAnnotations() {
+        return Collections.<Class<? extends Annotation>>singletonList(RequiredUnlessEnvironment.class);
+    }
 }

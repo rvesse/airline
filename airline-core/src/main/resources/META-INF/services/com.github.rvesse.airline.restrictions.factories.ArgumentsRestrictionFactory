@@ -6,3 +6,4 @@ com.github.rvesse.airline.restrictions.factories.PortRestrictionFactory
 com.github.rvesse.airline.restrictions.factories.RangeRestrictionFactory
 com.github.rvesse.airline.restrictions.factories.SimpleRestrictionsFactory
 com.github.rvesse.airline.restrictions.factories.StringRestrictionFactory
+com.github.rvesse.airline.restrictions.factories.RequireFromRestrictionFactory
