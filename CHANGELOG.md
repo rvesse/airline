@@ -5,6 +5,7 @@
 - Restriction Improvements
     - New `@RequiredUnlessEnvironment` restriction for making an option/argument required only if one/more 
       environment variables are not set
+- Stopped generating the airline-offline-site artifact as it is superflous
 
 ## 2.8.4
 
