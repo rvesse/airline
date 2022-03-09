@@ -5,10 +5,10 @@ title: Required Only If Annotation
 
 ## `@RequiredOnlyIf`
 
-The `@RequiredOnlyIf` annotation is applied to a field annotated with [`@Option`](option.html) or [`@Arguments`]
-(arguments.html) to indicate that the option/argument must be specified only when some other option is specified.  
-This is typically used when you have options that only make sense in conjunction with other options, but are required
-when those options are used.
+The `@RequiredOnlyIf` annotation is applied to a field annotated with [`@Option`](option.html) or 
+[`@Arguments`](arguments.html) to indicate that the option/argument must be specified only when 
+some other option is specified. This is typically used when you have options that only make sense 
+in conjunction with other options, but are required when those options are used.
 
 ```java
 @Option(name = "--authenticate",
