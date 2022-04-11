@@ -15,24 +15,18 @@
  */
 package com.github.rvesse.airline;
 
-import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
-import com.github.rvesse.airline.utils.AirlineUtils;
-
+import jakarta.inject.Inject;
 import org.testng.annotations.Test;
-
-import javax.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.github.rvesse.airline.TestingUtil.singleCommandParser;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author dain
@@ -130,7 +124,12 @@ public class TestParametersDelegate
             @Option(name = "-c")
             public boolean isC;
 
-            @Inject
+            // Intentionally using old javax.inject.Inject to verify Airline copes with mixtures of old and new @Inject
+            // annotation
+            // Your IDE may complain it can't see this annotation, it comes from shaded repackaging in the
+            // airline-backcompact-javaxinject module to force different Maven coordinates as you can't have multiple
+            // versions of the same Maven coordinates in your dependency tree
+            @javax.inject.Inject
             public NestedDelegate1 nestedDelegate1 = new NestedDelegate1();
         }
 

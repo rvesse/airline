@@ -49,8 +49,6 @@ import com.github.rvesse.airline.utils.comparators.StringHierarchyComparator;
 import com.github.rvesse.airline.utils.predicates.parser.CommandTypeFinder;
 import com.github.rvesse.airline.utils.predicates.parser.GroupFinder;
 
-import javax.inject.Inject;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -61,20 +59,24 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Helper for loading meta-data
- *
  */
 public class MetadataLoader {
 
+    private static Map<String, Class<? extends Annotation>> dynamicAnnotationCache = new HashMap<>();
+
     public static <C> ParserMetadata<C> loadParser(Class<?> cliClass) {
-        if (cliClass == null)
-            return ParserBuilder.<C> defaultConfiguration();
+        if (cliClass == null) {
+            return ParserBuilder.<C>defaultConfiguration();
+        }
 
         Annotation annotation = cliClass.getAnnotation(Parser.class);
-        if (annotation == null)
-            return ParserBuilder.<C> defaultConfiguration();
+        if (annotation == null) {
+            return ParserBuilder.<C>defaultConfiguration();
+        }
 
         return loadParser((Parser) annotation);
     }
@@ -172,31 +174,27 @@ public class MetadataLoader {
 
     /**
      * Loads the metadata for a CLI
-     * 
-     * @param cliClass
-     *            Class that has the
-     *            {@link com.github.rvesse.airline.annotations.Cli} annotation
-     * @param parserConfigOverride
-     *            Optional parser configuration, note that the
-     *            {@link com.github.rvesse.airline.annotations.Cli#parserConfiguration()}
-     *            field is normally used to provide a parser configuration via
-     *            annotation but in some situations this may not be possible,
-     *            e.g. constructing user alias search paths programmatically, in
-     *            which case providing a parser configuration here
-     *            <strong>overrides</strong> anything specified directly on the
-     *            annotation
+     *
+     * @param cliClass             Class that has the {@link com.github.rvesse.airline.annotations.Cli} annotation
+     * @param parserConfigOverride Optional parser configuration, note that the {@link com.github.rvesse.airline.annotations.Cli#parserConfiguration()}
+     *                             field is normally used to provide a parser configuration via annotation but in some
+     *                             situations this may not be possible, e.g. constructing user alias search paths
+     *                             programmatically, in which case providing a parser configuration here
+     *                             <strong>overrides</strong> anything specified directly on the
+     *                             annotation
      * @return Global metadata
      */
     public static <C> GlobalMetadata<C> loadGlobal(Class<?> cliClass, ParserMetadata<C> parserConfigOverride) {
         Annotation annotation = cliClass.getAnnotation(com.github.rvesse.airline.annotations.Cli.class);
-        if (annotation == null)
+        if (annotation == null) {
             throw new IllegalArgumentException(String.format("Class %s does not have the @Cli annotation", cliClass));
+        }
 
         com.github.rvesse.airline.annotations.Cli cliConfig = (com.github.rvesse.airline.annotations.Cli) annotation;
 
         // Find help sections defined at the CLI level
         Map<String, HelpSection> baseHelpSections = loadHelpSections(cliClass,
-                Collections.<String, HelpSection> emptyMap());
+                                                                     Collections.<String, HelpSection>emptyMap());
 
         // Prepare commands
         CommandMetadata defaultCommand = null;
@@ -210,9 +208,10 @@ public class MetadataLoader {
 
         // Prepare parser configuration
         ParserMetadata<C> parserConfig = parserConfigOverride != null ? parserConfigOverride
-                : (cliConfig.parserConfiguration() != null
-                        ? MetadataLoader.<C> loadParser(cliConfig.parserConfiguration())
-                        : MetadataLoader.<C> loadParser(cliClass));
+                                                                      : (cliConfig.parserConfiguration() != null
+                                                                         ? MetadataLoader.<C>loadParser(
+                cliConfig.parserConfiguration())
+                                                                         : MetadataLoader.<C>loadParser(cliClass));
 
         // Prepare restrictions
         // We find restrictions in the following order:
@@ -224,11 +223,13 @@ public class MetadataLoader {
         for (Class<? extends Annotation> annotationClass : RestrictionRegistry
                 .getGlobalRestrictionAnnotationClasses()) {
             annotation = cliClass.getAnnotation(annotationClass);
-            if (annotation == null)
+            if (annotation == null) {
                 continue;
+            }
             GlobalRestriction restriction = RestrictionRegistry.getGlobalRestriction(annotationClass, annotation);
-            if (restriction != null)
+            if (restriction != null) {
                 restrictions.add(restriction);
+            }
         }
         for (Class<? extends GlobalRestriction> cls : cliConfig.restrictions()) {
             restrictions.add(ParserUtil.createInstance(cls));
@@ -306,8 +307,9 @@ public class MetadataLoader {
             while (subGroupsQueue.size() > 0) {
                 CommandGroupMetadata subGroup = subGroupsQueue.poll();
                 allCommands.addAll(subGroup.getCommands());
-                if (subGroup.getDefaultCommand() != null)
+                if (subGroup.getDefaultCommand() != null) {
                     allCommands.add(subGroup.getDefaultCommand());
+                }
                 subGroupsQueue.addAll(subGroup.getSubGroups());
             }
         }
@@ -316,34 +318,28 @@ public class MetadataLoader {
         loadCommandsIntoGroupsByAnnotation(allCommands, groups, defaultGroupCommands, baseHelpSections);
 
         return loadGlobal(cliConfig.name(), cliConfig.description(), defaultCommand, defaultGroupCommands, groups,
-                restrictions, baseHelpSections.values(), parserConfig);
+                          restrictions, baseHelpSections.values(), parserConfig);
     }
 
     /**
      * Loads global meta-data
-     * 
-     * @param name
-     *            CLI name
-     * @param description
-     *            CLI description
-     * @param defaultCommand
-     *            Default Command
-     * @param defaultGroupCommands
-     *            Default Group Commands
-     * @param groups
-     *            Command Groups
-     * @param parserConfig
-     *            Parser Configuration
-     * @param restrictions
-     *            Restrictions
-     * @param baseHelpSections
-     *            Base help sections
+     *
+     * @param name                 CLI name
+     * @param description          CLI description
+     * @param defaultCommand       Default Command
+     * @param defaultGroupCommands Default Group Commands
+     * @param groups               Command Groups
+     * @param parserConfig         Parser Configuration
+     * @param restrictions         Restrictions
+     * @param baseHelpSections     Base help sections
      * @return Global meta-data
      */
     public static <C> GlobalMetadata<C> loadGlobal(String name, String description, CommandMetadata defaultCommand,
-            Iterable<CommandMetadata> defaultGroupCommands, Iterable<CommandGroupMetadata> groups,
-            Iterable<GlobalRestriction> restrictions, Iterable<HelpSection> baseHelpSections,
-            ParserMetadata<C> parserConfig) {
+                                                   Iterable<CommandMetadata> defaultGroupCommands,
+                                                   Iterable<CommandGroupMetadata> groups,
+                                                   Iterable<GlobalRestriction> restrictions,
+                                                   Iterable<HelpSection> baseHelpSections,
+                                                   ParserMetadata<C> parserConfig) {
         List<OptionMetadata> globalOptions = new ArrayList<>();
         if (defaultCommand != null) {
             globalOptions.addAll(defaultCommand.getGlobalOptions());
@@ -369,27 +365,23 @@ public class MetadataLoader {
         }
         globalOptions = ListUtils.unmodifiableList(mergeOptionSet(globalOptions));
         return new GlobalMetadata<C>(name, description, globalOptions, defaultCommand, defaultGroupCommands, groups,
-                restrictions, baseHelpSections, parserConfig);
+                                     restrictions, baseHelpSections, parserConfig);
     }
 
     /**
      * Loads command group meta-data
-     * 
-     * @param name
-     *            Group name
-     * @param description
-     *            Group description
-     * @param hidden
-     *            Whether the group is hidden
-     * @param defaultCommand
-     *            Default command for the group
-     * @param commands
-     *            Commands for the group
+     *
+     * @param name           Group name
+     * @param description    Group description
+     * @param hidden         Whether the group is hidden
+     * @param defaultCommand Default command for the group
+     * @param commands       Commands for the group
      * @return Command group meta-data
      */
     public static CommandGroupMetadata loadCommandGroup(String name, String description, boolean hidden,
-            Iterable<CommandGroupMetadata> subGroups, CommandMetadata defaultCommand,
-            Iterable<CommandMetadata> commands) {
+                                                        Iterable<CommandGroupMetadata> subGroups,
+                                                        CommandMetadata defaultCommand,
+                                                        Iterable<CommandMetadata> commands) {
         // Process the name
         if (StringUtils.containsWhitespace(name)) {
             String[] names = StringUtils.split(name);
@@ -409,13 +401,12 @@ public class MetadataLoader {
 
     /**
      * Loads command meta-data
-     * 
-     * @param defaultCommands
-     *            Default command classes
+     *
+     * @param defaultCommands Default command classes
      * @return Command meta-data
      */
     public static <T> List<CommandMetadata> loadCommands(Iterable<Class<? extends T>> defaultCommands,
-            Map<String, HelpSection> baseHelpSections) {
+                                                         Map<String, HelpSection> baseHelpSections) {
         List<CommandMetadata> commandMetadata = new ArrayList<CommandMetadata>();
         Iterator<Class<? extends T>> iter = defaultCommands.iterator();
         while (iter.hasNext()) {
@@ -426,9 +417,8 @@ public class MetadataLoader {
 
     /**
      * Loads command meta-data
-     * 
-     * @param commandType
-     *            Command class
+     *
+     * @param commandType Command class
      * @return Command meta-data
      */
     public static CommandMetadata loadCommand(Class<?> commandType) {
@@ -437,11 +427,9 @@ public class MetadataLoader {
 
     /**
      * Loads command meta-data
-     * 
-     * @param commandType
-     *            Command Type
-     * @param baseHelpSections
-     *            Base set of help sections
+     *
+     * @param commandType      Command Type
+     * @param baseHelpSections Base set of help sections
      * @return Command meta-data
      */
     public static CommandMetadata loadCommand(Class<?> commandType, Map<String, HelpSection> baseHelpSections) {
@@ -462,9 +450,10 @@ public class MetadataLoader {
             }
         }
 
-        if (command == null)
+        if (command == null) {
             throw new IllegalArgumentException(
                     String.format("Command %s is not annotated with @Command", commandType.getName()));
+        }
 
         // Find help sections
         Map<String, HelpSection> helpSections = loadHelpSections(commandType, baseHelpSections);
@@ -496,24 +485,27 @@ public class MetadataLoader {
     }
 
     protected static Map<String, HelpSection> loadHelpSections(Class<?> sourceClass,
-            Map<String, HelpSection> baseHelpSections) {
+                                                               Map<String, HelpSection> baseHelpSections) {
         Map<String, HelpSection> helpSections = new HashMap<>();
 
         // Search for help section annotations in the class hierarchy
         for (Class<?> cls = sourceClass; !Object.class.equals(cls); cls = cls.getSuperclass()) {
             for (Class<? extends Annotation> helpAnnotationClass : HelpSectionRegistry.getAnnotationClasses()) {
                 Annotation annotation = cls.getAnnotation(helpAnnotationClass);
-                if (annotation == null)
+                if (annotation == null) {
                     continue;
+                }
                 HelpSection section = HelpSectionRegistry.getHelpSection(helpAnnotationClass, annotation);
-                if (section == null)
+                if (section == null) {
                     continue;
+                }
 
                 // Because we're going up the class hierarchy the titled section
                 // lowest down the hierarchy should win so if we've already seen
                 // a section with this title ignore it
-                if (helpSections.containsKey(section.getTitle().toLowerCase(Locale.ENGLISH)))
+                if (helpSections.containsKey(section.getTitle().toLowerCase(Locale.ENGLISH))) {
                     continue;
+                }
 
                 helpSections.put(section.getTitle().toLowerCase(Locale.ENGLISH), section);
             }
@@ -522,12 +514,14 @@ public class MetadataLoader {
         // Add in base sections (if any)
         // Need to do this afterwards as anything defined in the class hierarchy
         // will override any base definitions
-        if (baseHelpSections.isEmpty())
+        if (baseHelpSections.isEmpty()) {
             return helpSections;
+        }
 
         for (String key : baseHelpSections.keySet()) {
-            if (helpSections.containsKey(key.toLowerCase(Locale.ENGLISH)))
+            if (helpSections.containsKey(key.toLowerCase(Locale.ENGLISH))) {
                 continue;
+            }
             helpSections.put(key.toLowerCase(Locale.ENGLISH), baseHelpSections.get(key));
         }
 
@@ -537,9 +531,8 @@ public class MetadataLoader {
 
     /**
      * Loads suggester meta-data
-     * 
-     * @param suggesterClass
-     *            Suggester class
+     *
+     * @param suggesterClass Suggester class
      * @return Suggester meta-data
      */
     public static SuggesterMetadata loadSuggester(Class<? extends Suggester> suggesterClass) {
@@ -549,27 +542,23 @@ public class MetadataLoader {
 
     /**
      * Loads injection meta-data
-     * 
-     * @param type
-     *            Class
+     *
+     * @param type Class
      * @return Injection meta-data
      */
     public static InjectionMetadata loadInjectionMetadata(Class<?> type) {
         InjectionMetadata injectionMetadata = new InjectionMetadata();
-        loadInjectionMetadata(type, injectionMetadata, Collections.<Field> emptyList());
+        loadInjectionMetadata(type, injectionMetadata, Collections.<Field>emptyList());
         injectionMetadata.compact();
         return injectionMetadata;
     }
 
     /**
      * Loads injection meta-data
-     * 
-     * @param type
-     *            Class
-     * @param injectionMetadata
-     *            Injection meta-data
-     * @param fields
-     *            Fields
+     *
+     * @param type              Class
+     * @param injectionMetadata Injection meta-data
+     * @param fields            Fields
      */
     public static void loadInjectionMetadata(Class<?> type, InjectionMetadata injectionMetadata, List<Field> fields) {
         if (type.isInterface()) {
@@ -581,39 +570,17 @@ public class MetadataLoader {
                 List<Field> path = new ArrayList<>(fields);
                 path.add(field);
 
-                Inject injectAnnotation = field.getAnnotation(Inject.class);
-                if (injectAnnotation != null) {
-                    if (field.getType().equals(GlobalMetadata.class)
-                            || field.getType().equals(CommandGroupMetadata.class)
-                            || field.getType().equals(CommandMetadata.class)) {
-                        injectionMetadata.metadataInjections.add(new Accessor(path));
-                    } else {
-                        loadInjectionMetadata(field.getType(), injectionMetadata, path);
-                    }
-                }
-
-                try {
-                    @SuppressWarnings("unchecked")
-                    Annotation aGuiceInject = field
-                            .getAnnotation((Class<? extends Annotation>) Class.forName("com.google.inject.Inject"));
-                    if (aGuiceInject != null) {
-                        if (field.getType().equals(GlobalMetadata.class)
-                                || field.getType().equals(CommandGroupMetadata.class)
-                                || field.getType().equals(CommandMetadata.class)) {
-                            injectionMetadata.metadataInjections.add(new Accessor(path));
-                        } else {
-                            loadInjectionMetadata(field.getType(), injectionMetadata, path);
-                        }
-                    }
-                } catch (ClassNotFoundException e) {
-                    // this is ok, means Guice is not on the class path, so
-                    // probably not being used
-                    // and thus, ok that this did not work.
-                } catch (ClassCastException e) {
-                    // ignore this too, we're doing some funky cross your
-                    // fingers type reflect stuff to play
-                    // nicely with Guice
-                }
+                // Check for various forms of @Inject annotation
+                // See Issues #115 and #81 for broader context but basically most of the javax. namespaces are gradually
+                // transitioning to jakarta. because those APIs were moved to the Eclipse Foundation and Oracle didn't
+                // want them using the Java package in their package names.  This is a slow transition that is painful
+                // for the Java community, so we're supporting both old and new forms for the time being.  Plus Guice
+                // because why not?
+                // See #81 for discussion of planned future changes around introducing our own annotation instead of
+                // reusing the existing ones
+                checkForInjectionAnnotation(injectionMetadata, field, path, "jakarta.inject.Inject");
+                checkForInjectionAnnotation(injectionMetadata, field, path, "javax.inject.Inject");
+                checkForInjectionAnnotation(injectionMetadata, field, path, "com.google.inject.Inject");
 
                 Option optionAnnotation = field.getAnnotation(Option.class);
                 DefaultOption defaultOptionAnnotation = field.getAnnotation(DefaultOption.class);
@@ -634,8 +601,9 @@ public class MetadataLoader {
                     String description = optionAnnotation.description();
 
                     int arity = optionAnnotation.arity();
-                    if (arity < 0 && arity != Integer.MIN_VALUE)
+                    if (arity < 0 && arity != Integer.MIN_VALUE) {
                         throw new IllegalArgumentException(String.format("Invalid arity for option %s", titles.get(0)));
+                    }
 
                     if (optionAnnotation.arity() >= 0) {
                         arity = optionAnnotation.arity();
@@ -658,14 +626,16 @@ public class MetadataLoader {
                     for (Class<? extends Annotation> annotationClass : RestrictionRegistry
                             .getOptionRestrictionAnnotationClasses()) {
                         Annotation annotation = field.getAnnotation(annotationClass);
-                        if (annotation == null)
+                        if (annotation == null) {
                             continue;
+                        }
                         OptionRestriction restriction = RestrictionRegistry.getOptionRestriction(annotationClass,
-                                annotation);
+                                                                                                 annotation);
                         if (restriction != null) {
                             // Adjust for partial if necessary
-                            if (partials.containsKey(annotationClass))
+                            if (partials.containsKey(annotationClass)) {
                                 restriction = new PartialRestriction(partials.get(annotationClass), restriction);
+                            }
 
                             restrictions.add(restriction);
                         }
@@ -689,43 +659,48 @@ public class MetadataLoader {
                                                                        path);
                     //@formatter:on
                     switch (optionType) {
-                    case GLOBAL:
-                        if (defaultOptionAnnotation != null)
-                            throw new IllegalArgumentException(String.format(
-                                    "Field %s which defines a global option cannot be annotated with @DefaultOption as this may only be applied to command options",
-                                    field));
-                        injectionMetadata.globalOptions.add(optionMetadata);
-                        break;
-                    case GROUP:
-                        if (defaultOptionAnnotation != null)
-                            throw new IllegalArgumentException(String.format(
-                                    "Field %s which defines a global option cannot be annotated with @DefaultOption as this may only be applied to command options",
-                                    field));
-                        injectionMetadata.groupOptions.add(optionMetadata);
-                        break;
-                    case COMMAND:
-                        // Do we also have a @DefaultOption annotation
+                        case GLOBAL:
+                            if (defaultOptionAnnotation != null) {
+                                throw new IllegalArgumentException(String.format(
+                                        "Field %s which defines a global option cannot be annotated with @DefaultOption as this may only be applied to command options",
+                                        field));
+                            }
+                            injectionMetadata.globalOptions.add(optionMetadata);
+                            break;
+                        case GROUP:
+                            if (defaultOptionAnnotation != null) {
+                                throw new IllegalArgumentException(String.format(
+                                        "Field %s which defines a global option cannot be annotated with @DefaultOption as this may only be applied to command options",
+                                        field));
+                            }
+                            injectionMetadata.groupOptions.add(optionMetadata);
+                            break;
+                        case COMMAND:
+                            // Do we also have a @DefaultOption annotation
 
-                        if (defaultOptionAnnotation != null) {
-                            // Can't have both @DefaultOption and @Arguments
-                            if (injectionMetadata.arguments.size() > 0)
-                                throw new IllegalArgumentException(String.format(
-                                        "Field %s cannot be annotated with @DefaultOption because there are fields with @Arguments annotations present",
-                                        field));
-                            // Can't have more than one @DefaultOption
-                            if (injectionMetadata.defaultOption != null)
-                                throw new IllegalArgumentException(String.format(
-                                        "Command type %s has more than one field with @DefaultOption declared upon it",
-                                        type));
-                            // Arity of associated @Option must be 1
-                            if (optionMetadata.getArity() != 1)
-                                throw new IllegalArgumentException(String.format(
-                                        "Field %s annotated with @DefaultOption must also have an @Option annotation with an arity of 1",
-                                        field));
-                            injectionMetadata.defaultOption = optionMetadata;
-                        }
-                        injectionMetadata.commandOptions.add(optionMetadata);
-                        break;
+                            if (defaultOptionAnnotation != null) {
+                                // Can't have both @DefaultOption and @Arguments
+                                if (injectionMetadata.arguments.size() > 0) {
+                                    throw new IllegalArgumentException(String.format(
+                                            "Field %s cannot be annotated with @DefaultOption because there are fields with @Arguments annotations present",
+                                            field));
+                                }
+                                // Can't have more than one @DefaultOption
+                                if (injectionMetadata.defaultOption != null) {
+                                    throw new IllegalArgumentException(String.format(
+                                            "Command type %s has more than one field with @DefaultOption declared upon it",
+                                            type));
+                                }
+                                // Arity of associated @Option must be 1
+                                if (optionMetadata.getArity() != 1) {
+                                    throw new IllegalArgumentException(String.format(
+                                            "Field %s annotated with @DefaultOption must also have an @Option annotation with an arity of 1",
+                                            field));
+                                }
+                                injectionMetadata.defaultOption = optionMetadata;
+                            }
+                            injectionMetadata.commandOptions.add(optionMetadata);
+                            break;
                     }
                 }
 
@@ -738,10 +713,11 @@ public class MetadataLoader {
                 Arguments argumentsAnnotation = field.getAnnotation(Arguments.class);
                 if (field.isAnnotationPresent(Arguments.class)) {
                     // Can't have both @DefaultOption and @Arguments
-                    if (injectionMetadata.defaultOption != null)
+                    if (injectionMetadata.defaultOption != null) {
                         throw new IllegalArgumentException(String.format(
                                 "Field %s cannot be annotated with @Arguments because there is a field with @DefaultOption present",
                                 field));
+                    }
 
                     List<String> titles = new ArrayList<>();
 
@@ -760,14 +736,16 @@ public class MetadataLoader {
                     for (Class<? extends Annotation> annotationClass : RestrictionRegistry
                             .getArgumentsRestrictionAnnotationClasses()) {
                         Annotation annotation = field.getAnnotation(annotationClass);
-                        if (annotation == null)
+                        if (annotation == null) {
                             continue;
+                        }
                         ArgumentsRestriction restriction = RestrictionRegistry.getArgumentsRestriction(annotationClass,
-                                annotation);
+                                                                                                       annotation);
                         if (restriction != null) {
                             // Adjust for partial if necessary
-                            if (partials.containsKey(annotationClass))
+                            if (partials.containsKey(annotationClass)) {
                                 restriction = new PartialRestriction(partials.get(annotationClass), restriction);
+                            }
 
                             restrictions.add(restriction);
                         }
@@ -782,6 +760,46 @@ public class MetadataLoader {
                     //@formatter:on
                 }
             }
+        }
+    }
+
+    private static void checkForInjectionAnnotation(InjectionMetadata injectionMetadata, Field field, List<Field> path,
+                                                    String annotationClass) {
+        try {
+            // Use a cache to avoid trying to dynamically create the annotation class multiple times, this also allows
+            // us to short-circuit our logic if we already know a given annotation class is not present on the classpath
+            Class<? extends Annotation> annotationType = dynamicAnnotationCache.get(annotationClass);
+            if (annotationType == null) {
+                // Short-circuit if we know this annotation class isn't on the classpath
+                if (dynamicAnnotationCache.containsKey(annotationClass))
+                    return;
+
+                // Otherwise, try and create an instance of it, caching for future reuse
+                dynamicAnnotationCache.put(annotationClass,
+                                           (Class<? extends Annotation>) Class.forName(annotationClass));
+                annotationType = dynamicAnnotationCache.get(annotationClass);
+            }
+            if (annotationType == null)
+                return;
+
+            @SuppressWarnings("unchecked")
+            Annotation annotation = field.getAnnotation(annotationType);
+            if (annotation != null) {
+                if (field.getType().equals(GlobalMetadata.class)
+                        || field.getType().equals(CommandGroupMetadata.class)
+                        || field.getType().equals(CommandMetadata.class)) {
+                    injectionMetadata.metadataInjections.add(new Accessor(path));
+                } else {
+                    loadInjectionMetadata(field.getType(), injectionMetadata, path);
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            // this is ok, means the particular variant of the injection annotation is not on the class path
+            dynamicAnnotationCache.put(annotationClass, null);
+        } catch (ClassCastException e) {
+            // ignore this too, we're doing some funky cross your fingers type reflect stuff to play nicely with other
+            // dependency injection frameworks
+            dynamicAnnotationCache.put(annotationClass, null);
         }
     }
 
@@ -834,8 +852,8 @@ public class MetadataLoader {
                 if (optionIndex.containsKey(optionName)) {
                     throw new IllegalArgumentException(
                             String.format("Fields %s and %s have conflicting definitions of option %s",
-                                    optionIndex.get(optionName).getAccessors().iterator().next(),
-                                    option.getAccessors().iterator().next(), optionName));
+                                          optionIndex.get(optionName).getAccessors().iterator().next(),
+                                          option.getAccessors().iterator().next(), optionName));
                 }
                 optionIndex.put(optionName, option);
             }
@@ -875,7 +893,7 @@ public class MetadataLoader {
     }
 
     private static void tryOverrideOptions(Map<Set<String>, OptionMetadata> optionIndex, Set<String> names,
-            OptionMetadata parent) {
+                                           OptionMetadata parent) {
 
         // As the metadata is extracted from the deepest class in the hierarchy
         // going upwards we need to treat the passed option as the parent and
@@ -890,18 +908,20 @@ public class MetadataLoader {
 
         // Parent must not state it is sealed UNLESS it is a duplicate which can
         // happen when using @Inject to inject options via delegates
-        if (parent.isSealed() && !isDuplicate)
+        if (parent.isSealed() && !isDuplicate) {
             throw new IllegalArgumentException(String.format(
                     "Fields %s and %s have conflicting definitions of option %s - parent field %s declares itself as sealed and cannot be overridden",
                     parentField, childField, names, parentField));
+        }
 
         // Child must explicitly state that it overrides otherwise we cannot
         // override UNLESS it is the case that this is a duplicate which
         // can happen when using @Inject to inject options via delegates
-        if (!child.isOverride() && !isDuplicate)
+        if (!child.isOverride() && !isDuplicate) {
             throw new IllegalArgumentException(String.format(
                     "Fields %s and %s have conflicting definitions of option %s - if you wanted to override this option you must explicitly specify override = true in your child field annotation",
                     parentField, childField, names));
+        }
 
         // Attempt overriding, this will error if the overriding is not possible
         OptionMetadata merged = OptionMetadata.override(names, parent, child);
@@ -909,8 +929,9 @@ public class MetadataLoader {
     }
 
     public static void loadCommandsIntoGroupsByAnnotation(List<CommandMetadata> allCommands,
-            List<CommandGroupMetadata> commandGroups, List<CommandMetadata> defaultCommandGroup,
-            Map<String, HelpSection> baseHelpSections) {
+                                                          List<CommandGroupMetadata> commandGroups,
+                                                          List<CommandMetadata> defaultCommandGroup,
+                                                          Map<String, HelpSection> baseHelpSections) {
         List<CommandMetadata> newCommands = new ArrayList<CommandMetadata>();
 
         // first, create any groups explicitly annotated
@@ -938,34 +959,38 @@ public class MetadataLoader {
                                 subGroup = CollectionUtils.find(commandGroups, new GroupFinder(groups[i]));
                                 if (subGroup == null) {
                                     subGroup = new CommandGroupMetadata(groups[i], "", false,
-                                            Collections.<OptionMetadata> emptyList(),
-                                            Collections.<CommandGroupMetadata> emptyList(), null,
-                                            Collections.<CommandMetadata> emptyList());
+                                                                        Collections.<OptionMetadata>emptyList(),
+                                                                        Collections.<CommandGroupMetadata>emptyList(),
+                                                                        null,
+                                                                        Collections.<CommandMetadata>emptyList());
                                     commandGroups.add(subGroup);
                                 }
                             } else {
                                 // Find/create the next sub-group
                                 CommandGroupMetadata nextSubGroup = CollectionUtils.find(subGroup.getSubGroups(),
-                                        new GroupFinder(groups[i]));
+                                                                                         new GroupFinder(groups[i]));
                                 if (nextSubGroup == null) {
                                     nextSubGroup = new CommandGroupMetadata(groups[i], "", false,
-                                            Collections.<OptionMetadata> emptyList(),
-                                            Collections.<CommandGroupMetadata> emptyList(), null,
-                                            Collections.<CommandMetadata> emptyList());
+                                                                            Collections.<OptionMetadata>emptyList(),
+                                                                            Collections.<CommandGroupMetadata>emptyList(),
+                                                                            null,
+                                                                            Collections.<CommandMetadata>emptyList());
                                 }
                                 subGroup.addSubGroup(nextSubGroup);
                                 subGroup = nextSubGroup;
                             }
                         }
-                        if (subGroup == null)
+                        if (subGroup == null) {
                             throw new IllegalStateException("Failed to resolve sub-group path");
+                        }
                         subGroup.addCommand(command);
                         addedToGroup = true;
                     } else {
                         // Add to newly created top level group
                         CommandGroupMetadata newGroup = loadCommandGroup(groupName, "", false,
-                                Collections.<CommandGroupMetadata> emptyList(), null,
-                                Collections.singletonList(command));
+                                                                         Collections.<CommandGroupMetadata>emptyList(),
+                                                                         null,
+                                                                         Collections.singletonList(command));
                         commandGroups.add(newGroup);
                         addedToGroup = true;
                     }
@@ -982,8 +1007,10 @@ public class MetadataLoader {
 
     @SuppressWarnings("rawtypes")
     private static void createGroupsFromAnnotations(List<CommandMetadata> allCommands,
-            List<CommandMetadata> newCommands, List<CommandGroupMetadata> commandGroups,
-            List<CommandMetadata> defaultCommandGroup, Map<String, HelpSection> baseHelpSections) {
+                                                    List<CommandMetadata> newCommands,
+                                                    List<CommandGroupMetadata> commandGroups,
+                                                    List<CommandMetadata> defaultCommandGroup,
+                                                    Map<String, HelpSection> baseHelpSections) {
 
         // We sort sub-groups by name length then lexically
         // This means that when we build the groups hierarchy we'll ensure we
@@ -1023,7 +1050,7 @@ public class MetadataLoader {
                 // Find the group metadata
                 // May already exist as a top level group
                 CommandGroupMetadata groupMetadata = CollectionUtils.find(commandGroups,
-                        new GroupFinder(groupAnno.name()));
+                                                                          new GroupFinder(groupAnno.name()));
                 if (groupMetadata == null) {
                     // Not a top level group
 
@@ -1038,7 +1065,8 @@ public class MetadataLoader {
                     if (groupMetadata == null) {
                         // Newly discovered group
                         groupMetadata = loadCommandGroup(groupAnno.name(), groupAnno.description(), groupAnno.hidden(),
-                                Collections.<CommandGroupMetadata> emptyList(), defaultCommand, groupCommands);
+                                                         Collections.<CommandGroupMetadata>emptyList(), defaultCommand,
+                                                         groupCommands);
                         if (!StringUtils.containsWhitespace(groupAnno.name())) {
                             // Add as top level group
                             commandGroups.add(groupMetadata);
@@ -1063,7 +1091,7 @@ public class MetadataLoader {
     }
 
     protected static void buildGroupsHierarchy(List<CommandGroupMetadata> commandGroups,
-            Map<String, CommandGroupMetadata> subGroups) {
+                                               Map<String, CommandGroupMetadata> subGroups) {
         // Add sub-groups into hierarchy as appropriate
         for (String subGroupPath : subGroups.keySet()) {
             CommandGroupMetadata subGroup = subGroups.get(subGroupPath);
@@ -1077,30 +1105,31 @@ public class MetadataLoader {
                         // Top level parent group does not exist so create empty
                         // top level group
                         parentGroup = new CommandGroupMetadata(groups[i], "", false,
-                                Collections.<OptionMetadata> emptyList(),
-                                Collections.<CommandGroupMetadata> emptyList(), null,
-                                Collections.<CommandMetadata> emptyList());
+                                                               Collections.<OptionMetadata>emptyList(),
+                                                               Collections.<CommandGroupMetadata>emptyList(), null,
+                                                               Collections.<CommandMetadata>emptyList());
                         commandGroups.add(parentGroup);
                     }
                 } else {
                     // Should be a sub-group of the current parent
                     CommandGroupMetadata nextParent = CollectionUtils.find(parentGroup.getSubGroups(),
-                            new GroupFinder(groups[i]));
+                                                                           new GroupFinder(groups[i]));
                     if (nextParent == null) {
                         // Next parent group does not exist so create empty
                         // group
                         nextParent = new CommandGroupMetadata(groups[i], "", false,
-                                Collections.<OptionMetadata> emptyList(),
-                                Collections.<CommandGroupMetadata> emptyList(), null,
-                                Collections.<CommandMetadata> emptyList());
+                                                              Collections.<OptionMetadata>emptyList(),
+                                                              Collections.<CommandGroupMetadata>emptyList(), null,
+                                                              Collections.<CommandMetadata>emptyList());
                     }
                     parentGroup.addSubGroup(nextParent);
                     nextParent.setParent(parentGroup);
                     parentGroup = nextParent;
                 }
             }
-            if (parentGroup == null)
+            if (parentGroup == null) {
                 throw new IllegalStateException("Failed to resolve sub-group path");
+            }
             parentGroup.addSubGroup(subGroup);
             subGroup.setParent(parentGroup);
         }
@@ -1128,8 +1157,9 @@ public class MetadataLoader {
                             break;
                         }
                     }
-                    if (found)
+                    if (found) {
                         break;
+                    }
                 }
             }
 

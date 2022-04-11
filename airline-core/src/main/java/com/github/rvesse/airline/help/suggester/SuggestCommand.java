@@ -29,7 +29,7 @@ import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.suggester.SuggestionParser;
 import com.github.rvesse.airline.utils.AirlineUtils;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 

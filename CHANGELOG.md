@@ -1,5 +1,17 @@
 # Airline - Change Log
 
+## 2.8.6
+
+- Build Improvements
+   - Added GitHub Actions based CI/CD for the repository
+   - Added a new `airline-backcompact-javaxinject` module to aid Annotation Improvements (see below), this is
+     included in the dependencies of the core `airline` module by default.  Note that future 3.x releases may
+     make this dependency optional as the Java ecosystem transitions away from using the old `javax` packages.
+- Annotation Improvements
+   - `@Inject` can now be either `javax.inject.Inject` or `jakarta.inject.Inject`, and mixtures thereof are
+     supported.  This enables broader compatibility with applications that need/want to use either variant of
+     the `jakarta.inject` dependency.
+
 ## 2.8.5
 
 - Restriction Improvements

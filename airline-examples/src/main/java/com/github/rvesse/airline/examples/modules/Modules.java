@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline.examples.modules;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import com.github.rvesse.airline.HelpOption;
 import com.github.rvesse.airline.annotations.Command;

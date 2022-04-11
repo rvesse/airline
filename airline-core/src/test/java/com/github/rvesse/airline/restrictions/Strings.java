@@ -18,7 +18,7 @@ package com.github.rvesse.airline.restrictions;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import com.github.rvesse.airline.HelpOption;
 import com.github.rvesse.airline.annotations.Arguments;

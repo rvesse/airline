@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline.examples.sendit;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import com.github.rvesse.airline.SingleCommand;
 import com.github.rvesse.airline.annotations.Command;

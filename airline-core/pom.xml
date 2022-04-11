@@ -28,6 +28,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-backcompat-javaxinject</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>jakarta.inject</groupId>
       <artifactId>jakarta.inject-api</artifactId>
     </dependency>

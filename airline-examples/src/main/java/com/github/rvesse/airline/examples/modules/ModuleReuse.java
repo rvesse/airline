@@ -18,7 +18,7 @@ package com.github.rvesse.airline.examples.modules;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 

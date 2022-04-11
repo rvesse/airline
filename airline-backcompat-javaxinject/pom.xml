@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>airline-parent</artifactId>
+        <groupId>com.github.rvesse</groupId>
+        <version>2.8.6-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>airline-backcompat-javaxinject</artifactId>
+
+    <name>Airline - Backwards Compatibility - javax.inject</name>
+    <description>Provides a repackaging of the old jakarta.inject dependency that uses the old javax.inject package
+        under different Maven coordinates so that the old and new @Inject annotations can co-exist within a project.
+    </description>
+
+    <properties>
+        <license.header.path>${project.parent.basedir}</license.header.path>
+        <coveralls.skip>true</coveralls.skip>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${plugin.shade}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

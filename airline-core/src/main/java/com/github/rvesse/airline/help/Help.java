@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline.help;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import com.github.rvesse.airline.Channels;
 import org.apache.commons.collections4.CollectionUtils;

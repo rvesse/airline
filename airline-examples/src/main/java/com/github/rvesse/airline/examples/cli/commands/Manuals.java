@@ -18,7 +18,7 @@ package com.github.rvesse.airline.examples.cli.commands;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
