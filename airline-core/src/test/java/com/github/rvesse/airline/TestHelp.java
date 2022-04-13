@@ -1179,7 +1179,8 @@ public class TestHelp {
     @Test
     public void testVersionCli2() throws IOException {
         //@formatter:off
-        Cli<Args1> cli = new CliBuilder<Args1>("test")
+        Cli<Object> cli = new CliBuilder<>("test")
+                            .withCommand(Help.class)
                             .withCommand(Args1.class)
                             .withHelpSection(new VersionSection(new String[] { "/test.version" }, 
                                                                 new ResourceLocator[] { new ClasspathLocator() }, 
@@ -1194,12 +1195,13 @@ public class TestHelp {
                             .build();
     
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new CliGlobalUsageSummaryGenerator<Args1>().usage(cli.getMetadata(), out);
+        new CliGlobalUsageSummaryGenerator<>().usage(cli.getMetadata(), out);
         testStringAssert(new String(out.toByteArray(), utf8),
                 "usage: test <command> [ <args> ]\n" + 
                 "\n" + 
                 "Commands are:\n" + 
                 "    Args1   args1 description\n" + 
+                "    help    Display help information\n" +
                 "\n" + 
                 "See 'test help <command>' for more information on a specific command.\n" +
                 "\n" +
@@ -1376,6 +1378,49 @@ public class TestHelp {
                 "\n" + 
                 "        Bar\n" +
                 "\n");
+        //@formatter:on
+    }
+
+    @Test
+    public void testHelpWithoutHelpCommand() throws IOException {
+        //@formatter:off
+        CliBuilder<Object> builder = Cli.builder("test")
+                .withDescription("Test commandline")
+                .withCommand(ArgsRequired.class);
+
+        Cli<Object> parser = builder.build();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Help.help(parser.getMetadata(), Collections.<String>emptyList(), out);
+        Assert.assertEquals(new String(out.toByteArray(), utf8),
+                "usage: test <command> [ <args> ]\n" +
+                "\n" +
+                "Commands are:\n" +
+                "    ArgsRequired" +
+                "\n");
+        //@formatter:on
+    }
+
+    @Test
+    public void testHelpWithHelpCommand() throws IOException {
+        //@formatter:off
+        CliBuilder<Object> builder = Cli.builder("test")
+                .withDescription("Test commandline")
+                .withCommand(Help.class)
+                .withCommand(ArgsRequired.class);
+
+        Cli<Object> parser = builder.build();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Help.help(parser.getMetadata(), Collections.<String>emptyList(), out);
+        Assert.assertEquals(new String(out.toByteArray(), utf8),
+                "usage: test <command> [ <args> ]\n"
+                + "\n"
+                + "Commands are:\n"
+                + "    ArgsRequired\n"
+                + "    help           Display help information\n"
+                + "\n"
+                + "See 'test help <command>' for more information on a specific command.\n");
         //@formatter:on
     }
 }
