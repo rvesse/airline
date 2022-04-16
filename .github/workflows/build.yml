@@ -27,4 +27,5 @@ jobs:
     - name: Build with Maven
       run: mvn -B -e -Prelease -Dgpg.skip=true clean install
     - name: Run ITs and coverage
+      if: matrix.java == '11'
       run: mvn -B -e verify -Pcoveralls
