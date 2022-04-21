@@ -58,6 +58,7 @@
     <plugin.buildnumber>1.4</plugin.buildnumber>
     <plugin.compiler>3.7.0</plugin.compiler>
     <plugin.coveralls>4.3.0</plugin.coveralls>
+    <plugin.coveralls.jaxb>2.3.3-b02</plugin.coveralls.jaxb>
     <plugin.enforcer>3.0.0-M2</plugin.enforcer>
     <plugin.license>2.11</plugin.license>
     <plugin.jacoco>0.8.4</plugin.jacoco>
@@ -185,6 +186,7 @@
           <strictCheck>true</strictCheck>
           <excludes>
             <exclude>license.txt</exclude>
+            <exclude>.github/**</exclude>
             <exclude>pom.xml</exclude>
             <exclude>**/pom.xml</exclude>
 	    <exclude>**/*.config</exclude>
@@ -377,6 +379,13 @@
                 </configuration>
               </execution>
             </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${plugin.coveralls.jaxb}</version>
+              </dependency>
+            </dependencies>
           </plugin>
         </plugins>
       </build>
