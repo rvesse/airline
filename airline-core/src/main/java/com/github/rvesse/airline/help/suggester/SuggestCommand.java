@@ -64,7 +64,9 @@ public class SuggestCommand<T> implements Runnable, Callable<Void> {
 
         Class<? extends Suggester> suggesterClass = BUILTIN_SUGGESTERS.get(state.getLocation());
         if (suggesterClass != null) {
-            SuggesterMetadata suggesterMetadata = MetadataLoader.loadSuggester(suggesterClass);
+            SuggesterMetadata suggesterMetadata =
+                    MetadataLoader.loadSuggester(suggesterClass, MetadataLoader.loadParser(
+                            this.getClass()));
 
             if (suggesterMetadata != null) {
                 Map<Class<?>, Object> bindings = new HashMap<Class<?>, Object>();
@@ -79,8 +81,9 @@ public class SuggestCommand<T> implements Runnable, Callable<Void> {
                 }
 
                 Suggester suggester = createInstance(suggesterMetadata.getSuggesterClass(),
-                        Collections.<OptionMetadata> emptyList(), null, null, null,
-                        suggesterMetadata.getMetadataInjections(), AirlineUtils.unmodifiableMapCopy(bindings));
+                                                     Collections.<OptionMetadata>emptyList(), null, null, null,
+                                                     suggesterMetadata.getMetadataInjections(),
+                                                     AirlineUtils.unmodifiableMapCopy(bindings));
 
                 return suggester.suggest();
             }

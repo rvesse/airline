@@ -15,7 +15,10 @@
  */
 package com.github.rvesse.airline.model;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -48,16 +51,21 @@ public class ParserMetadata<T> {
     private final String argsSeparator, flagNegationPrefix;
     private final ParserErrorHandler errorHandler;
     private final char forceBuiltInPrefix;
+    private final Set<String> injectAnnotationClasses;
 
-    public ParserMetadata(CommandFactory<T> commandFactory, List<OptionParser<T>> optionParsers,
-            TypeConverter typeConverter, ParserErrorHandler errorHandler, boolean allowAbbreviateCommands,
-            boolean allowAbbreviatedOptions, List<AliasMetadata> aliases, UserAliasesSource<T> userAliases,
-            boolean aliasesOverrideBuiltIns, boolean aliasesMayChain, char forceBuiltInPrefix,
-            String argumentsSeparator, String flagNegationPrefix) {
-        if (optionParsers == null)
+    public ParserMetadata(CommandFactory<T> commandFactory, Collection<String> injectAnnotationClasses,
+                          Collection<OptionParser<T>> optionParsers,
+                          TypeConverter typeConverter, ParserErrorHandler errorHandler, boolean allowAbbreviateCommands,
+                          boolean allowAbbreviatedOptions, Collection<AliasMetadata> aliases,
+                          UserAliasesSource<T> userAliases,
+                          boolean aliasesOverrideBuiltIns, boolean aliasesMayChain, char forceBuiltInPrefix,
+                          String argumentsSeparator, String flagNegationPrefix) {
+        if (optionParsers == null) {
             throw new NullPointerException("optionParsers cannot be null");
-        if (aliases == null)
+        }
+        if (aliases == null) {
             throw new NullPointerException("aliases cannot be null");
+        }
 
         // Error handling
         this.errorHandler = errorHandler != null ? errorHandler : new FailFast();
@@ -65,6 +73,7 @@ public class ParserMetadata<T> {
         // Command parsing
         this.commandFactory = commandFactory != null ? commandFactory : new DefaultCommandFactory<T>();
         this.allowAbbreviatedCommands = allowAbbreviateCommands;
+        this.injectAnnotationClasses = AirlineUtils.unmodifiableSetCopy(injectAnnotationClasses);
 
         // Option Parsing
         this.typeConverter = typeConverter != null ? typeConverter : new DefaultTypeConverter();
@@ -80,11 +89,12 @@ public class ParserMetadata<T> {
 
         // Arguments Separator
         if (StringUtils.isNotEmpty(argumentsSeparator)) {
-            if (StringUtils.containsWhitespace(argumentsSeparator))
+            if (StringUtils.containsWhitespace(argumentsSeparator)) {
                 throw new IllegalArgumentException("argumentsSeparator cannot contain any whitespace");
+            }
         }
         this.argsSeparator = StringUtils.isNotEmpty(argumentsSeparator) ? argumentsSeparator
-                : DEFAULT_ARGUMENTS_SEPARATOR;
+                                                                        : DEFAULT_ARGUMENTS_SEPARATOR;
 
         // Flag negation
         this.flagNegationPrefix = StringUtils.isNotEmpty(flagNegationPrefix) ? flagNegationPrefix : null;
@@ -93,7 +103,7 @@ public class ParserMetadata<T> {
 
     /**
      * Gets the command factory to use
-     * 
+     *
      * @return Command factory
      */
     public CommandFactory<T> getCommandFactory() {
@@ -101,8 +111,17 @@ public class ParserMetadata<T> {
     }
 
     /**
+     * Gets the set of annotation class names to follow when building the metadata for commands i.e. these are the
+     * annotations like {@code javax.inject.Inject} that indicate that a field has a type that should be inspected for
+     * further metadata used to build up a commands options and arguments.
+     */
+    public Collection<String> getInjectionAnnotations() {
+        return this.injectAnnotationClasses;
+    }
+
+    /**
      * Gets the type converter to use
-     * 
+     *
      * @return Type converter
      */
     public TypeConverter getTypeConverter() {
@@ -111,7 +130,7 @@ public class ParserMetadata<T> {
 
     /**
      * Gets the error handler to use
-     * 
+     *
      * @return Error handler
      */
     public ParserErrorHandler getErrorHandler() {
@@ -120,7 +139,7 @@ public class ParserMetadata<T> {
 
     /**
      * Gets the defined command aliases
-     * 
+     *
      * @return Aliases
      */
     public List<AliasMetadata> getAliases() {
@@ -129,7 +148,7 @@ public class ParserMetadata<T> {
 
     /**
      * Gets the user aliases source (if any)
-     * 
+     *
      * @return User aliases source
      */
     public UserAliasesSource<T> getUserAliasesSource() {
@@ -138,7 +157,7 @@ public class ParserMetadata<T> {
 
     /**
      * Gets whether aliases can override built-in commands
-     * 
+     *
      * @return True if they can override, false otherwise
      */
     public boolean aliasesOverrideBuiltIns() {
@@ -146,9 +165,8 @@ public class ParserMetadata<T> {
     }
 
     /**
-     * Gets whether aliases may chain i.e. whether one alias may reference
-     * another
-     * 
+     * Gets whether aliases may chain i.e. whether one alias may reference another
+     *
      * @return True if they can chain, false otherwise
      */
     public boolean aliasesMayChain() {
@@ -156,10 +174,9 @@ public class ParserMetadata<T> {
     }
 
     /**
-     * Gets the prefix character used in alias definitions to indicate that when
-     * resolving an alias that it should force the built-in to be called even if
-     * there is an alias of that name and built-in overriding is enabled
-     * 
+     * Gets the prefix character used in alias definitions to indicate that when resolving an alias that it should force
+     * the built-in to be called even if there is an alias of that name and built-in overriding is enabled
+     *
      * @return Force built in prefix character
      */
     public char getAliasForceBuiltInPrefix() {
@@ -168,7 +185,7 @@ public class ParserMetadata<T> {
 
     /**
      * Gets the option parsers to use
-     * 
+     *
      * @return Option parsers
      */
     public List<OptionParser<T>> getOptionParsers() {
@@ -177,7 +194,7 @@ public class ParserMetadata<T> {
 
     /**
      * Gets whether command/group name abbreviation is allowed
-     * 
+     *
      * @return True if allowed, false otherwise
      */
     public boolean allowsAbbreviatedCommands() {
@@ -186,7 +203,7 @@ public class ParserMetadata<T> {
 
     /**
      * Gets whether option name abbreviation is allowed
-     * 
+     *
      * @return True if allowed, false otherwise
      */
     public boolean allowsAbbreviatedOptions() {
@@ -195,7 +212,7 @@ public class ParserMetadata<T> {
 
     /**
      * Gets the arguments separator to be used
-     * 
+     *
      * @return Arguments separator
      */
     public String getArgumentsSeparator() {
@@ -204,7 +221,7 @@ public class ParserMetadata<T> {
 
     /**
      * Gets whether this configuration allows flag negation
-     * 
+     *
      * @return True if negation is allowed, false otherwise
      */
     public boolean allowsFlagNegation() {
@@ -213,7 +230,7 @@ public class ParserMetadata<T> {
 
     /**
      * Gets the flag negation prefix that is in use (if any)
-     * 
+     *
      * @return Flag negation prefix, may be {@code null} if not enabled
      */
     public String getFlagNegationPrefix() {

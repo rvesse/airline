@@ -15,16 +15,9 @@
  */
 package com.github.rvesse.airline.model;
 
-import com.github.rvesse.airline.*;
-import com.github.rvesse.airline.annotations.Alias;
-import com.github.rvesse.airline.annotations.Arguments;
-import com.github.rvesse.airline.annotations.Command;
-import com.github.rvesse.airline.annotations.DefaultOption;
-import com.github.rvesse.airline.annotations.Group;
-import com.github.rvesse.airline.annotations.Groups;
-import com.github.rvesse.airline.annotations.Option;
-import com.github.rvesse.airline.annotations.OptionType;
-import com.github.rvesse.airline.annotations.Parser;
+import com.github.rvesse.airline.Accessor;
+import com.github.rvesse.airline.DefaultCommandFactory;
+import com.github.rvesse.airline.annotations.*;
 import com.github.rvesse.airline.annotations.restrictions.Partial;
 import com.github.rvesse.airline.annotations.restrictions.Partials;
 import com.github.rvesse.airline.builder.ParserBuilder;
@@ -48,7 +41,6 @@ import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.comparators.StringHierarchyComparator;
 import com.github.rvesse.airline.utils.predicates.parser.CommandTypeFinder;
 import com.github.rvesse.airline.utils.predicates.parser.GroupFinder;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -59,13 +51,24 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * Helper for loading meta-data
  */
 public class MetadataLoader {
 
+    /**
+     * Constant for the {@code javax.inject.Inject} annotation class
+     */
+    public static final String JAVAX_INJECT_INJECT = "javax.inject.Inject";
+    /**
+     * Constant for the {@code jakarta.inject.Inject} annotation class
+     */
+    public static final String JAKARTA_INJECT_INJECT = "jakarta.inject.Inject";
+    /**
+     * Constant for the {@code com.google.inject.Inject} annotation class
+     */
+    public static final String COM_GOOGLE_INJECT_INJECT = "com.google.inject.Inject";
     private static Map<String, Class<? extends Annotation>> dynamicAnnotationCache = new HashMap<>();
 
     public static <C> ParserMetadata<C> loadParser(Class<?> cliClass) {
@@ -100,6 +103,11 @@ public class MetadataLoader {
             builder = builder.withCommandFactory(ParserUtil.createInstance(parserConfig.commandFactory()));
         } else {
             builder = builder.withDefaultCommandFactory();
+        }
+        if (parserConfig.injectionAnnotationClasses().length > 0) {
+            builder = builder.withInjectionAnnotations(parserConfig.injectionAnnotationClasses());
+        } else {
+            builder = builder.withDefaultInjectionAnnotations();
         }
         if (!parserConfig.errorHandler().equals(FailFast.class)) {
             builder = builder.withErrorHandler(ParserUtil.createInstance(parserConfig.errorHandler()));
@@ -176,10 +184,11 @@ public class MetadataLoader {
      * Loads the metadata for a CLI
      *
      * @param cliClass             Class that has the {@link com.github.rvesse.airline.annotations.Cli} annotation
-     * @param parserConfigOverride Optional parser configuration, note that the {@link com.github.rvesse.airline.annotations.Cli#parserConfiguration()}
-     *                             field is normally used to provide a parser configuration via annotation but in some
-     *                             situations this may not be possible, e.g. constructing user alias search paths
-     *                             programmatically, in which case providing a parser configuration here
+     * @param parserConfigOverride Optional parser configuration, note that the
+     *                             {@link com.github.rvesse.airline.annotations.Cli#parserConfiguration()} field is
+     *                             normally used to provide a parser configuration via annotation but in some situations
+     *                             this may not be possible, e.g. constructing user alias search paths programmatically,
+     *                             in which case providing a parser configuration here
      *                             <strong>overrides</strong> anything specified directly on the
      *                             annotation
      * @return Global metadata
@@ -196,22 +205,25 @@ public class MetadataLoader {
         Map<String, HelpSection> baseHelpSections = loadHelpSections(cliClass,
                                                                      Collections.<String, HelpSection>emptyMap());
 
+        // Prepare parser configuration
+        //@formatter:off
+        ParserMetadata<C> parserConfig
+                = parserConfigOverride != null
+                  ? parserConfigOverride
+                  : (cliConfig.parserConfiguration() != null
+                     ? MetadataLoader.<C>loadParser(cliConfig.parserConfiguration())
+                     : MetadataLoader.<C>loadParser(cliClass));
+        //@formatter:on
+
         // Prepare commands
         CommandMetadata defaultCommand = null;
         if (!cliConfig.defaultCommand().equals(com.github.rvesse.airline.annotations.Cli.NO_DEFAULT.class)) {
-            defaultCommand = loadCommand(cliConfig.defaultCommand(), new HashMap<>(baseHelpSections));
+            defaultCommand = loadCommand(cliConfig.defaultCommand(), new HashMap<>(baseHelpSections), parserConfig);
         }
         List<CommandMetadata> defaultGroupCommands = new ArrayList<CommandMetadata>();
         for (Class<?> cls : cliConfig.commands()) {
-            defaultGroupCommands.add(loadCommand(cls, new HashMap<>(baseHelpSections)));
+            defaultGroupCommands.add(loadCommand(cls, new HashMap<>(baseHelpSections), parserConfig));
         }
-
-        // Prepare parser configuration
-        ParserMetadata<C> parserConfig = parserConfigOverride != null ? parserConfigOverride
-                                                                      : (cliConfig.parserConfiguration() != null
-                                                                         ? MetadataLoader.<C>loadParser(
-                cliConfig.parserConfiguration())
-                                                                         : MetadataLoader.<C>loadParser(cliClass));
 
         // Prepare restrictions
         // We find restrictions in the following order:
@@ -262,7 +274,7 @@ public class MetadataLoader {
 
             List<CommandMetadata> groupCommands = new ArrayList<CommandMetadata>();
             for (Class<?> cls : groupAnno.commands()) {
-                groupCommands.add(loadCommand(cls, new HashMap<>(baseHelpSections)));
+                groupCommands.add(loadCommand(cls, new HashMap<>(baseHelpSections), parserConfig));
             }
 
             if (group == null) {
@@ -272,7 +284,7 @@ public class MetadataLoader {
                                          groupAnno.description(),
                                          groupAnno.hidden(),
                                          Collections.<CommandGroupMetadata>emptyList(),
-                                         !groupAnno.defaultCommand().equals(Group.NO_DEFAULT.class) ? loadCommand(groupAnno.defaultCommand(), baseHelpSections) : null, 
+                                         !groupAnno.defaultCommand().equals(Group.NO_DEFAULT.class) ? loadCommand(groupAnno.defaultCommand(), baseHelpSections, parserConfig) : null,
                                          groupCommands);
                 //@formatter:on
                 if (subGroupPath == null) {
@@ -315,7 +327,7 @@ public class MetadataLoader {
         }
 
         // Post-process to find possible further group assignments
-        loadCommandsIntoGroupsByAnnotation(allCommands, groups, defaultGroupCommands, baseHelpSections);
+        loadCommandsIntoGroupsByAnnotation(allCommands, groups, defaultGroupCommands, baseHelpSections, parserConfig);
 
         return loadGlobal(cliConfig.name(), cliConfig.description(), defaultCommand, defaultGroupCommands, groups,
                           restrictions, baseHelpSections.values(), parserConfig);
@@ -406,11 +418,12 @@ public class MetadataLoader {
      * @return Command meta-data
      */
     public static <T> List<CommandMetadata> loadCommands(Iterable<Class<? extends T>> defaultCommands,
-                                                         Map<String, HelpSection> baseHelpSections) {
+                                                         Map<String, HelpSection> baseHelpSections,
+                                                         ParserMetadata<?> parserConfig) {
         List<CommandMetadata> commandMetadata = new ArrayList<CommandMetadata>();
         Iterator<Class<? extends T>> iter = defaultCommands.iterator();
         while (iter.hasNext()) {
-            commandMetadata.add(loadCommand(iter.next(), baseHelpSections));
+            commandMetadata.add(loadCommand(iter.next(), baseHelpSections, parserConfig));
         }
         return commandMetadata;
     }
@@ -421,8 +434,8 @@ public class MetadataLoader {
      * @param commandType Command class
      * @return Command meta-data
      */
-    public static CommandMetadata loadCommand(Class<?> commandType) {
-        return loadCommand(commandType, new HashMap<String, HelpSection>());
+    public static CommandMetadata loadCommand(Class<?> commandType, ParserMetadata<?> parserConfig) {
+        return loadCommand(commandType, new HashMap<String, HelpSection>(), parserConfig);
     }
 
     /**
@@ -432,7 +445,8 @@ public class MetadataLoader {
      * @param baseHelpSections Base set of help sections
      * @return Command meta-data
      */
-    public static CommandMetadata loadCommand(Class<?> commandType, Map<String, HelpSection> baseHelpSections) {
+    public static CommandMetadata loadCommand(Class<?> commandType, Map<String, HelpSection> baseHelpSections,
+                                              ParserMetadata<?> parserConfig) {
         if (commandType == null) {
             return null;
         }
@@ -463,7 +477,7 @@ public class MetadataLoader {
         List<String> groupNames = Arrays.asList(command.groupNames());
         boolean hidden = command.hidden();
 
-        InjectionMetadata injectionMetadata = loadInjectionMetadata(commandType);
+        InjectionMetadata injectionMetadata = loadInjectionMetadata(commandType, parserConfig);
 
         //@formatter:off
         CommandMetadata commandMetadata = new CommandMetadata(name, 
@@ -535,20 +549,47 @@ public class MetadataLoader {
      * @param suggesterClass Suggester class
      * @return Suggester meta-data
      */
-    public static SuggesterMetadata loadSuggester(Class<? extends Suggester> suggesterClass) {
-        InjectionMetadata injectionMetadata = loadInjectionMetadata(suggesterClass);
+    public static SuggesterMetadata loadSuggester(Class<? extends Suggester> suggesterClass,
+                                                  ParserMetadata<?> parserConfig) {
+        InjectionMetadata injectionMetadata = loadInjectionMetadata(suggesterClass, parserConfig);
         return new SuggesterMetadata(suggesterClass, injectionMetadata.metadataInjections);
     }
 
     /**
      * Loads injection meta-data
+     * <p>
+     * Given a class that represents a command, searches its fields to find those that are annotated with Airline
+     * annotations e.g. {@link Option}, {@link Arguments} in order to discover all the options and arguments for a
+     * command.  This also includes walking back up the superclass hierarchy so options and arguments may be defined in
+     * shared base classes and still discovered.
+     * </p>
+     * <p>
+     * Additionally options and arguments may be modularised out into separate classes that can be composed into your
+     * command classes by defining a field of the appropriate type and annotating it with an injection annotation to
+     * tell Airline it also needs to discover options inside that class.
+     * </p>
+     * <p>
+     * Historically Airline supported only the {@code javax.inject.Inject} annotation, but with the move of most
+     * {@code javax} packages (Java EE) to the stewardship of the Eclipse Foundation those packages are gradually being
+     * migrated into the {@code jakarta} namespace.  As of <strong>2.9.0</strong> Airline makes the choice of annotation
+     * fully configurable via the parser configuration.  To avoid potential class loading issues these are specified as
+     * string class names with the metadata loader dynamically loading the relevant annotation classes if they are
+     * present on the runtime classpath.  For backwards compatibility if this piece of configuration is not customised
+     * then we support the following annotations by default:
+     * </p>
+     * <ul>
+     *     <li>{@value JAVAX_INJECT_INJECT}</li>
+     *     <li>{@value JAKARTA_INJECT_INJECT}</li>
+     *     <li>{@value COM_GOOGLE_INJECT_INJECT}</li>
+     * </ul>
      *
-     * @param type Class
+     * @param type         Class
+     * @param parserConfig Parser Configuration
      * @return Injection meta-data
      */
-    public static InjectionMetadata loadInjectionMetadata(Class<?> type) {
+    public static InjectionMetadata loadInjectionMetadata(Class<?> type, ParserMetadata<?> parserConfig) {
         InjectionMetadata injectionMetadata = new InjectionMetadata();
-        loadInjectionMetadata(type, injectionMetadata, Collections.<Field>emptyList());
+        loadInjectionMetadata(type, injectionMetadata, Collections.<Field>emptyList(), parserConfig);
         injectionMetadata.compact();
         return injectionMetadata;
     }
@@ -560,7 +601,8 @@ public class MetadataLoader {
      * @param injectionMetadata Injection meta-data
      * @param fields            Fields
      */
-    public static void loadInjectionMetadata(Class<?> type, InjectionMetadata injectionMetadata, List<Field> fields) {
+    public static void loadInjectionMetadata(Class<?> type, InjectionMetadata injectionMetadata, List<Field> fields,
+                                             ParserMetadata<?> parserConfig) {
         if (type.isInterface()) {
             return;
         }
@@ -575,12 +617,12 @@ public class MetadataLoader {
                 // transitioning to jakarta. because those APIs were moved to the Eclipse Foundation and Oracle didn't
                 // want them using the Java package in their package names.  This is a slow transition that is painful
                 // for the Java community, so we're supporting both old and new forms for the time being.  Plus Guice
-                // because why not?
+                // because it was in the codebase historically and people may still be using it.
                 // See #81 for discussion of planned future changes around introducing our own annotation instead of
                 // reusing the existing ones
-                checkForInjectionAnnotation(injectionMetadata, field, path, "jakarta.inject.Inject");
-                checkForInjectionAnnotation(injectionMetadata, field, path, "javax.inject.Inject");
-                checkForInjectionAnnotation(injectionMetadata, field, path, "com.google.inject.Inject");
+                for (String injectionAnnotation : parserConfig.getInjectionAnnotations()) {
+                    checkForInjectionAnnotation(injectionMetadata, field, path, injectionAnnotation, parserConfig);
+                }
 
                 Option optionAnnotation = field.getAnnotation(Option.class);
                 DefaultOption defaultOptionAnnotation = field.getAnnotation(DefaultOption.class);
@@ -764,23 +806,25 @@ public class MetadataLoader {
     }
 
     private static void checkForInjectionAnnotation(InjectionMetadata injectionMetadata, Field field, List<Field> path,
-                                                    String annotationClass) {
+                                                    String annotationClass, ParserMetadata<?> parserConfig) {
         try {
             // Use a cache to avoid trying to dynamically create the annotation class multiple times, this also allows
             // us to short-circuit our logic if we already know a given annotation class is not present on the classpath
             Class<? extends Annotation> annotationType = dynamicAnnotationCache.get(annotationClass);
             if (annotationType == null) {
                 // Short-circuit if we know this annotation class isn't on the classpath
-                if (dynamicAnnotationCache.containsKey(annotationClass))
+                if (dynamicAnnotationCache.containsKey(annotationClass)) {
                     return;
+                }
 
                 // Otherwise, try and create an instance of it, caching for future reuse
                 dynamicAnnotationCache.put(annotationClass,
                                            (Class<? extends Annotation>) Class.forName(annotationClass));
                 annotationType = dynamicAnnotationCache.get(annotationClass);
             }
-            if (annotationType == null)
+            if (annotationType == null) {
                 return;
+            }
 
             @SuppressWarnings("unchecked")
             Annotation annotation = field.getAnnotation(annotationType);
@@ -790,7 +834,7 @@ public class MetadataLoader {
                         || field.getType().equals(CommandMetadata.class)) {
                     injectionMetadata.metadataInjections.add(new Accessor(path));
                 } else {
-                    loadInjectionMetadata(field.getType(), injectionMetadata, path);
+                    loadInjectionMetadata(field.getType(), injectionMetadata, path, parserConfig);
                 }
             }
         } catch (ClassNotFoundException e) {
@@ -931,11 +975,13 @@ public class MetadataLoader {
     public static void loadCommandsIntoGroupsByAnnotation(List<CommandMetadata> allCommands,
                                                           List<CommandGroupMetadata> commandGroups,
                                                           List<CommandMetadata> defaultCommandGroup,
-                                                          Map<String, HelpSection> baseHelpSections) {
+                                                          Map<String, HelpSection> baseHelpSections,
+                                                          ParserMetadata<?> parserConfig) {
         List<CommandMetadata> newCommands = new ArrayList<CommandMetadata>();
 
         // first, create any groups explicitly annotated
-        createGroupsFromAnnotations(allCommands, newCommands, commandGroups, defaultCommandGroup, baseHelpSections);
+        createGroupsFromAnnotations(allCommands, newCommands, commandGroups, defaultCommandGroup, baseHelpSections,
+                                    parserConfig);
 
         for (CommandMetadata command : allCommands) {
             boolean addedToGroup = false;
@@ -1010,7 +1056,8 @@ public class MetadataLoader {
                                                     List<CommandMetadata> newCommands,
                                                     List<CommandGroupMetadata> commandGroups,
                                                     List<CommandMetadata> defaultCommandGroup,
-                                                    Map<String, HelpSection> baseHelpSections) {
+                                                    Map<String, HelpSection> baseHelpSections,
+                                                    ParserMetadata<?> parserConfig) {
 
         // We sort sub-groups by name length then lexically
         // This means that when we build the groups hierarchy we'll ensure we
@@ -1030,7 +1077,7 @@ public class MetadataLoader {
                     defaultCommandClass = groupAnno.defaultCommand();
                     defaultCommand = CollectionUtils.find(allCommands, new CommandTypeFinder(defaultCommandClass));
                     if (null == defaultCommand) {
-                        defaultCommand = loadCommand(defaultCommandClass, baseHelpSections);
+                        defaultCommand = loadCommand(defaultCommandClass, baseHelpSections, parserConfig);
                         newCommands.add(defaultCommand);
                     }
                 }
@@ -1041,7 +1088,7 @@ public class MetadataLoader {
                 for (Class commandClass : groupAnno.commands()) {
                     groupCommand = CollectionUtils.find(allCommands, new CommandTypeFinder(commandClass));
                     if (null == groupCommand) {
-                        groupCommand = loadCommand(commandClass, baseHelpSections);
+                        groupCommand = loadCommand(commandClass, baseHelpSections, parserConfig);
                         newCommands.add(groupCommand);
                         groupCommands.add(groupCommand);
                     }

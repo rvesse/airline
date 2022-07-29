@@ -25,15 +25,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
 
+import com.github.rvesse.airline.model.*;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.ListUtils;
 
 import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.help.sections.HelpSection;
-import com.github.rvesse.airline.model.CommandGroupMetadata;
-import com.github.rvesse.airline.model.CommandMetadata;
-import com.github.rvesse.airline.model.GlobalMetadata;
-import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.restrictions.GlobalRestriction;
 import com.github.rvesse.airline.restrictions.None;
 
@@ -153,14 +150,17 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
 
     @Override
     public Cli<C> build() {
+        // Need Parser Configuration available up front
+        ParserMetadata<C> parserConfig = this.parserBuilder.build();
+
         CommandMetadata defaultCommandMetadata = null;
         List<CommandMetadata> allCommands = new ArrayList<CommandMetadata>();
         if (defaultCommand != null) {
-            defaultCommandMetadata = MetadataLoader.loadCommand(defaultCommand, baseHelpSections);
+            defaultCommandMetadata = MetadataLoader.loadCommand(defaultCommand, baseHelpSections, parserConfig);
         }
 
         List<CommandMetadata> defaultCommandGroup = defaultCommandGroupCommands != null
-                ? MetadataLoader.loadCommands(defaultCommandGroupCommands, baseHelpSections)
+                ? MetadataLoader.loadCommands(defaultCommandGroupCommands, baseHelpSections, parserConfig)
                 : new ArrayList<CommandMetadata>();
 
         allCommands.addAll(defaultCommandGroup);
@@ -202,7 +202,7 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
         // rather than change the entire way metadata is loaded, I figured just
         // post-processing was an easier, yet uglier, way to go
         MetadataLoader.loadCommandsIntoGroupsByAnnotation(allCommands, commandGroups, defaultCommandGroup,
-                baseHelpSections);
+                baseHelpSections, parserConfig);
 
         // Build restrictions
         // Use defaults if none specified
@@ -214,9 +214,9 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
 
         // Build metadata objects
         GlobalMetadata<C> metadata = MetadataLoader.<C> loadGlobal(name, description, defaultCommandMetadata,
-                ListUtils.unmodifiableList(defaultCommandGroup), ListUtils.unmodifiableList(commandGroups),
-                ListUtils.unmodifiableList(restrictions), Collections.unmodifiableCollection(baseHelpSections.values()),
-                this.parserBuilder.build());
+                                                                   ListUtils.unmodifiableList(defaultCommandGroup), ListUtils.unmodifiableList(commandGroups),
+                                                                   ListUtils.unmodifiableList(restrictions), Collections.unmodifiableCollection(baseHelpSections.values()),
+                                                                   parserConfig);
 
         return new Cli<C>(metadata);
     }
