@@ -15,8 +15,7 @@
  */
 package com.github.rvesse.airline.examples.sendit;
 
-import jakarta.inject.Inject;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.examples.ExampleRunnable;
@@ -28,7 +27,7 @@ public class Price implements ExampleRunnable {
             "--service" }, title = "Service", description = "Specifies the postal service you would like to use")
     private PostalService service = PostalService.FirstClass;
 
-    @Inject
+    @AirlineModule
     private Package item = new Package();
 
     @Override

@@ -16,10 +16,10 @@
 package com.github.rvesse.airline.model;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import com.github.rvesse.airline.annotations.AirlineModule;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.rvesse.airline.CommandFactory;
@@ -51,9 +51,9 @@ public class ParserMetadata<T> {
     private final String argsSeparator, flagNegationPrefix;
     private final ParserErrorHandler errorHandler;
     private final char forceBuiltInPrefix;
-    private final Set<String> injectAnnotationClasses;
+    private final Set<String> compositionAnnotationClasses;
 
-    public ParserMetadata(CommandFactory<T> commandFactory, Collection<String> injectAnnotationClasses,
+    public ParserMetadata(CommandFactory<T> commandFactory, Collection<String> compositionAnnotationClasses,
                           Collection<OptionParser<T>> optionParsers,
                           TypeConverter typeConverter, ParserErrorHandler errorHandler, boolean allowAbbreviateCommands,
                           boolean allowAbbreviatedOptions, Collection<AliasMetadata> aliases,
@@ -73,7 +73,7 @@ public class ParserMetadata<T> {
         // Command parsing
         this.commandFactory = commandFactory != null ? commandFactory : new DefaultCommandFactory<T>();
         this.allowAbbreviatedCommands = allowAbbreviateCommands;
-        this.injectAnnotationClasses = AirlineUtils.unmodifiableSetCopy(injectAnnotationClasses);
+        this.compositionAnnotationClasses = AirlineUtils.unmodifiableSetCopy(compositionAnnotationClasses);
 
         // Option Parsing
         this.typeConverter = typeConverter != null ? typeConverter : new DefaultTypeConverter();
@@ -112,11 +112,19 @@ public class ParserMetadata<T> {
 
     /**
      * Gets the set of annotation class names to follow when building the metadata for commands i.e. these are the
-     * annotations like {@code javax.inject.Inject} that indicate that a field has a type that should be inspected for
+     * annotations like {@link AirlineModule} that indicate that a field has a type that should be inspected for
      * further metadata used to build up a commands options and arguments.
+     * <p>
+     * This configuration point was introduced in <strong>2.9.0</strong> along with the {@link AirlineModule} annotation
+     * to allow better integrating Airline with a dependency injection framework, and to ultimately enable removing its
+     * current dependency on the {@code jakarta-inject} library.
+     * </p>
+     *
+     * @return Collection of injection annotation class names
+     * @since 2.9.0
      */
-    public Collection<String> getInjectionAnnotations() {
-        return this.injectAnnotationClasses;
+    public Collection<String> getCompositionAnnotations() {
+        return this.compositionAnnotationClasses;
     }
 
     /**

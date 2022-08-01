@@ -15,12 +15,7 @@
  */
 package com.github.rvesse.airline.examples.cli.commands;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.inject.Inject;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
@@ -29,10 +24,14 @@ import com.github.rvesse.airline.examples.ExampleRunnable;
 import com.github.rvesse.airline.help.cli.bash.CompletionBehaviour;
 import com.github.rvesse.airline.model.GlobalMetadata;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 @Command(name = "help", description = "A command that provides help on other commands")
 public class Help implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private GlobalMetadata<ExampleRunnable> global;
 
     @Arguments(description = "Provides the name of the commands you want to provide help for")

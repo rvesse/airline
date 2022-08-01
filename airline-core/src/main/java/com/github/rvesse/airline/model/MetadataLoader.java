@@ -104,10 +104,10 @@ public class MetadataLoader {
         } else {
             builder = builder.withDefaultCommandFactory();
         }
-        if (parserConfig.injectionAnnotationClasses().length > 0) {
-            builder = builder.withInjectionAnnotations(parserConfig.injectionAnnotationClasses());
+        if (parserConfig.compositionAnnotationClasses().length > 0) {
+            builder = builder.withCompositionAnnotations(parserConfig.compositionAnnotationClasses());
         } else {
-            builder = builder.withDefaultInjectionAnnotations();
+            builder = builder.withDefaultCompositionAnnotations();
         }
         if (!parserConfig.errorHandler().equals(FailFast.class)) {
             builder = builder.withErrorHandler(ParserUtil.createInstance(parserConfig.errorHandler()));
@@ -620,7 +620,7 @@ public class MetadataLoader {
                 // because it was in the codebase historically and people may still be using it.
                 // See #81 for discussion of planned future changes around introducing our own annotation instead of
                 // reusing the existing ones
-                for (String injectionAnnotation : parserConfig.getInjectionAnnotations()) {
+                for (String injectionAnnotation : parserConfig.getCompositionAnnotations()) {
                     checkForInjectionAnnotation(injectionMetadata, field, path, injectionAnnotation, parserConfig);
                 }
 

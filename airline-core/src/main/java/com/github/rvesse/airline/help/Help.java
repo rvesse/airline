@@ -15,12 +15,8 @@
  */
 package com.github.rvesse.airline.help;
 
-import jakarta.inject.Inject;
-
 import com.github.rvesse.airline.Channels;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
@@ -35,6 +31,8 @@ import com.github.rvesse.airline.utils.predicates.parser.AbbreviatedCommandFinde
 import com.github.rvesse.airline.utils.predicates.parser.AbbreviatedGroupFinder;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 import com.github.rvesse.airline.utils.predicates.parser.GroupFinder;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Predicate;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -44,7 +42,7 @@ import java.util.concurrent.Callable;
 
 @Command(name = "help", description = "Display help information")
 public class Help<T> implements Runnable, Callable<Void> {
-    @Inject
+    @AirlineModule
     public GlobalMetadata<T> global;
 
     @Arguments

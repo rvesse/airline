@@ -15,10 +15,15 @@
  */
 package com.github.rvesse.airline;
 
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
+import com.github.rvesse.airline.builder.ParserBuilder;
+import com.github.rvesse.airline.parser.errors.ParseArgumentsUnexpectedException;
+import com.github.rvesse.airline.parser.errors.ParseException;
 import jakarta.inject.Inject;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -29,34 +34,40 @@ import static com.github.rvesse.airline.TestingUtil.singleCommandParser;
 import static org.testng.Assert.*;
 
 /**
+ * This class provides a range of tests around Airline's composition mechanism whereby options and arguments may be
+ * defined in a separate class provided that a field of that type is present on the class being scanned for Airline
+ * metadata.  Historically we used the {@code @Inject} annotation for this but due to increasing conflicts with
+ * dependency injection frameworks as of <strong>2.9.0</strong> we moved to use our own
+ * {@link com.github.rvesse.airline.annotations.AirlineModule} annotation.  However, for backwards compatibility
+ * purposes, we continue to support various {@code @Inject} annotations for the time being, though this will not be the
+ * default behaviour in the future.  Therefore you will see a mixture of all different annotations within this test
+ * class.
+ *
  * @author dain
  * @author rodionmoiseev
+ * @author rvesse
  */
-public class TestParametersDelegate
-{
+public class TestParametersDelegate {
     @Command(name = "command")
-    public static class DelegatingEmptyClassHasNoEffect
-    {
-        public static class EmptyDelegate
-        {
+    public static class DelegatingEmptyClassHasNoEffect {
+        public static class EmptyDelegate {
             public String nonParamString = "a";
         }
 
         @Option(name = "-a")
         public boolean isA;
-        @Option(name = {"-b", "--long-b"})
+        @Option(name = { "-b", "--long-b" })
         public String bValue = "";
-        @Inject
+        @AirlineModule
         public EmptyDelegate delegate = new EmptyDelegate();
     }
 
     @Test
-    public void delegatingEmptyClassHasNoEffect()
-    {
+    public void delegatingEmptyClassHasNoEffect() {
         DelegatingEmptyClassHasNoEffect p = Cli.<DelegatingEmptyClassHasNoEffect>builder("foo")
-                .withCommand(DelegatingEmptyClassHasNoEffect.class)
-                .build()
-                .parse("command", "-a", "-b", "someValue");
+                                               .withCommand(DelegatingEmptyClassHasNoEffect.class)
+                                               .build()
+                                               .parse("command", "-a", "-b", "someValue");
 
         assertTrue(p.isA);
         assertEquals(p.bValue, "someValue");
@@ -66,30 +77,28 @@ public class TestParametersDelegate
     // ========================================================================================================================
 
     @Command(name = "command")
-    public static class DelegatingSetsFieldsOnBothMainParamsAndTheDelegatedParams
-    {
-        public static class ComplexDelegate
-        {
+    public static class DelegatingSetsFieldsOnBothMainParamsAndTheDelegatedParams {
+        public static class ComplexDelegate {
             @Option(name = "-c")
             public boolean isC;
-            @Option(name = {"-d", "--long-d"})
+            @Option(name = { "-d", "--long-d" })
             public Integer d;
         }
 
         @Option(name = "-a")
         public boolean isA;
-        @Option(name = {"-b", "--long-b"})
+        @Option(name = { "-b", "--long-b" })
         public String bValue = "";
-        @Inject
+        @AirlineModule
         public ComplexDelegate delegate = new ComplexDelegate();
     }
 
     @Test
-    public void delegatingSetsFieldsOnBothMainParamsAndTheDelegatedParams()
-    {
+    public void delegatingSetsFieldsOnBothMainParamsAndTheDelegatedParams() {
 
-        DelegatingSetsFieldsOnBothMainParamsAndTheDelegatedParams p = singleCommandParser(DelegatingSetsFieldsOnBothMainParamsAndTheDelegatedParams.class)
-                .parse("-c", "--long-d", "123", "--long-b", "bValue");
+        DelegatingSetsFieldsOnBothMainParamsAndTheDelegatedParams p =
+                singleCommandParser(DelegatingSetsFieldsOnBothMainParamsAndTheDelegatedParams.class)
+                        .parse("-c", "--long-d", "123", "--long-b", "bValue");
         assertFalse(p.isA);
         assertEquals(p.bValue, "bValue");
         assertTrue(p.delegate.isC);
@@ -98,11 +107,12 @@ public class TestParametersDelegate
 
     // ========================================================================================================================
 
+    /**
+     * This class uses three different injection delegates
+     */
     @Command(name = "command")
-    public static class CombinedAndNestedDelegates
-    {
-        public static class LeafDelegate
-        {
+    public static class CombinedAndNestedDelegates {
+        public static class LeafDelegate {
             @Option(name = "--list")
             public List<String> list = new ArrayList<String>(Arrays.asList(new String[] { "value1", "value2" }));
 
@@ -110,17 +120,15 @@ public class TestParametersDelegate
             public boolean bool;
         }
 
-        public static class NestedDelegate1
-        {
+        public static class NestedDelegate1 {
             @Inject
             public LeafDelegate leafDelegate = new LeafDelegate();
 
-            @Option(name = {"-d", "--long-d"})
+            @Option(name = { "-d", "--long-d" })
             public Integer d;
         }
 
-        public static class NestedDelegate2
-        {
+        public static class NestedDelegate2 {
             @Option(name = "-c")
             public boolean isC;
 
@@ -133,47 +141,111 @@ public class TestParametersDelegate
             public NestedDelegate1 nestedDelegate1 = new NestedDelegate1();
         }
 
+
+        public static class NestedDelegate3 {
+            @Option(name = "-e")
+            public boolean isE;
+        }
+
         @Option(name = "-a")
         public boolean isA;
 
-        @Option(name = {"-b", "--long-b"})
+        @Option(name = { "-b", "--long-b" })
         public String bValue = "";
 
-        @Inject
+        @AirlineModule
         public NestedDelegate2 nestedDelegate2 = new NestedDelegate2();
+
+        @CustomModule
+        public NestedDelegate3 nestedDelegate3 = new NestedDelegate3();
     }
 
     @Test
-    public void combinedAndNestedDelegates()
-    {
+    public void combinedAndNestedDelegates() {
         CombinedAndNestedDelegates p = singleCommandParser(CombinedAndNestedDelegates.class)
                 .parse("-d", "234", "--list", "a", "--list", "b", "-a");
-        assertEquals(p.nestedDelegate2.nestedDelegate1.leafDelegate.list, Arrays.asList(new String[] { "value1", "value2", "a", "b" }));
+        assertEquals(p.nestedDelegate2.nestedDelegate1.leafDelegate.list,
+                     Arrays.asList(new String[] { "value1", "value2", "a", "b" }));
         assertFalse(p.nestedDelegate2.nestedDelegate1.leafDelegate.bool);
         assertEquals(p.nestedDelegate2.nestedDelegate1.d, Integer.valueOf(234));
         assertFalse(p.nestedDelegate2.isC);
         assertTrue(p.isA);
         assertEquals(p.bValue, "");
+        assertFalse(p.nestedDelegate3.isE);
+
+        checkThrows(new Runnable() {
+            @Override
+            public void run() {
+                singleCommandParser(CombinedAndNestedDelegates.class)
+                        .parse("-e");
+            }
+        }, ParseArgumentsUnexpectedException.class);
+    }
+
+    @Test
+    public void combinedAndNestedDelegatesWithCustomAnnotations() {
+        CombinedAndNestedDelegates p =
+                SingleCommand.singleCommand(CombinedAndNestedDelegates.class,
+                                            new ParserBuilder<CombinedAndNestedDelegates>().withDefaultCompositionAnnotations()
+                                                                                           .withCompositionAnnotations(
+                                                                                                   CustomModule.class.getCanonicalName())
+                                                                                           .build())
+                             .parse("-d", "234", "--list", "a", "--list", "b", "-a", "-e");
+        assertEquals(p.nestedDelegate2.nestedDelegate1.leafDelegate.list,
+                     Arrays.asList(new String[] { "value1", "value2", "a", "b" }));
+        assertFalse(p.nestedDelegate2.nestedDelegate1.leafDelegate.bool);
+        assertEquals(p.nestedDelegate2.nestedDelegate1.d, Integer.valueOf(234));
+        assertFalse(p.nestedDelegate2.isC);
+        assertTrue(p.isA);
+        assertEquals(p.bValue, "");
+        assertTrue(p.nestedDelegate3.isE);
+    }
+
+    private void checkThrows(Runnable runnable, Class<? extends ParseException> expectedErrorCls) {
+        try {
+            runnable.run();
+            Assert.fail("Expected a " + expectedErrorCls.getCanonicalName() + " to be thrown");
+        } catch (ParseException e) {
+            Assert.assertEquals(e.getClass(), expectedErrorCls);
+        }
+    }
+
+    @Test
+    public void combinedAndNestedDelegatesIgnored() {
+        final SingleCommand<CombinedAndNestedDelegates> p =
+                SingleCommand.singleCommand(CombinedAndNestedDelegates.class,
+                                            new ParserBuilder<CombinedAndNestedDelegates>().withCompositionAnnotations(
+                                                                                                   "no.such.Annotation")
+                                                                                           .build());
+        checkThrows(new Runnable() {
+            @Override
+            public void run() {
+                p.parse("-d", "234");
+            }
+        }, ParseArgumentsUnexpectedException.class);
+        checkThrows(new Runnable() {
+            @Override
+            public void run() {
+                p.parse("--list", "a", "b");
+            }
+        }, ParseArgumentsUnexpectedException.class);
     }
 
     // ========================================================================================================================
 
     @Command(name = "command")
-    public static class CommandTest
-    {
-        public static class Delegate
-        {
+    public static class CommandTest {
+        public static class Delegate {
             @Option(name = "-a")
             public String a = "b";
         }
 
-        @Inject
+        @AirlineModule
         public Delegate delegate = new Delegate();
     }
 
     @Test
-    public void commandTest()
-    {
+    public void commandTest() {
         CommandTest c = singleCommandParser(CommandTest.class).parse("-a", "a");
         assertEquals(c.delegate.a, "a");
     }
@@ -181,21 +253,18 @@ public class TestParametersDelegate
     // ========================================================================================================================
 
     @Command(name = "command")
-    public static class NullDelegatesAreProhibited
-    {
-        public static class ComplexDelegate
-        {
+    public static class NullDelegatesAreProhibited {
+        public static class ComplexDelegate {
             @Option(name = "-a")
             public boolean a;
         }
 
-        @Inject
+        @AirlineModule
         public ComplexDelegate delegate;
     }
 
     @Test
-    public void nullDelegatesAreAllowed()
-    {
+    public void nullDelegatesAreAllowed() {
 
         NullDelegatesAreProhibited value = singleCommandParser(NullDelegatesAreProhibited.class).parse("-a");
         assertEquals(value.delegate.a, true);
@@ -204,23 +273,20 @@ public class TestParametersDelegate
     // ========================================================================================================================
 
     @Command(name = "command")
-    public static class DuplicateDelegateAllowed
-    {
-        public static class Delegate
-        {
+    public static class DuplicateDelegateAllowed {
+        public static class Delegate {
             @Option(name = "-a")
             public String a;
         }
 
-        @Inject
+        @AirlineModule
         public Delegate d1 = new Delegate();
-        @Inject
+        @AirlineModule
         public Delegate d2 = new Delegate();
     }
 
     @Test
-    public void duplicateDelegateAllowed()
-    {
+    public void duplicateDelegateAllowed() {
         DuplicateDelegateAllowed value = singleCommandParser(DuplicateDelegateAllowed.class).parse("-a", "value");
         assertEquals(value.d1.a, "value");
         assertEquals(value.d2.a, "value");
@@ -228,22 +294,22 @@ public class TestParametersDelegate
 
     // ========================================================================================================================
 
+    /**
+     * This class uses a mix of injection annotations
+     */
     @Command(name = "command")
-    public static class DuplicateMainParametersAreAllowed
-    {
-        public static class Delegate1
-        {
+    public static class DuplicateMainParametersAreAllowed {
+        public static class Delegate1 {
             @Arguments
             public List<String> mainParams1 = new ArrayList<>();
         }
 
-        public static class Delegate2
-        {
+        public static class Delegate2 {
             @Arguments
             public List<String> mainParams1 = new ArrayList<>();
         }
 
-        @Inject
+        @AirlineModule
         public Delegate1 delegate1 = new Delegate1();
 
         @Inject
@@ -251,9 +317,9 @@ public class TestParametersDelegate
     }
 
     @Test
-    public void duplicateMainParametersAreAllowed()
-    {
-        DuplicateMainParametersAreAllowed value = singleCommandParser(DuplicateMainParametersAreAllowed.class).parse("main", "params");
+    public void duplicateMainParametersAreAllowed() {
+        DuplicateMainParametersAreAllowed value =
+                singleCommandParser(DuplicateMainParametersAreAllowed.class).parse("main", "params");
         assertEquals(value.delegate1.mainParams1, Arrays.asList(new String[] { "main", "params" }));
         assertEquals(value.delegate2.mainParams1, Arrays.asList(new String[] { "main", "params" }));
     }
@@ -261,30 +327,26 @@ public class TestParametersDelegate
     // ========================================================================================================================
 
     @Command(name = "command")
-    public static class ConflictingMainParametersAreNotAllowed
-    {
-        public static class Delegate1
-        {
+    public static class ConflictingMainParametersAreNotAllowed {
+        public static class Delegate1 {
             @Arguments(description = "foo")
             public List<String> mainParams1 = new ArrayList<>();
         }
 
-        public static class Delegate2
-        {
+        public static class Delegate2 {
             @Arguments(description = "bar")
             public List<String> mainParams1 = new ArrayList<>();
         }
 
-        @Inject
+        @AirlineModule
         public Delegate1 delegate1 = new Delegate1();
 
-        @Inject
+        @AirlineModule
         public Delegate2 delegate2 = new Delegate2();
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void conflictingMainParametersAreNotAllowed()
-    {
+    public void conflictingMainParametersAreNotAllowed() {
         singleCommandParser(ConflictingMainParametersAreNotAllowed.class).parse("main", "params");
     }
 }

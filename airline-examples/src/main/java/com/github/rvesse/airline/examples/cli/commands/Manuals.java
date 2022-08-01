@@ -15,11 +15,7 @@
  */
 package com.github.rvesse.airline.examples.cli.commands;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import jakarta.inject.Inject;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.examples.ExampleRunnable;
@@ -27,10 +23,13 @@ import com.github.rvesse.airline.help.man.ManGlobalUsageGenerator;
 import com.github.rvesse.airline.help.man.ManSections;
 import com.github.rvesse.airline.model.GlobalMetadata;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 @Command(name = "generate-manuals", description = "Generates manual pages for this CLI that can be rendered with the man tool")
 public class Manuals implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private GlobalMetadata<ExampleRunnable> global;
 
     @Option(name = "--include-hidden", description = "When set hidden commands and options are shown in help", hidden = true)

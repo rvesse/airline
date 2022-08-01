@@ -15,12 +15,7 @@
  */
 package com.github.rvesse.airline;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.inject.Inject;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.help.CommandUsageGenerator;
 import com.github.rvesse.airline.help.UsageHelper;
@@ -31,19 +26,23 @@ import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.parser.ParseResult;
 import com.github.rvesse.airline.parser.errors.ParseException;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An option that provides a simple way for the user to request help with a
  * command
  *
  */
 public class HelpOption<C> {
-    @Inject
+    @AirlineModule
     private GlobalMetadata<C> globalMetadata;
 
-    @Inject
+    @AirlineModule
     private CommandGroupMetadata groupMetadata;
 
-    @Inject
+    @AirlineModule
     private CommandMetadata commandMetadata;
 
     @Option(name = { "-h", "--help" }, description = "Display help information")
@@ -62,7 +61,7 @@ public class HelpOption<C> {
     }
 
     /**
-     * Shows help if user requested it and it hasn't already been shown
+     * Shows help if user requested it, and it hasn't already been shown
      * 
      * @param generator
      *            Usage generator

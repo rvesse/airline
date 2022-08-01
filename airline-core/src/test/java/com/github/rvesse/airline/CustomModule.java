@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline.command;
 
-import com.github.rvesse.airline.annotations.AirlineModule;
-import com.github.rvesse.airline.annotations.Command;
+package com.github.rvesse.airline;
 
-@Command(name = "remote",
-         description = "A command whose name is similar to other command names")
-public class CommandRemote {
-    @AirlineModule
-    public CommandMain commandMain;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * A custom composition annotation for testing
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface CustomModule {
 
 }

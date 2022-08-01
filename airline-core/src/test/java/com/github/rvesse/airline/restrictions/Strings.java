@@ -15,25 +15,16 @@
  */
 package com.github.rvesse.airline.restrictions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.inject.Inject;
-
 import com.github.rvesse.airline.HelpOption;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
-import com.github.rvesse.airline.annotations.restrictions.EndsWith;
-import com.github.rvesse.airline.annotations.restrictions.ExactLength;
-import com.github.rvesse.airline.annotations.restrictions.MaxLength;
-import com.github.rvesse.airline.annotations.restrictions.MinLength;
-import com.github.rvesse.airline.annotations.restrictions.NoOptionLikeValues;
-import com.github.rvesse.airline.annotations.restrictions.NotBlank;
-import com.github.rvesse.airline.annotations.restrictions.NotEmpty;
-import com.github.rvesse.airline.annotations.restrictions.Pattern;
-import com.github.rvesse.airline.annotations.restrictions.StartsWith;
+import com.github.rvesse.airline.annotations.restrictions.*;
 import com.github.rvesse.airline.annotations.restrictions.ranges.LengthRange;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Command(name = "strings")
 public class Strings {
@@ -102,7 +93,7 @@ public class Strings {
     @NoOptionLikeValues
     public List<String> args = new ArrayList<>();
     
-    @Inject
+    @AirlineModule
     public HelpOption<Strings> helpOption = new HelpOption<>();
     
 }

@@ -16,11 +16,7 @@
 
 package com.github.rvesse.airline.examples.userguide.help.sections;
 
-import java.io.IOException;
-import java.util.List;
-
-import jakarta.inject.Inject;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.help.Discussion;
@@ -28,6 +24,9 @@ import com.github.rvesse.airline.examples.ExampleExecutor;
 import com.github.rvesse.airline.examples.ExampleRunnable;
 import com.github.rvesse.airline.help.Help;
 import com.github.rvesse.airline.model.CommandMetadata;
+
+import java.io.IOException;
+import java.util.List;
 
 @Command(name = "discussed", description = "A command with a discussion section")
 //@formatter:off
@@ -39,7 +38,7 @@ import com.github.rvesse.airline.model.CommandMetadata;
 //@formatter:on
 public class Discussed implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private CommandMetadata metadata;
     
     @Arguments

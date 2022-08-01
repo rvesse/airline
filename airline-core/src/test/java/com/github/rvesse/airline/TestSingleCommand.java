@@ -15,50 +15,26 @@
  */
 package com.github.rvesse.airline;
 
-import com.github.rvesse.airline.Cli;
-import com.github.rvesse.airline.HelpOption;
-import com.github.rvesse.airline.SingleCommand;
-import com.github.rvesse.airline.builder.CliBuilder;
-import com.github.rvesse.airline.builder.ParserBuilder;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
-import com.github.rvesse.airline.args.Args1;
-import com.github.rvesse.airline.args.Args1CustomParser;
-import com.github.rvesse.airline.args.Args2;
-import com.github.rvesse.airline.args.ArgsAllowedValues;
-import com.github.rvesse.airline.args.ArgsArityString;
-import com.github.rvesse.airline.args.ArgsBooleanArity;
-import com.github.rvesse.airline.args.ArgsBooleanArity0;
-import com.github.rvesse.airline.args.ArgsEnum;
-import com.github.rvesse.airline.args.ArgsInherited;
-import com.github.rvesse.airline.args.ArgsMultipleUnparsed;
-import com.github.rvesse.airline.args.ArgsOutOfMemory;
-import com.github.rvesse.airline.args.ArgsPrivate;
-import com.github.rvesse.airline.args.ArgsRequired;
-import com.github.rvesse.airline.args.ArgsRequiredInheritedUnrestricted;
-import com.github.rvesse.airline.args.ArgsSingleChar;
-import com.github.rvesse.airline.args.ArgsSingleCharCustomParser;
-import com.github.rvesse.airline.args.Arity1;
-import com.github.rvesse.airline.args.OptionsRequired;
+import com.github.rvesse.airline.args.*;
+import com.github.rvesse.airline.builder.CliBuilder;
+import com.github.rvesse.airline.builder.ParserBuilder;
 import com.github.rvesse.airline.command.CommandAdd;
 import com.github.rvesse.airline.command.CommandCommit;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.ParserMetadata;
 import com.github.rvesse.airline.parser.errors.ParseException;
 import com.github.rvesse.airline.parser.errors.ParseOptionGroupException;
-import com.github.rvesse.airline.parser.options.ClassicGetOptParser;
 import com.github.rvesse.airline.parser.options.GreedyClassicGetOptParser;
 import com.github.rvesse.airline.parser.options.StandardOptionParser;
-import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import jakarta.inject.Inject;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -66,9 +42,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.github.rvesse.airline.SingleCommand.singleCommand;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class TestSingleCommand {
     @Test
@@ -474,7 +448,7 @@ public class TestSingleCommand {
 
     @Command(name = "test", description = "TestCommand")
     public static class CommandTest {
-        @Inject
+        @AirlineModule
         public HelpOption<CommandTest> helpOption;
 
         @Arguments(description = "Patterns of files to be added")

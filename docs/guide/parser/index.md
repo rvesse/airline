@@ -162,9 +162,24 @@ Like other aspects this can be customised where necessary by setting the `comman
 [`@Parser`](../annotations/parser.html) annotation. This might be useful this can be useful if you want to integrate
 your CLI with a dependency injection framework or if your command classes have a more complex constructor.
 
+#### Configurable Composition
+
+{% include req-ver.md version="2.9.0" %}
+
+Since **2.9.0** the annotations used to indicate to Airline that a field is used for composition and its type should
+be further inspected for relevant Airline annotations became fully configurable.  This allows you to use an annotation
+of your choice for composition enabling better integration of Airline CLIs with dependency injection frameworks.
+
+This can be customised via the `compositionAnnotationClasses` field of your [`@Parser`](../annotations/parser.html)
+annotation.  Unlike similar fields of the annotation this takes the classes as `String` class names rather than `Class`
+objects.  This allows Airline to have a default configuration that can dynamically support several different composition
+annotations out of the box without knowing which is actually present at runtime in your application.  See the
+[Composition](../practise/oop.html#composition) documentation for more detail on this.
+
 #### Metadata Introspection
 
-If your command class declares fields with the Java `@Inject` annotation that have Airline metadata types -
-`GlobalMetadata`, `CommandGroupMetadata` and `CommandMetadata` - then your command class instance will also have those
-populated with the relevant parser metadata. This allows commands to introspect the CLI they belong to which can be
-extremely useful for things like help commands.
+If your command class declares fields with the Java `@AirlineModule` annotation (or another [composition
+annotation](../practise/oop.html#configurable-composition)) that have Airline metadata types - `GlobalMetadata`,
+`CommandGroupMetadata` and `CommandMetadata` - then your command class instance will also have those populated with the
+relevant parser metadata. This allows commands to introspect the CLI they belong to which can be extremely useful for
+things like help commands.

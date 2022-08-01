@@ -18,7 +18,6 @@ package com.github.rvesse.airline.annotations;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -212,7 +211,7 @@ public @interface Parser {
     Class<? extends CommandFactory> commandFactory() default DefaultCommandFactory.class;
 
     /**
-     * Sets the injection annotation classes to use
+     * Sets the composition annotation classes to use.
      * <p>
      * This is set by providing the fully qualified names of the classes, rather than class references themselves, this
      * allows Airline to dynamically load the annotation at the point where it collects metadata for classes.  Thus
@@ -222,10 +221,16 @@ public @interface Parser {
      * See {@link com.github.rvesse.airline.model.MetadataLoader#loadInjectionMetadata(Class, ParserMetadata)} for more
      * detailed description of how this configuration is used.
      * </p>
+     * <p>
+     * This configuration point was introduced in <strong>2.9.0</strong> as part of the introduction of the
+     * {@link AirlineModule} annotation to provide for backwards compatibility and for users to better integrate with
+     * their chosen dependency injection framework.
+     * </p>
      *
-     * @return Injection annotation classes
+     * @return Composition annotation classes
+     * @since 2.9.0
      */
-    String[] injectionAnnotationClasses() default {};
+    String[] compositionAnnotationClasses() default {};
 
     /**
      * Sets the type converter class to use

@@ -15,8 +15,6 @@
  */
 package com.github.rvesse.airline.command;
 
-import javax.inject.Inject;
-
 import com.github.rvesse.airline.annotations.Command;
 
 @Command(name = "remotes",
@@ -27,7 +25,7 @@ public class CommandRemotes {
     // Your IDE may complain it can't see this annotation, it comes from shaded repackaging in the
     // airline-backcompact-javaxinject module to force different Maven coordinates as you can't have multiple
     // versions of the same Maven coordinates in your dependency tree
-    @Inject
+    @javax.inject.Inject
     public CommandMain commandMain;
 
 }

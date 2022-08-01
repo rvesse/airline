@@ -15,15 +15,14 @@
  */
 package com.github.rvesse.airline.command;
 
-import java.util.List;
-
-import jakarta.inject.Inject;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.annotations.help.Discussion;
 import com.github.rvesse.airline.annotations.help.Examples;
+
+import java.util.List;
 
 /**
  * <p></p>
@@ -36,7 +35,7 @@ import com.github.rvesse.airline.annotations.help.Examples;
 @Discussion(paragraphs = "More details about how this removes files from the index.")
 @Examples(examples = "$ git remove -i myfile.java", descriptions = "This is a usage example")
 public class CommandRemove {
-    @Inject
+    @AirlineModule
     public CommandMain commandMain;
 
     @Arguments(description = "Patterns of files to be added")

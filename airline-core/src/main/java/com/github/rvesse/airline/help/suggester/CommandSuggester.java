@@ -15,22 +15,20 @@
  */
 package com.github.rvesse.airline.help.suggester;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.model.ParserMetadata;
-
-import jakarta.inject.Inject;
-
 import org.apache.commons.collections4.ListUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandSuggester
         implements Suggester
 {
-    @Inject
+    @AirlineModule
     public CommandMetadata command;
 
     @Override

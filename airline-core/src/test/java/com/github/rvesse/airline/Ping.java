@@ -15,17 +15,14 @@
  */
 package com.github.rvesse.airline;
 
-import jakarta.inject.Inject;
-
-import com.github.rvesse.airline.HelpOption;
-import com.github.rvesse.airline.SingleCommand;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 
 @Command(name = "ping", description = "network test utility")
 public class Ping
 {
-    @Inject
+    @AirlineModule
     public HelpOption<Ping> helpOption;
 
     @Option(name = {"-c", "--count"}, description = "Send count packets")

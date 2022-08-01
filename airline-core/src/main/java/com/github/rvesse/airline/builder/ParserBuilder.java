@@ -20,6 +20,7 @@ import java.util.*;
 
 import com.github.rvesse.airline.CommandFactory;
 import com.github.rvesse.airline.DefaultCommandFactory;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.model.AliasMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.model.ParserMetadata;
@@ -85,20 +86,64 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
         return this;
     }
 
-    public ParserBuilder<C> withInjectionAnnotations(Collection<String> annotationClassNames) {
+    /**
+     * Specifies the class names of annotations that Airline should consider to mark a field for further inspection and
+     * injection to enable composition.
+     * <p>
+     * Fields marked with these annotations will have the value type of the field scanned for further Airline annotated
+     * fields e.g. {@link com.github.rvesse.airline.annotations.Option} and
+     * {@link com.github.rvesse.airline.annotations.Arguments}.  This allows separating groups of options and arguments
+     * out into reusable classes that can be composed into your command classes without relying on inheritance.
+     * </p>
+     *
+     * @param annotationClassNames Annotation class names
+     * @return Builder
+     * @since 2.9.0
+     */
+    public ParserBuilder<C> withCompositionAnnotations(Collection<String> annotationClassNames) {
         if (annotationClassNames != null) {
             this.injectionAnnotationClasses.addAll(annotationClassNames);
         }
         return this;
     }
 
-    public ParserBuilder<C> withInjectionAnnotations(String... annotationClassNames) {
-        return withInjectionAnnotations(Arrays.asList(annotationClassNames));
+    /**
+     * See {@link #withCompositionAnnotations(Collection)}
+     *
+     * @param annotationClassNames Annotation class names
+     * @return Builder
+     * @since 2.9.0
+     */
+    public ParserBuilder<C> withCompositionAnnotations(String... annotationClassNames) {
+        return withCompositionAnnotations(Arrays.asList(annotationClassNames));
     }
 
-    public ParserBuilder<C> withDefaultInjectionAnnotations() {
-        return withInjectionAnnotations(MetadataLoader.JAVAX_INJECT_INJECT, MetadataLoader.JAKARTA_INJECT_INJECT,
-                                        MetadataLoader.COM_GOOGLE_INJECT_INJECT);
+    /**
+     * Configures the parser to use the default set of composition annotations.
+     * <p>
+     * Currently this is the following to provide backwards compatibility with past Airline releases:
+     * </p>
+     * <ul>
+     * <li>{@code com.github.rvesse.airline.annotations.AirlineModule}</li>
+     * <li>{@code javax.inject.Inject}</li>
+     * <li>{@code jakarta.inject.Inject}</li>
+     * <li>{@code com.google.inject.Inject}</li>
+     * </ul>
+     * <p>
+     * <strong>NB:</strong> Future releases will reduce the default set to just
+     * {@code com.github.rvesse.airline.annotations.AirlineModule} and require that users explicitly configure
+     * additional annotation classes as they see fit.  If you are not currently using a dependency injection framework
+     * that requires some form of {@code Inject} annotation we would recommend that you transition to using
+     * {@link AirlineModule} in your Airline applications.
+     * </p>
+     *
+     * @return Builder
+     * @since 2.9.0
+     */
+    public ParserBuilder<C> withDefaultCompositionAnnotations() {
+        return withCompositionAnnotations(AirlineModule.class.getCanonicalName(), MetadataLoader.JAVAX_INJECT_INJECT,
+                                          MetadataLoader.JAKARTA_INJECT_INJECT,
+                                          MetadataLoader.COM_GOOGLE_INJECT_INJECT);
     }
 
     /**
@@ -525,7 +570,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
     public ParserMetadata<C> build() {
         // Ensure we have some injection annotations if none configured
         if (this.injectionAnnotationClasses.size() == 0) {
-            this.withDefaultInjectionAnnotations();
+            this.withDefaultCompositionAnnotations();
         }
         // Ensure we have some option parsers if none configured
         if (this.optionParsers.size() == 0) {
