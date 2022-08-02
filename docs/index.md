@@ -9,14 +9,16 @@ permalink: index.html
 Airline is an annotation-driven Java library for building Command Line Interfaces (CLIs), it supports simple commands
 all the way through to complex Git style CLIs with groups and user defined command aliases.
 
-Airline aims to reduce the boiler plate code typically associated with CLIs in Java, many common behaviours can be achieved purely with annotations and zero user code.  Let's take a look at an ultra simple example:
+Airline aims to reduce the boiler plate code typically associated with CLIs in Java, many common behaviours can be
+achieved purely with annotations and zero user code.  Let's take a look at an ultra simple example:
 
 {% include code/getting-started.md %}
 
 This is explained in depth in the [Introduction to Airline](guide/) but essentially we had to do the following:
 
 - Annotate our class with [`@Command`](annotations/command.html) to indicate that it is a command
-- Annotate fields with [`@Option`](annotations/option.html) and [`@Arguments`](annotations/arguments.html) to indicate that they receive values from the command line
+- Annotate fields with [`@Option`](annotations/option.html) and [`@Arguments`](annotations/arguments.html) to indicate
+  that they receive values from the command line
 - Use `SingleCommand.singleCommand()` to create a parser from our class
 - Call `parse()` to pass the command line arguments
 - Implement our command logic as desired, here it is contained in the `run()` method
@@ -38,6 +40,16 @@ You can get Airline from Maven central by specifying the following Maven coordin
 ```
 
 Where `X.Y.Z` is your desired version, the current stable release is `{{ site.version }}`
+
+### Dependencies
+
+Airline has an intentionally minimal set of dependencies, these are currently as follows:
+
+- Apache Commons Lang and Apache Commons Collections
+- Airline IO (our own internal helper library for IO)
+- Jarkarta Inject (and Javax Inject)
+   - Please see [Historical Composition](guide/practise/oop.html#historical-composition) for background
+   - These dependencies will be removed in future releases
 
 ## License
 

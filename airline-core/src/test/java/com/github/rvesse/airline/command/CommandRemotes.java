@@ -22,9 +22,8 @@ import com.github.rvesse.airline.annotations.Command;
 public class CommandRemotes {
     // Intentionally using old javax.inject.Inject to verify Airline copes with mixtures of old and new @Inject
     // annotation
-    // Your IDE may complain it can't see this annotation, it comes from shaded repackaging in the
-    // airline-backcompact-javaxinject module to force different Maven coordinates as you can't have multiple
-    // versions of the same Maven coordinates in your dependency tree
+    // Your IDE may complain it can't see this annotation, it comes indirectly from the
+    // airline-backcompact-javaxinject module
     @javax.inject.Inject
     public CommandMain commandMain;
 

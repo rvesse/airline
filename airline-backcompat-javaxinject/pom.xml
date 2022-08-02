@@ -11,8 +11,8 @@
     <artifactId>airline-backcompat-javaxinject</artifactId>
 
     <name>Airline - Backwards Compatibility - javax.inject</name>
-    <description>Provides a repackaging of the old jakarta.inject dependency that uses the old javax.inject package
-        under different Maven coordinates so that the old and new @Inject annotations can co-exist within a project.
+    <description>Provides a pointer to the old javax.inject dependency. This is an intentional level of indirection
+        within the dependency tree to make it clear that this dependency is only needed for backwards compatibility.
     </description>
 
     <properties>
@@ -22,28 +22,10 @@
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.inject</groupId>
-            <artifactId>jakarta.inject-api</artifactId>
-            <version>1.0.5</version>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>${plugin.shade}</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

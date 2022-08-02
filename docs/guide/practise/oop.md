@@ -166,6 +166,12 @@ sooner rather than later.  2.9.0 onwards does support [Configurable Composition]
 will be able to use whichever annotations they see fit for their use cases.
 {% include end-alert.html %}
 
+In order to support this backwards compatibility we continue to have dependencies on both the `jakarta.inject` and
+`javax.inject` modules.  The latter is indirectly depended upon via a temporary `airline-backcompact-javaxinject` to
+make it clear that this is for backwards compatibility only and can be exluded for users who have moved to using the new
+[`@AirlineModule`](../annotations/module.html) annotation. As noted in the above warning these dependencies will become
+`optional` in future releases and eventually be removed as mandatory dependencies.
+
 ### Configurable Composition
 
 {% include req-ver.md version="2.9.0" %}
@@ -183,7 +189,11 @@ annotation classes that you want Airline to consider as composition annotations 
   "javax.inject.Inject"
 })
 ```
+
 Would configure the parser to treat both [`@AirlineModule`](../annotations/module.html) and `@Inject` as composition
 annotations.  This field is specified using string class names rather than `Class` objects to enable the backwards
 compatibility described [above](#historical-composition) and to allow us to drop the extra dependencies in the future
 without breaking existing consumers of the library.
+
+If you choose to use additional annotations you may need to explicitly declare additional Maven dependencies to ensure
+those annotation classes are available at runtime.

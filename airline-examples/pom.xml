@@ -19,6 +19,16 @@
       <groupId>com.github.rvesse</groupId>
       <artifactId>airline</artifactId>
       <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>jakarta.inject</groupId>
+          <artifactId>jakarta.inject-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.rvesse</groupId>
+          <artifactId>airline-backcompat-javaxinject</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.github.rvesse</groupId>
