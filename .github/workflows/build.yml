@@ -3,7 +3,21 @@ name: Build
 on:
   push:
     branches: [ main, 3x ]
+    paths-ignore:
+      - '.gitignore'
+      - 'CHANGELOG.md'
+      - 'LICENSE'
+      - 'NOTICE'
+      - '*.md'
+      - '*.txt'
   pull_request:
+    paths-ignore:
+      - '.gitignore'
+      - 'CHANGELOG.md'
+      - 'LICENSE'
+      - 'NOTICE'
+      - '*.md'
+      - '*.txt'
   workflow_dispatch:
 
 jobs:
