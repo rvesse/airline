@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.github.rvesse</groupId>
     <artifactId>airline-parent</artifactId>
-    <version>2.9.0-SNAPSHOT</version>
+    <version>2.9.0</version>
   </parent>
   <artifactId>airline-io</artifactId>
   <name>Airline - IO Library</name>
