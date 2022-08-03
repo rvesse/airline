@@ -126,7 +126,7 @@ https://github.com/rvesse/airline/issues
 
 ## Maven Artifacts
 
-This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `2.8.5`
+This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `2.9.0`
 
 Use the following maven dependency declaration:
 
@@ -134,11 +134,11 @@ Use the following maven dependency declaration:
 <dependency>
     <groupId>com.github.rvesse</groupId>
     <artifactId>airline</artifactId>
-    <version>2.8.5</version>
+    <version>2.9.0</version>
 </dependency>
 ```
 
-Snapshot artifacts of the latest source are also available using the version `2.9.0-SNAPSHOT` from the 
+Snapshot artifacts of the latest source are also available using the version `2.10.0-SNAPSHOT` from the 
 [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
 
 ## Build Status
