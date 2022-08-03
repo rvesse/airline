@@ -15,8 +15,7 @@
  */
 package com.github.rvesse.airline.command;
 
-import javax.inject.Inject;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
@@ -26,7 +25,7 @@ import java.util.List;
 @Command(name = "add", description = "Add file contents to the index")
 public class CommandAdd
 {
-    @Inject
+    @AirlineModule
     public CommandMain commandMain;
 
     @Arguments(description = "Patterns of files to be added")

@@ -131,6 +131,7 @@ public class TestSubGroups {
         //@formatter:off
         CliBuilder<Object> builder
             = Cli.<Object>builder("test");
+        builder.withCommand(Help.class);
         builder.withGroup("foo")
                .withSubGroup("bar")
                .withDefaultCommand(Help.class);
@@ -145,6 +146,7 @@ public class TestSubGroups {
             "usage: test <command> [ <args> ]",
             "",
             "Commands are:",
+            "    help   Display help information",
             "    foo",
             "",
             "See 'test help <command>' for more information on a specific command.",
@@ -160,6 +162,7 @@ public class TestSubGroups {
         //@formatter:off
         CliBuilder<Object> builder
             = Cli.<Object>builder("test");
+        builder.withCommand(Help.class);
         builder.withGroup("foo")
                .withSubGroup("bar")
                .withDefaultCommand(Help.class);
@@ -190,10 +193,43 @@ public class TestSubGroups {
     }
     
     @Test
+    public void sub_groups_help_02_without_help_command() throws IOException {
+        //@formatter:off
+        CliBuilder<Object> builder
+            = Cli.<Object>builder("test");
+        builder.withGroup("foo")
+               .withSubGroup("bar")
+               .withDefaultCommand(Help.class);
+        //@formatter:on
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Help.help(builder.build().getMetadata(), Arrays.asList(new String[] { "foo", "bar" }), false, output);
+        String actual = new String(output.toByteArray());
+
+        //@formatter:off
+        String expected = StringUtils.join(new String[] {
+            "NAME",
+            "        test foo bar -",
+            "",
+            "SYNOPSIS",
+            "        test foo bar { help* } [--] <cmd-args>",
+            "",
+            "        Where command-specific arguments <cmd-args> are:",
+            "            help: [ <command>... ]",
+            "",
+            "        Where * indicates the default command(s)"
+        }, '\n');
+        //@formatter:on
+
+        Assert.assertEquals(actual, expected);
+    }
+    
+    @Test
     public void sub_groups_help_03() throws IOException {
         //@formatter:off
         CliBuilder<Object> builder
             = Cli.<Object>builder("test");
+        builder.withCommand(Help.class);
         builder.withGroup("foo")
                .withSubGroup("bar")
                .withDefaultCommand(Help.class);

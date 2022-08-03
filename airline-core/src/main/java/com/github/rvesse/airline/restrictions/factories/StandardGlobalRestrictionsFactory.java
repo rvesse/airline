@@ -19,12 +19,14 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.rvesse.airline.annotations.restrictions.NoOptionLikeValues;
 import com.github.rvesse.airline.annotations.restrictions.Unrestricted;
 import com.github.rvesse.airline.annotations.restrictions.global.CommandRequired;
 import com.github.rvesse.airline.annotations.restrictions.global.NoMissingOptionValues;
 import com.github.rvesse.airline.annotations.restrictions.global.NoUnexpectedArguments;
 import com.github.rvesse.airline.restrictions.GlobalRestriction;
 import com.github.rvesse.airline.restrictions.None;
+import com.github.rvesse.airline.restrictions.common.NoOptionLikeValuesRestriction;
 import com.github.rvesse.airline.restrictions.factories.GlobalRestrictionFactory;
 import com.github.rvesse.airline.restrictions.global.CommandRequiredRestriction;
 import com.github.rvesse.airline.restrictions.global.NoMissingOptionValuesRestriction;
@@ -42,6 +44,8 @@ public class StandardGlobalRestrictionsFactory implements GlobalRestrictionFacto
             return new NoMissingOptionValuesRestriction();
         } else if (annotation instanceof NoUnexpectedArguments) {
             return new NoUnexpectedArgumentsRestriction();
+        } else if (annotation instanceof NoOptionLikeValues) {
+            return new NoOptionLikeValuesRestriction(((NoOptionLikeValues) annotation).optionPrefixes());
         }
         return null;
     }
@@ -53,6 +57,7 @@ public class StandardGlobalRestrictionsFactory implements GlobalRestrictionFacto
         supported.add(CommandRequired.class);
         supported.add(NoMissingOptionValues.class);
         supported.add(NoUnexpectedArguments.class);
+        supported.add(NoOptionLikeValues.class);
         return supported;
     }
 

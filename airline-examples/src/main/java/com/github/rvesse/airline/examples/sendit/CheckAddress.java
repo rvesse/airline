@@ -15,15 +15,14 @@
  */
 package com.github.rvesse.airline.examples.sendit;
 
-import javax.inject.Inject;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.examples.ExampleRunnable;
 
 @Command(name = "check-address", description = "Check if an address meets our restrictions")
 public class CheckAddress implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private PostalAddress address = new PostalAddress();
 
     @Override

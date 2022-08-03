@@ -13,9 +13,11 @@ To add a prose section section simply add the `@ProseSection` annotation to a cl
 @ProseSection(title = "Additional Information"
               paragraphs = {
                    "This is additional information",
-                   "We can have as many paragraphs as we feel are necessary"              },
+                   "We can have as many paragraphs as we feel are necessary"
+              },
               suggestedOrder = 55)
-public class MyClass { }```
+public class MyClass { }
+```
 
 The annotation requires a `title` field which specifies the title that should be used for your help section.  It also takes a `paragraphs` field which takes a `String[]` array where each entry in the array is treated as a separate paragraph in the help output.
 
@@ -23,7 +25,7 @@ The optional `suggestedOrder` field is used to control where the section appears
 
 ## `@ExternalProse`
 
-{% include req-ver.md version="2.9.0" module="airline-help-external" %}
+{% include req-ver.md version="2.10.0" module="airline-help-external" %}
 
 If your application has a lot of additional sections you wish to add and they are quite wordy it may be easier to provide this as a separate resource that Airline loads rather than directly in an annotation.  This can be done via the `@ExternalProse` annotation e.g.
 

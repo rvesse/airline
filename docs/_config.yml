@@ -25,12 +25,12 @@ author:
   url: https://twitter.com/RobVesse
 
 # Custom vars
-version: 2.8.2
-dev_version: "2.9.0-SNAPSHOT"
+version:          2.9.0
+dev_version:	"2.10.0-SNAPSHOT"
 
 github:
   repo: https://github.com/rvesse/airline
-  
+
 # Side Navigation
 # Each item has the following fields available:
 #
@@ -74,6 +74,8 @@ side_nav:
                   url: "option.html"
                 - text: "@Arguments"
                   url: "arguments.html"
+                - text: "@AirlineModule"
+                  url: "module.html"
                 - text: "@Group"
                   url: "group.html"
                 - text: "@Groups"
@@ -269,6 +271,11 @@ side_nav:
         - text: "Past Versions"
           kind: Group
           items:
+            - text: "2.9.x"
+              kind: Group
+              items:
+                - kind: Javadoc
+                  version: "2.9.0"
             - text: "2.8.x"
               kind: Group
               items:
@@ -276,6 +283,14 @@ side_nav:
                   version: "2.8.0"
                 - kind: Javadoc
                   version: "2.8.1"
+                - kind: Javadoc
+                  version: "2.8.2"
+                - kind: Javadoc
+                  version: "2.8.3"
+                - kind: Javadoc
+                  version: "2.8.4"
+                - kind: Javadoc
+                  version: "2.8.5"
             - text: "2.7.x"
               kind: Group
               items:

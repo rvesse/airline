@@ -2,13 +2,13 @@
 
 ### Forthcoming 2.x Deprecation
 
-2.9.0, and any subsequent patch releases, are intended to be the last supported releases of Airline 2.x
+2.10.0, and any subsequent patch releases, are intended to be the last supported releases of Airline 2.x
 
 Future releases will start to focus on the 3.x builds which include some important new features e.g. first class
 positional argument support, better DI framework integration, that are not possible under 2.x without making breaking
 changes.  You can see progress on 3.x by following the `3x` branch and its `CHANGELOG.md` and `MIGRATING.md`
 
-## 2.9.0
+## 2.10.0
 
 - Core Improvements
   - First class support for `BigInteger` and `BigDecimal` as numeric types
@@ -22,7 +22,7 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
     order to allow this module to become a JPMS module
 - Fluent API Improvements
   - A `ParserBuilder` created by calling `withParser()` on a `CliBuilder` can now return control back to its parent via
-    the `parent()` method for cleaner Fluid CLI definitionå
+    the `parent()` method for cleaner Fluid CLI definitions
 - Dependency Updates
   - Apache Commons Collections upgraded to 4.4
   - Apache Commons Lang upgraded to 3.11
@@ -43,6 +43,49 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
     the Classpath where preferred
     - See `airline-examples` module for examples of constructing a `module-info.java` that pulls in other Airline
       modules and see `modularExample` script for examples of invoking an Airline based app using the Module Path
+
+## 2.9.0
+
+- Build Improvements
+   - Added GitHub Actions based CI/CD for the repository
+   - Added a new `airline-backcompact-javaxinject` module to aid Annotation Improvements (see below), this is
+     included in the dependencies of the core `airline` module by default.  Note that future 3.x releases may
+     make this dependency optional as the Java ecosystem transitions away from using the old `javax` packages.
+- Annotation Improvements
+   - Added `@AirlineModule` as future replacement for existing usage of `@Inject` 
+   - `@Inject` can now be either `javax.inject.Inject` or `jakarta.inject.Inject`, and mixtures thereof are
+     supported.  This enables broader compatibility with applications that need/want to use either variant of
+     the standard Java `@Inject` dependency.
+- Parser Improvements
+   - Choice of composition annotations is now configurable.  Defaulting to supporting the new `@AirlineModule` 
+     annotation, and for backwards compatibility both variants of the `@Inject` annotation as noted above.
+       - Use `compositionAnnotationClasses` field with the `@Parser` annotation
+       - Use `withCompositionAnnotations()` or `withDefaultCompositionAnnotations()` with the `ParserBuilder`
+
+**NB:** The changes to injection annotations have been carefully done to be fully backwards compatible with existing
+Airline annotations for the 2.9.x releases.  Future minor and major releases will change the default behaviour to
+**only** support `@AirlineModule`.  Therefore, you may wish to start migrating your applications to using this
+annotation sooner rather than later and explicitly exclude legacy dependencies.  See the [Migration
+Guide](Migrating.md#excluding-inject-dependencies) for more details on this.
+
+## 2.8.5
+
+- Restriction Improvements
+    - New `@RequiredUnlessEnvironment` restriction for making an option/argument required only if one/more 
+      environment variables are not set
+- Stopped generating the airline-offline-site artifact as it is superflous
+
+## 2.8.4
+
+- Restriction Improvements
+    - New `@NoOptionLikeValues` restriction for explicitly rejecting values that look like options i.e. start with
+      `-` or `--` but didn't match a defined option e.g. user typos (#112)
+
+## 2.8.3
+
+- Parser Improvements
+  - Added a `GreedyMaybeListValueOptionParser` to cover more cases where greedy parsing behaviour is desired (#110)
+>>>>>>> main
 
 ## 2.8.2
 

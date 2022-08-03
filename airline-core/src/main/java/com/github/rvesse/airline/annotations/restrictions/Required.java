@@ -23,13 +23,12 @@ import java.lang.annotation.Target;
 /**
  * An annotation that indicates that an option/arguments is required
  * <p>
- * If you have more complex requirement criteria then you may wish to use
- * {@link RequiredOnlyIf}, {@link RequireSome} or {@link RequireOnlyOne}
- * instead.
+ * If you have more complex requirement criteria then you may wish to use {@link RequiredOnlyIf}, {@link RequireSome},
+ * {@link RequireOnlyOne} or {@link RequiredUnlessEnvironment} instead.
  * </p>
  */
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-@Target({ FIELD })
+@Target({FIELD})
 public @interface Required {
 
 }

@@ -66,6 +66,7 @@ import com.github.rvesse.airline.help.sections.common.VersionSection;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
+import com.github.rvesse.airline.restrictions.Unless;
 import com.github.rvesse.airline.restrictions.partial.PartialAnnotated;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 
@@ -758,6 +759,59 @@ public class TestHelp {
     }
 
     @Test
+    public void testOptionsRequiredUnless() throws IOException {
+        //@formatter:off
+        CliBuilder<Object> builder = Cli.builder("test")
+                                        .withDescription("Test commandline")
+                                        .withDefaultCommand(Help.class)
+                                        .withCommands(Help.class,
+                                                      Unless.class);
+
+        Cli<Object> parser = builder.build();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Help.help(parser.getMetadata(), Collections.singletonList("unless"), out);
+        assertEquals(new String(out.toByteArray(), utf8),
+                     "NAME\n" +
+                             "        test unless -\n" +
+                             "\n" +
+                             "SYNOPSIS\n" +
+                             "        test unless [ --foo <foo> ] [ --path <path> ] [--] [ <arg>... ]" +
+                             "\n" +
+                             "\n" +
+                             "OPTIONS\n" +
+                             "        --foo <foo>\n" +
+                             "            Foo something?\n" +
+                             "\n" +
+                             "            This option is required unless one of the following environment\n" +
+                             "            variables is set:\n" +
+                             "                FOO\n" +
+                             "                FOO_BAR\n" +
+                             "\n" +
+                             "        --path <path>\n" +
+                             "            Sets the PATH.\n" +
+                             "\n" +
+                             "            This option is required unless the environment variable PATH is\n" +
+                             "            set.\n" +
+                             "\n" +
+                             "\n" +
+                             "        --\n" +
+                             "            This option can be used to separate command-line options from the\n" +
+                             "            list of arguments (useful when arguments might be mistaken for\n" +
+                             "            command-line options)\n" +
+                             "\n" +
+                             "        <arg>\n" +
+                             "            Provides additional arguments.\n" +
+                             "\n" +
+                             "            This option is required unless one of the following environment\n" +
+                             "            variables is set:\n" +
+                             "                ARGS\n" +
+                             "                ARGUMENTS\n" +
+                             "\n");
+        //@formatter:on
+    }
+
+    @Test
     public void testOptionsHidden01() throws IOException {
         //@formatter:off
         CliBuilder<Object> builder = Cli.builder("test")
@@ -1133,7 +1187,8 @@ public class TestHelp {
     @Test
     public void testVersionCli2() throws IOException {
         //@formatter:off
-        Cli<Args1> cli = new CliBuilder<Args1>("test")
+        Cli<Object> cli = new CliBuilder<>("test")
+                            .withCommand(Help.class)
                             .withCommand(Args1.class)
                             .withHelpSection(new VersionSection(new String[] { "/test.version" }, 
                                                                 new ResourceLocator[] { new ClasspathLocator() }, 
@@ -1148,12 +1203,13 @@ public class TestHelp {
                             .build();
     
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new CliGlobalUsageSummaryGenerator<Args1>().usage(cli.getMetadata(), out);
+        new CliGlobalUsageSummaryGenerator<>().usage(cli.getMetadata(), out);
         testStringAssert(new String(out.toByteArray(), utf8),
                 "usage: test <command> [ <args> ]\n" + 
                 "\n" + 
                 "Commands are:\n" + 
                 "    Args1   args1 description\n" + 
+                "    help    Display help information\n" +
                 "\n" + 
                 "See 'test help <command>' for more information on a specific command.\n" +
                 "\n" +
@@ -1336,6 +1392,49 @@ public class TestHelp {
                 "SEE ALSO\n" + 
                 "        test help, man, grep\n" +
                 "\n");
+        //@formatter:on
+    }
+
+    @Test
+    public void testHelpWithoutHelpCommand() throws IOException {
+        //@formatter:off
+        CliBuilder<Object> builder = Cli.builder("test")
+                .withDescription("Test commandline")
+                .withCommand(ArgsRequired.class);
+
+        Cli<Object> parser = builder.build();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Help.help(parser.getMetadata(), Collections.<String>emptyList(), out);
+        Assert.assertEquals(new String(out.toByteArray(), utf8),
+                "usage: test <command> [ <args> ]\n" +
+                "\n" +
+                "Commands are:\n" +
+                "    ArgsRequired" +
+                "\n");
+        //@formatter:on
+    }
+
+    @Test
+    public void testHelpWithHelpCommand() throws IOException {
+        //@formatter:off
+        CliBuilder<Object> builder = Cli.builder("test")
+                .withDescription("Test commandline")
+                .withCommand(Help.class)
+                .withCommand(ArgsRequired.class);
+
+        Cli<Object> parser = builder.build();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Help.help(parser.getMetadata(), Collections.<String>emptyList(), out);
+        Assert.assertEquals(new String(out.toByteArray(), utf8),
+                "usage: test <command> [ <args> ]\n"
+                + "\n"
+                + "Commands are:\n"
+                + "    ArgsRequired\n"
+                + "    help           Display help information\n"
+                + "\n"
+                + "See 'test help <command>' for more information on a specific command.\n");
         //@formatter:on
     }
 }

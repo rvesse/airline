@@ -71,6 +71,11 @@ Additionally the following alternative styles are supported:
 - {% include javadoc-ref.md class="ListValueOptionParser" package="parser.options" %} - Options that may be specified
   multiple times can be specified in a compact comma separated list form e.g. `--name foo,bar` sets the option `--name`
   to the values `foo` and `bar`
+- {% include javadoc-ref.md class="MaybeListValueOptionParser" package="parser.options" %} - Options that may be
+  specified multiple times can be specified in a compact comma separated list form or whitespace separated e.g. e.g.
+  `--name foo,bar` and `--name foo bar` both sets the option `--name` to the values `foo` and `bar`
+- {% include javadoc-ref.md class="GreedyMaybeListValueOptionParser" package="parser.options" %} - Similar to the above
+  `MaybeListValueOptionParser` but greedy in how it consumes values for the list.
 
 Users may create their own option parsers if desired as discussed on the [Custom Option Parsers](options.html) page.
 
@@ -121,6 +126,21 @@ So both `--conf key=value` and `--conf key value` are acceptable to set the `--c
 This parser requires that the list of values provided be an exact multiple of the arity of the option being set.  So for
 example if option `--conf` has arity 2 it would allow `--conf foo,bar` but not `--conf foo,bar,faz`
 
+##### `MaybeListValueOptionParser`
+
+Similar to the above `ListValueOptionParser` except that it allows for whitespace separated values as well.  So for
+example if option `--conf` has arity 2 it would allow `--conf foo,bar` and `--conf foo bar`
+
+This parser is non-greedy so when used with commands that also use [`@Arguments`](../annotations/arguments.html) or
+[`@DefaultOption`](../annotations/default-option.html) it will not continue parsing list values that are whitespace
+separated if those subsequent values could be considered as arguments/default option values.
+
+##### `GreedyMaybeListValueOptionParser`
+
+A greedy variant of the `MaybeListValueOptionParser` that will continue to parse list values until it sees another
+explicit option or the arguments separator.  This could cause some values to be incorrectly interpreted so should be
+used with care.
+
 #### Value Conversion
 
 Airline converts the raw string values to the appropriate strong types as described in the [Supported
@@ -142,9 +162,24 @@ Like other aspects this can be customised where necessary by setting the `comman
 [`@Parser`](../annotations/parser.html) annotation. This might be useful this can be useful if you want to integrate
 your CLI with a dependency injection framework or if your command classes have a more complex constructor.
 
+#### Configurable Composition
+
+{% include req-ver.md version="2.9.0" %}
+
+Since **2.9.0** the annotations used to indicate to Airline that a field is used for composition and its type should
+be further inspected for relevant Airline annotations became fully configurable.  This allows you to use an annotation
+of your choice for composition enabling better integration of Airline CLIs with dependency injection frameworks.
+
+This can be customised via the `compositionAnnotationClasses` field of your [`@Parser`](../annotations/parser.html)
+annotation.  Unlike similar fields of the annotation this takes the classes as `String` class names rather than `Class`
+objects.  This allows Airline to have a default configuration that can dynamically support several different composition
+annotations out of the box without knowing which is actually present at runtime in your application.  See the
+[Composition](../practise/oop.html#composition) documentation for more detail on this.
+
 #### Metadata Introspection
 
-If your command class declares fields with the Java `@Inject` annotation that have Airline metadata types -
-`GlobalMetadata`, `CommandGroupMetadata` and `CommandMetadata` - then your command class instance will also have those
-populated with the relevant parser metadata. This allows commands to introspect the CLI they belong to which can be
-extremely useful for things like help commands.
+If your command class declares fields with the Java `@AirlineModule` annotation (or another [composition
+annotation](../practise/oop.html#configurable-composition)) that have Airline metadata types - `GlobalMetadata`,
+`CommandGroupMetadata` and `CommandMetadata` - then your command class instance will also have those populated with the
+relevant parser metadata. This allows commands to introspect the CLI they belong to which can be extremely useful for
+things like help commands.

@@ -77,7 +77,7 @@ public class SingleCommand<C> {
         // Dynamically obtain restrictions if annotated onto the class
         this.restrictions = createRestrictions(command, restrictions);
 
-        commandMetadata = MetadataLoader.loadCommand(command);
+        commandMetadata = MetadataLoader.loadCommand(command, this.parserConfig);
     }
     
     private List<GlobalRestriction> createRestrictions(Class<C> commandClass, Iterable<GlobalRestriction> restrictions) {
