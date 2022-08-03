@@ -15,14 +15,16 @@
  */
 package com.github.rvesse.airline.command;
 
-import javax.inject.Inject;
-
 import com.github.rvesse.airline.annotations.Command;
 
 @Command(name = "remotes",
          description = "A command whose name is an extension of another commands name")
 public class CommandRemotes {
-    @Inject
+    // Intentionally using old javax.inject.Inject to verify Airline copes with mixtures of old and new @Inject
+    // annotation
+    // Your IDE may complain it can't see this annotation, it comes indirectly from the
+    // airline-backcompact-javaxinject module
+    @javax.inject.Inject
     public CommandMain commandMain;
 
 }

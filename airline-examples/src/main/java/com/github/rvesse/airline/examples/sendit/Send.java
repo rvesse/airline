@@ -15,9 +15,8 @@
  */
 package com.github.rvesse.airline.examples.sendit;
 
-import javax.inject.Inject;
-
 import com.github.rvesse.airline.SingleCommand;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.examples.ExampleRunnable;
@@ -26,10 +25,10 @@ import com.github.rvesse.airline.parser.errors.ParseException;
 @Command(name = "send", description = "Sends a package")
 public class Send implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private PostalAddress address = new PostalAddress();
 
-    @Inject
+    @AirlineModule
     private Package item = new Package();
 
     @Option(name = { "-s",

@@ -3,9 +3,12 @@ layout: slideshow
 title: Workshop - Building a Killer Command Line App with Airline
 ---
 
-This workshop session is designed to give you a complete introduction to the core features of Airline for creating powerful CLIs.  This was originally written for the [Tech Exeter Conference](https://techexeter.uk) series and presented in September 2018.
+This workshop session is designed to give you a complete introduction to the core features of Airline for creating
+powerful CLIs.  This was originally written for the [Tech Exeter Conference](https://techexeter.uk) series and presented
+in September 2018.
 
-The workshop is provided as a HTML slideshow embedded below, use the arrow keys to navigate through the slides.  You can view this in fullscreen by hitting the icon in the top left of the slides.
+The workshop is provided as a HTML slideshow embedded below, use the arrow keys to navigate through the slides.  You can
+view this in fullscreen by hitting the icon in the top left of the slides.
 
 ---
 
@@ -24,9 +27,13 @@ The workshop is provided as a HTML slideshow embedded below, use the arrow keys 
 
 ## Introduction
 
-Everyone builds command line applications at some point but often they are cobbled together or full of needless boiler plate. Airline takes a fully declarative approach to command line applications allowing users to create powerful and flexible command lines.
+Everyone builds command line applications at some point but often they are cobbled together or full of needless boiler
+plate. Airline takes a fully declarative approach to command line applications allowing users to create powerful and
+flexible command lines.
 
-Airline takes care of lots of heavy lifting providing many features not found in similar libraries including annotation driven value validation [restrictions](../restrictions/index.html), generating [Man pages](../help/man.html) and [Bash completion scripts](../help/bash.html) to name just a few.
+Airline takes care of lots of heavy lifting providing many features not found in similar libraries including annotation
+driven value validation [restrictions](../restrictions/index.html), generating [Man pages](../help/man.html) and [Bash
+completion scripts](../help/bash.html) to name just a few.
 
 In the workshop session we'll work through an example command line application to see just how powerful this can be.
 
@@ -35,7 +42,8 @@ In the workshop session we'll work through an example command line application t
 * Software Engineer at Cray in the AI & Analytics Group
 * Long background in open source
     * Have been releasing open source software since around 2003
-    * Involved at the [Apache Software Foundation](https://www.apache.org) (ASF) since 2012 and was elected as a  member in 2015
+    * Involved at the [Apache Software Foundation](https://www.apache.org) (ASF) since 2012 and was elected as a 
+      member in 2015
     * [https://github.com/rvesse]()
 
 {% include slide-end.md %}
@@ -64,7 +72,8 @@ You can find these slides at [{{ site.url }}{{ site.baseurl }}/guide/practise/wo
 - Airline started out as an open source project on GitHub back in January 2012.
 - I first encountered this library in use in one of our competitors products partway through that year.  
 - I quickly started using it in my own work but encountered a few limitations.
-- The original authors were not receptive to pull requests so I forked the code and started maintaining my own version that has since evolved considerably.
+- The original authors were not receptive to pull requests so I forked the code and started maintaining my own version 
+  that has since evolved considerably.
 - First release of my fork was December 2014
 - Latest release at time of writing was 2.6.0
 - Have built various personal and work projects with it e.g.
@@ -93,13 +102,15 @@ It also enables us to do optional build time checking of our definitions to ensu
 
 Secondly we look to avoid the typical boiler plate code associated with many command line libraries.
 
-You **shouldn't** need to write a ton of `if` statements to check that values for options fall in specified ranges or meet common application constraints.
+You **shouldn't** need to write a ton of `if` statements to check that values for options fall in specified ranges or
+meet common application constraints.
 
 #### Allow deep customisation
 
 Finally we don't want to tie you into a particular implementation approach.
 
-We provide extensibility of almost every aspect of the parsing process yet provide a general purpose default setup that should suit many users.
+We provide extensibility of almost every aspect of the parsing process yet provide a general purpose default setup that
+should suit many users.
 
 So a basic CLI should just work, advanced CLIs can be configured as desired
 
@@ -108,18 +119,23 @@ So a basic CLI should just work, advanced CLIs can be configured as desired
 
 ## Workshop Overview
 
-Due to time constraints this will be more of an interactive demo, almost everything in these slides is in the GitHub repo so you can play along.
+Due to time constraints this will be more of an interactive demo, almost everything in these slides is in the GitHub
+repo so you can play along.
 
-For this workshop we are going to build an example command line application called `send-it` for shipping of packages.  The example code in these slides is typically truncated to omit things like import declarations for brevity, the full code is linked alongside each example.
+For this workshop we are going to build an example command line application called `send-it` for shipping of packages.
+The example code in these slides is typically truncated to omit things like import declarations for brevity, the full
+code is linked alongside each example.
 
-The example code all lives inside the Airline git repository at [https://github.com/rvesse/airline/tree/master/airline-examples](https://github.com/rvesse/airline/tree/master/airline-examples)
+The example code all lives inside the Airline git repository at
+[https://github.com/rvesse/airline/tree/master/airline-examples](https://github.com/rvesse/airline/tree/master/airline-examples)
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 ### Following Along with the Examples
 
-We use `>` to indicate that a command should be run at a command prompt and `<input>` within that to indicate some input is needed.
+We use `>` to indicate that a command should be run at a command prompt and `<input>` within that to indicate some input
+is needed.
 
 To follow along you should start by checking out the code and building the examples:
 
@@ -154,28 +170,35 @@ Or for Windows Users:
 
 ## Step 1 - Define Options
 
-Airline works with POJOs (Plain Old Java Objects) so firstly we need to define some classes that are going to hold our commands options.
+Airline works with POJOs (Plain Old Java Objects) so firstly we need to define some classes that are going to hold our
+commands options.
 
-We can define our options across multiple classes and our inheritance hierarchy i.e. you can create a `BaseCommand` with your common options.
+We can define our options across multiple classes and our inheritance hierarchy i.e. you can create a `BaseCommand` with
+your common options.
 
 Or you can define options in standalone classes and compose them together.
 
-We're going to see the latter approach in this workshop, see [Inheritance and Composition](oop.html) for more detail on the former approach.
+We're going to see the latter approach in this workshop, see [Inheritance and Composition](oop.html) for more detail on
+the former approach.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 ### `@Option`
 
-The [`@Option`](../annotations/option.html) annotation is used to mark a field as being populated by an option.  At a minimum it needs to define the `name` field to provide one/more names that your users will enter to refer to your option e.g.
+The [`@Option`](../annotations/option.html) annotation is used to mark a field as being populated by an option.  At a
+minimum it needs to define the `name` field to provide one/more names that your users will enter to refer to your option
+e.g.
 
 ```java
 @Option(name = { "-e", "--example" })
 private String example;
 ```
-Here we define a simple `String` field and annotate it with `@Option` providing two possible names - `-e` and `--example` - by which users can refer to it.
+Here we define a simple `String` field and annotate it with `@Option` providing two possible names - `-e` and
+`--example` - by which users can refer to it.
 
-Other commonly used fields in the `@Option` annotation include `title` used to specify the title by which the value is referred to in help and `description` used to provide descriptive help information for the option.
+Other commonly used fields in the `@Option` annotation include `title` used to specify the title by which the value is
+referred to in help and `description` used to provide descriptive help information for the option.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -192,7 +215,8 @@ public class PostalAddress {
     @Required
     public String recipient;
 ```
-So we start with a fairly simply definition, this defines a `--recipient` option and states that it is a required option via the [`@Required`](../annoations/required.html) annotation.
+So we start with a fairly simply definition, this defines a `--recipient` option and states that it is a required option
+via the [`@Required`](../annoations/required.html) annotation.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -212,16 +236,22 @@ So we start with a fairly simply definition, this defines a `--recipient` option
     @NotBlank
     public String houseName;
 ```
-Now we're starting to get more advanced, here we have two closely related options - `--number` and `--name` - which we declare that we require only one of via the [`@RequireOnlyOne`](../annotations/require-only-one.html) i.e. we've told Airline that one, and only one, of these two options may be specified.
+Now we're starting to get more advanced, here we have two closely related options - `--number` and `--name` - which we
+declare that we require only one of via the [`@RequireOnlyOne`](../annotations/require-only-one.html) i.e. we've told
+Airline that one, and only one, of these two options may be specified.
 
-Additionally for the `--number` option we state that it must be greater than zero via the [`@IntegerRange`](../annotations/integer-range.html) annotation and for the `--name` option we state that it must be [`@NotBlank`](../annotations/not-blank.html) i.e. it must have a non-empty value that is not all whitespace.
+Additionally for the `--number` option we state that it must be greater than zero via the
+[`@IntegerRange`](../annotations/integer-range.html) annotation and for the `--name` option we state that it must be
+[`@NotBlank`](../annotations/not-blank.html) i.e. it must have a non-empty value that is not all whitespace.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 #### Defining a Repeated Option
 
-Here we have an option that may be specified multiple times to provide multiple address lines.  **Importantly** we need to define it with an appropriate `Collection` based type, in this case `List<String>` in order to collect all the address lines specified.
+Here we have an option that may be specified multiple times to provide multiple address lines.  **Importantly** we need
+to define it with an appropriate `Collection` based type, in this case `List<String>` in order to collect all the
+address lines specified.
 
 ```java
     @Option(name = { "-a", "--address", "--line" }, title = "AddressLine", 
@@ -231,7 +261,8 @@ Here we have an option that may be specified multiple times to provide multiple 
     public List<String> addressLines = new ArrayList<>();
 ```
 
-Here we also use the [`@MinOccurences`](../annotations/min-occurrences.html) annotation to state that it must occur at least once in addition to using the previously seen `@Required`
+Here we also use the [`@MinOccurences`](../annotations/min-occurrences.html) annotation to state that it must occur at
+least once in addition to using the previously seen `@Required`
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -247,14 +278,16 @@ Here we also use the [`@MinOccurences`](../annotations/min-occurrences.html) ann
                     flags = java.util.regex.Pattern.CASE_INSENSITIVE)
     public String postCode;
 ```
-Here is another example of a complex restriction, this time we use the [`@Pattern`](../annotations/pattern.html) annotation to enforce a regular expression to validate our postcodes meet the UK format.
+Here is another example of a complex restriction, this time we use the [`@Pattern`](../annotations/pattern.html)
+annotation to enforce a regular expression to validate our postcodes meet the UK format.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 #### Plus Regular Code...
 
-And finally we have some regular Java code in our class.  Your normal logic can co-exist happily alongside your Airline annotations, we'll see this used later to implement our actual command logic.
+And finally we have some regular Java code in our class.  Your normal logic can co-exist happily alongside your Airline
+annotations, we'll see this used later to implement our actual command logic.
 
 ```java
     @Override
@@ -286,7 +319,10 @@ And finally we have some regular Java code in our class.  Your normal logic can 
 
 ### `@Arguments`
 
-The [`@Arguments`](../annotation/arguments.html) annotation is used to annotate a field that will receive arbitrary inputs i.e. anything that is not recognised as an option as defined by your `@Option` annotations.  This is useful when your command wants to operate on a list of things so is typically used in conjunction with a `Collection` typed field e.g. `List<String>`.
+The [`@Arguments`](../annotation/arguments.html) annotation is used to annotate a field that will receive arbitrary
+inputs i.e. anything that is not recognised as an option as defined by your `@Option` annotations.  This is useful when
+your command wants to operate on a list of things so is typically used in conjunction with a `Collection` typed field
+e.g. `List<String>`.
 
 #### `@Arguments` in use
 
@@ -314,13 +350,17 @@ RG19 6HS is a valid postcode
 
 ### Restrictions
 
-So we've already seen a number of [Restrictions](../restrictions/index.html) in the above examples.  This is one of the main ways Airline reduces boiler plate and prefers declarative definitions.  There are lots more built-in restrictions than just those seen so far and you can define [Custom Restrictions](../restrictions/custom.html) if you want to encapsulate reusable restriction logic.
+So we've already seen a number of [Restrictions](../restrictions/index.html) in the above examples.  This is one of the
+main ways Airline reduces boiler plate and prefers declarative definitions.  There are lots more built-in restrictions
+than just those seen so far and you can define [Custom Restrictions](../restrictions/custom.html) if you want to
+encapsulate reusable restriction logic.
 
 Some useful common restrictions include:
 
 - [`@Required`](../annotations/required.html) - For required options/arguments
 - [`@NotBlank`](../annotations/not-blank.html) - To enforce non-blank string values
-- [`@AllowedRawValues`](../annotations/allowed-raw-values.html)/[`@AllowedValues`](../annotations/allowed-values.html) - To restrict options/arguments to a set of acceptable values
+- [`@AllowedRawValues`](../annotations/allowed-raw-values.html)/[`@AllowedValues`](../annotations/allowed-values.html) - 
+  To restrict options/arguments to a set of acceptable values
 - [`@Path`](../annotations/path.html) - Provides restrictions on options/arguments used to refer to files and directories
 
 {% include slide-end.md %}
@@ -334,10 +374,10 @@ So now we've seen the basics of defining options and arguments lets use these to
 @Command(name = "send", description = "Sends a package")
 public class Send implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private PostalAddress address = new PostalAddress();
     
-    @Inject
+    @AirlineModule
     private Package item = new Package();
 
     @Option(name = { "-s",
@@ -390,33 +430,42 @@ The [`@Command`](../annotations/command.html) annotation is used on Java classes
 @Command(name = "send", description = "Sends a package")
 public class Send implements ExampleRunnable {
 ```
-The `@Command` annotation is fairly simple, we simply have a `name` for our command and a `description`.  The `name` is the name users will use to invoke the command, this name can be any string of non-whitespace characters and is the only required field of the `@Command` annotation.
+The `@Command` annotation is fairly simple, we simply have a `name` for our command and a `description`.  The `name` is
+the name users will use to invoke the command, this name can be any string of non-whitespace characters and is the only
+required field of the `@Command` annotation.
 
-The `description` field provides descriptive text about the command that will be used in help output, we'll see this used later.
+The `description` field provides descriptive text about the command that will be used in help output, we'll see this
+used later.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
-### Using `@Inject` for composition
+### Using `@AirlineModule` for composition
 
-Often for command line applications you want to define reusable sets of closely related options as we already saw with the `PostalAddress` class.  Airline provides a composition mechanism that makes this easy to do.
+Often for command line applications you want to define reusable sets of closely related options as we already saw with
+the `PostalAddress` class.  Airline provides a composition mechanism that makes this easy to do.
 
 ```java
-    @Inject
+    @AirlineModule
     private PostalAddress address = new PostalAddress();
     
-    @Inject
+    @AirlineModule
     private Package item = new Package();
 ```
 
-Here we compose the previously seen `PostalAddress` class into our command, we use the standard Java `@Inject` annotation to indicate to Airline that it should find options declared by that class.  We also have another set of options defined in a separate class, this time the {% include github-ref.md package="examples.sendit" class="Package" module="airline-examples" %} class is used to provide options relating to the package being sent.
+Here we compose the previously seen `PostalAddress` class into our command, we use the
+[`@AirlineModule`](../annotations/module.html) annotation to indicate to Airline that it should find options declared by
+that class.  We also have another set of options defined in a separate class, this time the {% include github-ref.md
+package="examples.sendit" class="Package" module="airline-examples" %} class is used to provide options relating to the
+package being sent.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 ### Command specific options
 
-As well as composing options defined in other classes we can also define options specific to a command directly in our command class:
+As well as composing options defined in other classes we can also define options specific to a command directly in our
+command class:
 
 ```java
     @Option(name = { "-s",
@@ -424,7 +473,9 @@ As well as composing options defined in other classes we can also define options
     private PostalService service = PostalService.FirstClass;
 ```
  
-Here the command declares an additional option `-s/--service` that is specific to this command.  Here the field actual has an enum type - {% include github-ref.md package="examples.sendit" class="PostalService" module="airline-examples" %} - which Airline happily copes with.
+Here the command declares an additional option `-s/--service` that is specific to this command.  Here the field actual
+has an enum type ({% include github-ref.md package="examples.sendit" class="PostalService" module="airline-examples" %})
+which Airline happily copes with.
 
 For more details on how Airline supports differently typed fields see the [Supported Types](types.html) documentation.
 
@@ -450,14 +501,17 @@ For more details on how Airline supports differently typed fields see the [Suppo
 }
 ```
 
-Finally we have the actual business logic of our class.  In this example application it simply prints out some information but this serves to show that we can access the fields that have been populated by the users command line inputs.
+Finally we have the actual business logic of our class.  In this example application it simply prints out some
+information but this serves to show that we can access the fields that have been populated by the users command line
+inputs.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 ### Invoking our command
 
-In order to actually invoke our command we need to get a parser from Airline and invoke it on the user input.  In this example we do this in our `main(String[] args)` method:
+In order to actually invoke our command we need to get a parser from Airline and invoke it on the user input.  In this
+example we do this in our `main(String[] args)` method:
 
 ```java
     public static void main(String[] args) {
@@ -474,7 +528,9 @@ We can then invoke the `parse()` method passing in our users inputs.
 ```java
             System.exit(cmd.run());
 ```
-Assuming the parsing is successful we now have an instance of our `Send` class which we can invoke methods on like any other Java object.   In this example our business logic is in the `run()` method so we simply call that method and use its return value as the exit code.
+Assuming the parsing is successful we now have an instance of our `Send` class which we can invoke methods on like any
+other Java object.   In this example our business logic is in the `run()` method so we simply call that method and use
+its return value as the exit code.
 
 ```java
         } catch (ParseException e) {
@@ -517,7 +573,9 @@ Airline allows multiple commands to be composed together into a CLI to support c
 
 ### `@Cli`
 
-We use the [`@Cli`](../annotations/cli.html) annotation to define a CLI, this is applied to classes similar to `@Command` e.g. the {% include github-ref.md module="airline-examples" package="examples.sendit" class="SendItCli" %} class:
+We use the [`@Cli`](../annotations/cli.html) annotation to define a CLI, this is applied to classes similar to
+`@Command` e.g. the {% include github-ref.md module="airline-examples" package="examples.sendit" class="SendItCli" %}
+class:
 
 ```java
 @Cli(name = "send-it", 
@@ -555,7 +613,8 @@ As we saw with `@Command` this is pretty self-explanatory:
 @Cli(name = "send-it", 
      description = "A demonstration CLI around shipping",
 ```
-The `name` is the name that you expect users to type at the command line, typically you'll create a Shell script named this which invokes your actual Java application.
+The `name` is the name that you expect users to type at the command line, typically you'll create a Shell script named
+this which invokes your actual Java application.
 
 As seen previously `description` is used to provide descriptive text that will get included in help output.
 
@@ -576,13 +635,17 @@ commands = {
 defaultCommand = Help.class, 
 ```
 
-The `commands` field of the annotation defines the classes that provide your commands.  Each of these must be appropriately annotated with `@Command`.
+The `commands` field of the annotation defines the classes that provide your commands.  Each of these must be
+appropriately annotated with `@Command`.
 
-We also see the `defaultCommand` field used to indicate what command is invoked if the user doesn't invoke a command.  This can be useful to provide default behaviour and is often used to point to the help system.
+We also see the `defaultCommand` field used to indicate what command is invoked if the user doesn't invoke a command.
+This can be useful to provide default behaviour and is often used to point to the help system.
 
 ---
 
-**NB** - Generally it is useful for all your commands to have a common parent class or interface since as we'll see in a few slides time we'll need to declare a type when creating a parser.  In this case all our commands implement {% include github-ref.md package="examples" module="airline-examples" class="ExampleRunnable" %}
+**NB** - Generally it is useful for all your commands to have a common parent class or interface since as we'll see in a
+few slides time we'll need to declare a type when creating a parser.  In this case all our commands implement {% include
+github-ref.md package="examples" module="airline-examples" class="ExampleRunnable" %}
 
 {% include slide-end.md %}
 {% include slide-start.md %}
@@ -599,14 +662,17 @@ parserConfiguration = @Parser(
        errorHandler = CollectAll.class
      )
 ```
-The one important thing to point out here is we are changing the `errorHandler` to `CollectAll` which will allow us to more intelligently handle errors later.
+The one important thing to point out here is we are changing the `errorHandler` to `CollectAll` which will allow us to
+more intelligently handle errors later.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 ### Invoking our CLI
 
-So you probably noticed we had zero logic in the class defining our CLI, similar to our single command example we need to define an appropriate `main()` method for our CLI.  This we do in the {% include github-ref.md package="examples.sendit" module="airline-examples" class="SendIt" %} class:
+So you probably noticed we had zero logic in the class defining our CLI, similar to our single command example we need
+to define an appropriate `main()` method for our CLI.  This we do in the {% include github-ref.md
+package="examples.sendit" module="airline-examples" class="SendIt" %} class:
 
 ```java
 public class SendIt {
@@ -666,23 +732,27 @@ As mentioned we need to define a type for the commands that will be parsed.  So 
 // Parse with a result to allow us to inspect the results of parsing
 ParseResult<ExampleRunnable> result = parser.parseWithResult(args);
 ```
-Here we call the `parseWithResult()` method passing in the user arguments received by our `main()` method.  This will give us a `ParseResult` instance that we can inspect to see if parsing succeeded:
+Here we call the `parseWithResult()` method passing in the user arguments received by our `main()` method.  This will
+give us a `ParseResult` instance that we can inspect to see if parsing succeeded:
 
 ```java
 if (result.wasSuccessful()) {
     // Parsed successfully, so just run the command and exit
     System.exit(result.getCommand().run());
 ```
-Assuming successful parsing we can simply call `getCommand()` on our `result` and then invoke its `run()` method since all our commands implement a common interface.
+Assuming successful parsing we can simply call `getCommand()` on our `result` and then invoke its `run()` method since
+all our commands implement a common interface.
 
-Alternatively we could have just called `parse(args)` which would return either the parsed command, throw an exception or return `null` depending on the user inputs and the parser configuration.
+Alternatively we could have just called `parse(args)` which would return either the parsed command, throw an exception
+or return `null` depending on the user inputs and the parser configuration.
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 #### Handling Errors
 
-If parsing wasn't successful then we need to do something about that.  We specified a different error handler earlier that allows us to collect up all the errors:
+If parsing wasn't successful then we need to do something about that.  We specified a different error handler earlier
+that allows us to collect up all the errors:
 
 ```java
 } else {
@@ -711,7 +781,8 @@ Followed by invoking the help system to display the help for the CLI.
 
 ### Shell Script
 
-As noted earlier we usually want to create an entry point shell script for our CLI that matches the name declared in our `@Cli` annotation.
+As noted earlier we usually want to create an entry point shell script for our CLI that matches the name declared in our
+`@Cli` annotation.
 
 Here's the contents of [`send-it`]({{ site.github.repo }}/blob/master/airline-examples/send-it):
 
@@ -768,7 +839,8 @@ Why not try asking for help on the `send` command we saw earlier:
 
 So how did that last demo work?
 
-Airline includes a help system that can generate help in a variety of formats plus prebuilt commands and options that can be added into your commands/CLIs.
+Airline includes a help system that can generate help in a variety of formats plus prebuilt commands and options that
+can be added into your commands/CLIs.
 
 We can invoke help in a number of ways:
 
@@ -783,12 +855,13 @@ Let's see the difference between each.
 
 ### Adding `HelpOption` to our commands
 
-This is a pre-built class which defines a `-h`/`--help` option, therefore we can compose this using `@Inject` as seen earlier:
+This is a pre-built class which defines a `-h`/`--help` option, therefore we can compose this using
+[`@AirlineModule`](../annotations/module.html) as seen earlier:
 
 ```java
 @Command(name = "simple", description = "A simple example command")
 public class Simple implements ExampleRunnable {
-    @Inject
+    @AirlineModule
     private HelpOption<Simple> help;
     
     // Rest of implementation omitted for brevity
@@ -809,7 +882,9 @@ public class Simple implements ExampleRunnable {
 }
 ```
 
-We can see in the `run()` method we call the `showHelpIfRequested()` method to check if the user requested help.  If this returns `true` then help was requested and has been shown so we just exit.  If this returns `false` then we continue with our normal logic.
+We can see in the `run()` method we call the `showHelpIfRequested()` method to check if the user requested help.  If
+this returns `true` then help was requested and has been shown so we just exit.  If this returns `false` then we
+continue with our normal logic.
 
 Let's try that:
 
@@ -881,7 +956,7 @@ Even if you can't incorporate the `Help` command directly you can call its stati
                      description = "A command that provides help on other commands")
 public class Help implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private GlobalMetadata<ExampleRunnable> global;
 
     @Arguments(description = "Provides the name of the commands you want to provide help for")
@@ -951,7 +1026,8 @@ This is everything you need to make a functional CLI with Airline.
 
 ### So What's Next?
 
-The user guide which has been linked throughout these slides covers all these topics, plus many more, in lots more detail and examples.  Find it at [http://rvesse.github.io/airline/]()
+The user guide which has been linked throughout these slides covers all these topics, plus many more, in lots more
+detail and examples.  Find it at [http://rvesse.github.io/airline/]()
 
 Please try it out, post questions, problems etc. at [http://github.com/rvesse/airline/issues]()
 
@@ -961,29 +1037,35 @@ Please feel free to ask questions now!
 
 #### Time Allowing...
 
-The remainder of the slides give a quick tour of some of the more advanced features of the library.  If we have any extra time left we'll take a look at these...
+The remainder of the slides give a quick tour of some of the more advanced features of the library.  If we have any
+extra time left we'll take a look at these...
 
 {% include slide-end.md %}
 {% include slide-start.md %}
 
 ## Customising the Parser
 
-As we glossed over earlier we can optionally customise our parser to change the command line behaviour in a variety of ways.
+As we glossed over earlier we can optionally customise our parser to change the command line behaviour in a variety of
+ways.
 
-So we saw earlier in our `SendItCli` example the parser being customised via the `parserConfiguration` field of the `@Cli` annotation.  Let's look more into that now.
+So we saw earlier in our `SendItCli` example the parser being customised via the `parserConfiguration` field of the
+`@Cli` annotation.  Let's look more into that now.
 
 ### `@Parser`
 
 The [`@Parser`](../annotations/parser.html) annotation can be used in two ways:
 
-- Applied directly to a class annotated with [`@Command`](../annotations/command.html), this customises the parser for `SingleCommand` based parsers
-- Used in the `parserConfiguration` field of the [`@Cli`](../annotations/cli.html) annotation, this customises the parser for `Cli` based parsers
+- Applied directly to a class annotated with [`@Command`](../annotations/command.html), this customises the parser for
+  `SingleCommand` based parsers
+- Used in the `parserConfiguration` field of the [`@Cli`](../annotations/cli.html) annotation, this customises the
+  parser for `Cli` based parsers
 
 There are lots of behaviours that can be customised with this annotation e.g.
 
 - Providing [User Defined Aliases](aliases.html) so users can define command aliases within your CLIs
 - Configuring option styles (see next slide for discussion of this)
-- Automated abbreviation support i.e. allow users to type only partial command/option names provided what they enter is unambiguous
+- Automated abbreviation support i.e. allow users to type only partial command/option names provided what they enter is
+  unambiguous
 - Error Handling (as seen earlier)
 
 {% include slide-end.md %}
@@ -993,9 +1075,12 @@ There are lots of behaviours that can be customised with this annotation e.g.
 
 By default Airline parses three common option styles in the following order of preference:
 
-- {% include javadoc-ref.md class="StandardOptionParser" package="parser.options" %} - Simple white space separated option and values e.g. `--name value` sets the option `--name` to `value`
-- {% include javadoc-ref.md class="LongGetOptParser" package="parser.options" %} - Long form GNU `getopt` style e.g. `--name=value` sets the option `--name` to `value`
-- {% include javadoc-ref.md class="ClassicGetOptParser" package="parser.options" %} - Short form GNU `getopt` style e.g. `-n1` sets the option `-n` to `1`
+- {% include javadoc-ref.md class="StandardOptionParser" package="parser.options" %} - Simple white space separated
+  option and values e.g. `--name value` sets the option `--name` to `value`
+- {% include javadoc-ref.md class="LongGetOptParser" package="parser.options" %} - Long form GNU `getopt` style e.g.
+  `--name=value` sets the option `--name` to `value`
+- {% include javadoc-ref.md class="ClassicGetOptParser" package="parser.options" %} - Short form GNU `getopt` style e.g.
+  `-n1` sets the option `-n` to `1`
 
 This can be customised via several fields of the [`@Parser`](../annotations/parser.html) annotation e.g.
 
@@ -1012,8 +1097,12 @@ parserConfiguration = @Parser(
 
 A couple of additional styles are built-in but not enabled by default:
 
-- {% include javadoc-ref.md class="MaybePairValueOptionParser" package="parser.options" %} - Arity 2 options where the user may specify the values as whitespace/`=` separated e.g. `--name foo bar` and `--name foo=bar` are both acceptable and set the option `--name` to the values `foo` and `bar`
-- {% include javadoc-ref.md class="ListValueOptionParser" package="parser.options" %} - Options that may be specified multiple times can be specified in a compact comma separated list form e.g. `--name foo,bar` sets the option `--name` to the values `foo` and `bar`.
+- {% include javadoc-ref.md class="MaybePairValueOptionParser" package="parser.options" %} - Arity 2 options where the
+  user may specify the values as whitespace/`=` separated e.g. `--name foo bar` and `--name foo=bar` are both acceptable
+  and set the option `--name` to the values `foo` and `bar`
+- {% include javadoc-ref.md class="ListValueOptionParser" package="parser.options" %} - Options that may be specified
+  multiple times can be specified in a compact comma separated list form e.g. `--name foo,bar` sets the option `--name`
+  to the values `foo` and `bar`.
 
 **NB** - Power Users can also create [Custom Option Parsers](../parser/options.html) if desired.
 
@@ -1022,9 +1111,11 @@ A couple of additional styles are built-in but not enabled by default:
 
 ### Allowing complex numeric inputs
 
-Airline allows for customising how it interprets numeric values passed to any `@Option`/`@Arguments` annotated field that has a numeric type i.e. `byte`, `short`, `int`, `long`, `float` and `double` or their boxed equivalents.
+Airline allows for customising how it interprets numeric values passed to any `@Option`/`@Arguments` annotated field
+that has a numeric type i.e. `byte`, `short`, `int`, `long`, `float` and `double` or their boxed equivalents.
 
-This can be controlled either globally on the `@Parser` annotation with the `numericTypeConverter` field or on a per-option basis by using the `typeConverterProvider` e.g.
+This can be controlled either globally on the `@Parser` annotation with the `numericTypeConverter` field or on a
+per-option basis by using the `typeConverterProvider` e.g.
 
 ```java
 @Parser(numericTypeConverter=Hexadecimal.class)
@@ -1058,17 +1149,21 @@ Exiting with Code 0
 
 ## Generating Manual Pages
 
-Manual pages are provided by using help generator as seen earlier.  This is provided in the separate [`airline-help-man`](../help/man.html) module.
+Manual pages are provided by using help generator as seen earlier.  This is provided in the separate
+[`airline-help-man`](../help/man.html) module.
 
-If we use {% include javadoc-ref.md class="ManCommandUsageGenerator" package="help.man" module="airline-help-man" %} or {% include javadoc-ref.md class="ManGlobalUsageGenerator" package="help.man" module="airline-help-man" %} our output will be Troff plus `man` extensions that can be rendered by the `man` command.
+If we use {% include javadoc-ref.md class="ManCommandUsageGenerator" package="help.man" module="airline-help-man" %} or
+{% include javadoc-ref.md class="ManGlobalUsageGenerator" package="help.man" module="airline-help-man" %} our output
+will be Troff plus `man` extensions that can be rendered by the `man` command.
 
-For example the {% include github-ref.md class="Manuals" package="examples.cli.commands" module="airline-examples" %} class demonstrates this:
+For example the {% include github-ref.md class="Manuals" package="examples.cli.commands" module="airline-examples" %}
+class demonstrates this:
 
 ```java
 @Command(name = "generate-manuals", description = "Generates manual pages for this CLI that can be rendered with the man tool")
 public class Manuals implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private GlobalMetadata<ExampleRunnable> global;
 
     @Option(name = "--include-hidden", description = "When set hidden commands and options are shown in help", hidden = true)
@@ -1100,7 +1195,8 @@ Generated manuals to send-it.1
 
 ## Providing Bash Completion
 
-By the same mechanism we can also do [Bash completion](../help/bash.html), we may need to use the additional `@BashCompletion` annotation on our option/argument fields to control how we'd like Bash to complete things.
+By the same mechanism we can also do [Bash completion](../help/bash.html), we may need to use the additional
+`@BashCompletion` annotation on our option/argument fields to control how we'd like Bash to complete things.
 
 We can then create a command like {% include github-ref.md class="BashCompletions" package="examples.cli.commands" %}:
 
@@ -1108,7 +1204,7 @@ We can then create a command like {% include github-ref.md class="BashCompletion
 @Command(name = "generate-completions", description = "Generates a Bash completion script, the file can then be sourced to provide completion for this CLI")
 public class BashCompletion implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private GlobalMetadata<ExampleRunnable> global;
     
     @Option(name = "--include-hidden", description = "When set hidden commands and options are shown in help", hidden = true)

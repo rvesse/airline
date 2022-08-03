@@ -15,7 +15,7 @@
  */
 package com.github.rvesse.airline;
 
-import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
@@ -26,13 +26,10 @@ import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.utils.AirlineTestUtils;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import javax.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -229,7 +226,7 @@ public class TestGalaxyCommandLineParser
 
     public static abstract class GalaxyCommand
     {
-        @Inject
+        @AirlineModule
         public GlobalOptions globalOptions = new GlobalOptions();
 
         public void execute()
@@ -242,7 +239,7 @@ public class TestGalaxyCommandLineParser
     public static class HelpCommand
             extends GalaxyCommand
     {
-        @Inject
+        @AirlineModule
         public Help<GalaxyCommand> help;
 
         @Override
@@ -256,7 +253,7 @@ public class TestGalaxyCommandLineParser
     public static class ShowCommand
             extends GalaxyCommand
     {
-        @Inject
+        @AirlineModule
         public final SlotFilter slotFilter = new SlotFilter();
 
         @Override
@@ -276,7 +273,7 @@ public class TestGalaxyCommandLineParser
         @Option(name = {"--count"}, description = "Number of instances to install")
         public int count = 1;
 
-        @Inject
+        @AirlineModule
         public final AgentFilter agentFilter = new AgentFilter();
 
         @Arguments(description = "The binary and @configuration to install.  The default packaging is tar.gz")
@@ -298,7 +295,7 @@ public class TestGalaxyCommandLineParser
     public static class UpgradeCommand
             extends GalaxyCommand
     {
-        @Inject
+        @AirlineModule
         public final SlotFilter slotFilter = new SlotFilter();
 
         @Arguments(description = "Version of the binary and/or @configuration")
@@ -319,7 +316,7 @@ public class TestGalaxyCommandLineParser
     public static class TerminateCommand
             extends GalaxyCommand
     {
-        @Inject
+        @AirlineModule
         public final SlotFilter slotFilter = new SlotFilter();
 
         @Override
@@ -336,7 +333,7 @@ public class TestGalaxyCommandLineParser
     public static class StartCommand
             extends GalaxyCommand
     {
-        @Inject
+        @AirlineModule
         public final SlotFilter slotFilter = new SlotFilter();
 
         @Override
@@ -353,7 +350,7 @@ public class TestGalaxyCommandLineParser
     public static class StopCommand
             extends GalaxyCommand
     {
-        @Inject
+        @AirlineModule
         public final SlotFilter slotFilter = new SlotFilter();
 
         @Override
@@ -370,7 +367,7 @@ public class TestGalaxyCommandLineParser
     public static class RestartCommand
             extends GalaxyCommand
     {
-        @Inject
+        @AirlineModule
         public final SlotFilter slotFilter = new SlotFilter();
 
         @Override
@@ -387,7 +384,7 @@ public class TestGalaxyCommandLineParser
     public static class ResetToActualCommand
             extends GalaxyCommand
     {
-        @Inject
+        @AirlineModule
         public final SlotFilter slotFilter = new SlotFilter();
 
         @Override
@@ -404,7 +401,7 @@ public class TestGalaxyCommandLineParser
     public static class SshCommand
             extends GalaxyCommand
     {
-        @Inject
+        @AirlineModule
         public final SlotFilter slotFilter = new SlotFilter();
 
         @Arguments(description = "Command to execute on the remote host")
@@ -449,7 +446,7 @@ public class TestGalaxyCommandLineParser
     public static class AgentShowCommand
             extends GalaxyCommand
     {
-        @Inject
+        @AirlineModule
         public final AgentFilter agentFilter = new AgentFilter();
 
         @Override

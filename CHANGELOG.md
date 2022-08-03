@@ -1,5 +1,28 @@
 # Airline - Change Log
 
+## 2.9.0
+
+- Build Improvements
+   - Added GitHub Actions based CI/CD for the repository
+   - Added a new `airline-backcompact-javaxinject` module to aid Annotation Improvements (see below), this is
+     included in the dependencies of the core `airline` module by default.  Note that future 3.x releases may
+     make this dependency optional as the Java ecosystem transitions away from using the old `javax` packages.
+- Annotation Improvements
+   - Added `@AirlineModule` as future replacement for existing usage of `@Inject` 
+   - `@Inject` can now be either `javax.inject.Inject` or `jakarta.inject.Inject`, and mixtures thereof are
+     supported.  This enables broader compatibility with applications that need/want to use either variant of
+     the standard Java `@Inject` dependency.
+- Parser Improvements
+   - Choice of composition annotations is now configurable.  Defaulting to supporting the new `@AirlineModule` 
+     annotation, and for backwards compatibility both variants of the `@Inject` annotation as noted above.
+       - Use `compositionAnnotationClasses` field with the `@Parser` annotation
+       - Use `withCompositionAnnotations()` or `withDefaultCompositionAnnotations()` with the `ParserBuilder`
+
+**NB:** The changes to injection annotations have been carefully done to be fully backwards compatible with existing
+Airline annotations for the 2.9.x releases.  Future minor and major releases will change the default behaviour to 
+**only** support `@AirlineModule`.  Therefore, you may wish to start migrating your applications to using this 
+annotation sooner rather than later.
+
 ## 2.8.5
 
 - Restriction Improvements

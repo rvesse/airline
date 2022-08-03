@@ -15,9 +15,8 @@
  */
 package com.github.rvesse.airline.examples.inheritance;
 
-import javax.inject.Inject;
-
 import com.github.rvesse.airline.HelpOption;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.examples.ExampleExecutor;
@@ -30,7 +29,7 @@ import com.github.rvesse.airline.examples.ExampleRunnable;
 @Command(name = "parent", description = "A parent command")
 public class Parent implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     protected HelpOption<ExampleRunnable> help;
 
     @Option(name = "--parent", description = "An option provided by the parent")

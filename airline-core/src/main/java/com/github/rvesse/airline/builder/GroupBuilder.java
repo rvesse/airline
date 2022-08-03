@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.rvesse.airline.model.ParserMetadata;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,26 +47,30 @@ public class GroupBuilder<C> extends AbstractChildBuilder<CommandGroupMetadata, 
 
     GroupBuilder(CliBuilder<C> cliBuilder, GroupBuilder<C> parentGroupBuilder, String name) {
         super(cliBuilder);
-        if (StringUtils.isBlank(name))
+        if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("Group name cannot be null/empty/whitespace");
+        }
         this.name = name;
         this.parentGroupBuilder = parentGroupBuilder;
     }
 
     /**
      * Sets the description for the group
-     * 
+     *
      * @param description
      *            Description
      * @return Group builder
      */
     public GroupBuilder<C> withDescription(String description) {
-        if (description == null)
+        if (description == null) {
             throw new NullPointerException("description cannot be null");
-        if (StringUtils.isEmpty(description))
+        }
+        if (StringUtils.isEmpty(description)) {
             throw new IllegalArgumentException("description cannot be empty");
-        if (this.description != null)
+        }
+        if (this.description != null) {
             throw new IllegalStateException("description is already set");
+        }
         this.description = description;
         return this;
     }
@@ -97,24 +102,28 @@ public class GroupBuilder<C> extends AbstractChildBuilder<CommandGroupMetadata, 
 
     public GroupBuilder<C> getSubGroup(final String name) {
         checkNotBlank(name, "Group name");
-        if (!subGroups.containsKey(name))
+        if (!subGroups.containsKey(name)) {
             throw new IllegalArgumentException(String.format("Sub-group %s has not been declared", name));
+        }
 
         return subGroups.get(name);
     }
 
     public GroupBuilder<C> withDefaultCommand(Class<? extends C> defaultCommand) {
-        if (defaultCommand == null)
+        if (defaultCommand == null) {
             throw new NullPointerException("defaultCommand cannot be null");
-        if (this.defaultCommand != null)
+        }
+        if (this.defaultCommand != null) {
             throw new IllegalStateException("defaultCommand is already set");
+        }
         this.defaultCommand = defaultCommand;
         return this;
     }
 
     public GroupBuilder<C> withCommand(Class<? extends C> command) {
-        if (command == null)
+        if (command == null) {
             throw new NullPointerException("command cannot be null");
+        }
         commands.add(command);
         return this;
     }
@@ -135,7 +144,7 @@ public class GroupBuilder<C> extends AbstractChildBuilder<CommandGroupMetadata, 
      * Gets the parent group builder which may be {@code null} if this is a top
      * level group. You may alternatively want to call {@link #parent()} to get
      * the actual CLI builder
-     * 
+     *
      * @return Parent group builder (if any) or {@code null}
      */
     public GroupBuilder<C> parentGroup() {
@@ -144,15 +153,19 @@ public class GroupBuilder<C> extends AbstractChildBuilder<CommandGroupMetadata, 
 
     @Override
     public CommandGroupMetadata build() {
-        CommandMetadata groupDefault = MetadataLoader.loadCommand(defaultCommand, this.parent().baseHelpSections);
-        List<CommandMetadata> groupCommands = MetadataLoader.loadCommands(commands, this.parent().baseHelpSections);
+        ParserMetadata<C> parserConfig = this.parent().parserBuilder.build();
+
+        CommandMetadata groupDefault =
+                MetadataLoader.loadCommand(defaultCommand, this.parent().baseHelpSections, parserConfig);
+        List<CommandMetadata> groupCommands =
+                MetadataLoader.loadCommands(commands, this.parent().baseHelpSections, parserConfig);
         List<CommandGroupMetadata> subGroups = new ArrayList<CommandGroupMetadata>();
         for (GroupBuilder<C> builder : this.subGroups.values()) {
             subGroups.add(builder.build());
         }
 
         CommandGroupMetadata group = MetadataLoader.loadCommandGroup(name, description, hidden, subGroups, groupDefault,
-                groupCommands);
+                                                                     groupCommands);
         for (CommandGroupMetadata subGroup : subGroups) {
             subGroup.setParent(group);
         }
