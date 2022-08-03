@@ -1,11 +1,30 @@
 # Migration to Airline 2.9
 
-Airline 2.9 introduces some changes to injection annotations in preparation for breaking changes in future releases.  In
-particular unless you use Airline in conjunction with a dependency injection framework you should stop using the 
+Airline 2.9 introduces some changes to composition annotations in preparation for breaking changes in future releases.
+In particular unless you use Airline in conjunction with a dependency injection framework you should stop using the
 `@Inject` annotation on command fields and transition to using the `@AirlineModule` annotation instead.
 
 For backwards compatibility purposes usage of the older `@Inject` annotation remains supported for the time being 
 **BUT** this will require explicit user configuration in future releases.
+
+## Excluding Inject Dependencies
+
+Users who are able to transition to `@AirlineModule` may wish to explicity exclude the following dependencies when 
+depending on Airline to avoid polluting their classpath with unnecessary dependencies if they no longer need `@Inject`
+present:
+
+```xml
+<exclusions>
+  <exclusion>
+    <groupId>jakarta.inject</groupId>
+    <artifactId>jakarta.inject-api</artifactId>
+  </exclusion>
+  <exclusion>
+    <groupId>com.github.rvesse</groupId>
+    <artifactId>airline-backcompat-javaxinject</artifactId>
+  </exclusion>
+</exclusions>
+```
 
 # Migration to Airline 2.2 from Airline 2.1
 

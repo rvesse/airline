@@ -19,9 +19,10 @@
        - Use `withCompositionAnnotations()` or `withDefaultCompositionAnnotations()` with the `ParserBuilder`
 
 **NB:** The changes to injection annotations have been carefully done to be fully backwards compatible with existing
-Airline annotations for the 2.9.x releases.  Future minor and major releases will change the default behaviour to 
-**only** support `@AirlineModule`.  Therefore, you may wish to start migrating your applications to using this 
-annotation sooner rather than later.
+Airline annotations for the 2.9.x releases.  Future minor and major releases will change the default behaviour to
+**only** support `@AirlineModule`.  Therefore, you may wish to start migrating your applications to using this
+annotation sooner rather than later and explicitly exclude legacy dependencies.  See the [Migration
+Guide](Migrating.md#excluding-inject-dependencies) for more details on this.
 
 ## 2.8.5
 
