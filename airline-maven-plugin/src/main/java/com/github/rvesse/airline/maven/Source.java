@@ -52,7 +52,7 @@ public class Source {
             try {
                 Class<?> cls = getClass().getClassLoader().loadClass(className);
                 if (cls.getAnnotation(Command.class) != null) {
-                    prepared.add(new PreparedSource(cls, null, MetadataLoader.loadCommand(cls), this.options,
+                    prepared.add(new PreparedSource(cls, null, MetadataLoader.loadCommand(cls, MetadataLoader.loadParser(cls)), this.options,
                             this.outputMode));
                 } else if (cls.getAnnotation(Cli.class) != null) {
                     prepared.add(new PreparedSource(cls, MetadataLoader.loadGlobal(cls), null, this.options,

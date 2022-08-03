@@ -16,13 +16,13 @@
 package com.github.rvesse.airline.builder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import com.github.rvesse.airline.CommandFactory;
 import com.github.rvesse.airline.DefaultCommandFactory;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.model.AliasMetadata;
+import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.model.ParserMetadata;
 import com.github.rvesse.airline.parser.aliases.UserAliasesSource;
 import com.github.rvesse.airline.parser.errors.handlers.ParserErrorHandler;
@@ -39,8 +39,7 @@ import com.github.rvesse.airline.types.numerics.NumericTypeConverter;
 /**
  * Builder for parser configurations
  *
- * @param <C>
- *            Command type
+ * @param <C> Command type
  */
 public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
@@ -54,6 +53,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
     protected String argsSeparator, flagNegationPrefix;
     protected UserAliasSourceBuilder<C> userAliasesBuilder = new UserAliasSourceBuilder<>(this);
     protected ParserErrorHandler errorHandler;
+    protected Set<String> injectionAnnotationClasses = new LinkedHashSet<>();
 
     private final CliBuilder<C> cliBuilder;
 
@@ -67,9 +67,8 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Gets the default configuration
-     * 
-     * @param <T>
-     *            Command type to parse
+     *
+     * @param <T> Command type to parse
      * @return Default configuration
      */
     public static <T> ParserMetadata<T> defaultConfiguration() {
@@ -78,9 +77,8 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Specifies the command factory to use
-     * 
-     * @param commandFactory
-     *            Command Factory
+     *
+     * @param commandFactory Command Factory
      * @return Builder
      */
     public ParserBuilder<C> withCommandFactory(CommandFactory<C> commandFactory) {
@@ -90,7 +88,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Specifies that the default command factory should be used
-     * 
+     *
      * @return Builder
      */
     public ParserBuilder<C> withDefaultCommandFactory() {
@@ -99,10 +97,69 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
     }
 
     /**
+     * Specifies the class names of annotations that Airline should consider to mark a field for further inspection and
+     * injection to enable composition.
+     * <p>
+     * Fields marked with these annotations will have the value type of the field scanned for further Airline annotated
+     * fields e.g. {@link com.github.rvesse.airline.annotations.Option} and
+     * {@link com.github.rvesse.airline.annotations.Arguments}.  This allows separating groups of options and arguments
+     * out into reusable classes that can be composed into your command classes without relying on inheritance.
+     * </p>
+     *
+     * @param annotationClassNames Annotation class names
+     * @return Builder
+     * @since 2.9.0
+     */
+    public ParserBuilder<C> withCompositionAnnotations(Collection<String> annotationClassNames) {
+        if (annotationClassNames != null) {
+            this.injectionAnnotationClasses.addAll(annotationClassNames);
+        }
+        return this;
+    }
+
+    /**
+     * See {@link #withCompositionAnnotations(Collection)}
+     *
+     * @param annotationClassNames Annotation class names
+     * @return Builder
+     * @since 2.9.0
+     */
+    public ParserBuilder<C> withCompositionAnnotations(String... annotationClassNames) {
+        return withCompositionAnnotations(Arrays.asList(annotationClassNames));
+    }
+
+    /**
+     * Configures the parser to use the default set of composition annotations.
+     * <p>
+     * Currently this is the following to provide backwards compatibility with past Airline releases:
+     * </p>
+     * <ul>
+     * <li>{@code com.github.rvesse.airline.annotations.AirlineModule}</li>
+     * <li>{@code javax.inject.Inject}</li>
+     * <li>{@code jakarta.inject.Inject}</li>
+     * <li>{@code com.google.inject.Inject}</li>
+     * </ul>
+     * <p>
+     * <strong>NB:</strong> Future releases will reduce the default set to just
+     * {@code com.github.rvesse.airline.annotations.AirlineModule} and require that users explicitly configure
+     * additional annotation classes as they see fit.  If you are not currently using a dependency injection framework
+     * that requires some form of {@code Inject} annotation we would recommend that you transition to using
+     * {@link AirlineModule} in your Airline applications.
+     * </p>
+     *
+     * @return Builder
+     * @since 2.9.0
+     */
+    public ParserBuilder<C> withDefaultCompositionAnnotations() {
+        return withCompositionAnnotations(AirlineModule.class.getCanonicalName(), MetadataLoader.JAVAX_INJECT_INJECT,
+                                          MetadataLoader.JAKARTA_INJECT_INJECT,
+                                          MetadataLoader.COM_GOOGLE_INJECT_INJECT);
+    }
+
+    /**
      * Adds an alias
-     * 
-     * @param name
-     *            Alias name
+     *
+     * @param name Alias name
      * @return Alias Builder
      */
     public AliasBuilder<C> withAlias(final String name) {
@@ -119,24 +176,23 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Retrieves an alias builder for the given alias
-     * 
-     * @param name
-     *            Alias name
+     *
+     * @param name Alias name
      * @return Alias Builder
      */
     public AliasBuilder<C> getAlias(final String name) {
         checkNotBlank(name, "Alias name");
-        if (!aliases.containsKey(name))
+        if (!aliases.containsKey(name)) {
             throw new IllegalArgumentException(String.format("Alias %s has not been declared", name));
+        }
 
         return aliases.get(name);
     }
 
     /**
      * Sets a prefix character used in alias definitions to force use of a built-in as opposed to a chained alias
-     * 
-     * @param prefix
-     *            Prefic character
+     *
+     * @param prefix Prefix character
      * @return Parser build
      */
     public ParserBuilder<C> withAliasForceBuiltInPrefix(char prefix) {
@@ -146,7 +202,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Gets a builder that provides detailed control over building user aliases
-     * 
+     *
      * @return User aliases builder
      */
     public UserAliasSourceBuilder<C> withUserAliases() {
@@ -167,9 +223,8 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * If you prefer to control these values explicitly and for more detail on the configuration format please see the
      * {@link #withUserAliases(String, String, String...)} method
      * </p>
-     * 
-     * @param programName
-     *            Program Name
+     *
+     * @param programName Program Name
      * @return Builder
      * @deprecated Use {@link #withUserAliases()} to access the user alias builder directly instead
      */
@@ -191,12 +246,9 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * If you prefer to control this value explicitly and for more detail on the configuration format please see the
      * {@link #withUserAliases(String, String, String...)} method
      * </p>
-     * 
-     * @param programName
-     *            Program name
-     * @param searchLocation
-     *            Location to search
-     * 
+     *
+     * @param programName    Program name
+     * @param searchLocation Location to search
      * @return Builder
      * @deprecated Use {@link #withUserAliases()} to access the user alias builder directly instead
      */
@@ -217,7 +269,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * unquoted arguments. Note that since Java property values are interpreted as Java strings it is necessary to
      * double escape the backslash i.e. {@code \\"} for this to work properly.
      * </p>
-     * 
+     *
      * <pre>
      * example=command --option value
      * quoted=command "long argument"
@@ -243,20 +295,16 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * <li>Aliases cannot override built-ins unless you have called {@link #withAliasesOverridingBuiltIns()} on your
      * builder</li>
      * </ul>
-     * 
-     * @param filename
-     *            Filename to look for
-     * @param prefix
-     *            Prefix used to distinguish alias related properties from other properties
-     * @param searchLocations
-     *            Search locations in order of preference
-     * 
+     *
+     * @param filename        Filename to look for
+     * @param prefix          Prefix used to distinguish alias related properties from other properties
+     * @param searchLocations Search locations in order of preference
      * @return Builder
      * @deprecated Use {@link #withUserAliases()} to access the user alias builder directly instead
      */
     @Deprecated
     public ParserBuilder<C> withUserAliases(final String filename, final String prefix,
-            final String... searchLocations) {
+                                            final String... searchLocations) {
         this.userAliasesBuilder.withFilename(filename);
         this.userAliasesBuilder.withPrefix(prefix);
         this.userAliasesBuilder.withSearchLocations(searchLocations);
@@ -272,7 +320,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * unquoted arguments. Note that since Java property values are interpreted as Java strings it is necessary to
      * double escape the backslash i.e. {@code \\"} for this to work properly.
      * </p>
-     * 
+     *
      * <pre>
      * example=command --option value
      * quoted=command "long argument"
@@ -298,24 +346,19 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * <li>Aliases cannot override built-ins unless you have called {@link #withAliasesOverridingBuiltIns()} on your
      * builder</li>
      * </ul>
-     * 
-     * @param filename
-     *            Filename to look for
-     * @param prefix
-     *            Prefix used to distinguish alias related properties from other properties
-     * @param locators
-     *            Locators used to resolve search locations to actual locations, this is what enables things like
-     *            {@code ~/} to be used to refer to the users home directory. If {@code null} then a default set are
-     *            used.
-     * @param searchLocations
-     *            Search locations in order of preference
-     * 
+     *
+     * @param filename        Filename to look for
+     * @param prefix          Prefix used to distinguish alias related properties from other properties
+     * @param locators        Locators used to resolve search locations to actual locations, this is what enables things
+     *                        like {@code ~/} to be used to refer to the users home directory. If {@code null} then a
+     *                        default set are used.
+     * @param searchLocations Search locations in order of preference
      * @return Builder
      * @deprecated Use {@link #withUserAliases()} to access the user alias builder directly instead
      */
     @Deprecated
     public ParserBuilder<C> withUserAliases(final String filename, final String prefix,
-            final List<ResourceLocator> locators, final String... searchLocations) {
+                                            final List<ResourceLocator> locators, final String... searchLocations) {
         this.userAliasesBuilder.withFilename(filename);
         this.userAliasesBuilder.withPrefix(prefix);
         this.userAliasesBuilder.withSearchLocations(searchLocations);
@@ -325,7 +368,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Sets that aliases should override built-in commands
-     * 
+     *
      * @return Builder
      */
     public ParserBuilder<C> withAliasesOverridingBuiltIns() {
@@ -335,7 +378,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Sets that aliases may be defined in terms of other aliases
-     * 
+     *
      * @return Builder
      */
     public ParserBuilder<C> withAliasesChaining() {
@@ -345,7 +388,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Sets that command abbreviation is enabled
-     * 
+     *
      * @return Builder
      */
     public ParserBuilder<C> withCommandAbbreviation() {
@@ -355,7 +398,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Sets that option abbreviation is enabled
-     * 
+     *
      * @return Builder
      */
     public ParserBuilder<C> withOptionAbbreviation() {
@@ -365,9 +408,8 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Sets the type converter for the parser
-     * 
-     * @param converter
-     *            Type converter
+     *
+     * @param converter Type converter
      * @return Builder
      */
     public ParserBuilder<C> withTypeConverter(TypeConverter converter) {
@@ -377,7 +419,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Sets that the default type converter should be used
-     * 
+     *
      * @return Builder
      */
     public ParserBuilder<C> withDefaultTypeConverter() {
@@ -387,9 +429,8 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Indicates the desired numeric type converter to use, this is passed as an argument to the given type converter
-     * 
-     * @param converter
-     *            Numeric type converter
+     *
+     * @param converter Numeric type converter
      * @return Builder
      */
     public ParserBuilder<C> withNumericTypeConverter(NumericTypeConverter converter) {
@@ -399,7 +440,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Indicates that default numeric type conversion should be used
-     * 
+     *
      * @return Builder
      */
     public ParserBuilder<C> withDefaultNumericTypeConverter() {
@@ -409,9 +450,8 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Sets the error handler to use
-     * 
-     * @param errorHandler
-     *            Error handler
+     *
+     * @param errorHandler Error handler
      * @return Builder
      */
     public ParserBuilder<C> withErrorHandler(ParserErrorHandler errorHandler) {
@@ -421,7 +461,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Sets that the default error handler should be used
-     * 
+     *
      * @return Builder
      */
     public ParserBuilder<C> withDefaultErrorHandler() {
@@ -435,9 +475,8 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * Order of registration is important, if you have previously registered any parsers then those will be used prior
      * to the one given here
      * </p>
-     * 
-     * @param optionParser
-     *            Option parser
+     *
+     * @param optionParser Option parser
      * @return Builder
      */
     public ParserBuilder<C> withOptionParser(OptionParser<C> optionParser) {
@@ -453,9 +492,8 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * Order of registration is important, if you have previously registered any parsers then those will be used prior
      * to those given here
      * </p>
-     * 
-     * @param optionParsers
-     *            Option parsers
+     *
+     * @param optionParsers Option parsers
      * @return Builder
      */
     @SuppressWarnings("unchecked")
@@ -481,7 +519,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * If you wish to instead add the default parsers in addition to your custom parsers you should instead call
      * {@link #withDefaultOptionParsers()}
      * </p>
-     * 
+     *
      * @return Builder
      */
     public ParserBuilder<C> withOnlyDefaultOptionParsers() {
@@ -495,13 +533,13 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * Order of registration is important, if you have previously registered any parsers then those will be used prior
      * to those in the default set.
      * </p>
-     * 
+     *
      * @return Builder
      */
     @SuppressWarnings("unchecked")
     public ParserBuilder<C> withDefaultOptionParsers() {
         return this.withOptionParsers(new StandardOptionParser<C>(), new LongGetOptParser<C>(),
-                new ClassicGetOptParser<C>());
+                                      new ClassicGetOptParser<C>());
     }
 
     /**
@@ -511,9 +549,8 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * This is useful for disambiguating where arguments may be misinterpreted as options. The default value of this is
      * the standard {@code --} used by many command line tools.
      * </p>
-     * 
-     * @param separator
-     *            Arguments separator
+     *
+     * @param separator Arguments separator
      * @return Builder
      */
     public ParserBuilder<C> withArgumentsSeparator(String separator) {
@@ -526,9 +563,8 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * {@code false} rather than the usual behaviour of setting it to {@code true}. Options must have appropriately
      * prefixed names defined for this prefix to have any effect i.e. setting it does not automatically enable negation
      * for flag options.
-     * 
-     * @param prefix
-     *            Flag negation prefix
+     *
+     * @param prefix Flag negation prefix
      * @return Builder
      */
     public ParserBuilder<C> withFlagNegationPrefix(String prefix) {
@@ -552,6 +588,10 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     @Override
     public ParserMetadata<C> build() {
+        // Ensure we have some injection annotations if none configured
+        if (this.injectionAnnotationClasses.size() == 0) {
+            this.withDefaultCompositionAnnotations();
+        }
         // Ensure we have some option parsers if none configured
         if (this.optionParsers.size() == 0) {
             this.withDefaultOptionParsers();
@@ -564,8 +604,8 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
             try {
                 userAliases = this.userAliasesBuilder.build();
                 for (AliasMetadata alias : userAliases.load()) {
-                    aliases.put(alias.getName(), new AliasBuilder<C>(this, alias.getName())
-                            .withArguments(alias.getArguments().toArray(new String[alias.getArguments().size()])));
+                    aliases.put(alias.getName(), new AliasBuilder<C>(this, alias.getName()).withArguments(
+                            alias.getArguments().toArray(new String[alias.getArguments().size()])));
                 }
             } catch (IOException e) {
                 throw new IllegalStateException("Failed to load user aliases", e);
@@ -588,8 +628,9 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
         }
         typeConverter.setNumericConverter(this.numericTypeConverter);
 
-        return new ParserMetadata<C>(commandFactory, optionParsers, typeConverter, errorHandler,
-                allowAbbreviatedCommands, allowAbbreviatedOptions, aliasData, userAliases, aliasesOverrideBuiltIns,
-                aliasesMayChain, forceBuiltInPrefix, argsSeparator, flagNegationPrefix);
+        return new ParserMetadata<C>(commandFactory, injectionAnnotationClasses, optionParsers, typeConverter,
+                                     errorHandler, allowAbbreviatedCommands, allowAbbreviatedOptions, aliasData,
+                                     userAliases, aliasesOverrideBuiltIns, aliasesMayChain, forceBuiltInPrefix,
+                                     argsSeparator, flagNegationPrefix);
     }
 }

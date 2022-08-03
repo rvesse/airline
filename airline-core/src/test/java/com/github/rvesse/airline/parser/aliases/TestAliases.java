@@ -15,24 +15,6 @@
  */
 package com.github.rvesse.airline.parser.aliases;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.args.Args1;
 import com.github.rvesse.airline.builder.CliBuilder;
@@ -44,6 +26,24 @@ import com.github.rvesse.airline.parser.errors.ParseOptionConversionException;
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.EnvVarLocator;
 import com.github.rvesse.airline.parser.resources.JvmSystemPropertyLocator;
+import org.apache.commons.lang3.StringUtils;
+import org.testng.Assert;
+import org.testng.SkipException;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TestAliases {
 
@@ -75,32 +75,53 @@ public class TestAliases {
         writer.close();
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void customEnvironment(Map<String, String> customEnvironment) throws Exception {
+        customEnvironment(customEnvironment, false);
+    }
+
+    public static void resetCustomEnvironment(Map<String, String> customEnvironment) throws Exception {
+        customEnvironment(customEnvironment, true);
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static void customEnvironment(Map<String, String> customEnvironment, boolean remove) throws Exception {
         try {
-            Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
-            Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
-            theEnvironmentField.setAccessible(true);
-            Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
-            env.putAll(customEnvironment);
-            Field theCaseInsensitiveEnvironmentField = processEnvironmentClass
-                    .getDeclaredField("theCaseInsensitiveEnvironment");
-            theCaseInsensitiveEnvironmentField.setAccessible(true);
-            Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
-            cienv.putAll(customEnvironment);
-        } catch (NoSuchFieldException e) {
-            Class[] classes = Collections.class.getDeclaredClasses();
-            Map<String, String> env = System.getenv();
-            for (Class cl : classes) {
-                if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
-                    Field field = cl.getDeclaredField("m");
-                    field.setAccessible(true);
-                    Object obj = field.get(env);
-                    Map<String, String> map = (Map<String, String>) obj;
-                    // map.clear();
-                    map.putAll(customEnvironment);
+            try {
+                Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
+                Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
+                theEnvironmentField.setAccessible(true);
+                Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
+                env.putAll(customEnvironment);
+                Field theCaseInsensitiveEnvironmentField = processEnvironmentClass
+                        .getDeclaredField("theCaseInsensitiveEnvironment");
+                theCaseInsensitiveEnvironmentField.setAccessible(true);
+                Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
+                updateCustomEnvironment(customEnvironment, remove, cienv);
+            } catch (NoSuchFieldException e) {
+                Class[] classes = Collections.class.getDeclaredClasses();
+                Map<String, String> env = System.getenv();
+                for (Class cl : classes) {
+                    if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+                        Field field = cl.getDeclaredField("m");
+                        field.setAccessible(true);
+                        Object obj = field.get(env);
+                        Map<String, String> map = (Map<String, String>) obj;
+                        updateCustomEnvironment(customEnvironment, remove, map);
+                    }
                 }
             }
+        } catch (Throwable e) {
+            throw new SkipException("Runtime environment does not permit environment customisation: ", e);
+        }
+    }
+
+    private static void updateCustomEnvironment(Map<String, String> customEnvironment, boolean remove, Map<String, String> env) {
+        if (remove) {
+            for (Map.Entry<String, String> kvp : customEnvironment.entrySet()) {
+                env.remove(kvp.getKey());
+            }
+        } else {
+            env.putAll(customEnvironment);
         }
     }
 
@@ -368,34 +389,38 @@ public class TestAliases {
         custom.put("FOO", f.getParentFile().getAbsolutePath());
 
         customEnvironment(custom);
-        prepareConfig(f, "foo=Args1 bar");
+        try {
+            prepareConfig(f, "foo=Args1 bar");
 
-        //@formatter:off
-        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
-                            .withCommand(Args1.class);
-        builder.withParser()
-               .withUserAliases()
+            //@formatter:off
+            CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                                           .withCommand(Args1.class);
+            builder.withParser()
+                   .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocation("${FOO}/")
                    .withLocator(new EnvVarLocator());
-        Cli<Args1> cli = builder.build();
-        //@formatter:on
+            Cli<Args1> cli = builder.build();
+            //@formatter:on
 
-        // Check definition
-        List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
-        Assert.assertEquals(aliases.size(), 1);
+            // Check definition
+            List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
+            Assert.assertEquals(aliases.size(), 1);
 
-        AliasMetadata alias = aliases.get(0);
-        Assert.assertEquals(alias.getName(), "foo");
-        List<String> args = alias.getArguments();
-        Assert.assertEquals(args.size(), 2);
-        Assert.assertEquals(args.get(0), "Args1");
-        Assert.assertEquals(args.get(1), "bar");
+            AliasMetadata alias = aliases.get(0);
+            Assert.assertEquals(alias.getName(), "foo");
+            List<String> args = alias.getArguments();
+            Assert.assertEquals(args.size(), 2);
+            Assert.assertEquals(args.get(0), "Args1");
+            Assert.assertEquals(args.get(1), "bar");
 
-        // Check parsing
-        Args1 cmd = cli.parse("foo");
-        Assert.assertEquals(cmd.parameters.size(), 1);
-        Assert.assertEquals(cmd.parameters.get(0), "bar");
+            // Check parsing
+            Args1 cmd = cli.parse("foo");
+            Assert.assertEquals(cmd.parameters.size(), 1);
+            Assert.assertEquals(cmd.parameters.get(0), "bar");
+        } finally {
+            resetCustomEnvironment(custom);
+        }
     }
 
     @Test
@@ -404,23 +429,27 @@ public class TestAliases {
         custom.put("FOO", f.getParentFile().getAbsolutePath());
 
         customEnvironment(custom);
-        prepareConfig(f, "foo=Args1 bar");
+        try {
+            prepareConfig(f, "foo=Args1 bar");
 
-        //@formatter:off
-        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
-                            .withCommand(Args1.class);
-        builder.withParser()
-                // Bad placeholder
-               .withUserAliases()
+            //@formatter:off
+            CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                                           .withCommand(Args1.class);
+            builder.withParser()
+                   // Bad placeholder
+                   .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocation("${FOO/")
                    .withLocator(new EnvVarLocator());
-        Cli<Args1> cli = builder.build();
-        //@formatter:on
+            Cli<Args1> cli = builder.build();
+            //@formatter:on
 
-        // Check definition
-        List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
-        Assert.assertEquals(aliases.size(), 0);
+            // Check definition
+            List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
+            Assert.assertEquals(aliases.size(), 0);
+        } finally {
+            resetCustomEnvironment(custom);
+        }
     }
 
     @Test
@@ -430,34 +459,38 @@ public class TestAliases {
         custom.put("BAR", f.getParentFile().getName());
 
         customEnvironment(custom);
-        prepareConfig(f, "foo=Args1 bar");
+        try {
+            prepareConfig(f, "foo=Args1 bar");
 
-        //@formatter:off
-        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
-                            .withCommand(Args1.class);
-        builder.withParser()
-               .withUserAliases()
+            //@formatter:off
+            CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                                           .withCommand(Args1.class);
+            builder.withParser()
+                   .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocation("${FOO}/${BAR}/")
                    .withLocator(new EnvVarLocator());
-        Cli<Args1> cli = builder.build();
-        //@formatter:on
+            Cli<Args1> cli = builder.build();
+            //@formatter:on
 
-        // Check definition
-        List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
-        Assert.assertEquals(aliases.size(), 1);
+            // Check definition
+            List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
+            Assert.assertEquals(aliases.size(), 1);
 
-        AliasMetadata alias = aliases.get(0);
-        Assert.assertEquals(alias.getName(), "foo");
-        List<String> args = alias.getArguments();
-        Assert.assertEquals(args.size(), 2);
-        Assert.assertEquals(args.get(0), "Args1");
-        Assert.assertEquals(args.get(1), "bar");
+            AliasMetadata alias = aliases.get(0);
+            Assert.assertEquals(alias.getName(), "foo");
+            List<String> args = alias.getArguments();
+            Assert.assertEquals(args.size(), 2);
+            Assert.assertEquals(args.get(0), "Args1");
+            Assert.assertEquals(args.get(1), "bar");
 
-        // Check parsing
-        Args1 cmd = cli.parse("foo");
-        Assert.assertEquals(cmd.parameters.size(), 1);
-        Assert.assertEquals(cmd.parameters.get(0), "bar");
+            // Check parsing
+            Args1 cmd = cli.parse("foo");
+            Assert.assertEquals(cmd.parameters.size(), 1);
+            Assert.assertEquals(cmd.parameters.get(0), "bar");
+        } finally {
+            resetCustomEnvironment(custom);
+        }
     }
     
     @Test
@@ -466,22 +499,26 @@ public class TestAliases {
         custom.put("FOO", new File(f.getAbsolutePath()).getParentFile().getParentFile().getAbsolutePath());
 
         customEnvironment(custom);
-        prepareConfig(f, "foo=Args1 bar");
+        try {
+            prepareConfig(f, "foo=Args1 bar");
 
-        //@formatter:off
-        CliBuilder<Args1> builder = Cli.<Args1>builder("test")
-                            .withCommand(Args1.class);
-        builder.withParser()
-               .withUserAliases()
+            //@formatter:off
+            CliBuilder<Args1> builder = Cli.<Args1>builder("test")
+                                           .withCommand(Args1.class);
+            builder.withParser()
+                   .withUserAliases()
                    .withFilename(f.getName())
                    .withSearchLocation("${FOO}/${UNDEF}/")
                    .withLocator(new EnvVarLocator());
-        Cli<Args1> cli = builder.build();
-        //@formatter:on
+            Cli<Args1> cli = builder.build();
+            //@formatter:on
 
-        // Check definition, should be missing as not all env vars were resolvable
-        List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
-        Assert.assertEquals(aliases.size(), 0);
+            // Check definition, should be missing as not all env vars were resolvable
+            List<AliasMetadata> aliases = cli.getMetadata().getParserConfiguration().getAliases();
+            Assert.assertEquals(aliases.size(), 0);
+        } finally {
+            resetCustomEnvironment(custom);
+        }
     }
 
     @Test

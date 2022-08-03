@@ -26,9 +26,12 @@ import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 import static com.github.rvesse.airline.help.UsageHelper.DEFAULT_COMMAND_COMPARATOR;
 import static com.github.rvesse.airline.help.UsageHelper.DEFAULT_OPTION_COMPARATOR;
 import static com.github.rvesse.airline.help.UsageHelper.DEFAULT_HINT_COMPARATOR;
+
+import org.apache.commons.collections4.IterableUtils;
 
 public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGroupUsageGenerator<T> {
     private final boolean hideGlobalOptions;
@@ -285,9 +288,14 @@ public class CliCommandGroupUsageGenerator<T> extends AbstractPrintedCommandGrou
         if (hasDefaultCommand) {
             synopsis.newline().append("Where * indicates the default command(s)");
         }
-        synopsis.newline().append("See").append("'" + global.getName()).append("help ")
-                .appendWords(UsageHelper.toGroupNames(Arrays.asList(groups)))
-                .appendOnOneLine(" <command>' for more information on a specific command.").newline();
+
+        boolean hasHelpCommand = IterableUtils.find(global.getDefaultGroupCommands(), new CommandFinder("help")) != null;
+
+        if (hasHelpCommand) {
+            synopsis.newline().append("See").append("'" + global.getName()).append("help ")
+                    .appendWords(UsageHelper.toGroupNames(Arrays.asList(groups)))
+                    .appendOnOneLine(" <command>' for more information on a specific command.").newline();
+        }
     }
 
     /**

@@ -15,18 +15,16 @@
  */
 package com.github.rvesse.airline.examples.simple;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.rvesse.airline.HelpOption;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.examples.ExampleExecutor;
 import com.github.rvesse.airline.examples.ExampleRunnable;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 /**
  * A simple example that demonstrates most of the basic concepts
@@ -49,7 +47,7 @@ public class Simple implements ExampleRunnable {
      * the user requested the help
      * </p>
      */
-    @Inject
+    @AirlineModule
     private HelpOption<Simple> help;
 
     @Option(name = { "-f", "--flag" }, description = "An option that requires no arguments")

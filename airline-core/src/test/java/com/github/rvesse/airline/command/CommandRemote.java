@@ -15,14 +15,13 @@
  */
 package com.github.rvesse.airline.command;
 
-import javax.inject.Inject;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Command;
 
 @Command(name = "remote",
          description = "A command whose name is similar to other command names")
 public class CommandRemote {
-    @Inject
+    @AirlineModule
     public CommandMain commandMain;
 
 }
