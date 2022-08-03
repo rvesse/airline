@@ -4,7 +4,7 @@
 
 - Build Improvements
    - Added GitHub Actions based CI/CD for the repository
-   - Added a new `airline-backcompact-javaxinject` module to aid Annotation Improvements (see below), this is
+   - Added a new `airline-backcompat-javaxinject` module to aid Annotation Improvements (see below), this is
      included in the dependencies of the core `airline` module by default.  Note that future 3.x releases may
      make this dependency optional as the Java ecosystem transitions away from using the old `javax` packages.
 - Annotation Improvements
