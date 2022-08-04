@@ -146,9 +146,9 @@ public class UsagePrinter {
         if (value == null)
             return this;
         if (avoidNewlines) {
-            return appendWords(Arrays.asList(value.split("\\s+")), avoidNewlines);
+            return appendWords(Arrays.asList(value.split("\\s+")), true);
         } else {
-            return appendLines(Arrays.asList(StringUtils.split(value, '\n')), avoidNewlines);
+            return appendLines(Arrays.asList(StringUtils.split(value, '\n')), false);
         }
     }
 

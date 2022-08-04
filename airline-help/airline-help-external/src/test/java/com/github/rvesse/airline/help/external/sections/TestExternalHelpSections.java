@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.rvesse.airline.help.external.sections;
 
+import com.github.rvesse.airline.builder.ParserBuilder;
+import com.github.rvesse.airline.model.ParserMetadata;
 import org.apache.commons.collections4.IterableUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -33,6 +34,7 @@ import com.github.rvesse.airline.help.sections.common.ProseSection;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
+
 import static com.github.rvesse.airline.help.sections.TestHelpSectionDetection.HelpSectionFinder;
 
 public class TestExternalHelpSections {
@@ -52,7 +54,8 @@ public class TestExternalHelpSections {
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Failed to locate resource.*no resource locators were configured")
     public void help_section_external_no_locators_01() {
-        MetadataLoader.loadCommand(ArgsInvalidResourceLocators.class);
+        MetadataLoader.loadCommand(ArgsInvalidResourceLocators.class,
+                                   new ParserBuilder<ArgsInvalidResourceLocators>().build());
     }
 
     @Test
@@ -73,7 +76,8 @@ public class TestExternalHelpSections {
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Failed to locate resource.*")
     public void help_section_external_discussion_02() {
-        MetadataLoader.loadCommand(ArgsInvalidResourcesProse.class);
+        MetadataLoader.loadCommand(ArgsInvalidResourcesProse.class,
+                                   new ParserBuilder<ArgsInvalidResourcesProse>().build());
     }
 
     @Test
@@ -100,7 +104,8 @@ public class TestExternalHelpSections {
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Failed to locate resource.*")
     public void help_section_external_exit_codes_02() {
-        MetadataLoader.loadCommand(ArgsInvalidResourcesExitCodes.class);
+        MetadataLoader.loadCommand(ArgsInvalidResourcesExitCodes.class,
+                                   new ParserBuilder<ArgsInvalidResourcesExitCodes>().build());
     }
 
     @Test
@@ -114,7 +119,8 @@ public class TestExternalHelpSections {
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Failed to locate resource.*")
     public void help_section_external_examples_text_02() {
-        MetadataLoader.loadCommand(ArgsInvalidResourcesExamplesTextual.class);
+        MetadataLoader.loadCommand(ArgsInvalidResourcesExamplesTextual.class,
+                                   new ParserBuilder<ArgsInvalidResourcesExamplesTextual>().build());
     }
 
     @Test
@@ -128,7 +134,8 @@ public class TestExternalHelpSections {
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Failed to locate resource.*")
     public void help_section_external_examples_tabular_02() {
-        MetadataLoader.loadCommand(ArgsInvalidResourcesExamplesTabular.class);
+        MetadataLoader.loadCommand(ArgsInvalidResourcesExamplesTabular.class,
+                                   new ParserBuilder<ArgsInvalidResourcesExamplesTabular>().build());
     }
 
     public void verifyExamples(CommandMetadata cmd, HelpSection section) {

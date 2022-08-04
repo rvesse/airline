@@ -25,9 +25,11 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
     the `parent()` method for cleaner Fluid CLI definitions
 - Dependency Updates
   - Apache Commons Collections upgraded to 4.4
-  - Apache Commons Lang upgraded to 3.11
+  - Apache Commons Lang upgraded to 3.12.0
   - Various build plugins updated to latest available versions (this only impacts developers building the library from
     source)
+- Maven Plugin improvements
+  - Some logging has moved up to INFO from DEBUG so you don't have to use -X to see it
 - New `airline-prompts` module provides a Fluent API for defining user prompts (#92)
   - Prompt timeouts so non-interactive apps don't hang forever
   - Configurable prompt sources
