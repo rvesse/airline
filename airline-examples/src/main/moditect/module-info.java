@@ -49,7 +49,7 @@ module com.github.rvesse.airline.examples
     exports com.github.rvesse.airline.examples.userguide.restrictions.custom;
     
     // As Airline is driven by reflection over the annotations on your classes you need 
-    // to open packages containing Airline annotated types to the com.github.rvesse.airline package
+    // to open packages containing Airline annotated types to the com.github.rvesse.airline module
     opens com.github.rvesse.airline.examples.cli to com.github.rvesse.airline;
     opens com.github.rvesse.airline.examples.cli.aliases to com.github.rvesse.airline;
     opens com.github.rvesse.airline.examples.cli.commands to com.github.rvesse.airline;
@@ -68,5 +68,4 @@ module com.github.rvesse.airline.examples
     opens com.github.rvesse.airline.examples.userguide.practise to com.github.rvesse.airline;
     opens com.github.rvesse.airline.examples.userguide.restrictions to com.github.rvesse.airline;
     opens com.github.rvesse.airline.examples.userguide.restrictions.custom to com.github.rvesse.airline;
-    
 }

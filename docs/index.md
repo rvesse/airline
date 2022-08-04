@@ -47,9 +47,10 @@ Airline has an intentionally minimal set of dependencies, these are currently as
 
 - Apache Commons Lang and Apache Commons Collections
 - Airline IO (our own internal helper library for IO)
-- Jarkarta Inject (and Javax Inject)
+- ClassGraph (for resource location when using Airline with JPMS)
+- Jakarta Inject (and Javax Inject)
    - Please see [Historical Composition](guide/practise/oop.html#historical-composition) for background
-   - These dependencies will be removed in future releases
+   - These dependencies are **optional** as of `2.10.0` so will not be picked up unless you explicitly declare them
 
 ## License
 

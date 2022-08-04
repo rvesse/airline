@@ -15,6 +15,8 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
   - First class support for `Path`
   - Provided corrected spelling for `ConvertResult.wasSuccessful()`, old mis-spelt method preserved but marked as
     deprecated
+  - Added a `ClassGraphLocator` as an additional `ResourceLocator` to allow finding resources when running in a JPMS
+    context
 - Help Improvements
   - Added an `@SeeAlso` annotation to Airline Core (#51)
   - **BREAKING** - `airline-help-bash` has moved `@BashCompletion` annotation into
@@ -26,10 +28,12 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
 - Dependency Updates
   - Apache Commons Collections upgraded to 4.4
   - Apache Commons Lang upgraded to 3.12.0
-  - Various build plugins updated to latest available versions (this only impacts developers building the library from
+  - Various build plugins updated to the latest available versions (this only impacts developers building the library 
+    from
     source)
+  - New dependency on ClassGraph to enable resource location when used on Module Path
 - Maven Plugin improvements
-  - Some logging has moved up to INFO from DEBUG so you don't have to use -X to see it
+  - Some logging has moved up to INFO from DEBUG, so you no longer have to use `-X` to see it
 - New `airline-prompts` module provides a Fluent API for defining user prompts (#92)
   - Prompt timeouts so non-interactive apps don't hang forever
   - Configurable prompt sources

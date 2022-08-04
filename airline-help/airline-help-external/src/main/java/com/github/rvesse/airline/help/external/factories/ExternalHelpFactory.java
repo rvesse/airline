@@ -38,7 +38,7 @@ import com.github.rvesse.airline.parser.ParserUtil;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
 
 /**
- * Help section factory that enables the additonal annotations provided by this module
+ * Help section factory that enables the additional annotations provided by this module
  *
  */
 public class ExternalHelpFactory implements HelpSectionFactory {

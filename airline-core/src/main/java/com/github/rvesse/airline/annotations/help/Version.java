@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.FileLocator;
+import com.github.rvesse.airline.parser.resources.ClassGraphLocator;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
 
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
@@ -47,42 +48,42 @@ public @interface Version {
      * which supports either normal Java properties format (key value pairs
      * separated by {@code =} with one per line) or Java Manifest files.
      * </p>
-     * 
+     *
      * @return Sources for version information
      */
     String[] sources();
 
     /**
      * Sets the property used to find the component information (if any)
-     * 
+     *
      * @return Component property
      */
     String componentProperty() default "component";
 
     /**
      * Sets the property used to find version information (if any)
-     * 
+     *
      * @return Version property
      */
     String versionProperty() default "version";
 
     /**
      * Sets the property used to find build information (if any)
-     * 
+     *
      * @return Build property
      */
     String buildProperty() default "build";
 
     /**
      * Sets the property used to find build date information (if any)
-     * 
+     *
      * @return Build Date property
      */
     String dateProperty() default "buildDate";
 
     /**
      * Any additional properties from which information should be obtained
-     * 
+     *
      * @return Additional properties
      */
     String[] additionalProperties() default {};
@@ -91,7 +92,7 @@ public @interface Version {
      * The titles for the additional properties specified by
      * {@link #additionalProperties()} used to present this information in
      * generated help output
-     * 
+     *
      * @return Additional titles
      */
     String[] additionalTitles() default {};
@@ -107,14 +108,14 @@ public @interface Version {
      * was found or if some information was found then partial information is
      * shown.
      * </p>
-     * 
+     *
      * @return True if errors in obtaining version information are suppressed
      */
     boolean suppressOnError();
 
     /**
      * Whether to display the version information in a tabular format
-     * 
+     *
      * @return True if tabular format, false for list format
      */
     boolean tabular() default false;
@@ -122,8 +123,12 @@ public @interface Version {
     /**
      * Resource locators used to find the properties files specified in
      * {@link #sources()}
-     * 
+     *
      * @return Resource locators to use
      */
-    Class<? extends ResourceLocator>[] sourceLocators() default { ClasspathLocator.class, FileLocator.class };
+    Class<? extends ResourceLocator>[] sourceLocators() default {
+            ClasspathLocator.class,
+            ClassGraphLocator.class,
+            FileLocator.class
+    };
 }

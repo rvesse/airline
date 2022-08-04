@@ -23,6 +23,7 @@ import java.lang.annotation.Target;
 
 import com.github.rvesse.airline.help.external.parsers.ParagraphsParser;
 import com.github.rvesse.airline.help.external.parsers.defaults.DefaultExternalHelpParser;
+import com.github.rvesse.airline.parser.resources.ClassGraphLocator;
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.FileLocator;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
@@ -37,29 +38,33 @@ public @interface ExternalExamples {
 
     /**
      * Source containing the examples
-     * 
+     *
      * @return Example source
      */
     public String exampleSource();
 
     /**
      * Source containing the descriptions of the examples
-     * 
+     *
      * @return Description source
      */
     public String descriptionSource();
 
     /**
      * Resource locators used to find the resources specified in {@link #source()}
-     * 
+     *
      * @return Resource locators to use
      */
-    Class<? extends ResourceLocator>[] sourceLocators() default { ClasspathLocator.class, FileLocator.class };
+    Class<? extends ResourceLocator>[] sourceLocators() default {
+            ClasspathLocator.class,
+            ClassGraphLocator.class,
+            FileLocator.class
+    };
 
     /**
      * The parser to use to translate the source specified by {@link #exampleSource()} and {@link #descriptionSource()}
      * into paragraphs
-     * 
+     *
      * @return Paragraphs parser
      */
     Class<? extends ParagraphsParser> parser() default DefaultExternalHelpParser.class;

@@ -15,17 +15,18 @@
  */
 package com.github.rvesse.airline.annotations.help.external;
 
-import static java.lang.annotation.ElementType.TYPE;
+import com.github.rvesse.airline.help.external.parsers.TabularParser;
+import com.github.rvesse.airline.help.external.parsers.defaults.DefaultExternalHelpParser;
+import com.github.rvesse.airline.parser.resources.ClassGraphLocator;
+import com.github.rvesse.airline.parser.resources.ClasspathLocator;
+import com.github.rvesse.airline.parser.resources.FileLocator;
+import com.github.rvesse.airline.parser.resources.ResourceLocator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.github.rvesse.airline.help.external.parsers.TabularParser;
-import com.github.rvesse.airline.help.external.parsers.defaults.DefaultExternalHelpParser;
-import com.github.rvesse.airline.parser.resources.ClasspathLocator;
-import com.github.rvesse.airline.parser.resources.FileLocator;
-import com.github.rvesse.airline.parser.resources.ResourceLocator;
+import static java.lang.annotation.ElementType.TYPE;
 
 /**
  * Annotation that provides an examples section for a commands help via a single external resource in tabular format
@@ -37,21 +38,25 @@ public @interface ExternalTabularExamples {
 
     /**
      * Source containing the examples and their descriptions in tabular format
-     * 
+     *
      * @return Source
      */
     public String source();
 
     /**
      * Resource locators used to find the resources specified in {@link #source()}
-     * 
+     *
      * @return Resource locators to use
      */
-    Class<? extends ResourceLocator>[] sourceLocators() default { ClasspathLocator.class, FileLocator.class };
+    Class<? extends ResourceLocator>[] sourceLocators() default {
+            ClasspathLocator.class,
+            ClassGraphLocator.class,
+            FileLocator.class
+    };
 
     /**
      * The parser to use to translate the source specified by {@link #source()} into tabular data
-     * 
+     *
      * @return Tabular parser
      */
     Class<? extends TabularParser> parser() default DefaultExternalHelpParser.class;
