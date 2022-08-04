@@ -101,7 +101,7 @@ public class GenerateMojo extends AbstractAirlineOutputMojo {
                 if (failOnUnknownFormat)
                     throw new MojoFailureException(
                             String.format("Format %s does not have a format mapping defined", format));
-                log.debug(String.format("Format %s is unknown and was skipped", format));
+                log.warn(String.format("Format %s is unknown and was skipped", format));
                 continue;
             }
             FormatOptions options = mappedOptions.get(format);
@@ -128,7 +128,7 @@ public class GenerateMojo extends AbstractAirlineOutputMojo {
                         CommandUsageGenerator sourceCommandGenerator = commandGenerator;
                         if (source.isCommand()) {
                             if (!source.shouldOutputCommandHelp()) {
-                                log.debug(String.format(
+                                log.info(String.format(
                                         "Skipping command help for %s because configured output mode is %s",
                                         source.getSourceClass(), source.getOutputMode()));
                                 continue;
@@ -143,12 +143,12 @@ public class GenerateMojo extends AbstractAirlineOutputMojo {
                             outputCommandHelp(format, provider, sourceOptions, sourceCommandGenerator, source);
                         } else if (source.isGlobal()) {
                             if (!source.shouldOutputCommandHelp()) {
-                                log.debug(String.format(
+                                log.info(String.format(
                                         "Skipping command help for %s because configured output mode is %s",
                                         source.getSourceClass(), source.getOutputMode()));
                                 continue;
                             }
-                            log.debug(String.format("Generating command help for all commands provided by CLI %s",
+                            log.info(String.format("Generating command help for all commands provided by CLI %s",
                                     source.getSourceClass()));
 
                             if (sourceOptions != options) {
@@ -173,7 +173,7 @@ public class GenerateMojo extends AbstractAirlineOutputMojo {
                     }
                 }
             } else {
-                log.debug("Skipping command help as no configured sources were commands or had their output mode set to COMMAND");
+                log.info("Skipping command help as no configured sources were commands or had their output mode set to COMMAND");
             }
 
             if (groupOutputs > 0) {
@@ -196,7 +196,7 @@ public class GenerateMojo extends AbstractAirlineOutputMojo {
 
                         if (source.isGlobal()) {
                             if (!source.shouldOutputGroupHelp()) {
-                                log.debug(
+                                log.info(
                                         String.format("Skipping group help for %s because configured output mode is %s",
                                                 source.getSourceClass(), source.getOutputMode()));
                                 continue;
@@ -218,7 +218,7 @@ public class GenerateMojo extends AbstractAirlineOutputMojo {
                     }
                 }
             } else {
-                log.debug("Skipping group help as no configured sources had their output mode set to GROUP");
+                log.info("Skipping group help as no configured sources had their output mode set to GROUP");
             }
 
             if (cliOutputs > 0) {
@@ -239,7 +239,7 @@ public class GenerateMojo extends AbstractAirlineOutputMojo {
                             continue;
 
                         if (!source.shouldOutputGlobalHelp()) {
-                            log.debug(String.format("Skipping global help for %s because configured output mode is %s",
+                            log.info(String.format("Skipping global help for %s because configured output mode is %s",
                                     source.getSourceClass(), source.getOutputMode()));
                             continue;
                         }
@@ -254,7 +254,7 @@ public class GenerateMojo extends AbstractAirlineOutputMojo {
                     }
                 }
             } else {
-                log.debug("Skipping command help as no configured sources were CLIs");
+                log.info("Skipping command help as no configured sources were CLIs");
             }
 
         }
