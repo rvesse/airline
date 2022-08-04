@@ -18,7 +18,6 @@ module com.github.rvesse.airline.examples
     requires org.apache.commons.collections4;
     requires org.apache.commons.csv;
     requires org.apache.commons.lang3;
-    requires java.inject;
     requires com.github.rvesse.airline.io;
     requires com.github.rvesse.airline;
     requires com.github.rvesse.airline.help.bash;

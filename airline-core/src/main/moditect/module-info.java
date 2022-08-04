@@ -15,11 +15,16 @@
  */
 module com.github.rvesse.airline
 {
+  // Required dependencies
   requires com.github.rvesse.airline.io;
   requires org.apache.commons.lang3;
   requires org.apache.commons.collections4;
-  requires java.inject;
 
+  // Optional dependencies that a user might choose to add
+  requires static java.inject;
+  requires static jakarta.inject;
+
+  // Exported packages
   exports com.github.rvesse.airline;
   exports com.github.rvesse.airline.annotations;
   exports com.github.rvesse.airline.annotations.help;

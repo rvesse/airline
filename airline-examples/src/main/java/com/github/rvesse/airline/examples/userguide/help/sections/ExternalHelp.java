@@ -19,8 +19,7 @@ package com.github.rvesse.airline.examples.userguide.help.sections;
 import java.io.IOException;
 import java.util.List;
 
-import javax.inject.Inject;
-
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.help.external.ExternalExitCodes;
@@ -37,7 +36,7 @@ import com.github.rvesse.airline.model.CommandMetadata;
 @ExternalTabularExamples(source = "/examples.csv")
 public class ExternalHelp implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private CommandMetadata metadata;
     
     @Arguments

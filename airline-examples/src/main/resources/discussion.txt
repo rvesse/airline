@@ -1,4 +1,4 @@
-As of Airline 2.9.0 new variants of some Help related annotations allow for 
+As of Airline 2.10.0 new variants of some Help related annotations allow for
 help to be separated out into external resources.  This allows content like 
 this to be more naturally managed rather than being shoe-horned into 
 annotations.
