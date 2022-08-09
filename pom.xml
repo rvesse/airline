@@ -80,7 +80,9 @@
     <dependency.classgraph>4.8.149</dependency.classgraph>
     <dependency.commons-lang3>3.12.0</dependency.commons-lang3>
     <dependency.commons-collections4>4.4</dependency.commons-collections4>
-    <dependency.commons-csv>1.10.0-SNAPSHOT</dependency.commons-csv>
+    <!-- Still waiting on Apache Commons to properly release with JPMS support -->
+    <!-- Thus locked to a timestamped SNAPSHOT for now -->
+    <dependency.commons-csv>1.10.0-20220310.222602-6</dependency.commons-csv>
   </properties>
 
   <modules>
