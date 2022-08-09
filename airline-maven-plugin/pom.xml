@@ -124,6 +124,7 @@
                     <goals>clean,install</goals>
                     <failIfNoProjects>true</failIfNoProjects>
                     <skipInvocation>${skipTests}</skipInvocation>
+                    <parallelThreads>4</parallelThreads>
                 </configuration>
                 <executions>
                     <execution>
