@@ -1,3 +1,12 @@
+# Migration to Airline 2.10 from Airline 2.x
+
+Airline 2.10 has a single minor breaking change that only affects users of the `airline-help-bash` module.
+
+## `@BashCompletion` package relocation
+
+In order to avoid package collisions between modules and enable the `airline-help-bash` module to become a JPMS module
+this annotation was moved into a new sub-package `com.github.rvesse.airline.annotations.help.bash`
+
 # Migration to Airline 2.9
 
 Airline 2.9 introduces some changes to composition annotations in preparation for breaking changes in future releases.

@@ -15,11 +15,17 @@
  */
 module com.github.rvesse.airline
 {
+  // Required dependencies
   requires com.github.rvesse.airline.io;
   requires org.apache.commons.lang3;
   requires org.apache.commons.collections4;
-  requires java.inject;
+  requires io.github.classgraph;
 
+  // Optional dependencies that a user might choose to add
+  requires static java.inject;
+  requires static jakarta.inject;
+
+  // Exported packages
   exports com.github.rvesse.airline;
   exports com.github.rvesse.airline.annotations;
   exports com.github.rvesse.airline.annotations.help;
@@ -84,7 +90,7 @@ module com.github.rvesse.airline
       com.github.rvesse.airline.restrictions.factories.SimpleRestrictionsFactory,
       com.github.rvesse.airline.restrictions.factories.StringRestrictionFactory;
   
-  provides com.githug.rvesse.airline.ChannelFactory with
+  provides com.github.rvesse.airline.ChannelFactory with
       com.github.rvesse.airline.SystemChannelFactory;
 
   uses com.github.rvesse.airline.ChannelFactory;

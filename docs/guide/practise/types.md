@@ -28,9 +28,9 @@ All of the following common Java types and any derived type that may be assigned
 - `Float`
 - `Double`
 
-{% include req-ver.md version="2.9.0" %}
+{% include req-ver.md version="2.10.0" %}
 
-From 2.9.0 onwards the additional common Java types are supported:
+From 2.10.0 onwards the additional common Java types are supported:
 
 - `BigInteger`
 - `BigDecimal`

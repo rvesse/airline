@@ -29,7 +29,7 @@ import com.github.rvesse.airline.parser.resources.ResourceLocator;
 
 /**
  * Annotation that indicates the exit codes section for a commands help
- * 
+ *
  * @author rvesse
  *
  */
@@ -40,21 +40,24 @@ public @interface ExternalExitCodes {
 
     /**
      * Source containing the table of exit codes and their descriptions
-     * 
+     *
      * @return Source
      */
     public String source();
-    
+
     /**
      * Resource locators used to find the resources specified in {@link #source()}
-     * 
+     *
      * @return Resource locators to use
      */
-    Class<? extends ResourceLocator>[] sourceLocators() default { ClasspathLocator.class, FileLocator.class };
+    Class<? extends ResourceLocator>[] sourceLocators() default {
+            ClasspathLocator.class,
+            FileLocator.class
+    };
 
     /**
      * The parser to use to translate the source specified by {@link #source()} into paragraphs
-     * 
+     *
      * @return Paragraph parser
      */
     Class<? extends TabularParser> parser() default DefaultExternalHelpParser.class;

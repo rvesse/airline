@@ -124,6 +124,7 @@
                     <goals>clean,install</goals>
                     <failIfNoProjects>true</failIfNoProjects>
                     <skipInvocation>${skipTests}</skipInvocation>
+                    <parallelThreads>4</parallelThreads>
                 </configuration>
                 <executions>
                     <execution>
@@ -157,6 +158,7 @@
                         <configuration>
                             <destFile>${project.build.directory}/jacoco-it.exec</destFile>
                             <propertyName>invoker.mavenOpts</propertyName>
+                            <append>true</append>
                         </configuration>
                     </execution>
                     <execution>

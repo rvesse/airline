@@ -25,7 +25,7 @@
     <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>1.8</version>
+	<version>${dependency.commons-csv}</version>
     </dependency>
 
     <!-- Test Dependencies -->
@@ -34,6 +34,7 @@
       <artifactId>airline</artifactId>
       <classifier>tests</classifier>
       <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

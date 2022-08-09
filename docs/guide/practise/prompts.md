@@ -3,11 +3,11 @@ layout: page
 title: Prompts
 ---
 
-{% include req-ver.md version="2.9.0" %}
+{% include req-ver.md version="2.10.0" %}
 
-Often command line applications may need to prompt users for input e.g. asking for a password, obtaining a missing value, 
-asking for a Yes/No response etc.  From 2.9.0 onwards we provide the `airline-prompts` module which provides a library for 
-doing this in a consistent manner, this includes features such as:
+Often command line applications may need to prompt users for input e.g. asking for a password, obtaining a missing
+value, asking for a Yes/No response etc.  From 2.10.0 onwards we provide the `airline-prompts` module which provides a
+library for doing this in a consistent manner, this includes features such as:
 
 - Prompt timeouts so non-interactive apps don't hang forever
 - Configurable prompt sources
@@ -19,9 +19,9 @@ doing this in a consistent manner, this includes features such as:
 ## Prompting
 
 Prompting is done by creating an instance of a `Prompt<T>` where `T` is the type used for strongly typed option prompts.  
-Prompts can be manually instantiated or created using the `PromptBuilder<T>` (the recommended method) which is described 
-later on this page.  Once you have a prompt you can ask for a variety of different inputs depending on what your application 
-needs to do.
+Prompts can be manually instantiated or created using the `PromptBuilder<T>` (the recommended method) which is described
+later on this page.  Once you have a prompt you can ask for a variety of different inputs depending on what your
+application needs to do.
 
 ### Prompting for a Key
 
@@ -76,14 +76,16 @@ MyCustomType value = prompt.promptForValue(MyCustomType.class, false);
 
 ## Example
 
-An example command that uses several different prompts can be found in the `airline-examples` module at 
-<a href="{{ site.github.repo }}/tree/master/airline-examples/src/main/java/com/github/rvesse/airline/examples/userguide">GitHub</a>.  
-If you have the code checked out and compiled locally you can use the provided `runExample` script to launch an example e.g.
+An example command that uses several different prompts can be found in the `airline-examples` module at <a href="{{
+site.github.repo }}/tree/master/airline-examples/src/main/java/com/github/rvesse/airline/examples/userguide">GitHub</a>.  
+If you have the code checked out and compiled locally you can use the provided `runExample` script to launch an example
+e.g.
 
 ```
 airline-examples> ./runExample PromptsDemo
 ```
-You can view the example {% include github-ref.md class="PromptsDemo" module="airline-examples" package="com.github.rvesse.airline.examples.userguide.prompts" %} on GitHub.
+You can view the example {% include github-ref.md class="PromptsDemo" module="airline-examples"
+package="com.github.rvesse.airline.examples.userguide.prompts" %} on GitHub.
 
 ## Prompt Builder
 
@@ -155,7 +157,11 @@ A prompt that does not receive a response within the timeout throws a `PromptTim
 {% include alert.html %}
 If a prompt timeout occurs then the underlying prompt provider may still be blocked waiting for user input in the
 background.  Please ensure that you catch and handle these errors by asking the user to press enter or pumping
-a new line into the prompt input if you control it.
+a new line character into the prompt input if you control it.  Otherwise a subsequent prompt could read the input 
+intended for the prior prompt.
+
+Ideally if a prompt timeout occurs you **SHOULD** abort your application or use suitable defaults making no further
+prompts for user input.
 {% include end-alert.html %}
 
 ### Options
@@ -244,7 +250,8 @@ implementations of this out of the box:
 - `QuestionFormat` which displays a simple question prompt
 - `ListFormat` which displays a list of options for the user to select from
 
-You can specify the desired formatter via the `withListFormatter()` or `withQuestionFormatter()` methods on your `PromptBuilder<T>` instance e.g.
+You can specify the desired formatter via the `withListFormatter()` or `withQuestionFormatter()` methods on your
+`PromptBuilder<T>` instance e.g.
 
 ```java
 Prompt<String> prompt 
