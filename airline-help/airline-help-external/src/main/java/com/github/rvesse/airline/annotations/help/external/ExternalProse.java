@@ -17,7 +17,6 @@ package com.github.rvesse.airline.annotations.help.external;
 
 import com.github.rvesse.airline.help.external.parsers.ParagraphsParser;
 import com.github.rvesse.airline.help.external.parsers.defaults.DefaultExternalHelpParser;
-import com.github.rvesse.airline.parser.resources.ClassGraphLocator;
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.FileLocator;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
@@ -41,14 +40,14 @@ public @interface ExternalProse {
      *
      * @return Title
      */
-    public String title();
+    String title();
 
     /**
      * Source containing the prose content
      *
      * @return Source
      */
-    public String source();
+    String source();
 
     /**
      * Suggested order in which the help section should be placed relative to other help sections
@@ -68,7 +67,6 @@ public @interface ExternalProse {
      */
     Class<? extends ResourceLocator>[] sourceLocators() default {
             ClasspathLocator.class,
-            ClassGraphLocator.class,
             FileLocator.class
     };
 

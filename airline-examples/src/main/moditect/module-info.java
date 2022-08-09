@@ -26,6 +26,7 @@ module com.github.rvesse.airline.examples
     requires com.github.rvesse.airline.help.man;
     requires com.github.rvesse.airline.help.markdown;
     requires com.github.rvesse.airline.prompts;
+    requires com.github.rvesse.airline.jpms.resources;
     
     exports com.github.rvesse.airline.examples;
     exports com.github.rvesse.airline.examples.cli;
@@ -68,4 +69,6 @@ module com.github.rvesse.airline.examples
     opens com.github.rvesse.airline.examples.userguide.practise to com.github.rvesse.airline;
     opens com.github.rvesse.airline.examples.userguide.restrictions to com.github.rvesse.airline;
     opens com.github.rvesse.airline.examples.userguide.restrictions.custom to com.github.rvesse.airline;
+
+    opens resources to io.github.classgraph;
 }

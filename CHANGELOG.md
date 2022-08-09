@@ -29,9 +29,10 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
   - Apache Commons Collections upgraded to 4.4
   - Apache Commons Lang upgraded to 3.12.0
   - Various build plugins updated to the latest available versions (this only impacts developers building the library 
-    from
-    source)
-  - New dependency on ClassGraph to enable resource location when used on Module Path
+    from source)
+  - Added new `airline-jpms-resources` module with a dependency on 
+    [ClassGraph](https://github.com/classgraph/classgraph) to enable resource location when Airline is used on Module 
+    Path i.e. JPMS runtime context
 - Maven Plugin improvements
   - Some logging has moved up to INFO from DEBUG, so you no longer have to use `-X` to see it
 - New `airline-prompts` module provides a Fluent API for defining user prompts (#92)

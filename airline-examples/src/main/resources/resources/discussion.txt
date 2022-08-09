@@ -9,9 +9,12 @@ This resource was referenced by a @ExternalProse annotation.  There are also
 @ExternalExitCodes, @ExternalExamples and @ExternalTabularExamples 
 annotations which provide other help sections via external resources.
 
-By default external resources are located via the Classpath or the Filesystem but the
+By default, external resources are located via the Classpath or the Filesystem but the
 annotations allow for users to customise how the resources are located via Airline's
-ResourceLocator abstraction.
+ResourceLocator abstraction.  In particular when using Airline on the Module Path, i.e.
+a JPMS context, you may find it necessary to take an additional dependency on the
+airline-jpms-resources module and explicitly configure the JpmsResourceLocator as an
+additional locator.
 
 External resources need to be parsed into suitable data for use with Airline's 
 HelpSection system.  The default parser copes with simple text documents for 

@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline.parser.resources;
+package com.github.rvesse.airline.parser.resources.jpms;
 
+import com.github.rvesse.airline.parser.resources.ResourceLocator;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.Resource;
 import io.github.classgraph.ScanResult;
@@ -24,12 +25,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * A resource locator that finds resources using {@link ClassGraph}
+ * A resource locator that finds resources using {@link ClassGraph} that works in JPMS runtime contexts where the
+ * standard {@link com.github.rvesse.airline.parser.resources.ClasspathLocator} does not.
  *
- * @author rvesse
  */
-public class ClassGraphLocator implements ResourceLocator {
-
+public class JpmsResourceLocator implements ResourceLocator {
 
     @Override
     public InputStream open(String searchLocation, String filename) throws IOException {
@@ -45,10 +45,11 @@ public class ClassGraphLocator implements ResourceLocator {
         }
         resourceName.append(filename);
 
-        try (ScanResult scanResult = new ClassGraph().scan()) {
-            for (Resource resource : scanResult.getResourcesWithPath(resourceName.toString()).nonClassFilesOnly()) {
-                return resource.open();
-            }
+        ScanResult scanResult = new ClassGraph().scan();
+        for (Resource resource : scanResult.getResourcesWithPath(resourceName.toString()).nonClassFilesOnly()) {
+            // IMPORTANT - Must wrap so that we close the ScanResult when we are finished reading the resource otherwise
+            // we'll leave resources open unnecessarily which can impact application performance
+            return new ScanResultInputStream(scanResult, resource.open());
         }
 
         return null;

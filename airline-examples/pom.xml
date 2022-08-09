@@ -64,10 +64,15 @@
       <artifactId>airline-prompts</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-jpms-resources</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
-    <!-- <finalName>airline-examples</finalName> -->
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

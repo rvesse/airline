@@ -17,7 +17,6 @@ package com.github.rvesse.airline.annotations.help.external;
 
 import com.github.rvesse.airline.help.external.parsers.TabularParser;
 import com.github.rvesse.airline.help.external.parsers.defaults.DefaultExternalHelpParser;
-import com.github.rvesse.airline.parser.resources.ClassGraphLocator;
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.FileLocator;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
@@ -41,7 +40,7 @@ public @interface ExternalTabularExamples {
      *
      * @return Source
      */
-    public String source();
+    String source();
 
     /**
      * Resource locators used to find the resources specified in {@link #source()}
@@ -50,7 +49,6 @@ public @interface ExternalTabularExamples {
      */
     Class<? extends ResourceLocator>[] sourceLocators() default {
             ClasspathLocator.class,
-            ClassGraphLocator.class,
             FileLocator.class
     };
 

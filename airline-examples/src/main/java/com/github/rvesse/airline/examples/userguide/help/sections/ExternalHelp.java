@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.rvesse.airline.examples.userguide.help.sections;
 
 import java.io.IOException;
@@ -29,16 +28,27 @@ import com.github.rvesse.airline.examples.ExampleExecutor;
 import com.github.rvesse.airline.examples.ExampleRunnable;
 import com.github.rvesse.airline.help.Help;
 import com.github.rvesse.airline.model.CommandMetadata;
+import com.github.rvesse.airline.parser.resources.ClasspathLocator;
+import com.github.rvesse.airline.parser.resources.jpms.JpmsResourceLocator;
 
 @Command(name = "external-help", description = "A command with help sections provided via separate resources")
-@ExternalProse(title = "Discussion", source = "/discussion.txt")
-@ExternalExitCodes(source = "/exit-codes.csv")
-@ExternalTabularExamples(source = "/examples.csv")
+@ExternalProse(title = "Discussion", source = "/resources/discussion.txt", sourceLocators = {
+        ClasspathLocator.class,
+        JpmsResourceLocator.class
+})
+@ExternalExitCodes(source = "/resources/exit-codes.csv", sourceLocators = {
+        ClasspathLocator.class,
+        JpmsResourceLocator.class
+})
+@ExternalTabularExamples(source = "/resources/examples.csv", sourceLocators = {
+        ClasspathLocator.class,
+        JpmsResourceLocator.class
+})
 public class ExternalHelp implements ExampleRunnable {
 
     @AirlineModule
     private CommandMetadata metadata;
-    
+
     @Arguments
     private List<String> arguments;
 
@@ -52,7 +62,7 @@ public class ExternalHelp implements ExampleRunnable {
             return 1;
         }
     }
-    
+
     public static void main(String[] args) {
         ExampleExecutor.executeSingleCommand(ExternalHelp.class, args);
     }

@@ -45,11 +45,6 @@
       <artifactId>commons-collections4</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>io.github.classgraph</groupId>
-      <artifactId>classgraph</artifactId>
-    </dependency>
-
     <!-- for testing -->
     <dependency>
       <groupId>org.testng</groupId>

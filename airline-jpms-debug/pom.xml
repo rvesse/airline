@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>airline-jpms-debug</artifactId>
-    <name>Airline - JPMS Resource Visibility Debugging Utility</name>
-    <description>A debugging utility for scanning the classpath</description>
+    <name>Airline - JPMS - Resource Visibility Debugging Utility</name>
+    <description>A debugging utility for scanning the classpath for resources</description>
 
     <properties>
         <license.header.path>${project.parent.basedir}</license.header.path>
