@@ -54,6 +54,9 @@
     <!-- Coveralls API Token - MUST be injected into build via Maven properties -->
     <coveralls.token />
 
+    <!-- Optionally skip coveralls for some modules -->
+    <coveralls.skip>false</coveralls.skip>
+
     <!-- Plugin Versions -->
     <plugin.antrun>3.1.0</plugin.antrun>
     <plugin.assembly>3.4.2</plugin.assembly>
@@ -393,6 +396,7 @@
                   <jacocoReports>
                     <jacocoReport>airline-maven-plugin/target/jacoco-it/jacoco.xml</jacocoReport>
                   </jacocoReports>
+                  <skip>${coveralls.skip}</skip>
                 </configuration>
               </execution>
             </executions>
