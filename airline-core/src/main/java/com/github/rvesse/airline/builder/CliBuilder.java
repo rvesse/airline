@@ -49,7 +49,7 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
     protected final List<Class<? extends C>> defaultCommandGroupCommands = new ArrayList<>();
     protected final Map<String, GroupBuilder<C>> groups = new HashMap<>();
     protected final List<GlobalRestriction> restrictions = new ArrayList<>();
-    protected final ParserBuilder<C> parserBuilder = new ParserBuilder<C>();
+    protected final ParserBuilder<C> parserBuilder = new ParserBuilder<C>(this);
     protected final Map<String, HelpSection> baseHelpSections = new HashMap<>();
 
     public CliBuilder(String name) {

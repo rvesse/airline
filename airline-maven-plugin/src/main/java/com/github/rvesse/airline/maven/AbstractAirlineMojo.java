@@ -36,10 +36,10 @@ import com.github.rvesse.airline.maven.sources.PreparedSource;
 
 public abstract class AbstractAirlineMojo extends AbstractMojo {
 
-    @Component
+    @Parameter(defaultValue = "${plugin}", readonly = true)
     protected PluginDescriptor pluginDescriptor;
 
-    @Component
+    @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
     @Parameter

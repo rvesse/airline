@@ -156,7 +156,7 @@ public class TestCommand {
     public void repeatedArgs() {
         SingleCommand<Args1> parser = singleCommandParser(Args1.class);
         CommandMetadata command = parser.getCommandMetadata();
-        assertEquals(command.getAllOptions().size(), 8);
+        assertEquals(command.getAllOptions().size(), 9);
     }
 
     /**

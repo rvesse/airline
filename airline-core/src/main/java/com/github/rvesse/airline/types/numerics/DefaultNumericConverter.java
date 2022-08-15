@@ -15,6 +15,9 @@
  */
 package com.github.rvesse.airline.types.numerics;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import com.github.rvesse.airline.model.ArgumentsMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
@@ -50,11 +53,19 @@ public class DefaultNumericConverter implements TypeConverterProvider, NumericTy
                 return tryConvertFloat(name, value);
             } else if (Double.class.isAssignableFrom(type) || Double.TYPE.isAssignableFrom(type)) {
                 return tryConvertDouble(name, value);
+            } else if (BigInteger.class.isAssignableFrom(type)) {
+                return tryConvertBigInteger(name, value);
+            } else if (BigDecimal.class.isAssignableFrom(type)) {
+                return tryConvertBigDecimal(name, value);
             }
         } catch (Exception ignored) {
-
+            // If there's an error converting to a strongly typed value this is handled further up
         }
         return ConvertResult.FAILURE;
+    }
+    
+    protected ConvertResult tryConvertBigDecimal(String name, String value) {
+        return new ConvertResult(new BigDecimal(value));
     }
 
     protected ConvertResult tryConvertDouble(String name, String value) {
@@ -63,6 +74,10 @@ public class DefaultNumericConverter implements TypeConverterProvider, NumericTy
 
     protected ConvertResult tryConvertFloat(String name, String value) {
         return new ConvertResult(Float.valueOf(value));
+    }
+    
+    protected ConvertResult tryConvertBigInteger(String name, String value) {
+        return new ConvertResult(new BigInteger(value));
     }
 
     protected ConvertResult tryConvertLong(String name, String value) {

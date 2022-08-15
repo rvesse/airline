@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR=$(cd `dirname $0` && pwd)
+
+JAR_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout=true 2>/dev/null)
+if [ -z "${JAR_VERSION}" ]; then
+  # Try just grepping it out of the pom.xml instead
+  JAR_VERSION=$(grep "<version>" pom.xml | head -n 1 | awk -F '>' '{print $2}' | awk -F '<' '{print $1}')
+  if [ -z "${JAR_VERSION}" ]; then
+    echo "Failed to detect version from pom.xml"
+    exit 1
+  fi
+fi
+JAR_FILE="${SCRIPT_DIR}/target/airline-jpms-debug-${JAR_VERSION}.jar"
+
+JAVA_MAJOR_VERSION=$(java -version 2>&1 | awk -F '"' '{print $2}' | awk -F '.' '{print $1}')
+if [ ${JAVA_MAJOR_VERSION} -lt 9 ]; then
+  echo "This script requires using Java 9 or later, please set JAVA_HOME to point to a newer JRE"
+  exit 1
+fi
+
+if [ ! -f "${JAR_FILE}" ]; then
+  echo "JAR ${JAR_FILE} does not yet exist, please run mvn package to build"
+  exit 1
+fi
+
+MODULES="${SCRIPT_DIR}/target/modules:${JAR_FILE}"
+if [ -n "${EXTRA_MODULES}" ]; then
+  MODULES="${MODULES}:${EXTRA_MODULES}"
+fi
+
+java --module-path "${MODULES}" \
+  -m "com.github.rvesse.airline.jpms.debug/com.github.rvesse.airline.jpms.debug.Debug" \
+  "$@"

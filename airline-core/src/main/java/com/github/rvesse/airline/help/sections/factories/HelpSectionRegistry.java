@@ -49,22 +49,48 @@ public class HelpSectionRegistry {
         init = true;
     }
 
+    /**
+     * Resets the registry causing it to re-invoke {@link ServiceLoader#load(Class)} to reload declared services
+     */
     public static synchronized void reset() {
         init = false;
         FACTORIES.clear();
         init();
     }
 
+    /**
+     * Registers a help section factory for a given annotation class
+     * 
+     * @param cls
+     *            Annotation class
+     * @param factory
+     *            Help section factory
+     */
     public static void addFactory(Class<? extends Annotation> cls, HelpSectionFactory factory) {
         if (cls == null)
             throw new NullPointerException("cls cannot be null");
         FACTORIES.put(cls, factory);
     }
 
+    /**
+     * Gets all the supported annotation classes that can be translated into help sections
+     * 
+     * @return Annotation classes
+     */
     public static Set<Class<? extends Annotation>> getAnnotationClasses() {
         return FACTORIES.keySet();
     }
 
+    /**
+     * Given an annotation returns a help section if the annotation can be translated into one by any of the registered
+     * factories
+     * 
+     * @param cls
+     *            Annotation class
+     * @param annotation
+     *            Annotation instance
+     * @return Help Section or {@code null} if the annotation does not denote a help section
+     */
     public static HelpSection getHelpSection(Class<? extends Annotation> cls, Annotation annotation) {
         HelpSectionFactory factory = FACTORIES.get(cls);
         if (factory != null)

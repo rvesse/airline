@@ -1,5 +1,61 @@
 # Airline - Change Log
 
+### Forthcoming 2.x Deprecation
+
+2.10.0, and any subsequent patch releases, are intended to be the last supported releases of Airline 2.x
+
+Future releases will start to focus on the 3.x builds which include some important new features e.g. first class
+positional argument support, better DI framework integration, that are not possible under 2.x without making breaking
+changes.  You can see progress on 3.x by following the `3x` branch and its `CHANGELOG.md` and `MIGRATING.md`
+
+## 2.10.0
+
+- Core Improvements
+  - First class support for `BigInteger` and `BigDecimal` as numeric types
+  - First class support for `Path`
+  - Provided corrected spelling for `ConvertResult.wasSuccessful()`, old mis-spelt method preserved but marked as
+    deprecated
+  - Added a `JpmsResourceLocator` as an additional `ResourceLocator` to allow finding resources when running in a JPMS
+    context (requires additional module `airline-jpms-resources`)
+- Help Improvements
+  - Added an `@SeeAlso` annotation to Airline Core (#51)
+  - **BREAKING** - `airline-help-bash` has moved `@BashCompletion` annotation into
+    `com.github.rvesse.airline.annotations.help.bash` to avoid package collisions between this module and the core in
+    order to allow this module to become a JPMS module
+- Fluent API Improvements
+  - A `ParserBuilder` created by calling `withParser()` on a `CliBuilder` can now return control back to its parent via
+    the `parent()` method for cleaner Fluid CLI definitions
+- Dependency Updates
+  - Apache Commons Collections upgraded to 4.4
+  - Apache Commons Lang upgraded to 3.12.0
+  - `jakarta.inject` and `airline-backcompat-javaxinject` were made `optional` so will no longer be pulled in
+    automatically
+  - Various build plugins updated to the latest available versions (this only impacts developers building the library 
+    from source)
+  - Added new `airline-help-external` module with a dependency on Apache Commons CSV 1.10.0-20220310.222602-6
+    - Due to an upstream bug in Commons CSV they don't yet have an official release build with JPMS support so we are
+      currently locking to a timestamped SNAPSHOT
+  - Added new `airline-jpms-resources` module with a dependency on 
+    [ClassGraph](https://github.com/classgraph/classgraph) to enable resource location when Airline is used on Module 
+    Path i.e. JPMS runtime context
+- Maven Plugin improvements
+  - Some logging has moved up to INFO from DEBUG, so you no longer have to use `-X` to see it
+- New `airline-prompts` module provides a Fluent API for defining user prompts (#92)
+  - Prompt timeouts so non-interactive apps don't hang forever
+  - Configurable prompt sources
+  - Configurable prompt formatting
+  - Prompt for keys, strings, passwords, options (from a pre-configured list) or a strongly typed value
+  - Integrates with Airline's type conversion
+- New `airline-help-external` modules provides new help annotations that allow more complex help to be provided via
+  classpath/file resources rather than directly in the annotations.  This is a generalisation of the mechanism already
+  used by `@Version` annotation. (#52)
+  - Adds `@ExternalProse`, `@ExternalExitCodes`, `@ExternalExamples` and `@ExternalExamplesTabular` annotations
+- Build and Release Improvements
+  - All Airline modules are now fully fledged JPMS modules meaning they can be used on the JVM Module Path instead of
+    the Classpath where preferred
+    - See `airline-examples` module for examples of constructing a `module-info.java` that pulls in other Airline
+      modules and see `modularExample` script for examples of invoking an Airline based app using the Module Path
+
 ## 2.9.0
 
 - Build Improvements
@@ -42,6 +98,7 @@ Guide](Migrating.md#excluding-inject-dependencies) for more details on this.
 - Parser Improvements
   - Added a `GreedyMaybeListValueOptionParser` to cover more cases where greedy parsing behaviour is desired (#110)
 
+
 ## 2.8.2
 
 - Bug Fixes
@@ -50,6 +107,7 @@ Guide](Migrating.md#excluding-inject-dependencies) for more details on this.
     - For most users the change should have no impact other than more reliable error reporting.  For users who rely
       heavily upon `ClassicGetOptParser` you may notice the removal of this greediness.  If you wish to retain the old
       behaviour configure your option parsers to include the new `GreedyClassicGetOptParser`.
+
 
 ## 2.8.1
 

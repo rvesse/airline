@@ -10,7 +10,13 @@ verifier.assertFileMatches(outputFile, "(?s).*args1 description.*");
 verifier.assertFileMatches(outputFile, "(?s).*SYNOPSIS.*");
 lines = verifier.loadLines("/target/help/Args1.txt", null);
 for (String line : lines) {
-  if (line.length() > 68) throw new VerificationException("Line length is greater than configured columns 68");
+  if (line.length() > 68) {
+    // Excess line length is permitted if inside a bracketted expression
+    String ending = line.trim().substring(line.trim().length() - 1);
+    if (!ending.equals("]")) {
+      throw new VerificationException("Line length is greater than configured columns 68:\n\t" + line);
+    }
+  }
 }
 
 // Verify log file

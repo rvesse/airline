@@ -196,7 +196,7 @@ public class TestSingleCommand {
         SingleCommand<Args1> parser = singleCommand(Args1.class);
         CommandMetadata command = CollectionUtils.find(Collections.singletonList(parser.getCommandMetadata()),
                 new CommandFinder("Args1"));
-        assertEquals(command.getAllOptions().size(), 8);
+        assertEquals(command.getAllOptions().size(), 9);
     }
 
     /**

@@ -1,0 +1,9 @@
+This is the first
+paragraph
+
+A blank line starts a new paragraph
+
+
+
+
+Multiple blank lines are compacted

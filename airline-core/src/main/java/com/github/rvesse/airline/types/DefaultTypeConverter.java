@@ -21,6 +21,8 @@ import com.github.rvesse.airline.types.numerics.NumericTypeConverter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * The default type converter
@@ -49,23 +51,23 @@ public class DefaultTypeConverter extends DefaultTypeConverterProvider implement
 
         // Firstly try the standard Java types
         ConvertResult result = tryConvertBasicTypes(name, type, value);
-        if (result.wasSuccessfull())
+        if (result.wasSuccessful())
             return result.getConvertedValue();
 
         // Then look for a static fromString(String) method
         result = tryConvertFromString(name, type, value);
-        if (result.wasSuccessfull())
+        if (result.wasSuccessful())
             return result.getConvertedValue();
 
         // Then look for a static valueOf(String) method
         // This covers enums which have a valueOf method
         result = tryConvertFromValueOf(name, type, value);
-        if (result.wasSuccessfull())
+        if (result.wasSuccessful())
             return result.getConvertedValue();
 
         // Finally look for a constructor taking a string
         result = tryConvertStringConstructor(name, type, value);
-        if (result.wasSuccessfull())
+        if (result.wasSuccessful())
             return result.getConvertedValue();
 
         throw new ParseOptionConversionException(name, value, type.getSimpleName());
@@ -175,6 +177,8 @@ public class DefaultTypeConverter extends DefaultTypeConverterProvider implement
                 return new ConvertResult(value);
             } else if (Boolean.class.isAssignableFrom(type) || Boolean.TYPE.isAssignableFrom(type)) {
                 return new ConvertResult(Boolean.valueOf(value));
+            } else if (Path.class.isAssignableFrom(type)) {
+                return new ConvertResult(Paths.get(value));
             } else if (this.numericConverter != null) {
                 return this.numericConverter.tryConvertNumerics(name, type, value);
             }

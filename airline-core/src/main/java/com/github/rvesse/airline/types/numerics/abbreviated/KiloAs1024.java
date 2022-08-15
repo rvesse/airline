@@ -17,6 +17,10 @@ package com.github.rvesse.airline.types.numerics.abbreviated;
 
 import java.util.Collections;
 
+/**
+ * A numeric type converter that supports suffixes used to denote base 2 kilo units
+ *
+ */
 public class KiloAs1024 extends MultiSequenceAbbreviatedNumericTypeConverter {
 
     public KiloAs1024() {

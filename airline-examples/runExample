@@ -2,7 +2,16 @@
 
 SCRIPT_DIR=$(cd `dirname $0` && pwd)
 
-JAR_FILE="${SCRIPT_DIR}/target/airline-examples.jar"
+JAR_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout=true 2>/dev/null)
+if [ -z "${JAR_VERSION}" ]; then
+  # Try just grepping it out of the pom.xml instead
+  JAR_VERSION=$(grep "<version>" pom.xml | head -n 1 | awk -F '>' '{print $2}' | awk -F '<' '{print $1}')
+  if [ -z "${JAR_VERSION}" ]; then
+    echo "Failed to detect examples version from pom.xml"
+    exit 1
+  fi
+fi
+JAR_FILE="${SCRIPT_DIR}/target/airline-examples-${JAR_VERSION}.jar"
 
 EXAMPLE=$1
 shift
@@ -36,4 +45,4 @@ if [ ! -f "${JAR_FILE}" ]; then
   exit 1
 fi
 
-java -cp "${JAR_FILE}" ${CLASS} "$@"
+java -cp "${SCRIPT_DIR}/target/modules/*:${JAR_FILE}" ${CLASS} "$@"

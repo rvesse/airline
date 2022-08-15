@@ -15,19 +15,35 @@
  */
 package com.github.rvesse.airline.help.sections.common;
 
+/**
+ * Constants related to common help sections
+ *
+ */
 public class CommonSections {
 
-    public static final int ORDER_DISCUSSION = 10;
-    public static final int ORDER_EXAMPLES = ORDER_DISCUSSION + 10;
-    public static final int ORDER_EXIT_CODES = ORDER_EXAMPLES + 10;
-    public static final int ORDER_VERSION = ORDER_EXIT_CODES + 10;
-    public static final int ORDER_COPYRIGHT = ORDER_VERSION + 10;
-    public static final int ORDER_LICENSE = ORDER_COPYRIGHT + 10;
+    /**
+     * Constants defining the relative order of some commonly used help sections
+     */
+    //@formatter:off
+    public static final int ORDER_DISCUSSION = 10,
+                            ORDER_EXAMPLES = ORDER_DISCUSSION + 10,
+                            ORDER_EXIT_CODES = ORDER_EXAMPLES + 10,
+                            ORDER_VERSION = ORDER_EXIT_CODES + 10,
+                            ORDER_COPYRIGHT = ORDER_VERSION + 10,
+                            ORDER_LICENSE = ORDER_COPYRIGHT + 10,
+                            ORDER_SEE_ALSO = ORDER_LICENSE + 10;
+    //@formatter:on
     
-    public static final String TITLE_EXAMPLES = "Examples";
-    public static final String TITLE_DISCUSSION = "Discussion";
-    public static final String TITLE_EXIT_CODES = "Exit Codes";
-    public static final String TITLE_COPYRIGHT = "Copyright";
-    public static final String TITLE_LICENSE = "License";
-    public static final String TITLE_VERSION = "Version";
+    /**
+     * Constants defining the titles of some commonly used help sections
+     */
+    //@formatter:off
+    public static final String TITLE_EXAMPLES = "Examples",
+                               TITLE_DISCUSSION = "Discussion",
+                               TITLE_EXIT_CODES = "Exit Codes",
+                               TITLE_COPYRIGHT = "Copyright",
+                               TITLE_LICENSE = "License",
+                               TITLE_VERSION = "Version",
+                               TITLE_SEE_ALSO = "See Also";
+    //@formatter:on
 }

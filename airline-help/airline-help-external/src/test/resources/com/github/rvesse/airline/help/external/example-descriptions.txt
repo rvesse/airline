@@ -1,0 +1,3 @@
+Runs with high verbosity
+
+Runs in debug mode

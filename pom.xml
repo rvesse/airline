@@ -6,7 +6,6 @@
   <artifactId>airline-parent</artifactId>
   <packaging>pom</packaging>
   <version>2.10.0-SNAPSHOT</version>
-
   <name>Airline - Parent</name>
   <description>Java annotation-based framework for parsing Git like command line structures</description>
   <url>https://github.com/rvesse/airline</url>
@@ -55,31 +54,38 @@
     <!-- Coveralls API Token - MUST be injected into build via Maven properties -->
     <coveralls.token />
 
+    <!-- Optionally skip coveralls for some modules -->
+    <coveralls.skip>false</coveralls.skip>
+
     <!-- Plugin Versions -->
-    <plugin.antrun>1.8</plugin.antrun>
-    <plugin.assembly>3.1.0</plugin.assembly>
-    <plugin.buildnumber>1.4</plugin.buildnumber>
-    <plugin.compiler>3.7.0</plugin.compiler>
+    <plugin.antrun>3.1.0</plugin.antrun>
+    <plugin.assembly>3.4.2</plugin.assembly>
+    <plugin.buildnumber>3.0.0</plugin.buildnumber>
+    <plugin.compiler>3.10.1</plugin.compiler>
     <plugin.coveralls>4.3.0</plugin.coveralls>
     <plugin.coveralls.jaxb>2.3.3-b02</plugin.coveralls.jaxb>
-    <plugin.enforcer>3.0.0-M2</plugin.enforcer>
+    <plugin.enforcer>3.1.0</plugin.enforcer>
     <plugin.license>2.11</plugin.license>
-    <plugin.jacoco>0.8.4</plugin.jacoco>
-    <plugin.jar>3.1.0</plugin.jar>
+    <plugin.jacoco>0.8.8</plugin.jacoco>
+    <plugin.jar>3.2.2</plugin.jar>
     <plugin.source>3.0.1</plugin.source>
     <plugin.javadoc>3.0.1</plugin.javadoc>
     <plugin.release>2.5.3</plugin.release>
     <plugin.gpg>1.6</plugin.gpg>
     <plugin.shade>3.1.1</plugin.shade>
-    <plugin.surefire>2.22.0</plugin.surefire>
-    <plugin.moditect>1.0.0.Beta2</plugin.moditect>
+    <plugin.surefire>3.0.0-M7</plugin.surefire>
+    <plugin.moditect>1.0.0.RC1</plugin.moditect>
 
     <!-- Dependency Versions -->
     <dependency.javax-inject>2.0.1</dependency.javax-inject>
     <dependency.junit>4.12</dependency.junit>
-    <dependency.testng>6.8.8</dependency.testng>
-    <dependency.commons-lang3>3.7</dependency.commons-lang3>
-    <dependency.commons-collections4>4.2</dependency.commons-collections4>
+    <dependency.testng>7.5</dependency.testng>
+    <dependency.classgraph>4.8.149</dependency.classgraph>
+    <dependency.commons-lang3>3.12.0</dependency.commons-lang3>
+    <dependency.commons-collections4>4.4</dependency.commons-collections4>
+    <!-- Still waiting on Apache Commons to properly release with JPMS support -->
+    <!-- Thus locked to a timestamped SNAPSHOT for now -->
+    <dependency.commons-csv>1.10.0-20220310.222602-6</dependency.commons-csv>
   </properties>
 
   <modules>
@@ -87,7 +93,10 @@
     <module>airline-examples</module>
     <module>airline-io</module>
     <module>airline-help</module>
-      <module>airline-backcompat-javaxinject</module>
+    <module>airline-prompts</module>
+    <module>airline-backcompat-javaxinject</module>
+    <module>airline-jpms-debug</module>
+      <module>airline-jpms-resources</module>
   </modules>
 
   <dependencyManagement>
@@ -108,6 +117,12 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
         <version>${dependency.commons-collections4}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.classgraph</groupId>
+        <artifactId>classgraph</artifactId>
+        <version>${dependency.classgraph}</version>
       </dependency>
 
       <!-- for testing -->
@@ -189,12 +204,13 @@
           <useDefaultMapping>true</useDefaultMapping>
           <strictCheck>true</strictCheck>
           <excludes>
-            <exclude>license.txt</exclude>
+            <exclude>*.txt</exclude>
+            <exclude>**/*.txt</exclude>
             <exclude>.github/**</exclude>
             <exclude>pom.xml</exclude>
             <exclude>**/pom.xml</exclude>
-	    <exclude>**/*.config</exclude>
-	    <exclude>**/*.bat</exclude>
+	        <exclude>**/*.config</exclude>
+	        <exclude>**/*.bat</exclude>
 
             <!-- Integration Tests -->
             <exclude>**/verify.bsh</exclude>
@@ -380,6 +396,7 @@
                   <jacocoReports>
                     <jacocoReport>airline-maven-plugin/target/jacoco-it/jacoco.xml</jacocoReport>
                   </jacocoReports>
+                  <skip>${coveralls.skip}</skip>
                 </configuration>
               </execution>
             </executions>
@@ -664,4 +681,17 @@
       </build>
     </profile>
   </profiles>
+
+  <repositories>
+    <repository>
+      <id>apache-repo-snapshots</id>
+      <url>https://repository.apache.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>

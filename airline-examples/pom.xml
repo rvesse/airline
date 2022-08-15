@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.github.rvesse</groupId>
@@ -11,7 +13,7 @@
 
   <properties>
     <license.header.path>${project.parent.basedir}</license.header.path>
-    <coveralls.skip>true</coveralls.skip> 
+    <coveralls.skip>true</coveralls.skip>
   </properties>
 
   <dependencies>
@@ -19,50 +21,81 @@
       <groupId>com.github.rvesse</groupId>
       <artifactId>airline</artifactId>
       <version>${project.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>jakarta.inject</groupId>
-          <artifactId>jakarta.inject-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.github.rvesse</groupId>
-          <artifactId>airline-backcompat-javaxinject</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
+
     <dependency>
       <groupId>com.github.rvesse</groupId>
       <artifactId>airline-io</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>com.github.rvesse</groupId>
       <artifactId>airline-help-bash</artifactId>
       <version>${project.version}</version>
     </dependency>
-        <dependency>
+
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-help-html</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.github.rvesse</groupId>
       <artifactId>airline-help-man</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-help-markdown</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-help-external</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-prompts</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-jpms-resources</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
 
   <build>
-    <finalName>airline-examples</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>${plugin.shade}</version>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.2</version>
         <executions>
           <execution>
-            <phase>package</phase>
+            <id>copy-dependencies</id>
+            <phase>compile</phase>
             <goals>
-              <goal>shade</goal>
+              <goal>copy-dependencies</goal>
             </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/modules/</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
+
+
   </build>
 </project>

@@ -161,16 +161,21 @@ composition:
 
 {% include alert.html %} 
 While the above list represents the currently supported annotations future releases beyond
-2.9.x will only support `@AirlineModule` by default.  Therefore users may wish to migrate to using this new annotation
+2.9.x will only support `@AirlineModule` by default.  Therefore, users may wish to migrate to using this new annotation
 sooner rather than later.  2.9.0 onwards does support [Configurable Composition](#configurable-composition) so users 
 will be able to use whichever annotations they see fit for their use cases.
 {% include end-alert.html %}
 
 In order to support this backwards compatibility we continue to have dependencies on both the `jakarta.inject` and
 `javax.inject` modules.  The latter is indirectly depended upon via a temporary `airline-backcompact-javaxinject` to
-make it clear that this is for backwards compatibility only and can be exluded for users who have moved to using the new
-[`@AirlineModule`](../annotations/module.html) annotation. As noted in the above warning these dependencies will become
-`optional` in future releases and eventually be removed as mandatory dependencies.
+make it clear that this is for backwards compatibility only and can be excluded for users who have moved to using 
+the new [`@AirlineModule`](../annotations/module.html) annotation. As noted in the above warning these dependencies 
+will become `optional` in future releases and eventually be removed as mandatory dependencies.
+
+{% include alert.html %}
+As of 2.10.0 the above dependencies have been made `optional` meaning that you **MUST** explicitly provide those 
+dependencies yourself if you wish to continue using `@Inject` annotations for composition.
+{% include end-alert.html %}
 
 ### Configurable Composition
 

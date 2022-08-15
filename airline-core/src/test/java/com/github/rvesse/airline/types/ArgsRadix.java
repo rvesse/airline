@@ -15,6 +15,8 @@
  */
 package com.github.rvesse.airline.types;
 
+import java.math.BigInteger;
+
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.github.rvesse.airline.types.numerics.abbreviated.KiloAs1000;
@@ -39,4 +41,13 @@ public class ArgsRadix {
     
     @Option(name = "--kilo", typeConverterProvider = KiloAs1000.class)
     public long abbrev;
+    
+    @Option(name = "--big-octal", typeConverterProvider = Octal.class)
+    public BigInteger bigOctal;
+    
+    @Option(name = "--big-hex", typeConverterProvider = Hexadecimal.class)
+    public BigInteger bigHex;
+    
+    @Option(name = "--big-binary", typeConverterProvider = Binary.class)
+    public BigInteger bigBinary;
 }

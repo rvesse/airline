@@ -55,6 +55,16 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
     protected ParserErrorHandler errorHandler;
     protected Set<String> injectionAnnotationClasses = new LinkedHashSet<>();
 
+    private final CliBuilder<C> cliBuilder;
+
+    public ParserBuilder() {
+        this.cliBuilder = null;
+    }
+
+    public ParserBuilder(CliBuilder<C> cliBuilder) {
+        this.cliBuilder = cliBuilder;
+    }
+
     /**
      * Gets the default configuration
      *
@@ -182,7 +192,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
     /**
      * Sets a prefix character used in alias definitions to force use of a built-in as opposed to a chained alias
      *
-     * @param prefix Prefic character
+     * @param prefix Prefix character
      * @return Parser build
      */
     public ParserBuilder<C> withAliasForceBuiltInPrefix(char prefix) {
@@ -280,12 +290,10 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * </p>
      * <h3>Notes</h3>
      * <ul>
-     * <li>Recursive aliases are only supported if
-     * {@link #withAliasesChaining()}} is specified and will result in errors
-     * when used otherwise. Even when recursive aliases are enabled aliases
-     * cannot use circular references.</li>
-     * <li>Aliases cannot override built-ins unless you have called
-     * {@link #withAliasesOverridingBuiltIns()} on your builder</li>
+     * <li>Recursive aliases are only supported if {@link #withAliasesChaining()}} is specified and will result in
+     * errors when used otherwise. Even when recursive aliases are enabled aliases cannot use circular references.</li>
+     * <li>Aliases cannot override built-ins unless you have called {@link #withAliasesOverridingBuiltIns()} on your
+     * builder</li>
      * </ul>
      *
      * @param filename        Filename to look for
@@ -333,12 +341,10 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * </p>
      * <h3>Notes</h3>
      * <ul>
-     * <li>Recursive aliases are only supported if
-     * {@link #withAliasesChaining()}} is specified and will result in errors
-     * when used otherwise. Even when recursive aliases are enabled aliases
-     * cannot use circular references.</li>
-     * <li>Aliases cannot override built-ins unless you have called
-     * {@link #withAliasesOverridingBuiltIns()} on your builder</li>
+     * <li>Recursive aliases are only supported if {@link #withAliasesChaining()}} is specified and will result in
+     * errors when used otherwise. Even when recursive aliases are enabled aliases cannot use circular references.</li>
+     * <li>Aliases cannot override built-ins unless you have called {@link #withAliasesOverridingBuiltIns()} on your
+     * builder</li>
      * </ul>
      *
      * @param filename        Filename to look for
@@ -564,6 +570,20 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
     public ParserBuilder<C> withFlagNegationPrefix(String prefix) {
         this.flagNegationPrefix = prefix;
         return this;
+    }
+
+    /**
+     * Gets the parent CLI builder (if any)
+     * 
+     * @return Parent CLI builder
+     * @throws IllegalStateException
+     *             Thrown if there is no parent CLI builder
+     */
+    public CliBuilder<C> parent() {
+        if (this.cliBuilder == null)
+            throw new IllegalStateException(
+                    "This Parser Builder was not created via a CLI builder and so cannot call parent() to obtain a parent CLI builder");
+        return this.cliBuilder;
     }
 
     @Override

@@ -7,7 +7,7 @@ kramdown:
   syntax_highlighter: rouge
 
 # Permalinks
-permalink:        none
+permalink: none
 
 # Site settings
 title: Airline
@@ -21,14 +21,314 @@ github_username:  rvesse
 exclude: [ "scripts", "pom.xml", "assembly.xml", "target" ]
 
 author:
-  name:           "Rob Vesse"
-  url:            https://twitter.com/RobVesse
+  name: "Rob Vesse"
+  url: https://twitter.com/RobVesse
 
 # Custom vars
 version:          2.9.0
 dev_version:	"2.10.0-SNAPSHOT"
 
 github:
-  repo:           https://github.com/rvesse/airline
-  
-javadoc_versions: [ "2.8.5", "2.8.4", "2.8.3", "2.8.2", "2.8.1", "2.8.0", "2.7.2", "2.7.1", "2.7.0", "2.6.0", "2.5.0", "2.4.0", "2.3.0", "2.2.0", "2.1.0" ]
+  repo: https://github.com/rvesse/airline
+
+# Side Navigation
+# Each item has the following fields available:
+#
+# text - Text for both display and tooltip
+# url - URL for the link, relative to the sites base URL and any path from the parent item
+# kind - Controls how that item is rendered
+#           Group - A group with child items
+#           ExternalLink - A link not relative to the site itself
+#           LatestJavadoc - A group with the latest release Javadoc
+#           DevJavadoc - A group with the development Javadoc
+#           OldJavadoc - A group with the Javadoc for a past version
+# path - Relative URL for items in the group, relatives to the sites Base URL.  
+#           Path is inherited from parent item if not specified again on child groups
+# version - Javadoc version to use, only relevant when kind: OldJavadoc
+# items - Collection of child items
+# 
+side_nav:
+  items:
+    - text: "Home"
+      url: "/"
+    - text: "User Guide"
+      kind: Group
+      path: "/guide/"
+      items:
+        - text: "Introduction to Airline"
+          url: "index.html"
+        - text: "Annotations"
+          kind: Group
+          path: "/guide/annotations/"
+          items:
+            - text: "Annotations Overview"
+              url: "index.html"
+            - text: "Meta-data Annotations"
+              kind: Group
+              items:
+                - text: "@Cli"
+                  url: "cli.html"
+                - text: "@Command"
+                  url: "command.html"
+                - text: "@Option"
+                  url: "option.html"
+                - text: "@Arguments"
+                  url: "arguments.html"
+                - text: "@AirlineModule"
+                  url: "module.html"
+                - text: "@Group"
+                  url: "group.html"
+                - text: "@Groups"
+                  url: "groups.html"
+                - text: "@Alias"
+                  url: "alias.html"
+            - text: "Help Annotations"
+              kind: Group
+              items:
+                - text: "@HideSection"
+                  url: "hide-section.html"
+                - text: "Legal Information"
+                  kind: Group
+                  items:
+                    - text: "@Copyright"
+                      url: "copyright.html"
+                    - text: "@License"
+                      url: "license.html"
+                    - text: "@Version"
+                      url: "version.html"
+                - text: "Discussion Sections"
+                  kind: Group
+                  items:
+                    - text: "@Discussion"
+                      url: "discussion.html"
+                    - text: "@ProseSection and @ExternalProse"
+                      url: "prose-section.html"
+                - text: "Examples"
+                  kind: Group
+                  items:
+                    - text: "@Examples, @ExternalExamples and @ExternalTabularExamples"
+                      url: "examples.html"
+                - text: "@ExitCodes and @ExternalExitCodes"
+                  url: "exit-codes.html"
+                - text: "@SeeAlso"
+                  url: "see-also.html"
+            - text: "Restriction Annotations"
+              kind: Group
+              items:
+                - text: "Unrestricted"
+                  url: "unrestricted.html"
+                - text: "@Partial and @Partials"
+                  url: "partials.html"
+                - text: "Requirement Restrictions"
+                  kind: Group
+                  items:
+                    - text: "@Required"
+                      url: "required.html"
+                    - text: "@RequireSome"
+                      url: "require-some.html"
+                    - text: "@RequireOnlyOne"
+                      url: "require-only-one.html"
+                    - text: "@MutuallyExclusiveWith"
+                      url: "mutually-exclusive-with.html"
+                - text: "Occurrence Restrictions"
+                  kind: Group
+                  items:
+                    - text: "@Once"
+                      url: "once.html"
+                    - text: "@MinOccurrences"
+                      url: "min-occurrences.html"
+                    - text: "@MaxOccurrences"
+                      url: "max-occurrences.html"
+                - text: "General Value Restrictions"
+                  kind: Group
+                  items:
+                    - text: "@AllowedRawValues"
+                      url: "allowed-raw-values.html"
+                    - text: "@AllowedEnumValues"
+                      url: "allowed-enum-values.html"
+                    - text: "@AllowedValues"
+                      url: "allowed-values.html"
+                    - text: "@NotBlank"
+                      url: "not-blank.html"
+                    - text: "@NotEmpty"
+                      url: "not-empty.html"
+                    - text: "@Path, @File and @Directory"
+                      url: "path.html"
+                    - text: "@Port and @PortRange"
+                      url: "port.html"
+                - text: "Numeric Value Restrictions"
+                  kind: Group
+                  items:
+                    - text: "@ByteRange"
+                      url: "byte-range.html"
+                    - text: "@ShortRange"
+                      url: "short-range.html"
+                    - text: "@IntegerRange"
+                      url: "integer-range.html"
+                    - text: "@LongRange"
+                      url: "long-range.html"
+                    - text: "@FloatRange"
+                      url: "float-range.html"
+                    - text: "@DoubleRange"
+                      url: "double-range.html"
+                    - text: "@Positive and @Negative"
+                      url: "pos-neg.html"
+                - text: "String Value Restrictions"
+                  kind: Group
+                  items:
+                    - text: "@StartsWith"
+                      url: "starts-with.html"
+                    - text: "@EndsWith"
+                      url: "ends-with.html"
+                    - text: "@Pattern"
+                      url: "pattern.html"
+                    - text: "@MinLength"
+                      url: "min-length.html"
+                    - text: "@MaxLength"
+                      url: "max-length.html"
+                    - text: "@ExactLength"
+                      url: "exact-length.html"
+                    - text: "@LengthRange"
+                      url: "length-range.html"
+                    - text: "@LexicalRange"
+                      url: "lexical-range.html"
+        - text: "Parser"
+          kind: Group
+          path: "/guide/parser/"
+          items: 
+            - text: "Parser Overview"
+              url: "index.html"
+            - text: "Custom Option Parsers"
+              url: "options.html"
+        - text: "Restrictions"
+          kind: Group
+          path: "/guide/restrictions/"
+          items:
+            - text: "Restrictions Overview"
+              url: "index.html"
+            - text: "Global Restrictions"
+              url: "global.html"
+            - text: "Custom Restrictions"
+              url: "custom.html"
+        - text: "Help System"
+          kind: Group
+          path: "/guide/help/"
+          items:
+            - text: "Help System Overview"
+              url: "index.html"
+            - text: "Help Hints"
+              url: "hints.html"
+            - text: "Help Sections"
+              url: "sections.html"
+            - text: "Custom Help Sections"
+              url: "custom-sections.html"
+            - text: "Help Formats"
+              kind: Group
+              items:
+                - text: "Text"
+                  url: "text.html"
+                - text: "Markdown"
+                  url: "markdown.html"
+                - text: "Man Pages"
+                  url: "man.html"
+                - text: "HTML"
+                  url: "html.html"
+                - text: "Bash Completion"
+                  url: "bash.html"
+        - text: "Airline in Practise"
+          kind: Group
+          path: "/guide/practise/"
+          items:
+            - text: "Overview"
+              url: "index.html"
+            - text: "Command/CLI Definition"
+              kind: Group
+              items:
+                - text: "Inheritance and Composition"
+                  url: "oop.html"
+                - text: "Supported Types"
+                  url: "types.html"
+            - text: "Advanced Configuration"
+              kind: Group
+              items:
+                - text: "User Defined Aliases"
+                  url: "aliases.html"
+                - text: "Exceptions and Error Handling"
+                  url: "exceptions.html"
+                - text: "Resource Locators"
+                  url: "resource-locators.html"
+            - text: "Maven Plugin"
+              url: "maven-plugin.html"
+            - text: "JDK Compatibility"
+              url: "jdk.html"
+            - text: "Prompts"
+              url: "prompts.html"
+            - text: "Workshop Session"
+              url: "workshop.html"
+    - text: "API Javadoc"
+      kind: Group
+      items:
+        - kind: LatestJavadoc
+        - kind: DevJavadoc
+        - text: "Past Versions"
+          kind: Group
+          items:
+            - text: "2.9.x"
+              kind: Group
+              items:
+                - kind: Javadoc
+                  version: "2.9.0"
+            - text: "2.8.x"
+              kind: Group
+              items:
+                - kind: Javadoc
+                  version: "2.8.0"
+                - kind: Javadoc
+                  version: "2.8.1"
+                - kind: Javadoc
+                  version: "2.8.2"
+                - kind: Javadoc
+                  version: "2.8.3"
+                - kind: Javadoc
+                  version: "2.8.4"
+                - kind: Javadoc
+                  version: "2.8.5"
+            - text: "2.7.x"
+              kind: Group
+              items:
+                - kind: Javadoc
+                  version: "2.7.2"
+                - kind: Javadoc
+                  version: "2.7.1"
+                - kind: Javadoc
+                  version: "2.7.0"
+            - text: "2.6.x"
+              kind: Group
+              items:
+                - kind: Javadoc
+                  version: "2.6.0"
+            - text: "2.5.x"
+              kind: Group
+              items:
+                - kind: Javadoc
+                  version: "2.5.0"
+            - text: "2.4.x"
+              kind: Group
+              items:
+                - kind: Javadoc
+                  version: "2.4.0"
+            - text: "2.3.x"
+              kind: Group
+              items:
+                - kind: Javadoc
+                  version: "2.3.0"
+            - text: "2.2.x"
+              kind: Group
+              items:
+                - kind: Javadoc
+                  version: "2.2.0"
+            - text: "2.1.x"
+              kind: Group
+              items:
+                - kind: Javadoc
+                  version: "2.1.0"

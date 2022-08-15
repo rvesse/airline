@@ -402,7 +402,8 @@ public class TestHelp {
                 "SYNOPSIS\n" +
                 "        test Args1 [ -bigdecimal <bigd> ] [ -date <date> ] [ -debug ]\n" +
                 "                [ -double <doub> ] [ -float <floa> ] [ -groups <groups> ]\n" +
-                "                [ {-log | -verbose} <verbose> ] [ -long <l> ] [--] [ <parameters>... ]\n" +
+                "                [ {-log | -verbose} <verbose> ] [ -long <l> ] [ -path <path> ]\n" +
+                "                [--] [ <parameters>... ]\n" +
                 "\n" +
                 "OPTIONS\n" +
                 "        -bigdecimal <bigd>\n" +
@@ -428,6 +429,9 @@ public class TestHelp {
                 "\n" +
                 "        -long <l>\n" +
                 "            A long number\n" +
+                "\n" +
+                "        -path <path>\n" +
+                "            A Path\n" +
                 "\n" +
                 "        --\n" +
                 "            This option can be used to separate command-line options from the\n" +
@@ -1057,7 +1061,8 @@ public class TestHelp {
                 "SYNOPSIS\n" +
                 "        test [ -bigdecimal <bigd> ] [ -date <date> ] [ -debug ]\n" +
                 "                [ -double <doub> ] [ -float <floa> ] [ -groups <groups> ]\n" +
-                "                [ {-log | -verbose} <verbose> ] [ -long <l> ] [--] [ <parameters>... ]\n" +
+                "                [ {-log | -verbose} <verbose> ] [ -long <l> ] [ -path <path> ]\n" +
+                "                [--] [ <parameters>... ]\n" +
                 "\n" +
                 "OPTIONS\n" +
                 "        -bigdecimal <bigd>\n" +
@@ -1083,6 +1088,9 @@ public class TestHelp {
                 "\n" +
                 "        -long <l>\n" +
                 "            A long number\n" +
+                "\n" +
+                "        -path <path>\n" +
+                "            A Path\n" +
                 "\n" +
                 "        --\n" +
                 "            This option can be used to separate command-line options from the\n" +
@@ -1352,6 +1360,9 @@ public class TestHelp {
                 "        Foo\n" + 
                 "\n" + 
                 "        Bar\n" +
+                "\n" + 
+                "SEE ALSO\n" + 
+                "        test help, man, grep\n" +
                 "\n");
         //@formatter:on
     }
@@ -1377,6 +1388,9 @@ public class TestHelp {
                 "        Foo\n" + 
                 "\n" + 
                 "        Bar\n" +
+                "\n" +
+                "SEE ALSO\n" + 
+                "        test help, man, grep\n" +
                 "\n");
         //@formatter:on
     }
