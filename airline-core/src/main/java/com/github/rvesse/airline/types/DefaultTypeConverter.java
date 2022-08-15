@@ -51,23 +51,23 @@ public class DefaultTypeConverter extends DefaultTypeConverterProvider implement
 
         // Firstly try the standard Java types
         ConvertResult result = tryConvertBasicTypes(name, type, value);
-        if (result.wasSuccessfull())
+        if (result.wasSuccessful())
             return result.getConvertedValue();
 
         // Then look for a static fromString(String) method
         result = tryConvertFromString(name, type, value);
-        if (result.wasSuccessfull())
+        if (result.wasSuccessful())
             return result.getConvertedValue();
 
         // Then look for a static valueOf(String) method
         // This covers enums which have a valueOf method
         result = tryConvertFromValueOf(name, type, value);
-        if (result.wasSuccessfull())
+        if (result.wasSuccessful())
             return result.getConvertedValue();
 
         // Finally look for a constructor taking a string
         result = tryConvertStringConstructor(name, type, value);
-        if (result.wasSuccessfull())
+        if (result.wasSuccessful())
             return result.getConvertedValue();
 
         throw new ParseOptionConversionException(name, value, type.getSimpleName());

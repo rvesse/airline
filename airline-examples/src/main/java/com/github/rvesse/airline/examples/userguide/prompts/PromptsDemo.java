@@ -1,17 +1,14 @@
 /**
  * Copyright (C) 2010-16 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package com.github.rvesse.airline.examples.userguide.prompts;
@@ -55,7 +52,8 @@ public class PromptsDemo implements ExampleRunnable {
             }
         } catch (PromptTimeoutException e) {
             System.out.println();
-            // NB - If the prompt times out the underlying provider may still be blocking for input from the user so they will need
+            // NB - If the prompt times out the underlying provider may still be blocking for input from the user, so
+            //      they will need to press enter to clear that block before they can proceed
             System.err.println("You did not answer fast enough, press enter to continue");
         } catch (PromptException e) {
             System.err.println(e.getMessage());

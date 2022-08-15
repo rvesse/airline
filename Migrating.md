@@ -7,6 +7,14 @@ Airline 2.10 has a single minor breaking change that only affects users of the `
 In order to avoid package collisions between modules and enable the `airline-help-bash` module to become a JPMS module
 this annotation was moved into a new sub-package `com.github.rvesse.airline.annotations.help.bash`
 
+## Inject Dependencies are now optional
+
+As noted in [Migrating to Airline 2.9](#migration-to-airline-29) Airline is moving away from usage of the `@Inject` 
+annotation for composition in favour of its own `@AirlineModule` annotation.  As part of this move the `jakarta.
+inject-api` and `airline-backcompat-javaxinject` dependencies became `optional` in 2.10.  This means that if you have an
+existing Airline based application that is using `@Inject` annotations you must now provide the relevant dependency 
+yourself as you will not automatically pick it up as a transitive dependency of Airline.
+
 # Migration to Airline 2.9
 
 Airline 2.9 introduces some changes to composition annotations in preparation for breaking changes in future releases.
@@ -18,7 +26,7 @@ For backwards compatibility purposes usage of the older `@Inject` annotation rem
 
 ## Excluding Inject Dependencies
 
-Users who are able to transition to `@AirlineModule` may wish to explicity exclude the following dependencies when 
+Users who are able to transition to `@AirlineModule` may wish to explicitly exclude the following dependencies when 
 depending on Airline to avoid polluting their classpath with unnecessary dependencies if they no longer need `@Inject`
 present:
 

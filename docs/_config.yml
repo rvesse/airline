@@ -261,6 +261,8 @@ side_nav:
               url: "maven-plugin.html"
             - text: "JDK Compatibility"
               url: "jdk.html"
+            - text: "Prompts"
+              url: "prompts.html"
             - text: "Workshop Session"
               url: "workshop.html"
     - text: "API Javadoc"

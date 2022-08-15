@@ -31,7 +31,7 @@ public class ExtendedTypeConverter extends DefaultTypeConverter {
 
         // Try and convert from a parse(String) method
         ConvertResult result = this.tryConvertStringMethod(name, type, value, "parse");
-        if (result.wasSuccessfull())
+        if (result.wasSuccessful())
             return result.getConvertedValue();
 
         // Fall back to default behaviour otherwise

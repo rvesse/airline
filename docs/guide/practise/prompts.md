@@ -3,13 +3,13 @@ layout: page
 title: Prompts
 ---
 
-{% include req-ver.md version="2.10.0" %}
+{% include req-ver.md version="2.10.0" module="airline-prompts" %}
 
 Often command line applications may need to prompt users for input e.g. asking for a password, obtaining a missing
 value, asking for a Yes/No response etc.  From 2.10.0 onwards we provide the `airline-prompts` module which provides a
 library for doing this in a consistent manner, this includes features such as:
 
-- Prompt timeouts so non-interactive apps don't hang forever
+- Optional prompt timeouts so non-interactive apps don't hang forever
 - Configurable prompt sources
 - Configurable prompt formatting
 - Prompt for keys, strings, passwords, options (from a pre-configured list) or a strongly typed value
@@ -131,7 +131,7 @@ of a prompt.
 
 The timeout controls how long users have to respond to prompts.  Having a timeout can be useful because it 
 prevents your application from hanging indefinitely if run in a non-interactive environment and/or allows you to 
-fallback to alternative behaviour, fail fast etc. when no prompt response is received.
+fall back to alternative behaviour, fail fast etc. when no prompt response is received.
 
 The timeout can be set with the `withTimeout()` method and `withTimeoutUnit()` methods e.g.
 
@@ -143,7 +143,7 @@ Prompt<String> prompt
            .build();
 ```
 
-Here we set a 30 second timeout, we could also combine these into a single method call like so:
+Here we set a 30-second timeout, we could also combine these into a single method call like so:
 
 ```java
 Prompt<String> prompt
@@ -157,7 +157,7 @@ A prompt that does not receive a response within the timeout throws a `PromptTim
 {% include alert.html %}
 If a prompt timeout occurs then the underlying prompt provider may still be blocked waiting for user input in the
 background.  Please ensure that you catch and handle these errors by asking the user to press enter or pumping
-a new line character into the prompt input if you control it.  Otherwise a subsequent prompt could read the input 
+a new line character into the prompt input if you control it.  Otherwise, a subsequent prompt could read the input 
 intended for the prior prompt.
 
 Ideally if a prompt timeout occurs you **SHOULD** abort your application or use suitable defaults making no further
@@ -208,10 +208,10 @@ The default implementation is the `DefaultMatcher`, this has the following behav
     - If no options match error as invalid response
     - If multiple options are matched check if it exactly matches only one option
         - If exactly one match return it
-        - Otherwise error as ambiguous response
+        - Otherwise, error as ambiguous response
     - If only one option is matched return it
 
-Note that this is case sensitive matching, if you prefer case insensitive matching use `IgnoresCaseMatcher` instead.
+Note that this is case-sensitive matching, if you prefer case-insensitive matching use `IgnoresCaseMatcher` instead.
 
 The following additional matchers are also provided:
 
@@ -240,7 +240,7 @@ Double scalingFactor = prompt.promptForOption(false);
 ```
 
 Here we are prompting for a scaling factor as a `Double`, since `Double` values can be written down in multiple 
-ways e.g. `1`, `1.0`, `0.1e1` etc we use `ValueMatcher` to match the prompt response to one of our valid options
+ways e.g. `1`, `1.0`, `0.1e1` etc. we use `ValueMatcher` to match the prompt response to one of our valid options
  
 ### Formatters
 
@@ -263,5 +263,5 @@ Prompt<String> prompt
 ```
 
 If no formatter is explicitly specified then the builder selects one of the two default formats depending on whether 
-any options have been specified.  If options have been specified then the list formatter is used, if no options the 
-question formatter is used.
+any options have been specified.  If options have been specified then the list formatter is used, if no options then 
+the question formatter is used.

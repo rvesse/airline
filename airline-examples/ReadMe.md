@@ -17,7 +17,7 @@ Optionally passing in any arguments e.g.
 Or with Java 9+ you can run using JPMS:
 
 ```
-> moduleExample Simple foo bar
+> modularExample Simple foo bar
 ```
 
 ### Running directly via Java

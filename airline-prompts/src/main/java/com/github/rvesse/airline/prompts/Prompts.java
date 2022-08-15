@@ -46,7 +46,7 @@ public class Prompts {
     }
 
     /**
-     * Creates a simple prompt using the default provider (from {@link #defaultProvider()} and a 30 second timeout
+     * Creates a simple prompt using the default provider (from {@link #defaultProvider()}
      * 
      * @param <TOption>
      *            Option type
@@ -56,7 +56,7 @@ public class Prompts {
         //@formatter:off
         return new PromptBuilder<TOption>()
                     .withPromptProvider(defaultProvider())
-                    .withTimeout(30, TimeUnit.SECONDS);
+                    .withoutTimeout();
         //@formatter:on
     }
 

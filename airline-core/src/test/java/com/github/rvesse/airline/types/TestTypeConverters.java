@@ -65,7 +65,7 @@ public class TestTypeConverters {
         for (Class<?> type : types) {
             NumericTypeConverter converter = new DefaultNumericConverter();
             ConvertResult result = converter.tryConvertNumerics("test", type, badValue);
-            Assert.assertFalse(result.wasSuccessfull());
+            Assert.assertFalse(result.wasSuccessful());
             Assert.assertNull(result.getConvertedValue());
         }
     }
@@ -74,7 +74,7 @@ public class TestTypeConverters {
     public void numeric_case_insensitivity_01() {
         NumericTypeConverter converter = new KiloAs1024();
         ConvertResult result = converter.tryConvertNumerics("test", Long.class, "4GB");
-        Assert.assertTrue(result.wasSuccessfull());
+        Assert.assertTrue(result.wasSuccessful());
         Assert.assertEquals((long) result.getConvertedValue(), 4l * 1024l * 1024l * 1024l);
     }
 
@@ -86,7 +86,7 @@ public class TestTypeConverters {
         for (int i = 0; i < NUMBER_RANDOM_TESTS; i++) {
             int number = random.nextInt();
             ConvertResult result = converter.tryConvertNumerics("test", Integer.class, Integer.toString(number));
-            Assert.assertTrue(result.wasSuccessfull());
+            Assert.assertTrue(result.wasSuccessful());
             Assert.assertEquals((int) result.getConvertedValue(), number);
         }
     }
@@ -100,7 +100,7 @@ public class TestTypeConverters {
             long number = random.nextLong();
             ConvertResult result = converter.tryConvertNumerics("test", BigInteger.class,
                     BigInteger.valueOf(number).toString());
-            Assert.assertTrue(result.wasSuccessfull());
+            Assert.assertTrue(result.wasSuccessful());
             Assert.assertEquals(((BigInteger) result.getConvertedValue()).longValue(), number);
         }
     }
@@ -113,7 +113,7 @@ public class TestTypeConverters {
         for (int i = 0; i < NUMBER_RANDOM_TESTS; i++) {
             long number = random.nextLong();
             ConvertResult result = converter.tryConvertNumerics("test", Long.class, Long.toString(number));
-            Assert.assertTrue(result.wasSuccessfull());
+            Assert.assertTrue(result.wasSuccessful());
             Assert.assertEquals((long) result.getConvertedValue(), number);
         }
     }
@@ -126,7 +126,7 @@ public class TestTypeConverters {
         for (int i = 0; i < NUMBER_RANDOM_TESTS; i++) {
             short number = (short) random.nextInt(Short.MAX_VALUE + 1);
             ConvertResult result = converter.tryConvertNumerics("test", Short.class, Short.toString(number));
-            Assert.assertTrue(result.wasSuccessfull());
+            Assert.assertTrue(result.wasSuccessful());
             Assert.assertEquals((short) result.getConvertedValue(), number);
         }
     }
@@ -139,7 +139,7 @@ public class TestTypeConverters {
         for (int i = 0; i < NUMBER_RANDOM_TESTS; i++) {
             byte number = (byte) random.nextInt(Byte.MAX_VALUE + 1);
             ConvertResult result = converter.tryConvertNumerics("test", Byte.class, Byte.toString(number));
-            Assert.assertTrue(result.wasSuccessfull());
+            Assert.assertTrue(result.wasSuccessful());
             Assert.assertEquals((byte) result.getConvertedValue(), number);
         }
     }
@@ -152,7 +152,7 @@ public class TestTypeConverters {
         for (int i = 0; i < NUMBER_RANDOM_TESTS; i++) {
             float number = random.nextFloat();
             ConvertResult result = converter.tryConvertNumerics("test", Float.class, Float.toString(number));
-            Assert.assertTrue(result.wasSuccessfull());
+            Assert.assertTrue(result.wasSuccessful());
             Assert.assertEquals((float) result.getConvertedValue(), number);
         }
     }
@@ -161,7 +161,7 @@ public class TestTypeConverters {
     public void numeric_default_float_02() {
         NumericTypeConverter converter = new DefaultNumericConverter();
         ConvertResult result = converter.tryConvertNumerics("test", Float.class, "NaN");
-        Assert.assertTrue(result.wasSuccessfull());
+        Assert.assertTrue(result.wasSuccessful());
         Assert.assertEquals(result.getConvertedValue(), Float.NaN);
     }
 
@@ -173,7 +173,7 @@ public class TestTypeConverters {
         for (int i = 0; i < NUMBER_RANDOM_TESTS; i++) {
             double number = random.nextDouble();
             ConvertResult result = converter.tryConvertNumerics("test", Double.class, Double.toString(number));
-            Assert.assertTrue(result.wasSuccessfull());
+            Assert.assertTrue(result.wasSuccessful());
             Assert.assertEquals((double) result.getConvertedValue(), number);
         }
     }
@@ -182,7 +182,7 @@ public class TestTypeConverters {
     public void numeric_default_double_02() {
         NumericTypeConverter converter = new DefaultNumericConverter();
         ConvertResult result = converter.tryConvertNumerics("test", Double.class, "NaN");
-        Assert.assertTrue(result.wasSuccessfull());
+        Assert.assertTrue(result.wasSuccessful());
         Assert.assertEquals(result.getConvertedValue(), Double.NaN);
     }
 
@@ -195,7 +195,7 @@ public class TestTypeConverters {
             double number = random.nextDouble();
             ConvertResult result = converter.tryConvertNumerics("test", BigDecimal.class,
                     new BigDecimal(number).toString());
-            Assert.assertTrue(result.wasSuccessfull());
+            Assert.assertTrue(result.wasSuccessful());
             Assert.assertEquals(((BigDecimal) result.getConvertedValue()).doubleValue(), number);
         }
     }
@@ -214,13 +214,13 @@ public class TestTypeConverters {
             ConvertResult result = converter.tryConvertNumerics("test", type,
                     String.format("%d%s", number / divisor, suffix));
             if (number < min || number > max) {
-                Assert.assertFalse(result.wasSuccessfull());
+                Assert.assertFalse(result.wasSuccessful());
                 bad++;
             } else {
-                if (!result.wasSuccessfull())
+                if (!result.wasSuccessful())
                     System.out.println(String.format("Expected abbreviation %d%s to expand to %d but failed",
                             number / divisor, suffix, number));
-                Assert.assertTrue(result.wasSuccessfull());
+                Assert.assertTrue(result.wasSuccessful());
                 if (type.equals(BigInteger.class)) {
                     Assert.assertEquals((BigInteger) result.getConvertedValue(), BigInteger.valueOf(number));
                 } else {
@@ -241,13 +241,13 @@ public class TestTypeConverters {
 
     private void checkGoodConversion(NumericTypeConverter converter, String value, Class<?> type, Object expected) {
         ConvertResult result = doConversion(converter, value, type);
-        Assert.assertTrue(result.wasSuccessfull());
+        Assert.assertTrue(result.wasSuccessful());
         Assert.assertEquals(result.getConvertedValue(), expected);
     }
 
     private void checkBadConversion(NumericTypeConverter converter, String value, Class<?> type) {
         ConvertResult result = doConversion(converter, value, type);
-        Assert.assertFalse(result.wasSuccessfull());
+        Assert.assertFalse(result.wasSuccessful());
     }
 
     @Test
@@ -400,13 +400,13 @@ public class TestTypeConverters {
             ConvertResult result = converter.tryConvertNumerics("test", type,
                     String.format("%s", Long.toString(number, radix)));
             if (number < min || number > max) {
-                Assert.assertFalse(result.wasSuccessfull());
+                Assert.assertFalse(result.wasSuccessful());
                 bad++;
             } else {
-                if (!result.wasSuccessfull())
+                if (!result.wasSuccessful())
                     System.out.println(String.format("Expected radix %d representation %s to expand to %d but failed",
                             radix, Long.toString(number, radix), number));
-                Assert.assertTrue(result.wasSuccessfull());
+                Assert.assertTrue(result.wasSuccessful());
                 if (type.equals(BigInteger.class)) {
                     Assert.assertEquals((BigInteger) result.getConvertedValue(), BigInteger.valueOf(number));
                 } else {

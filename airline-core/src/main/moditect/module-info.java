@@ -19,7 +19,6 @@ module com.github.rvesse.airline
   requires com.github.rvesse.airline.io;
   requires org.apache.commons.lang3;
   requires org.apache.commons.collections4;
-  requires io.github.classgraph;
 
   // Optional dependencies that a user might choose to add
   requires static java.inject;

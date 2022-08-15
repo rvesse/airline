@@ -1,17 +1,14 @@
 /**
  * Copyright (C) 2010-16 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 package com.github.rvesse.airline.types;
 
@@ -42,7 +39,7 @@ public class ConvertResult {
 
     /**
      * Creates a new conversion result that indicates success
-     * 
+     *
      * @param value
      *            Converted value
      */
@@ -54,7 +51,7 @@ public class ConvertResult {
 
     /**
      * Creates a new conversion result that indicates failure
-     * 
+     *
      * @param cause
      *            Cause of the failure
      */
@@ -66,13 +63,18 @@ public class ConvertResult {
 
     /**
      * Whether the conversion was successful
-     * 
-     * @return True if successful, false otherwise public boolean wasSuccessful() { return this.success; }
-     * 
-     *         /** Whether the conversion was successful
-     * 
+     *
      * @return True if successful, false otherwise
-     * @deprecated Use correctly spelled {@link #wasSuccessful()} instead
+     */
+    public boolean wasSuccessful() {
+        return this.success;
+    }
+
+    /**
+     * Whether the conversion was successful
+     *
+     * @return True if successful, false otherwise
+     * @deprecated Use correctly spelled overload {@link #wasSuccessful()} instead
      */
     @Deprecated
     public boolean wasSuccessfull() {
@@ -81,7 +83,7 @@ public class ConvertResult {
 
     /**
      * The converted value
-     * 
+     *
      * @return Converted value
      */
     public Object getConvertedValue() {
@@ -90,7 +92,7 @@ public class ConvertResult {
 
     /**
      * Gets whether a cause is available
-     * 
+     *
      * @return Cause
      */
     public boolean hasCause() {
@@ -99,7 +101,7 @@ public class ConvertResult {
 
     /**
      * Gets the cause if available
-     * 
+     *
      * @return Cause, or {@code null} if none available
      */
     public Throwable getCause() {

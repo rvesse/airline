@@ -97,7 +97,7 @@ Guide](Migrating.md#excluding-inject-dependencies) for more details on this.
 
 - Parser Improvements
   - Added a `GreedyMaybeListValueOptionParser` to cover more cases where greedy parsing behaviour is desired (#110)
->>>>>>> main
+
 
 ## 2.8.2
 
