@@ -79,7 +79,7 @@
     <!-- Dependency Versions -->
     <dependency.javax-inject>2.0.1</dependency.javax-inject>
     <dependency.junit>4.12</dependency.junit>
-    <dependency.testng>7.5</dependency.testng>
+    <dependency.testng>7.7.0</dependency.testng>
     <dependency.classgraph>4.8.149</dependency.classgraph>
     <dependency.commons-lang3>3.12.0</dependency.commons-lang3>
     <dependency.commons-collections4>4.4</dependency.commons-collections4>
