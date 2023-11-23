@@ -14,11 +14,14 @@ this annotation was moved into a new sub-package `com.github.rvesse.airline.anno
 
 ## Inject Dependencies are now optional
 
-As noted in [Migrating to Airline 2.9](#migration-to-airline-29) Airline is moving away from usage of the `@Inject` 
+As noted in [Migrating to Airline 2.9](#migration-to-airline-29) Airline is moving away from usage of the `@Inject`
 annotation for composition in favour of its own `@AirlineModule` annotation.  As part of this move the `jakarta.
-inject-api` and `airline-backcompat-javaxinject` dependencies became `optional` in 3.0.0.  This means that if you have an
-existing Airline based application that is using `@Inject` annotations you must now provide the relevant dependency 
-yourself as you will not automatically pick it up as a transitive dependency of Airline.
+inject-api` and `airline-backcompat-javaxinject` dependencies became `optional` in `3.0.0`.  This means that if you have
+an existing Airline based application that is using `@Inject` annotations you **MUST** now provide the relevant
+dependency yourself as you will not automatically pick it up as a transitive dependency of Airline.
+
+You **MUST** also explicitly configure the `@Parser` configuration to use the old composition annotations if you still
+need to use these.
 
 # Migration to Airline 2.9
 

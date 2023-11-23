@@ -22,4 +22,4 @@ for (String line : lines) {
 // Verify log file
 String logFile = verifier.getBasedir() + "/build.log";
 verifier.assertFilePresent(logFile);
-verifier.assertFileMatches(logFile, "(?s).*Generated command help for class com.github.rvesse.airline.args.Args1 in format CLI to file " + outputFile + ".*");
+verifier.assertFileMatches(logFile, "(?s).*Generated command help for class com.github.rvesse.airline.tests.args.Args1 in format CLI to file " + outputFile + ".*");

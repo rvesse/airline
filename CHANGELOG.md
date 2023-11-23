@@ -20,6 +20,8 @@ files.
     deprecated
   - Added a `JpmsResourceLocator` as an additional `ResourceLocator` to allow finding resources when running in a JPMS
     context (requires additional module `airline-jpms-resources`)
+  - **BREAKING** - Only `@AirlineModule` is used as a composition annotation by default, use of the older
+    `@javax.inject.Inject` or `@jakarta.inject.Inject` annotations **MUST** now be explicitly configured.
 - Help Improvements
   - Added an `@SeeAlso` annotation to Airline Core (#51)
   - **BREAKING** - `airline-help-bash` has moved `@BashCompletion` annotation into
@@ -29,7 +31,7 @@ files.
   - A `ParserBuilder` created by calling `withParser()` on a `CliBuilder` can now return control back to its parent via
     the `parent()` method for cleaner Fluid CLI definitions
 - Dependency Updates
-  - Minimum JDK Version is now 11
+  - **BREAKING** - Minimum JDK Version is now 11
   - Apache Commons Collections upgraded to 4.4
   - Apache Commons Lang upgraded to 3.14.0
   - `jakarta.inject` and `airline-backcompat-javaxinject` were made `optional` so will no longer be pulled in

@@ -41,9 +41,9 @@ verifier.assertFileMatches(outputFile, "(?s).*# NAME.*");
 // Verify log file
 String logFile = verifier.getBasedir() + "/build.log";
 verifier.assertFilePresent(logFile);
-verifier.assertFileMatches(logFile, "(?s).*Generated command help for class com.github.rvesse.airline.args.Args1 in format MAN to file.*");
-verifier.assertFileMatches(logFile, "(?s).*Generated command help for class com.github.rvesse.airline.args.Args1 in format CLI to file.*");
-verifier.assertFileMatches(logFile, "(?s).*Generated command help for class com.github.rvesse.airline.args.Args1 in format MARKDOWN to file.*");
+verifier.assertFileMatches(logFile, "(?s).*Generated command help for class com.github.rvesse.airline.tests.args.Args1 in format MAN to file.*");
+verifier.assertFileMatches(logFile, "(?s).*Generated command help for class com.github.rvesse.airline.tests.args.Args1 in format CLI to file.*");
+verifier.assertFileMatches(logFile, "(?s).*Generated command help for class com.github.rvesse.airline.tests.args.Args1 in format MARKDOWN to file.*");
 verifier.assertFileMatches(logFile, "(?s).*Generated CLI help for class com.github.rvesse.airline.examples.userguide.BasicCli in format MAN to file.*");
 verifier.assertFileMatches(logFile, "(?s).*Generated CLI help for class com.github.rvesse.airline.examples.userguide.BasicCli in format CLI to file.*");
 verifier.assertFileMatches(logFile, "(?s).*Generated CLI help for class com.github.rvesse.airline.examples.userguide.BasicCli in format MARKDOWN to file.*");

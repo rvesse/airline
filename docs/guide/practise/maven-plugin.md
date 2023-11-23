@@ -73,7 +73,7 @@ For example:
             <!-- Separate source elements rather than multiple class under a single source element -->
             <source>
               <classes>
-                <class>com.github.rvesse.airline.args.Args1</class>
+                <class>com.github.rvesse.airline.tests.args.Args1</class>
               </classes>
             </source>
             <source>
@@ -431,7 +431,7 @@ Here's an example configuration that does all of the above:
           <sources>
             <source>
               <classes>
-                <class>com.github.rvesse.airline.args.Args1</class>
+                <class>com.github.rvesse.airline.tests.args.Args1</class>
               </classes>
               <options>
                 <columns>100</columns>

@@ -135,12 +135,9 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * </p>
      * <ul>
      * <li>{@code com.github.rvesse.airline.annotations.AirlineModule}</li>
-     * <li>{@code javax.inject.Inject}</li>
-     * <li>{@code jakarta.inject.Inject}</li>
-     * <li>{@code com.google.inject.Inject}</li>
      * </ul>
      * <p>
-     * <strong>NB:</strong> Future releases will reduce the default set to just
+     * <strong>NB:</strong> As of {@code 3.0.0) the default set was reduced to just
      * {@code com.github.rvesse.airline.annotations.AirlineModule} and require that users explicitly configure
      * additional annotation classes as they see fit.  If you are not currently using a dependency injection framework
      * that requires some form of {@code Inject} annotation we would recommend that you transition to using
@@ -151,9 +148,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      * @since 2.9.0
      */
     public ParserBuilder<C> withDefaultCompositionAnnotations() {
-        return withCompositionAnnotations(AirlineModule.class.getCanonicalName(), MetadataLoader.JAVAX_INJECT_INJECT,
-                                          MetadataLoader.JAKARTA_INJECT_INJECT,
-                                          MetadataLoader.COM_GOOGLE_INJECT_INJECT);
+        return withCompositionAnnotations(AirlineModule.class.getCanonicalName());
     }
 
     /**
@@ -574,15 +569,15 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
 
     /**
      * Gets the parent CLI builder (if any)
-     * 
+     *
      * @return Parent CLI builder
-     * @throws IllegalStateException
-     *             Thrown if there is no parent CLI builder
+     * @throws IllegalStateException Thrown if there is no parent CLI builder
      */
     public CliBuilder<C> parent() {
-        if (this.cliBuilder == null)
+        if (this.cliBuilder == null) {
             throw new IllegalStateException(
                     "This Parser Builder was not created via a CLI builder and so cannot call parent() to obtain a parent CLI builder");
+        }
         return this.cliBuilder;
     }
 

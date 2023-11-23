@@ -13,4 +13,19 @@
     <license.header.path>${project.parent.parent.basedir}</license.header.path>
     <coveralls.skip>true</coveralls.skip>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline-backcompat-javaxinject</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

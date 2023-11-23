@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.FileLocator;
+import com.github.rvesse.airline.parser.resources.ModulePathLocator;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
 
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
@@ -127,6 +128,7 @@ public @interface Version {
      */
     Class<? extends ResourceLocator>[] sourceLocators() default {
             ClasspathLocator.class,
+            ModulePathLocator.class,
             FileLocator.class
     };
 }

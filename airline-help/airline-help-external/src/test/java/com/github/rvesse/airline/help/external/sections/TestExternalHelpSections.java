@@ -16,7 +16,6 @@
 package com.github.rvesse.airline.help.external.sections;
 
 import com.github.rvesse.airline.builder.ParserBuilder;
-import com.github.rvesse.airline.model.ParserMetadata;
 import org.apache.commons.collections4.IterableUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -35,7 +34,7 @@ import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 
-import static com.github.rvesse.airline.help.sections.TestHelpSectionDetection.HelpSectionFinder;
+import static com.github.rvesse.airline.tests.sections.TestHelpSectionDetection.HelpSectionFinder;
 
 public class TestExternalHelpSections {
 

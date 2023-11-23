@@ -17,7 +17,8 @@ allow users to extend resource location as desired.  The following locators are 
 | {% include javadoc-ref.md class="EnvVarLocator" package="parser.resources" %} | Locates resources on the filesystem where the search locations given may contain `${VAR}` placeholders to refer to environment variables. |
 | {% include javadoc-ref.md class="JvmSystemPropertyLocator" package="parser.resources" %} | Locates resources on the filesystem where the search locations given may contain `${var}` placeholders to refer to JVM system properties i.e. those passed to the JVM via the `-Dvar=value` flag. |
 | {% include javadoc-ref.md class="ClasspathLocator" package="parser.resources" %} | Locates resources on the JVM class path. |
-| {% include javadoc-ref.md class="JpmsResourceLocator" package="parser.resources.jpms" module="airline-jpms-resources" %} | Locates resources on the JVM Module Path.
+| {% include javadoc-ref.md class="ModulePathLocator" package="parser.resources" %} | Locates resources on the JVM module path. |
+| {% include javadoc-ref.md class="JpmsResourceLocator" package="parser.resources.jpms" module="airline-jpms-resources" %} | Locates resources on the JVM Module Path, especially in the case where modules are not open to each other. |
 
 This makes it possible to configure CLIs that have intelligent behaviours e.g. resolving user aliases from environment variable driven locations.
 
@@ -34,11 +35,22 @@ force the `FileLocator` to be used and `classpath://` to force the `ClasspathLoc
 
 ### JPMS Resource Location
 
+{% include req-ver.md version="3.0.0" %}
+
+When running on the Java Module Path resource location is somewhat more complicated as in order for a resource to be
+accessible to another module like Airline the package in which it is contained **MUST** be declared as `opens` in the 
+`module-info.java` for your module.
+
+From 3.0.0 onwards a `ModulePathLocator` was added to the core `airline` module so that it can successfully locate
+resources on the module path when the above conditions are met.
+
 {% include req-ver.md version="3.0.0" module="airline-jpms-resources" %}
 
-From 3.0.0 onwards a `JpmsResourceLocator` was added in a separate `airline-jpms-resources` module since it requires
-additional dependencies.  This resource locator is capable of locating resources when Airline is run on the Module Path
-where the stronger encapsulation may make accessing resources via the standard `ClasspathLocator` fail.
+However in some cases this may be insufficient e.g. you want to read a resource from a module whose `module-info.java`
+you do not control and thus cannot change the `opens` declarations. Additionally from 3.0.0 onwards a
+`JpmsResourceLocator` was added in a separate `airline-jpms-resources` module since it requires additional dependencies.
+This resource locator is capable of locating resources when Airline is run on the Module Path where the stronger
+encapsulation may make accessing resources via the standard `ClasspathLocator`/`ModulePathLocator` fail.
 
 Please refer to the [JPMS Notes](jdk.html#jpms) for more information on running Airline in a JPMS context.
 

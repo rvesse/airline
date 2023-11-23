@@ -19,6 +19,7 @@ import com.github.rvesse.airline.help.external.parsers.TabularParser;
 import com.github.rvesse.airline.help.external.parsers.defaults.DefaultExternalHelpParser;
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.FileLocator;
+import com.github.rvesse.airline.parser.resources.ModulePathLocator;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
 
 import java.lang.annotation.Documented;
@@ -49,6 +50,7 @@ public @interface ExternalTabularExamples {
      */
     Class<? extends ResourceLocator>[] sourceLocators() default {
             ClasspathLocator.class,
+            ModulePathLocator.class,
             FileLocator.class
     };
 

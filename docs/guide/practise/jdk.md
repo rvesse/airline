@@ -45,11 +45,12 @@ module com.yourdomain.yourmodule
 {% include req-ver.md version="3.0.0" %}
 
 Prior to `3.0.0` Airline only provided basic `module-info.java` files, as of `3.0.0` these have been properly 
-handcrafted to provide much improved JPMS compatibility.
+handcrafted to provide full JPMS compatibility.
 
-If you are using any of the Airline annotations that locate resources e.g. `@Version` then you **MAY** need to 
-explicitly open the package containing those resources to `com.github.rvesse.airline` and to `io.github.classgraph`. 
-Where your resources are in the root of your package this **MAY** be unnecessary.
+If you are using any of the Airline annotations that locate resources e.g. `@Version` then you **MAY** need to
+explicitly open the package containing those resources to `com.github.rvesse.airline`. The new `ModulePathLocator`
+introduced in `3.0.0` should allow locating such resources when appropriate `opens` declarations are present in your
+`module-info.java`.
 
 You may find that Airline is unable to locate some resources with its default configuration.  If this is the case you
 can add the `airline-jpms-resources` module as an additional dependency and reference the `JpmsResourceLocator.class` in

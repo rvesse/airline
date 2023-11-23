@@ -28,7 +28,7 @@ provides corresponding description of what each example does.
 
 ## `@ExternalExamples` and `@ExternalTabularExamples`
 
-{% include req-ver.md version="2.10.0" module="airline-help-external" %}
+{% include req-ver.md version="3.0.0" module="airline-help-external" %}
 
 If your application has a lot of examples it may be simpler to define these in separate file(s) and just have Airline
 load this for you.
