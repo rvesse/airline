@@ -5,7 +5,7 @@ title: See Also Annotation
 
 ## `@SeeAlso`
 
-{% include req-ver.md version="2.10.0" %}
+{% include req-ver.md version="3.0.0" %}
 
 The `@SeeAlso` annotation may be applied to classes and provides a see also section that will be included in
 [Help](../help/) as an additional section.

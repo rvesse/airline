@@ -1,14 +1,17 @@
 # Airline - Change Log
 
-### Forthcoming 2.x Deprecation
+### 3.x Deprecation
 
-2.10.0, and any subsequent patch releases, are intended to be the last supported releases of Airline 2.x
+Future releases will start to focus on the 4.x builds which include some important new features e.g. first class
+positional argument support, better DI framework integration, that are not possible under 2.x/3.x without making
+breaking changes.  You can see progress on 4.x by following the `4x` branch and its `CHANGELOG.md` and `Migrating.md`
+files.
 
-Future releases will start to focus on the 3.x builds which include some important new features e.g. first class
-positional argument support, better DI framework integration, that are not possible under 2.x without making breaking
-changes.  You can see progress on 3.x by following the `3x` branch and its `CHANGELOG.md` and `Migrating.md`
+### 2.x Deprecation
 
-## 2.10.0
+3.0.0 is now released, so Airline 2.x will no longer be supported.
+
+## 3.0.0
 
 - Core Improvements
   - First class support for `BigInteger` and `BigDecimal` as numeric types
@@ -26,6 +29,7 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
   - A `ParserBuilder` created by calling `withParser()` on a `CliBuilder` can now return control back to its parent via
     the `parent()` method for cleaner Fluid CLI definitions
 - Dependency Updates
+  - Minimum JDK Version is now 11
   - Apache Commons Collections upgraded to 4.4
   - Apache Commons Lang upgraded to 3.14.0
   - `jakarta.inject` and `airline-backcompat-javaxinject` were made `optional` so will no longer be pulled in

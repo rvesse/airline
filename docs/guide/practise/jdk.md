@@ -5,12 +5,13 @@ title: JDK Compatibility
 
 ### Source
 
-Our source code is Java 7 compliant.
+Historically our source code was Java 7 compliant.  However, as of `3.0.0` we moved to Java 11 as the minimum supported
+JDK version so expect our codebase to adopt more modern Java syntax as it continues to evolve.
 
 ### Build
 
-Airline can be built with Java 7 or higher and our `pom.xml` contains appropriate profile customisations to enable 
-this.  Regardless of the version built the `pom.xml` will target Java 7 byte code. 
+Airline can be built with Java 11 or higher and our `pom.xml` contains appropriate profile customisations to enable 
+this.  Regardless of the version built the `pom.xml` will target Java 11 byte code. 
 
 Airline may not build with very recent JDKs if there are any incompatibilities with our choice of Maven plugins.
 
@@ -19,7 +20,7 @@ existed at that time.
 
 ### Runtime
 
-Airline is built with Java 7 so can be used with Java 7 or above.
+Airline is built with Java 11 so can be used with Java 11 or above.
 
 #### JPMS
 
@@ -41,9 +42,9 @@ module com.yourdomain.yourmodule
 }
 ```
 
-{% include req-ver.md version="2.10.0" %}
+{% include req-ver.md version="3.0.0" %}
 
-Prior to `2.10.0` Airline only provided basic `module-info.java` files, as of `2.10.0` these have been properly 
+Prior to `3.0.0` Airline only provided basic `module-info.java` files, as of `3.0.0` these have been properly 
 handcrafted to provide much improved JPMS compatibility.
 
 If you are using any of the Airline annotations that locate resources e.g. `@Version` then you **MAY** need to 

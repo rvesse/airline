@@ -1,6 +1,11 @@
-# Migration to Airline 2.10 from Airline 2.9 and earlier
+# Migration to Airline 3.0.0 from Airline 2.x
 
-Airline 2.10 has a single minor breaking change that only affects users of the `airline-help-bash` module.
+Airline 3.0.0 has several breaking changes
+
+## Minimum Java Version is now 11
+
+Java 11 is now required as the minimum Java version.  This was necessary in order to be able to continue to use 
+up-to-date releases of our dependencies, and since Java 8 is now EOL.
 
 ## `@BashCompletion` package relocation
 
@@ -11,7 +16,7 @@ this annotation was moved into a new sub-package `com.github.rvesse.airline.anno
 
 As noted in [Migrating to Airline 2.9](#migration-to-airline-29) Airline is moving away from usage of the `@Inject` 
 annotation for composition in favour of its own `@AirlineModule` annotation.  As part of this move the `jakarta.
-inject-api` and `airline-backcompat-javaxinject` dependencies became `optional` in 2.10.  This means that if you have an
+inject-api` and `airline-backcompat-javaxinject` dependencies became `optional` in 3.0.0.  This means that if you have an
 existing Airline based application that is using `@Inject` annotations you must now provide the relevant dependency 
 yourself as you will not automatically pick it up as a transitive dependency of Airline.
 

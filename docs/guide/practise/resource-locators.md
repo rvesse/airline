@@ -34,9 +34,9 @@ force the `FileLocator` to be used and `classpath://` to force the `ClasspathLoc
 
 ### JPMS Resource Location
 
-{% include req-ver.md version="2.10.0" module="airline-jpms-resources" %}
+{% include req-ver.md version="3.0.0" module="airline-jpms-resources" %}
 
-From 2.10.0 onwards a `JpmsResourceLocator` was added in a separate `airline-jpms-resources` module since it requires
+From 3.0.0 onwards a `JpmsResourceLocator` was added in a separate `airline-jpms-resources` module since it requires
 additional dependencies.  This resource locator is capable of locating resources when Airline is run on the Module Path
 where the stronger encapsulation may make accessing resources via the standard `ClasspathLocator` fail.
 

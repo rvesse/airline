@@ -5,7 +5,7 @@
   <groupId>com.github.rvesse</groupId>
   <artifactId>airline-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.10.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <name>Airline - Parent</name>
   <description>Java annotation-based framework for parsing Git like command line structures</description>
   <url>https://github.com/rvesse/airline</url>
@@ -46,8 +46,8 @@
   </distributionManagement>
 
   <properties>
-    <jdk.target>1.7</jdk.target>
-    <jdk.enforced>1.7</jdk.enforced>
+    <jdk.target>11</jdk.target>
+    <jdk.enforced>11</jdk.enforced>
     <license.header.path>${project.basedir}</license.header.path>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 
@@ -141,7 +141,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${plugin.compiler}</version>
         <configuration>
-          <source>1.7</source>
+          <source>11</source>
           <target>${jdk.target}</target>
           <encoding>UTF-8</encoding>
         </configuration>
@@ -319,36 +319,8 @@
       </plugin>
     </plugins>
 
-    <!-- M2E Configuration -->
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
-          only. It has no influence on the Maven build itself. -->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>com.mycila</groupId>
-                    <artifactId>license-maven-plugin</artifactId>
-                    <versionRange>[2.11,)</versionRange>
-                    <goals>
-                      <goal>check</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>

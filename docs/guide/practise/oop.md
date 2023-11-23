@@ -173,7 +173,7 @@ the new [`@AirlineModule`](../annotations/module.html) annotation. As noted in t
 will become `optional` in future releases and eventually be removed as mandatory dependencies.
 
 {% include alert.html %}
-As of 2.10.0 the above dependencies have been made `optional` meaning that you **MUST** explicitly provide those 
+As of 3.0.0 the above dependencies have been made `optional` meaning that you **MUST** explicitly provide those 
 dependencies yourself if you wish to continue using `@Inject` annotations for composition.
 {% include end-alert.html %}
 

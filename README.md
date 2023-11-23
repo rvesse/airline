@@ -120,13 +120,14 @@ Airline releases are configured to build Java 7 compatible bytecode so can be us
 Airline does make heavy use of reflection and therefore will likely not work on the Module Path without exporting 
 packages that contain your CLI and Command classes as part of your `module-info.java`
 
-From 2.7.0 onwards builds include contributions from our user community to enable use of Airline on the Module Path 
-including relevant `module-info.java` files.  If you encounter a problem with this please report it at 
+From 2.7.0 onwards builds include contributions from our user community to enable use of Airline on the Module Path
+including relevant `module-info.java` files.  From 3.0.0 onwards the module definitions were significantly improved to
+provide better JPMS compatibility.  If you encounter a problem with this please report it at
 https://github.com/rvesse/airline/issues
 
 ## Maven Artifacts
 
-This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `2.9.0`
+This library is available from [Maven Central](http://search.maven.org) with the latest stable release being `3.0.0`
 
 Use the following maven dependency declaration:
 
@@ -134,11 +135,11 @@ Use the following maven dependency declaration:
 <dependency>
     <groupId>com.github.rvesse</groupId>
     <artifactId>airline</artifactId>
-    <version>2.9.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
-Snapshot artifacts of the latest source are also available using the version `2.10.0-SNAPSHOT` from the 
+Snapshot artifacts of the latest source are also available using the version `3.0.1-SNAPSHOT` from the 
 [OSSRH repositories](http://central.sonatype.org/pages/ossrh-guide.html#ossrh-usage-notes).
 
 ## Build Status
@@ -168,3 +169,6 @@ Airline 2.2 has some minor breaking changes that may affect users of the `@Argum
 Airline 2.9 has some changes to composition in preparation for future breaking changes, most notably introducing the 
 `@AirlineModule` annotation as a replacement for `@Inject`.  It remains backwards compatible with prior 2.x releases 
 but users may wish to start making changes to ease future transitions.
+
+Airline 3.0.0 has several major breaking changes, this includes updating the minimum JDK version to 11, making some
+dependencies optional and much improved JPMS compatibility.
