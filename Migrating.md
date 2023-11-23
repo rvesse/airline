@@ -1,4 +1,4 @@
-# Migration to Airline 2.10 from Airline 2.x
+# Migration to Airline 2.10 from Airline 2.9 and earlier
 
 Airline 2.10 has a single minor breaking change that only affects users of the `airline-help-bash` module.
 

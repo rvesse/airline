@@ -6,7 +6,7 @@
 
 Future releases will start to focus on the 3.x builds which include some important new features e.g. first class
 positional argument support, better DI framework integration, that are not possible under 2.x without making breaking
-changes.  You can see progress on 3.x by following the `3x` branch and its `CHANGELOG.md` and `MIGRATING.md`
+changes.  You can see progress on 3.x by following the `3x` branch and its `CHANGELOG.md` and `Migrating.md`
 
 ## 2.10.0
 
@@ -27,14 +27,12 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
     the `parent()` method for cleaner Fluid CLI definitions
 - Dependency Updates
   - Apache Commons Collections upgraded to 4.4
-  - Apache Commons Lang upgraded to 3.12.0
+  - Apache Commons Lang upgraded to 3.14.0
   - `jakarta.inject` and `airline-backcompat-javaxinject` were made `optional` so will no longer be pulled in
     automatically
   - Various build plugins updated to the latest available versions (this only impacts developers building the library 
     from source)
-  - Added new `airline-help-external` module with a dependency on Apache Commons CSV 1.10.0-20220310.222602-6
-    - Due to an upstream bug in Commons CSV they don't yet have an official release build with JPMS support so we are
-      currently locking to a timestamped SNAPSHOT
+  - Added new `airline-help-external` module with a dependency on Apache Commons CSV 1.10.0
   - Added new `airline-jpms-resources` module with a dependency on 
     [ClassGraph](https://github.com/classgraph/classgraph) to enable resource location when Airline is used on Module 
     Path i.e. JPMS runtime context

@@ -29,8 +29,28 @@ if [ ! -d "${TARGET_DIR}" ]; then
   fi
 fi
 
-ARTIFACTS=(airline airline-help-man airline-help-bash airline-help-html airline-help-markdown airline-io)
-MODULES=("airline-core" "airline-help/airline-help-man" "airline-help/airline-help-bash" "airline-help/airline-help-html" "airline-help/airline-help-markdown" "airline-io")
+ARTIFACTS=(
+  "airline"
+  "airline-help-man"
+  "airline-help-bash"
+  "airline-help-html"
+  "airline-help-markdown"
+  "airline-help-external"
+  "airline-io"
+  "airline-jpms-resources"
+  "airline-prompts"
+)
+MODULES=(
+  "airline-core"
+  "airline-help/airline-help-man"
+  "airline-help/airline-help-bash"
+  "airline-help/airline-help-html"
+  "airline-help/airline-help-markdown"
+  "airline-help/airline-help-external"
+  "airline-io"
+  "airline-jpms-resources"
+  "airline-prompts"
+)
 for i in "${!ARTIFACTS[@]}"; do
   ARTIFACT="${ARTIFACTS[$i]}"
   MODULE="${MODULES[$i]}"
