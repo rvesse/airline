@@ -10,13 +10,11 @@ JDK version so expect our codebase to adopt more modern Java syntax as it contin
 
 ### Build
 
-Airline can be built with Java 11 or higher and our `pom.xml` contains appropriate profile customisations to enable 
-this.  Regardless of the version built the `pom.xml` will target Java 11 byte code. 
+Airline can be built with Java 11 or higher.  Regardless of the version built the `pom.xml` will target Java 11 byte
+code. 
 
-Airline may not build with very recent JDKs if there are any incompatibilities with our choice of Maven plugins.
-
-**NB** - If you are trying to build older versions from source the relevant `pom.xml` customisations may not have 
-existed at that time.
+Airline may not build with very recent JDKs if there are any incompatibilities with our choice of Maven plugins and/or
+dependencies.  Please report these issues via our GitHub so we can address them.
 
 ### Runtime
 
@@ -45,16 +43,23 @@ module com.yourdomain.yourmodule
 {% include req-ver.md version="3.0.0" %}
 
 Prior to `3.0.0` Airline only provided basic `module-info.java` files, as of `3.0.0` these have been properly 
-handcrafted to provide full JPMS compatibility.
+authored to provide full JPMS compatibility.
 
-If you are using any of the Airline annotations that locate resources e.g. `@Version` then you **MAY** need to
-explicitly open the package containing those resources to `com.github.rvesse.airline`. The new `ModulePathLocator`
-introduced in `3.0.0` should allow locating such resources when appropriate `opens` declarations are present in your
-`module-info.java`.
+If you are using any of the Airline annotations that locate resources e.g. `@Version` then your resources **MUST**
+satisfy the following constraints to continue to be usable:
 
-You may find that Airline is unable to locate some resources with its default configuration.  If this is the case you
-can add the `airline-jpms-resources` module as an additional dependency and reference the `JpmsResourceLocator.class` in
-the relevant field of your annotations e.g. `sourceLocators` for the
-[`@Version`](../annotations/version.html#resource-locators) annotation.
+- They should be placed in a package that matches your modules name e.g. if your package is `com.yourdomain.app` then
+  your resources should be in that package
+- The package containing the resources  needs to be unconditionally open
+
+If these constraints are met then the new `ModulePathLocator` introduced in `3.0.0` should allow locating such
+resources.
+
+If you cannot meet these constraints then your resources will no longer be usable if you run your application on the
+ Module Path. If this is the case you can add the `airline-jpms-resources` module as an additional dependency and
+reference the `JpmsResourceLocator.class` in the relevant field of your annotations e.g. `sourceLocators` for the
+[`@Version`](../annotations/version.html#resource-locators) annotation, this uses the
+[ClassGraph](https://github.com/classgraph/classgraph) to locate resources at the cost of breaking the strong
+encapsulation that modules are intended to provide.
 
 If you encounter a problem with this please report it at https://github.com/rvesse/airline/issues

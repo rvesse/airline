@@ -99,7 +99,7 @@ side_nav:
                 - text: "Discussion Sections"
                   kind: Group
                   items:
-                    - text: "@Discussion"
+                    - text: "@Discussion and @ExternalDiscussion"
                       url: "discussion.html"
                     - text: "@ProseSection and @ExternalProse"
                       url: "prose-section.html"

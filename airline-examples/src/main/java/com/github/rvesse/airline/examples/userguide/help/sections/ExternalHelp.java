@@ -21,6 +21,7 @@ import java.util.List;
 import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
+import com.github.rvesse.airline.annotations.help.external.ExternalDiscussion;
 import com.github.rvesse.airline.annotations.help.external.ExternalExitCodes;
 import com.github.rvesse.airline.annotations.help.external.ExternalProse;
 import com.github.rvesse.airline.annotations.help.external.ExternalTabularExamples;
@@ -32,10 +33,11 @@ import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.jpms.JpmsResourceLocator;
 
 @Command(name = "external-help", description = "A command with help sections provided via separate resources")
-@ExternalProse(title = "Discussion", source = "/resources/discussion.txt", sourceLocators = {
+@ExternalDiscussion(source = "/resources/discussion.txt", sourceLocators = {
         ClasspathLocator.class,
         JpmsResourceLocator.class
 })
+@ExternalProse(title = "Modular Resources", source = "/com/github/rvesse/airline/examples/resource.txt")
 @ExternalExitCodes(source = "/resources/exit-codes.csv", sourceLocators = {
         ClasspathLocator.class,
         JpmsResourceLocator.class

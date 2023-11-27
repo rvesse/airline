@@ -1,19 +1,15 @@
 /**
  * Copyright (C) 2010-16 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
-
 package com.github.rvesse.airline.help.external.factories;
 
 import java.io.IOException;
@@ -22,14 +18,12 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
 
-import com.github.rvesse.airline.annotations.help.external.ExternalExamples;
-import com.github.rvesse.airline.annotations.help.external.ExternalExitCodes;
-import com.github.rvesse.airline.annotations.help.external.ExternalProse;
-import com.github.rvesse.airline.annotations.help.external.ExternalTabularExamples;
+import com.github.rvesse.airline.annotations.help.external.*;
 import com.github.rvesse.airline.help.external.parsers.ParagraphsParser;
 import com.github.rvesse.airline.help.external.parsers.TabularParser;
 import com.github.rvesse.airline.help.external.parsers.defaults.DefaultExternalHelpParser;
 import com.github.rvesse.airline.help.sections.HelpSection;
+import com.github.rvesse.airline.help.sections.common.DiscussionSection;
 import com.github.rvesse.airline.help.sections.common.ExamplesSection;
 import com.github.rvesse.airline.help.sections.common.ExitCodesSection;
 import com.github.rvesse.airline.help.sections.common.ProseSection;
@@ -53,6 +47,7 @@ public class ExternalHelpFactory implements HelpSectionFactory {
         = Arrays.<Class<? extends Annotation>>asList(
                     ExternalExamples.class,
                     ExternalTabularExamples.class,
+                    ExternalDiscussion.class,
                     ExternalProse.class,
                     ExternalExitCodes.class
                 );
@@ -60,13 +55,20 @@ public class ExternalHelpFactory implements HelpSectionFactory {
 
     @Override
     public HelpSection createSection(Annotation annotation) {
-        if (annotation instanceof ExternalProse) {
+        if (annotation instanceof ExternalDiscussion) {
+            // External Discussion
+            ExternalDiscussion externalDiscussion = (ExternalDiscussion) annotation;
+            String[] paragraphs =
+                    parseParagraphs(ParserUtil.createResourceLocators(externalDiscussion.sourceLocators()),
+                                    externalDiscussion.source(), loadParagraphsParser(
+                                    externalDiscussion.parser()));
+            return new DiscussionSection(paragraphs);
+        } else if (annotation instanceof ExternalProse) {
             // External Prose e.g. Discussion
             ExternalProse extProse = (ExternalProse) annotation;
             String[] paragraphs = parseParagraphs(ParserUtil.createResourceLocators(extProse.sourceLocators()),
-                    extProse.source(), loadParagraphsParser(extProse.parser()));
+                                                  extProse.source(), loadParagraphsParser(extProse.parser()));
             return new ProseSection(extProse.title(), extProse.suggestedOrder(), paragraphs);
-
         } else if (annotation instanceof ExternalExitCodes) {
             // External Exit Codes (Tabular Data)
             ExternalExitCodes exitCodes = (ExternalExitCodes) annotation;
@@ -93,7 +95,7 @@ public class ExternalHelpFactory implements HelpSectionFactory {
             // External Examples (Tabular Data)
             ExternalTabularExamples extExamples = (ExternalTabularExamples) annotation;
             List<List<String>> rows = parseTabular(ParserUtil.createResourceLocators(extExamples.sourceLocators()),
-                    extExamples.source(), loadTabularParser(extExamples.parser()));
+                                                   extExamples.source(), loadTabularParser(extExamples.parser()));
 
             // Translate into the two column array into the two arrays we need
             String[] examples = rowToArray(rows, 0);
@@ -112,23 +114,22 @@ public class ExternalHelpFactory implements HelpSectionFactory {
 
     /**
      * Opens the specified resource using the first resource locator that is able to open it
-     * 
-     * @param resourceLocators
-     *            Resource locators to use
-     * @param resource
-     *            Resource
+     *
+     * @param resourceLocators Resource locators to use
+     * @param resource         Resource
      * @return Input stream for the resource or {@code null} if it cannot be opened
-     * @throws IOException
-     *             Thrown if there's a problem opening the resource
+     * @throws IOException Thrown if there's a problem opening the resource
      */
     protected InputStream openResource(ResourceLocator[] resourceLocators, String resource) throws IOException {
         for (ResourceLocator locator : resourceLocators) {
-            if (locator == null)
+            if (locator == null) {
                 continue;
+            }
 
             InputStream input = locator.open(resource, "");
-            if (input == null)
+            if (input == null) {
                 continue;
+            }
 
             return input;
         }
@@ -138,9 +139,8 @@ public class ExternalHelpFactory implements HelpSectionFactory {
 
     /**
      * Loads the paragraphs parser
-     * 
-     * @param parserCls
-     *            Parser Class
+     *
+     * @param parserCls Parser Class
      * @return Parser instance
      */
     protected ParagraphsParser loadParagraphsParser(Class<? extends ParagraphsParser> parserCls) {
@@ -149,25 +149,23 @@ public class ExternalHelpFactory implements HelpSectionFactory {
         } catch (Throwable e) {
             throw new IllegalArgumentException(
                     String.format("Annotation specifies paragraph parser %s which could not be instantiated",
-                            parserCls.getCanonicalName()));
+                                  parserCls.getCanonicalName()));
         }
     }
 
     /**
      * Parses paragraphs from a resource
-     * 
-     * @param resourceLocators
-     *            Resource locators
-     * @param resource
-     *            Resource
-     * @param parser
-     *            Parser
+     *
+     * @param resourceLocators Resource locators
+     * @param resource         Resource
+     * @param parser           Parser
      * @return Paragraphs
      */
     protected String[] parseParagraphs(ResourceLocator[] resourceLocators, String resource, ParagraphsParser parser) {
-        if (resourceLocators.length == 0)
+        if (resourceLocators.length == 0) {
             throw new IllegalArgumentException(
                     String.format("Failed to locate resource %s as no resource locators were configured", resource));
+        }
 
         InputStream input;
         try {
@@ -176,19 +174,20 @@ public class ExternalHelpFactory implements HelpSectionFactory {
             throw new IllegalArgumentException(
                     String.format("Failed to open resource %s - %s", resource, e.getMessage()), e);
         }
-        if (input == null)
+        if (input == null) {
             throw new IllegalArgumentException(String
-                    .format("Failed to locate resource %s with any of the configured resource locators", resource));
+                                                       .format("Failed to locate resource %s with any of the configured resource locators.  If your application is running on the Module Path your resources must be in a package that matches the name of your module, and that package must be unconditionally opened.",
+                                                               resource));
+        }
 
         return parser != null ? parser.parseParagraphs(resource, input)
-                : this.defaultParser.parseParagraphs(resource, input);
+                              : this.defaultParser.parseParagraphs(resource, input);
     }
 
     /**
      * Loads the tabular parser
-     * 
-     * @param parserCls
-     *            Parser class
+     *
+     * @param parserCls Parser class
      * @return Parser instance
      */
     protected TabularParser loadTabularParser(Class<? extends TabularParser> parserCls) {
@@ -197,27 +196,25 @@ public class ExternalHelpFactory implements HelpSectionFactory {
         } catch (Throwable e) {
             throw new IllegalArgumentException(
                     String.format("Annotation specifies tabular parser %s which could not be instantiated",
-                            parserCls.getCanonicalName()));
+                                  parserCls.getCanonicalName()));
         }
     }
 
     /**
      * Parses tabular data from a resource
-     * 
-     * @param resourceLocators
-     *            Resource locators
-     * @param resource
-     *            Resource
-     * @param parser
-     *            Parser
+     *
+     * @param resourceLocators Resource locators
+     * @param resource         Resource
+     * @param parser           Parser
      * @return Tabular data
      */
     protected List<List<String>> parseTabular(ResourceLocator[] resourceLocators, String resource,
-            TabularParser parser) {
-        if (resourceLocators.length == 0)
+                                              TabularParser parser) {
+        if (resourceLocators.length == 0) {
             throw new IllegalArgumentException(
                     String.format("Failed to locate resource %s as no resource locators were configured", resource));
-        
+        }
+
         InputStream input;
         try {
             input = openResource(resourceLocators, resource);
@@ -225,20 +222,20 @@ public class ExternalHelpFactory implements HelpSectionFactory {
             throw new IllegalArgumentException(
                     String.format("Failed to open resource %s - %s", resource, e.getMessage()), e);
         }
-        if (input == null)
+        if (input == null) {
             throw new IllegalArgumentException(String
-                    .format("Failed to locate resource %s with any of the configured resource locators", resource));
+                                                       .format("Failed to locate resource %s with any of the configured resource locators",
+                                                               resource));
+        }
 
         return parser != null ? parser.parseRows(resource, input) : this.defaultParser.parseRows(resource, input);
     }
 
     /**
      * Converts one column of a list of rows into an array
-     * 
-     * @param rows
-     *            Rows
-     * @param columnIndex
-     *            Column index of the column to convert
+     *
+     * @param rows        Rows
+     * @param columnIndex Column index of the column to convert
      * @return Column array
      */
     protected String[] rowToArray(List<List<String>> rows, int columnIndex) {
@@ -247,11 +244,13 @@ public class ExternalHelpFactory implements HelpSectionFactory {
         for (int i = 0; i < data.length; i++) {
             List<String> row = rows.get(i);
             // Bad row
-            if (row == null)
+            if (row == null) {
                 continue;
+            }
             // Too few columns in the row so leave this entry in the array blank
-            if (columnIndex >= row.size())
+            if (columnIndex >= row.size()) {
                 continue;
+            }
 
             // Copy column data from row into array
             data[i] = row.get(columnIndex);
@@ -262,11 +261,9 @@ public class ExternalHelpFactory implements HelpSectionFactory {
 
     /**
      * Converts one column of a list of rows into an array
-     * 
-     * @param rows
-     *            Rows
-     * @param columnIndex
-     *            Column index of the column to convert
+     *
+     * @param rows        Rows
+     * @param columnIndex Column index of the column to convert
      * @return Column array
      */
     protected int[] rowToNumericArray(List<List<String>> rows, int columnIndex, String resource) {
@@ -275,11 +272,13 @@ public class ExternalHelpFactory implements HelpSectionFactory {
         for (int i = 0; i < data.length; i++) {
             List<String> row = rows.get(i);
             // Bad row
-            if (row == null)
+            if (row == null) {
                 continue;
+            }
             // Too few columns in the row so leave this entry in the array blank
-            if (columnIndex >= row.size())
+            if (columnIndex >= row.size()) {
                 continue;
+            }
 
             try {
                 // Copy column data from row into array

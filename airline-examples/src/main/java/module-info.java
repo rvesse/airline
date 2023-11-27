@@ -51,6 +51,7 @@ module com.github.rvesse.airline.examples
     
     // As Airline is driven by reflection over the annotations on your classes you need 
     // to open packages containing Airline annotated types to the com.github.rvesse.airline module
+    opens com.github.rvesse.airline.examples;
     opens com.github.rvesse.airline.examples.cli to com.github.rvesse.airline;
     opens com.github.rvesse.airline.examples.cli.aliases to com.github.rvesse.airline;
     opens com.github.rvesse.airline.examples.cli.commands to com.github.rvesse.airline;
