@@ -23,7 +23,7 @@
     </li>
   {% elsif navitem.kind == "Javadoc" %}
     <li>
-      <a href="#">{{ javadoc }}</a>
+      <a href="#">{{ navitem.version }}</a>
       {% include javadoc-nav.html version=navitem.version %}
     </li>
   {% else %}

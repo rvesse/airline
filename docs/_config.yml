@@ -130,6 +130,8 @@ side_nav:
                       url: "require-only-one.html"
                     - text: "@MutuallyExclusiveWith"
                       url: "mutually-exclusive-with.html"
+                    - text: "@RequiredUnlessEnvironment"
+                      url: "required-unless.html"
                 - text: "Occurrence Restrictions"
                   kind: Group
                   items:

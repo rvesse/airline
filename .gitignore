@@ -33,3 +33,4 @@ docs/find.xslt
 docs/maven-metadata.xml
 docs/.bundle/
 docs/vendor/
+docs/.jekyll-metadata
