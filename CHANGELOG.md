@@ -7,10 +7,6 @@ positional argument support, better DI framework integration, that are not possi
 breaking changes.  You can see progress on 4.x by following the `4x` branch and its `CHANGELOG.md` and `Migrating.md`
 files.
 
-### 2.x Deprecation
-
-3.0.0 is now released, so Airline 2.x will no longer be supported.
-
 ## 3.0.0
 
 - Core Improvements
@@ -53,12 +49,17 @@ files.
 - New `airline-help-external` modules provides new help annotations that allow more complex help to be provided via
   classpath/file resources rather than directly in the annotations.  This is a generalisation of the mechanism already
   used by `@Version` annotation. (#52)
-  - Adds `@ExternalProse`, `@ExternalExitCodes`, `@ExternalExamples` and `@ExternalExamplesTabular` annotations
+  - Adds `@ExternalDiscussion` `@ExternalProse`, `@ExternalExitCodes`, `@ExternalExamples` and
+    `@ExternalExamplesTabular` annotations
 - Build and Release Improvements
   - All Airline modules are now fully fledged JPMS modules meaning they can be used on the JVM Module Path instead of
     the Classpath where preferred
     - See `airline-examples` module for examples of constructing a `module-info.java` that pulls in other Airline
       modules and see `modularExample` script for examples of invoking an Airline based app using the Module Path
+
+### 2.x Deprecation
+
+3.0.0 is now released, so Airline 2.x will no longer be supported.
 
 ## 2.9.0
 

@@ -38,16 +38,16 @@ force the `FileLocator` to be used and `classpath://` to force the `ClasspathLoc
 {% include req-ver.md version="3.0.0" %}
 
 When running on the Java Module Path resource location is somewhat more complicated as in order for a resource to be
-accessible to another module like Airline the package in which it is contained **MUST** be declared as `opens` in the 
-`module-info.java` for your module.
+accessible to another module like Airline the package in which it is contained **MUST** match the name of the module
+that contains it, and be declared as unconditionally `opens` in the `module-info.java` for your module.
 
 From 3.0.0 onwards a `ModulePathLocator` was added to the core `airline` module so that it can successfully locate
 resources on the module path when the above conditions are met.
 
 {% include req-ver.md version="3.0.0" module="airline-jpms-resources" %}
 
-However in some cases this may be insufficient e.g. you want to read a resource from a module whose `module-info.java`
-you do not control and thus cannot change the `opens` declarations. Additionally from 3.0.0 onwards a
+Howeverl in some cases this may be insufficientl e.g. you want to read a resource from a module whose `module-info.java`
+you do not control and thus cannot change the `opens` declarations. To address this from 3.0.0 onwards a
 `JpmsResourceLocator` was added in a separate `airline-jpms-resources` module since it requires additional dependencies.
 This resource locator is capable of locating resources when Airline is run on the Module Path where the stronger
 encapsulation may make accessing resources via the standard `ClasspathLocator`/`ModulePathLocator` fail.

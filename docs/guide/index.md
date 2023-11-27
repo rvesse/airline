@@ -36,6 +36,10 @@ Also where the library has evolved over time you may see the following:
 This is used to denote features that are only available in newer versions of the library or where behaviours have
 changed across versions.
 
+Where a specific optional module is required then you may see the following:
+
+{% include req-ver.md version="3.0.0" module="airline-jpms-resources" %}
+
 ## Definitions
 
 Before you get started reading this guide it is useful to introduce the terminology that Airline uses to make sure you

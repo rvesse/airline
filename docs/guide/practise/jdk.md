@@ -48,7 +48,7 @@ authored to provide full JPMS compatibility.
 If you are using any of the Airline annotations that locate resources e.g. `@Version` then your resources **MUST**
 satisfy the following constraints to continue to be usable:
 
-- They should be placed in a package that matches your modules name e.g. if your package is `com.yourdomain.app` then
+- They should be placed in a package that matches your modules name e.g. if your module is `com.yourdomain.app` then
   your resources should be in that package
 - The package containing the resources  needs to be unconditionally open
 
@@ -62,4 +62,5 @@ reference the `JpmsResourceLocator.class` in the relevant field of your annotati
 [ClassGraph](https://github.com/classgraph/classgraph) to locate resources at the cost of breaking the strong
 encapsulation that modules are intended to provide.
 
-If you encounter a problem with this please report it at https://github.com/rvesse/airline/issues
+If you encounter a problem with this please report it at
+[https://github.com/rvesse/airline/issues](https://github.com/rvesse/airline/issues).

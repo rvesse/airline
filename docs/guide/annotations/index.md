@@ -31,8 +31,13 @@ All these annotations are applied to fields that are annotated with [`@Option`](
 
 ## Help Annotations
 
-The following annotations are used to add additional help information to commands that may be consumed by the various help generators provided by Airline by producing additional help sections.
+The following annotations are used to add additional help information to commands that may be consumed by the various
+help generators provided by Airline by producing additional help sections.
 
-All these annotations are added to an [`@Command`](command.html) annotated class or a parent class in the commands hierarchy.  They are automatically discovered from a command classes inheritance hierarchy, where an annotation occurs more than once the annotation specified furthest down the hierarchy is used.  This can be used to specify a default for some help annotation with the option of overriding it if necessary, the special [`@HideSection`](hide-section.html) annotation may be used to suppress an inherited help annotation.
+All these annotations are added to an [`@Command`](command.html) annotated class or a parent class in the commands
+hierarchy.  They are automatically discovered from a command classes inheritance hierarchy, where an annotation occurs
+more than once the annotation specified furthest down the hierarchy is used.  This can be used to specify a default for
+some help annotation with the option of overriding it if necessary, the special [`@HideSection`](hide-section.html)
+annotation may be used to suppress an inherited help annotation.
 
 {% include help-sections.md path="" %}
