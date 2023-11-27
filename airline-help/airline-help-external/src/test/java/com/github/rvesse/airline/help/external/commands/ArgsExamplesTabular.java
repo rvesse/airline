@@ -18,7 +18,7 @@ package com.github.rvesse.airline.help.external.commands;
 
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.help.external.ExternalTabularExamples;
-import com.github.rvesse.airline.args.Args1;
+import com.github.rvesse.airline.tests.args.Args1;
 import com.github.rvesse.airline.help.external.parsers.defaults.TabDelimitedHelpParser;
 
 @Command(name = "args-examples-tabular", description = "args-examples-tabular description")

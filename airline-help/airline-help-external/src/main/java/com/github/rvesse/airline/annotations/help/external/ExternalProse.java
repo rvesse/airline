@@ -19,8 +19,10 @@ import com.github.rvesse.airline.help.external.parsers.ParagraphsParser;
 import com.github.rvesse.airline.help.external.parsers.defaults.DefaultExternalHelpParser;
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.FileLocator;
+import com.github.rvesse.airline.parser.resources.ModulePathLocator;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
 
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -67,6 +69,7 @@ public @interface ExternalProse {
      */
     Class<? extends ResourceLocator>[] sourceLocators() default {
             ClasspathLocator.class,
+            ModulePathLocator.class,
             FileLocator.class
     };
 

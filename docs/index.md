@@ -49,7 +49,7 @@ The core `airline` library has an intentionally minimal set of dependencies, the
 - Airline IO (our own internal helper library for IO)
 - Jakarta Inject (and Javax Inject)
    - Please see [Historical Composition](guide/practise/oop.html#historical-composition) for background on these.
-   - These dependencies are **optional** as of `2.10.0` so will not be picked up unless you explicitly declare them.
+   - These dependencies are **optional** as of `3.0.0` so will not be picked up unless you explicitly declare them.
 
 Note that the additional modules e.g. `airline-help-external`, `airline-jpms-resources` etc may have additional
 dependencies beyond the above.  Please refer to `mvn dependency:tree` output on your project to see exactly what 

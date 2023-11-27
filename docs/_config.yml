@@ -18,15 +18,15 @@ baseurl: "/airline"
 url: "http://rvesse.github.io"
 twitter_username: RobVesse
 github_username:  rvesse
-exclude: [ "scripts", "pom.xml", "assembly.xml", "target" ]
+exclude: [ "scripts", "pom.xml", "assembly.xml", "target", "vendor" ]
 
 author:
   name: "Rob Vesse"
   url: https://twitter.com/RobVesse
 
 # Custom vars
-version:          2.9.0
-dev_version:	"2.10.0-SNAPSHOT"
+version:         3.0.0
+dev_version:	"3.0.1-SNAPSHOT"
 
 github:
   repo: https://github.com/rvesse/airline
@@ -99,7 +99,7 @@ side_nav:
                 - text: "Discussion Sections"
                   kind: Group
                   items:
-                    - text: "@Discussion"
+                    - text: "@Discussion and @ExternalDiscussion"
                       url: "discussion.html"
                     - text: "@ProseSection and @ExternalProse"
                       url: "prose-section.html"
@@ -130,6 +130,8 @@ side_nav:
                       url: "require-only-one.html"
                     - text: "@MutuallyExclusiveWith"
                       url: "mutually-exclusive-with.html"
+                    - text: "@RequiredUnlessEnvironment"
+                      url: "required-unless.html"
                 - text: "Occurrence Restrictions"
                   kind: Group
                   items:

@@ -1,14 +1,13 @@
 # Airline - Change Log
 
-### Forthcoming 2.x Deprecation
+### 3.x Deprecation
 
-2.10.0, and any subsequent patch releases, are intended to be the last supported releases of Airline 2.x
+Future releases will start to focus on the 4.x builds which include some important new features e.g. first class
+positional argument support, better DI framework integration, that are not possible under 2.x/3.x without making
+breaking changes.  You can see progress on 4.x by following the `4x` branch and its `CHANGELOG.md` and `Migrating.md`
+files.
 
-Future releases will start to focus on the 3.x builds which include some important new features e.g. first class
-positional argument support, better DI framework integration, that are not possible under 2.x without making breaking
-changes.  You can see progress on 3.x by following the `3x` branch and its `CHANGELOG.md` and `MIGRATING.md`
-
-## 2.10.0
+## 3.0.0
 
 - Core Improvements
   - First class support for `BigInteger` and `BigDecimal` as numeric types
@@ -17,6 +16,8 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
     deprecated
   - Added a `JpmsResourceLocator` as an additional `ResourceLocator` to allow finding resources when running in a JPMS
     context (requires additional module `airline-jpms-resources`)
+  - **BREAKING** - Only `@AirlineModule` is used as a composition annotation by default, use of the older
+    `@javax.inject.Inject` or `@jakarta.inject.Inject` annotations **MUST** now be explicitly configured.
 - Help Improvements
   - Added an `@SeeAlso` annotation to Airline Core (#51)
   - **BREAKING** - `airline-help-bash` has moved `@BashCompletion` annotation into
@@ -26,15 +27,14 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
   - A `ParserBuilder` created by calling `withParser()` on a `CliBuilder` can now return control back to its parent via
     the `parent()` method for cleaner Fluid CLI definitions
 - Dependency Updates
+  - **BREAKING** - Minimum JDK Version is now 11
   - Apache Commons Collections upgraded to 4.4
-  - Apache Commons Lang upgraded to 3.12.0
+  - Apache Commons Lang upgraded to 3.14.0
   - `jakarta.inject` and `airline-backcompat-javaxinject` were made `optional` so will no longer be pulled in
     automatically
   - Various build plugins updated to the latest available versions (this only impacts developers building the library 
     from source)
-  - Added new `airline-help-external` module with a dependency on Apache Commons CSV 1.10.0-20220310.222602-6
-    - Due to an upstream bug in Commons CSV they don't yet have an official release build with JPMS support so we are
-      currently locking to a timestamped SNAPSHOT
+  - Added new `airline-help-external` module with a dependency on Apache Commons CSV 1.10.0
   - Added new `airline-jpms-resources` module with a dependency on 
     [ClassGraph](https://github.com/classgraph/classgraph) to enable resource location when Airline is used on Module 
     Path i.e. JPMS runtime context
@@ -49,12 +49,17 @@ changes.  You can see progress on 3.x by following the `3x` branch and its `CHAN
 - New `airline-help-external` modules provides new help annotations that allow more complex help to be provided via
   classpath/file resources rather than directly in the annotations.  This is a generalisation of the mechanism already
   used by `@Version` annotation. (#52)
-  - Adds `@ExternalProse`, `@ExternalExitCodes`, `@ExternalExamples` and `@ExternalExamplesTabular` annotations
+  - Adds `@ExternalDiscussion` `@ExternalProse`, `@ExternalExitCodes`, `@ExternalExamples` and
+    `@ExternalExamplesTabular` annotations
 - Build and Release Improvements
   - All Airline modules are now fully fledged JPMS modules meaning they can be used on the JVM Module Path instead of
     the Classpath where preferred
     - See `airline-examples` module for examples of constructing a `module-info.java` that pulls in other Airline
       modules and see `modularExample` script for examples of invoking an Airline based app using the Module Path
+
+### 2.x Deprecation
+
+3.0.0 is now released, so Airline 2.x will no longer be supported.
 
 ## 2.9.0
 

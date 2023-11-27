@@ -1,0 +1,12 @@
+This is an example Module Path safe resource.  It is placed into the
+package com.github.rvesse.airline.examples which matches the module
+name declared for the module in which it is packaged.  This is necessary
+because of how the JVM locates resources when running with the Module
+Path.
+
+Note that as seen in the module-info.java for this module you will still
+need to explicitly open this package.  For resources the JVM applies
+a stricter requirement that the package containing the resources is
+unconditionally opened.
+
+For scenarios where this isn't possible see the Discussions section.

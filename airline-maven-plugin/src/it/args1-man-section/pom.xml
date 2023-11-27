@@ -33,7 +33,7 @@
           <sources>
             <source>
               <classes>
-                <class>com.github.rvesse.airline.args.Args1</class>
+                <class>com.github.rvesse.airline.tests.args.Args1</class>
               </classes>
             </source>
           </sources>

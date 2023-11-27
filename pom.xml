@@ -5,7 +5,7 @@
   <groupId>com.github.rvesse</groupId>
   <artifactId>airline-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.10.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <name>Airline - Parent</name>
   <description>Java annotation-based framework for parsing Git like command line structures</description>
   <url>https://github.com/rvesse/airline</url>
@@ -46,8 +46,8 @@
   </distributionManagement>
 
   <properties>
-    <jdk.target>1.7</jdk.target>
-    <jdk.enforced>1.7</jdk.enforced>
+    <jdk.target>11</jdk.target>
+    <jdk.enforced>11</jdk.enforced>
     <license.header.path>${project.basedir}</license.header.path>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 
@@ -68,24 +68,21 @@
     <plugin.license>2.11</plugin.license>
     <plugin.jacoco>0.8.8</plugin.jacoco>
     <plugin.jar>3.2.2</plugin.jar>
-    <plugin.source>3.0.1</plugin.source>
+    <plugin.source>3.2.1</plugin.source>
     <plugin.javadoc>3.0.1</plugin.javadoc>
-    <plugin.release>2.5.3</plugin.release>
-    <plugin.gpg>1.6</plugin.gpg>
+    <plugin.release>3.0.1</plugin.release>
+    <plugin.gpg>3.1.0</plugin.gpg>
     <plugin.shade>3.1.1</plugin.shade>
     <plugin.surefire>3.0.0-M7</plugin.surefire>
-    <plugin.moditect>1.0.0.RC1</plugin.moditect>
 
     <!-- Dependency Versions -->
     <dependency.javax-inject>2.0.1</dependency.javax-inject>
     <dependency.junit>4.12</dependency.junit>
-    <dependency.testng>7.5</dependency.testng>
-    <dependency.classgraph>4.8.149</dependency.classgraph>
-    <dependency.commons-lang3>3.12.0</dependency.commons-lang3>
+    <dependency.testng>7.8.0</dependency.testng>
+    <dependency.classgraph>4.8.165</dependency.classgraph>
+    <dependency.commons-lang3>3.14.0</dependency.commons-lang3>
     <dependency.commons-collections4>4.4</dependency.commons-collections4>
-    <!-- Still waiting on Apache Commons to properly release with JPMS support -->
-    <!-- Thus locked to a timestamped SNAPSHOT for now -->
-    <dependency.commons-csv>1.10.0-20220310.222602-6</dependency.commons-csv>
+    <dependency.commons-csv>1.10.0</dependency.commons-csv>
   </properties>
 
   <modules>
@@ -143,7 +140,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${plugin.compiler}</version>
         <configuration>
-          <source>1.7</source>
+          <source>11</source>
           <target>${jdk.target}</target>
           <encoding>UTF-8</encoding>
         </configuration>
@@ -177,7 +174,7 @@
         <version>${plugin.enforcer}</version>
         <executions>
           <execution>
-            <id>enforce-jdk7</id>
+            <id>enforce-required-jdk</id>
             <goals>
               <goal>enforce</goal>
             </goals>
@@ -321,36 +318,8 @@
       </plugin>
     </plugins>
 
-    <!-- M2E Configuration -->
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
-          only. It has no influence on the Maven build itself. -->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>com.mycila</groupId>
-                    <artifactId>license-maven-plugin</artifactId>
-                    <versionRange>[2.11,)</versionRange>
-                    <goals>
-                      <goal>check</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>
@@ -418,9 +387,6 @@
         <module>airline-maven-plugin</module>
         <module>docs</module>
       </modules>
-      <properties>
-        <jdk.enforced>1.8</jdk.enforced>
-      </properties>
       <build>
         <plugins>
           <!-- Release Plugin -->
@@ -470,73 +436,6 @@
     </profile>
 
     <profile>
-      <id>javadoc-jdk7</id>
-      <activation>
-        <jdk>(,1.7]</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <!-- Javadoc Plugin -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${plugin.javadoc}</version>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <javadocVersion>${jdk.target}</javadocVersion>
-              <quiet>true</quiet>
-              <encoding>UTF-8</encoding>
-              <charset>UTF-8</charset>
-              <docencoding>UTF-8</docencoding>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>javadoc-jdk8</id>
-      <activation>
-        <jdk>1.8</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <!-- Javadoc Plugin -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${plugin.javadoc}</version>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <javadocVersion>${jdk.target}</javadocVersion>
-              <quiet>true</quiet>
-              <encoding>UTF-8</encoding>
-              <charset>UTF-8</charset>
-              <docencoding>UTF-8</docencoding>
-              <additionalOptions>
-                <option>-Xdoclint:none</option>
-              </additionalOptions>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
       <id>javadoc-jdk10-plus</id>
       <activation>
         <jdk>10</jdk>
@@ -566,116 +465,6 @@
                 <option>-Xdoclint:none</option>
               </additionalOptions>
             </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>moditect-jdk8-plus</id>
-      <activation>
-        <jdk>[1.8,)</jdk>
-        <file>
-          <exists>${basedir}/src/main/moditect/module-info.java</exists>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.moditect</groupId>
-            <artifactId>moditect-maven-plugin</artifactId>
-            <version>${plugin.moditect}</version>
-            <executions>
-              <execution>
-                <id>add-module-infos</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>add-module-info</goal>
-                </goals>
-                <configuration>
-                  <jvmVersion>9</jvmVersion>
-                  <overwriteExistingFiles>true</overwriteExistingFiles>
-                  <module>
-                    <moduleInfoFile>
-                      ${basedir}/src/main/moditect/module-info.java
-                    </moduleInfoFile>
-                  </module>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>automatic-module-name</id>
-      <activation>
-        <property>
-          <name>moditect.skip</name>
-          <value>true</value>
-        </property>
-        <file>
-          <exists>${basedir}/src/main/moditect/module-info.java</exists>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <version>${plugin.jar}</version>
-            <configuration>
-              <archive>
-                <manifestEntries>
-                  <Automatic-Module-Name>${moditect.moduleName}</Automatic-Module-Name>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>generate-module-info</id>
-      <properties>
-        <jdk.enforced>9</jdk.enforced>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.moditect</groupId>
-            <artifactId>moditect-maven-plugin</artifactId>
-            <version>${plugin.moditect}</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>generate-module-info</goal>
-                </goals>
-                <configuration>
-                  <modules>
-                    <module>
-                      <artifact>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>${project.artifactId}</artifactId>
-                        <version>${project.version}</version>
-                      </artifact>
-                      <moduleInfo>
-                        <name>${moditect.moduleName}</name>
-                        <exports>
-                            *;
-                        </exports>
-                        <requires>
-                            *;
-                        </requires>
-                        <addServiceUses>true</addServiceUses>
-                      </moduleInfo>
-                    </module>
-                  </modules>
-                </configuration>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>

@@ -3,10 +3,10 @@ layout: page
 title: Prompts
 ---
 
-{% include req-ver.md version="2.10.0" module="airline-prompts" %}
+{% include req-ver.md version="3.0.0" module="airline-prompts" %}
 
 Often command line applications may need to prompt users for input e.g. asking for a password, obtaining a missing
-value, asking for a Yes/No response etc.  From 2.10.0 onwards we provide the `airline-prompts` module which provides a
+value, asking for a Yes/No response etc.  From 3.0.0 onwards we provide the `airline-prompts` module which provides a
 library for doing this in a consistent manner, this includes features such as:
 
 - Optional prompt timeouts so non-interactive apps don't hang forever

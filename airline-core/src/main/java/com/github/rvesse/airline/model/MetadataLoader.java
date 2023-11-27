@@ -58,6 +58,11 @@ import java.util.*;
 public class MetadataLoader {
 
     /**
+     * Constant for the {@link AirlineModule} annotation class
+     */
+    public static final String AIRLINE_MODULE = "com.github.rvesse.airline.annotations.AirlineModule";
+
+    /**
      * Constant for the {@code javax.inject.Inject} annotation class
      */
     public static final String JAVAX_INJECT_INJECT = "javax.inject.Inject";
@@ -574,14 +579,9 @@ public class MetadataLoader {
      * migrated into the {@code jakarta} namespace.  As of <strong>2.9.0</strong> Airline makes the choice of annotation
      * fully configurable via the parser configuration.  To avoid potential class loading issues these are specified as
      * string class names with the metadata loader dynamically loading the relevant annotation classes if they are
-     * present on the runtime classpath.  For backwards compatibility if this piece of configuration is not customised
-     * then we support the following annotations by default:
-     * </p>
-     * <ul>
-     *     <li>{@value JAVAX_INJECT_INJECT}</li>
-     *     <li>{@value JAKARTA_INJECT_INJECT}</li>
-     *     <li>{@value COM_GOOGLE_INJECT_INJECT}</li>
-     * </ul>
+     * present on the runtime classpath.  As of <strong>3.10.0</strong> we only look for our own {@link AirlineModule}
+     * annotation and any other composition annotation e.g. {@code jakarta.inject.Inject} <strong>MUST</strong> be
+     * explicitly configured.
      *
      * @param type         Class
      * @param parserConfig Parser Configuration

@@ -18,7 +18,7 @@ package com.github.rvesse.airline.help.external.commands;
 
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.help.external.ExternalExamples;
-import com.github.rvesse.airline.args.Args1;
+import com.github.rvesse.airline.tests.args.Args1;
 
 @Command(name = "args-examples-textual", description = "args-examples-textual description")
 @ExternalExamples(exampleSource = "/com/github/rvesse/airline/help/external/examples.txt", descriptionSource = "/com/github/rvesse/airline/help/external/example-descriptions.txt")
