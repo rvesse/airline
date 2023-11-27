@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"com.github.rvesse.airline.help.bash","l":"com.github.rvesse.airline.annotations.help.bash"},{"m":"com.github.rvesse.airline.help.bash","l":"com.github.rvesse.airline.help.cli.bash"}]
