@@ -69,7 +69,7 @@
     <plugin.jacoco>0.8.8</plugin.jacoco>
     <plugin.jar>3.2.2</plugin.jar>
     <plugin.source>3.2.1</plugin.source>
-    <plugin.javadoc>3.0.1</plugin.javadoc>
+    <plugin.javadoc>3.6.2</plugin.javadoc>
     <plugin.release>3.0.1</plugin.release>
     <plugin.gpg>3.1.0</plugin.gpg>
     <plugin.shade>3.1.1</plugin.shade>
