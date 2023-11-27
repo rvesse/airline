@@ -83,6 +83,22 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.rvesse</groupId>
+            <artifactId>airline</artifactId>
+            <version>${project.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.rvesse</groupId>
+            <artifactId>airline-examples</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -126,6 +142,10 @@
                     <skipInvocation>${skipTests}</skipInvocation>
                     <parallelThreads>4</parallelThreads>
                     <streamLogsOnFailures>true</streamLogsOnFailures>
+                    <extraArtifacts>
+                        <extraArtifact>com.github.rvesse:airline:${airline.version}:jar:tests</extraArtifact>
+                        <extraArtifact>com.github.rvesse:airline-examples:${airline.version}:jar</extraArtifact>
+                    </extraArtifacts>
                     <settingsFile>settings.xml</settingsFile>
                 </configuration>
                 <executions>
