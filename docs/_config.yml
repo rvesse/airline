@@ -271,7 +271,6 @@ side_nav:
       kind: Group
       items:
         - kind: LatestJavadoc
-        - kind: DevJavadoc
         - text: "Past Versions"
           kind: Group
           items:
