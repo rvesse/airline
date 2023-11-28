@@ -15,6 +15,7 @@
  */
 package com.github.rvesse.airline.tests;
 
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.tests.Git.Add;
 import com.github.rvesse.airline.tests.Git.RemoteAdd;
 import com.github.rvesse.airline.tests.Git.RemoteShow;

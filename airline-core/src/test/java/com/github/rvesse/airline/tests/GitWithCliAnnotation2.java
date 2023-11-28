@@ -15,6 +15,7 @@
  */
 package com.github.rvesse.airline.tests;
 
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.tests.Git.Add;
 import com.github.rvesse.airline.tests.Git.RemoteAdd;
 import com.github.rvesse.airline.tests.Git.RemoteShow;
@@ -47,7 +48,7 @@ import com.github.rvesse.airline.help.Help;
 public class GitWithCliAnnotation2 extends Git {
 
     public static void run(String[] args) {
-        CommandLineInterface<Runnable> gitParser = new CommandLineInterface<Runnable>(
+        CommandLineInterface<Runnable> gitParser = new CommandLineInterface<>(
                 GitWithCliAnnotation2.class);
 
         gitParser.parse(args).run();

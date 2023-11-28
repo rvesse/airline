@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.rvesse.airline.help.man;
+package com.github.rvesse.airline.help.man.tests;
 
 import java.util.List;
 

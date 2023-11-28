@@ -15,9 +15,7 @@
  */
 package com.github.rvesse.airline.tests.parser.aliases;
 
-import com.github.rvesse.airline.Cli;
-import com.github.rvesse.airline.parser.resources.ModulePathLocator;
-import com.github.rvesse.airline.tests.args.Args1;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.help.cli.CliGlobalUsageGenerator;
 import com.github.rvesse.airline.model.AliasMetadata;
@@ -27,6 +25,8 @@ import com.github.rvesse.airline.parser.errors.ParseOptionConversionException;
 import com.github.rvesse.airline.parser.resources.ClasspathLocator;
 import com.github.rvesse.airline.parser.resources.EnvVarLocator;
 import com.github.rvesse.airline.parser.resources.JvmSystemPropertyLocator;
+import com.github.rvesse.airline.parser.resources.ModulePathLocator;
+import com.github.rvesse.airline.tests.args.Args1;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.SkipException;
@@ -45,24 +45,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import com.github.rvesse.airline.CommandLineInterface;
-import com.github.rvesse.airline.args.Args1;
-import com.github.rvesse.airline.builder.CliBuilder;
-import com.github.rvesse.airline.help.cli.CliGlobalUsageGenerator;
-import com.github.rvesse.airline.model.AliasMetadata;
-import com.github.rvesse.airline.parser.errors.ParseAliasCircularReferenceException;
-import com.github.rvesse.airline.parser.errors.ParseCommandUnrecognizedException;
-import com.github.rvesse.airline.parser.errors.ParseOptionConversionException;
-import com.github.rvesse.airline.parser.resources.ClasspathLocator;
-import com.github.rvesse.airline.parser.resources.EnvVarLocator;
-import com.github.rvesse.airline.parser.resources.JvmSystemPropertyLocator;
 
 public class TestAliases {
 
@@ -638,7 +620,7 @@ public class TestAliases {
         builder.withParser()
                .withUserAliases()
                    .withFilename("aliases.config")
-                   .withSearchLocation("/")
+                   .withSearchLocation("/com/github/rvesse/airline/tests/")
                    .withLocators(new ClasspathLocator(), new ModulePathLocator());
         CommandLineInterface<Args1> cli = builder.build();
         //@formatter:on
@@ -668,7 +650,7 @@ public class TestAliases {
         builder.withParser()
                .withUserAliases()
                    .withFilename("aliases.config")
-                   .withSearchLocation("classpath:/")
+                   .withSearchLocation("classpath:/com/github/rvesse/airline/tests/")
                    .withLocators(new ClasspathLocator(), new ModulePathLocator());
         CommandLineInterface<Args1> cli = builder.build();
         //@formatter:on

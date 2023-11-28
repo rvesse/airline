@@ -384,9 +384,9 @@ public class TestOptionParsing {
         return builder.build();
     }
     
-    private <T> Cli<T> createGreedyMaybeListValueParser(Class<? extends T> cls, char listSeparator) {
+    private <T> CommandLineInterface<T> createGreedyMaybeListValueParser(Class<? extends T> cls, char listSeparator) {
         //@formatter:off
-        CliBuilder<T> builder = Cli.<T>builder("test")
+        CliBuilder<T> builder = CommandLineInterface.<T>builder("test")
                                    .withCommand(cls);
         builder.withParser()
                .withOptionParser(new GreedyMaybeListValueOptionParser<T>(listSeparator));
@@ -616,61 +616,61 @@ public class TestOptionParsing {
     
     @Test(expectedExceptions = ParseOptionMissingValueException.class, expectedExceptionsMessageRegExp = "Required values.*")
     public void option_parsing_greedy_maybe_list_value_bad_01() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-c");
     }
 
     @Test(expectedExceptions = ParseOptionMissingValueException.class, expectedExceptionsMessageRegExp = "Too few.*")
     public void option_parsing_greedy_maybe_list_value_bad_02() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-c", "one");
     }
     
     @Test(expectedExceptions = ParseOptionUnexpectedException.class, expectedExceptionsMessageRegExp = "Too many.*")
     public void option_parsing_greedy_maybe_list_value_bad_03() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-c", "one,two,three");
     }
     
     @Test(expectedExceptions = ParseOptionMissingValueException.class, expectedExceptionsMessageRegExp = "Too few.*")
     public void option_parsing_greedy_maybe_list_value_bad_04() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-cone");
     }
     
     @Test(expectedExceptions = ParseOptionUnexpectedException.class, expectedExceptionsMessageRegExp = "Too many.*")
     public void option_parsing_greedy_maybe_list_value_bad_05() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-cone,two,three");
     }
     
     @Test(expectedExceptions = ParseOptionUnexpectedException.class, expectedExceptionsMessageRegExp = "Too many.*")
     public void option_parsing_greedy_maybe_list_value_bad_06() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-c", "one", "two", "three");
     }
     
     @Test(expectedExceptions = ParseOptionUnexpectedException.class, expectedExceptionsMessageRegExp = "Too many.*")
     public void option_parsing_greedy_maybe_list_value_bad_07() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-c", "one", "two", "three", "-a");
     }
     
     @Test(expectedExceptions = ParseOptionUnexpectedException.class, expectedExceptionsMessageRegExp = "Too many.*")
     public void option_parsing_greedy_maybe_list_value_bad_08() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-c", "one", "two", "three", "-afoo");
     }
     
     @Test(expectedExceptions = ParseOptionUnexpectedException.class, expectedExceptionsMessageRegExp = "Too many.*")
     public void option_parsing_greedy_maybe_list_value_bad_09() {
-        Cli<OptionAndArgumentParsing> parser = createGreedyMaybeListValueParser(OptionAndArgumentParsing.class, ',');
+        CommandLineInterface<OptionAndArgumentParsing> parser = createGreedyMaybeListValueParser(OptionAndArgumentParsing.class, ',');
         testParsing(parser, "OptionParsing1", "-c", "one", "two,three", "--", "foo");
     }
     
     @Test
     public void option_parsing_greedy_maybe_list_value_01() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-b", "foo");
 
         Assert.assertEquals(cmd.beta, "foo");
@@ -678,7 +678,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_02() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-bfoo");
 
         Assert.assertEquals(cmd.beta, "foo");
@@ -686,7 +686,7 @@ public class TestOptionParsing {
 
     @Test
     public void option_parsing_greedy_maybe_list_value_03() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one,two");
 
         Assert.assertEquals(cmd.charlie.size(), 2);
@@ -696,7 +696,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_04() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-cone,two");
 
         Assert.assertEquals(cmd.charlie.size(), 2);
@@ -706,7 +706,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_05() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-b", "foo,bar");
 
         Assert.assertEquals(cmd.beta, "bar");
@@ -714,7 +714,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_06() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-cone,two,three,four");
 
         Assert.assertEquals(cmd.charlie.size(), 4);
@@ -726,7 +726,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_07() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-cone", "two", "three,four");
 
         Assert.assertEquals(cmd.charlie.size(), 4);
@@ -738,7 +738,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_08() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one,two", "three,four");
 
         Assert.assertEquals(cmd.charlie.size(), 4);
@@ -750,7 +750,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_09() {
-        Cli<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
+        CommandLineInterface<OptionParsing> parser = createGreedyMaybeListValueParser(OptionParsing.class, ',');
         OptionParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one,two", "three", "four");
 
         Assert.assertEquals(cmd.charlie.size(), 4);
@@ -762,7 +762,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_10() {
-        Cli<OptionAndArgumentParsing> parser = createGreedyMaybeListValueParser(OptionAndArgumentParsing.class, ',');
+        CommandLineInterface<OptionAndArgumentParsing> parser = createGreedyMaybeListValueParser(OptionAndArgumentParsing.class, ',');
         OptionAndArgumentParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one,two", "three", "four");
 
         Assert.assertEquals(cmd.charlie.size(), 4);
@@ -774,7 +774,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_11() {
-        Cli<OptionAndArgumentParsing> parser = createGreedyMaybeListValueParser(OptionAndArgumentParsing.class, ',');
+        CommandLineInterface<OptionAndArgumentParsing> parser = createGreedyMaybeListValueParser(OptionAndArgumentParsing.class, ',');
         OptionAndArgumentParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two,three", "four");
 
         Assert.assertEquals(cmd.charlie.size(), 4);
@@ -786,7 +786,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_12() {
-        Cli<OptionAndArgumentParsing> parser = createGreedyMaybeListValueParser(OptionAndArgumentParsing.class, ',');
+        CommandLineInterface<OptionAndArgumentParsing> parser = createGreedyMaybeListValueParser(OptionAndArgumentParsing.class, ',');
         OptionAndArgumentParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two", "three", "four");
 
         Assert.assertEquals(cmd.charlie.size(), 4);
@@ -798,7 +798,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_13() {
-        Cli<OptionAndArgumentParsing> parser = createGreedyMaybeListValueParser(OptionAndArgumentParsing.class, ',');
+        CommandLineInterface<OptionAndArgumentParsing> parser = createGreedyMaybeListValueParser(OptionAndArgumentParsing.class, ',');
         OptionAndArgumentParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two", "--", "three", "four");
 
         Assert.assertEquals(cmd.charlie.size(), 2);
@@ -811,7 +811,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_14() {
-        Cli<OptionAndDefaultParsing> parser = createGreedyMaybeListValueParser(OptionAndDefaultParsing.class, ',');
+        CommandLineInterface<OptionAndDefaultParsing> parser = createGreedyMaybeListValueParser(OptionAndDefaultParsing.class, ',');
         OptionAndDefaultParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two", "three", "four");
 
         Assert.assertEquals(cmd.charlie.size(), 4);
@@ -823,7 +823,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_15() {
-        Cli<OptionAndDefaultParsing> parser = createGreedyMaybeListValueParser(OptionAndDefaultParsing.class, ',');
+        CommandLineInterface<OptionAndDefaultParsing> parser = createGreedyMaybeListValueParser(OptionAndDefaultParsing.class, ',');
         OptionAndDefaultParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two", "-b", "three", "four");
 
         Assert.assertEquals(cmd.charlie.size(), 2);
@@ -834,7 +834,7 @@ public class TestOptionParsing {
     
     @Test
     public void option_parsing_greedy_maybe_list_value_16() {
-        Cli<OptionAndDefaultParsing> parser = createGreedyMaybeListValueParser(OptionAndDefaultParsing.class, ',');
+        CommandLineInterface<OptionAndDefaultParsing> parser = createGreedyMaybeListValueParser(OptionAndDefaultParsing.class, ',');
         OptionAndDefaultParsing cmd = testParsing(parser, "OptionParsing1", "-c", "one", "two", "-b", "three", "-d", "four");
 
         Assert.assertEquals(cmd.charlie.size(), 2);

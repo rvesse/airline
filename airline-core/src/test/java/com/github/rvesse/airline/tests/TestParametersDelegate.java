@@ -16,6 +16,7 @@
 package com.github.rvesse.airline.tests;
 
 import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.SingleCommand;
 import com.github.rvesse.airline.annotations.*;
 import com.github.rvesse.airline.builder.ParserBuilder;
@@ -64,10 +65,10 @@ public class TestParametersDelegate {
 
     @Test
     public void delegatingEmptyClassHasNoEffect() {
-        DelegatingEmptyClassHasNoEffect p = Cli.<DelegatingEmptyClassHasNoEffect>builder("foo")
-                                               .withCommand(DelegatingEmptyClassHasNoEffect.class)
-                                               .build()
-                                               .parse("command", "-a", "-b", "someValue");
+        DelegatingEmptyClassHasNoEffect p = CommandLineInterface.<DelegatingEmptyClassHasNoEffect>builder("foo")
+                                                                .withCommand(DelegatingEmptyClassHasNoEffect.class)
+                                                                .build()
+                                                                .parse("command", "-a", "-b", "someValue");
 
         assertTrue(p.isA);
         assertEquals(p.bValue, "someValue");

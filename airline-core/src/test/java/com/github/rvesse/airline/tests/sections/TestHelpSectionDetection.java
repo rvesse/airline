@@ -58,7 +58,7 @@ public class TestHelpSectionDetection {
 
     public CommandMetadata loadCommand(final String commandName) {
         CommandFinder finder = new CommandFinder(commandName);
-        Cli<Object> cli = new Cli<>(CliWithSections.class);
+        CommandLineInterface<Object> cli = new CommandLineInterface<>(CliWithSections.class);
         CommandMetadata cmd = IterableUtils.find(cli.getMetadata().getDefaultGroupCommands(), finder);
         Assert.assertNotNull(cmd, "Failed to find expected command " + commandName);
         return cmd;
@@ -68,7 +68,7 @@ public class TestHelpSectionDetection {
     public void help_section_cli_01() {
         CommandMetadata cmd = loadCommand();
 
-        HelpSection section = CollectionUtils.find(cmd.getHelpSections(),
+        HelpSection section = IterableUtils.find(cmd.getHelpSections(),
                 new HelpSectionFinder(CommonSections.TITLE_DISCUSSION));
         Assert.assertTrue(section instanceof DiscussionSection);
         DiscussionSection discussion = (DiscussionSection) section;
@@ -82,7 +82,7 @@ public class TestHelpSectionDetection {
     public void help_section_cli_02() {
         CommandMetadata cmd = loadCommand("remove");
 
-        HelpSection section = CollectionUtils.find(cmd.getHelpSections(),
+        HelpSection section = IterableUtils.find(cmd.getHelpSections(),
                 new HelpSectionFinder(CommonSections.TITLE_DISCUSSION));
         Assert.assertTrue(section instanceof DiscussionSection);
         DiscussionSection discussion = (DiscussionSection) section;
@@ -94,7 +94,7 @@ public class TestHelpSectionDetection {
     public void help_section_cli_03() {
         CommandMetadata cmd = loadCommand("remove");
 
-        HelpSection section = CollectionUtils.find(cmd.getHelpSections(),
+        HelpSection section = IterableUtils.find(cmd.getHelpSections(),
                 new HelpSectionFinder(CommonSections.TITLE_SEE_ALSO));
         Assert.assertTrue(section instanceof ProseSection);
         ProseSection prose = (ProseSection) section;

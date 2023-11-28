@@ -16,6 +16,7 @@
 package com.github.rvesse.airline.tests;
 
 import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.CommandLineInterface;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

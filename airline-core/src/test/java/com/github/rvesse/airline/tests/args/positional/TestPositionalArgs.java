@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2010-22 the original author or authors.
+/**
+ * Copyright (C) 2010-16 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.rvesse.airline.tests.args.positional;
 
 import com.github.rvesse.airline.SingleCommand;
@@ -21,7 +20,7 @@ import com.github.rvesse.airline.help.cli.CliCommandUsageGenerator;
 import com.github.rvesse.airline.model.PositionalArgumentMetadata;
 import com.github.rvesse.airline.parser.errors.ParseArgumentsUnexpectedException;
 
-import static com.github.rvesse.airline.TestingUtil.singleCommandParser;
+import static com.github.rvesse.airline.tests.TestingUtil.singleCommandParser;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -56,7 +55,7 @@ public class TestPositionalArgs {
 
         ArgsPositional cmd = parser.parse("example.txt", "600", "extra");
         assertEquals(cmd.file, "example.txt");
-        assertEquals(cmd.mode, new Integer(600));
+        assertEquals(cmd.mode, Integer.valueOf(600));
         assertEquals(cmd.parameters.size(), 1);
         assertEquals(cmd.parameters.get(0), "extra");
     }
@@ -67,7 +66,7 @@ public class TestPositionalArgs {
         ArgsPositional cmd = parser.parse("example.txt", "600", "extra", "other", "another");
         
         assertEquals(cmd.file, "example.txt");
-        assertEquals(cmd.mode, new Integer(600));
+        assertEquals(cmd.mode, Integer.valueOf(600));
         assertEquals(cmd.parameters.size(), 3);
         assertEquals(cmd.parameters.get(0), "extra");
         assertEquals(cmd.parameters.get(1), "other");
@@ -84,7 +83,7 @@ public class TestPositionalArgs {
         assertEquals(cmd.file, "example.txt");
         assertEquals(cmd.otherFile, "example.txt");
         assertEquals(cmd.file, cmd.otherFile);
-        assertEquals(cmd.mode, new Integer(600));
+        assertEquals(cmd.mode, Integer.valueOf(600));
         assertEquals(cmd.parameters.size(), 1);
         assertEquals(cmd.parameters.get(0), "extra");
     }
@@ -110,7 +109,7 @@ public class TestPositionalArgs {
 
         ArgsPositional cmd = parser.parse("example.txt", "600", "extra");
         assertEquals(cmd.file, "example.txt");
-        assertEquals(cmd.mode, new Integer(600));
+        assertEquals(cmd.mode, Integer.valueOf(600));
         assertEquals(cmd.parameters.size(), 1);
         assertEquals(cmd.parameters.get(0), "extra");
     }
@@ -123,7 +122,7 @@ public class TestPositionalArgs {
 
         ArgsPositionalNoExtras cmd = parser.parse("example.txt", "600");
         assertEquals(cmd.file, "example.txt");
-        assertEquals(cmd.mode, new Integer(600));
+        assertEquals(cmd.mode, Integer.valueOf(600));
     }
     
     @Test(expectedExceptions = ParseArgumentsUnexpectedException.class)
@@ -134,7 +133,7 @@ public class TestPositionalArgs {
 
         ArgsPositionalNoExtras cmd = parser.parse("example.txt", "600", "extra");
         assertEquals(cmd.file, "example.txt");
-        assertEquals(cmd.mode, new Integer(600));
+        assertEquals(cmd.mode, Integer.valueOf(600));
     }
 
     @Test(expectedExceptions = IllegalStateException.class)

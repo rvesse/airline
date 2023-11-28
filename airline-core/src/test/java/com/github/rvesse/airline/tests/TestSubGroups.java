@@ -198,7 +198,7 @@ public class TestSubGroups {
     public void sub_groups_help_02_without_help_command() throws IOException {
         //@formatter:off
         CliBuilder<Object> builder
-            = Cli.<Object>builder("test");
+            = CommandLineInterface.builder("test");
         builder.withGroup("foo")
                .withSubGroup("bar")
                .withDefaultCommand(Help.class);

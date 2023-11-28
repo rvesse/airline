@@ -17,6 +17,7 @@ package com.github.rvesse.airline.tests;
 
 import java.util.List;
 
+import com.github.rvesse.airline.CommandLineInterface;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;

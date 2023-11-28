@@ -30,7 +30,7 @@ import com.github.rvesse.airline.model.ParserMetadata;
  * @deprecated Renamed to {@link CommandLineInterface} to avoid ambiguity with
  *             {@link com.github.rvesse.airline.annotations.Cli} annotation
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class Cli<C> extends CommandLineInterface<C> {
 
     /**
@@ -45,7 +45,7 @@ public class Cli<C> extends CommandLineInterface<C> {
      *             with {@link com.github.rvesse.airline.annotations.Cli}
      *             annotation
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static <T> CliBuilder<T> builder(String name) {
         if (name == null)
             throw new NullPointerException("name cannot be null");
@@ -62,7 +62,7 @@ public class Cli<C> extends CommandLineInterface<C> {
      *             with {@link com.github.rvesse.airline.annotations.Cli}
      *             annotation
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Cli(Class<?> cliClass) {
         this(MetadataLoader.<C> loadGlobal(cliClass));
     }
@@ -82,7 +82,7 @@ public class Cli<C> extends CommandLineInterface<C> {
      *             with {@link com.github.rvesse.airline.annotations.Cli}
      *             annotation
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Cli(Class<?> cliClass, ParserMetadata<C> parserConfig) {
         this(MetadataLoader.<C> loadGlobal(cliClass, parserConfig));
     }
@@ -96,7 +96,7 @@ public class Cli<C> extends CommandLineInterface<C> {
      *             with {@link com.github.rvesse.airline.annotations.Cli}
      *             annotation
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Cli(GlobalMetadata<C> metadata) {
         super(metadata);
     }

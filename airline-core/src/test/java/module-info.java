@@ -44,6 +44,7 @@ module com.github.rvesse.airline.tests
   opens com.github.rvesse.airline.tests;
   opens com.github.rvesse.airline.tests.args;
   opens com.github.rvesse.airline.tests.args.overrides;
+  opens com.github.rvesse.airline.tests.args.positional;
   opens com.github.rvesse.airline.tests.parser;
   opens com.github.rvesse.airline.tests.restrictions;
   opens com.github.rvesse.airline.tests.restrictions.partial;
