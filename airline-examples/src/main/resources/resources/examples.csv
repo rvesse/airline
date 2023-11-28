@@ -1,0 +1,2 @@
+external-help,Displays help and exits
+external-help foo bar,Provides some arguments (which are accepted BUT ignored by this command)

@@ -1,0 +1,28 @@
+As of Airline 3.0.0 new variants of some Help related annotations allow for
+help to be separated out into external resources.  This allows content like 
+this to be more naturally managed rather than being shoe-horned into 
+annotations.
+
+An empty line denotes a new paragraph.  We can have as many paragraphs as we want.
+
+This resource was referenced by a @ExternalDiscussion annotation.  There are also
+@ExternalProse, @ExternalExitCodes, @ExternalExamples and @ExternalTabularExamples
+annotations which provide other help sections via external resources.
+
+By default, external resources are located via the Classpath, Module Path or the
+File system but the annotations allow for users to customise how the resources are
+located via Airline's ResourceLocator abstraction.  In particular when using Airline
+on the Module Path, i.e. a JPMS context, you have to be careful about how resources
+are packaged into your module, see the prior Modular Resources section for notes on
+that.
+
+However, if following those restrictions isn't possible you may find it necessary to
+take an additional dependency on the airline-jpms-resources module and explicitly
+configure the JpmsResourceLocator as an additional locator.
+
+External resources need to be parsed into suitable data for use with Airline's 
+HelpSection system.  The default parser copes with simple text documents for 
+prose like content e.g. this, and tabular content formatted as CSV.  There is also
+a TabDelimitedHelpParser that can be used if tabular content is formatted as TSV
+instead.  Or if you want to provide your external help in some other structured
+format you can supply your own implementation of the relevant parser interfaces.

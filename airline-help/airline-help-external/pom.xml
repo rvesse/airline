@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.github.rvesse</groupId>
+    <artifactId>airline-help</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>airline-help-external</artifactId>
+  <name>Airline - External Help</name>
+  <description>Provides additional annotations and machinery to enable help content to be loaded in from external resources rather than directly specified on annotations</description>
+
+  <properties>
+    <license.header.path>${project.parent.parent.basedir}</license.header.path>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+	<version>${dependency.commons-csv}</version>
+    </dependency>
+
+    <!-- Test Dependencies -->
+    <dependency>
+      <groupId>com.github.rvesse</groupId>
+      <artifactId>airline</artifactId>
+      <classifier>tests</classifier>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

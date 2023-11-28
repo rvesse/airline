@@ -15,9 +15,8 @@
  */
 package com.github.rvesse.airline.examples.modules;
 
-import javax.inject.Inject;
-
 import com.github.rvesse.airline.HelpOption;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.examples.ExampleExecutor;
 import com.github.rvesse.airline.examples.ExampleRunnable;
@@ -35,19 +34,19 @@ import com.github.rvesse.airline.examples.ExampleRunnable;
 @Command(name = "modules", description = "A command that demonstrates the use of modules to group together sets of options for composition and reuse")
 public class Modules implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private HelpOption<ExampleRunnable> help;
 
     /**
-     * A field marked with {@link Inject} will also be scanned for options
+     * A field marked with {@link AirlineModule} will also be scanned for options
      */
-    @Inject
+    @AirlineModule
     public CredentialsModule credentials = new CredentialsModule();
 
     /**
-     * A field marked with {@link Inject} will also be scanned for options
+     * A field marked with {@link AirlineModule} will also be scanned for options
      */
-    @Inject
+    @AirlineModule
     public VerbosityModule verbosity = new VerbosityModule();
 
     public static void main(String[] args) {

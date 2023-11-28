@@ -1,0 +1,32 @@
+{% for navitem in include.items %}
+  {% if navitem.kind == "Group" %}
+    <li>
+      <a href="#">{{ navitem.text }}</a>
+      <ul>
+        {% if navitem.path %}
+          {% include nav-fragment.html items=navitem.items relurl=navitem.path %}
+        {% else %}
+          {% include nav-fragment.html items=navitem.items relurl=include.relurl %}
+        {% endif %}
+      </ul>
+  {% elsif navitem.kind == "ExternalLink" %}
+    <li><a class="sidebar-nav-item" href="{{ navitem.url }}" title="{{ navitem.txt }}">{{ navitem.text }}</a></li>
+  {% elsif navitem.kind == "LatestJavadoc" %}
+    <li>
+      <a href="#">Latest ({{ site.version }})</a>
+      {% include javadoc-nav.html version=site.version %}
+    </li>
+  {% elsif navitem.kind == "DevJavadoc" %}
+    <li>
+      <a href="#">Development ({{ site.dev_version }})</a>
+      {% include javadoc-nav.html version=site.dev_version %}
+    </li>
+  {% elsif navitem.kind == "Javadoc" %}
+    <li>
+      <a href="#">{{ navitem.version }}</a>
+      {% include javadoc-nav.html version=navitem.version %}
+    </li>
+  {% else %}
+    <li><a class="sidebar-nav-item" href="{{ site.baseurl }}{{ include.relurl }}{{ navitem.url }}" title="{{ navitem.text }}">{{ navitem.text }}</a></li>
+  {% endif %}
+{% endfor %}

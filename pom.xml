@@ -5,8 +5,7 @@
   <groupId>com.github.rvesse</groupId>
   <artifactId>airline-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.0.0-alpha-2-SNAPSHOT</version>
-
+  <version>4.0.0-SNAPSHOT</version>
   <name>Airline - Parent</name>
   <description>Java annotation-based framework for parsing Git like command line structures</description>
   <url>https://github.com/rvesse/airline</url>
@@ -47,35 +46,43 @@
   </distributionManagement>
 
   <properties>
-    <jdk.target>1.7</jdk.target>
-    <jdk.enforced>1.7</jdk.enforced>
+    <jdk.target>11</jdk.target>
+    <jdk.enforced>11</jdk.enforced>
     <license.header.path>${project.basedir}</license.header.path>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 
+    <!-- Coveralls API Token - MUST be injected into build via Maven properties -->
+    <coveralls.token />
+
+    <!-- Optionally skip coveralls for some modules -->
+    <coveralls.skip>false</coveralls.skip>
+
     <!-- Plugin Versions -->
-    <plugin.antrun>1.8</plugin.antrun>
-    <plugin.assembly>3.1.0</plugin.assembly>
-    <plugin.buildnumber>1.4</plugin.buildnumber>
-    <plugin.compiler>3.7.0</plugin.compiler>
+    <plugin.antrun>3.1.0</plugin.antrun>
+    <plugin.assembly>3.4.2</plugin.assembly>
+    <plugin.buildnumber>3.0.0</plugin.buildnumber>
+    <plugin.compiler>3.10.1</plugin.compiler>
     <plugin.coveralls>4.3.0</plugin.coveralls>
-    <plugin.enforcer>3.0.0-M2</plugin.enforcer>
+    <plugin.coveralls.jaxb>2.3.3-b02</plugin.coveralls.jaxb>
+    <plugin.enforcer>3.1.0</plugin.enforcer>
     <plugin.license>2.11</plugin.license>
-    <plugin.jacoco>0.8.4</plugin.jacoco>
-    <plugin.jar>3.1.0</plugin.jar>
-    <plugin.source>3.0.1</plugin.source>
-    <plugin.javadoc>3.0.1</plugin.javadoc>
-    <plugin.release>2.5.3</plugin.release>
-    <plugin.gpg>1.6</plugin.gpg>
+    <plugin.jacoco>0.8.8</plugin.jacoco>
+    <plugin.jar>3.2.2</plugin.jar>
+    <plugin.source>3.2.1</plugin.source>
+    <plugin.javadoc>3.6.2</plugin.javadoc>
+    <plugin.release>3.0.1</plugin.release>
+    <plugin.gpg>3.1.0</plugin.gpg>
     <plugin.shade>3.1.1</plugin.shade>
-    <plugin.surefire>2.22.0</plugin.surefire>
-    <plugin.moditect>1.0.0.Beta2</plugin.moditect>
+    <plugin.surefire>3.0.0-M7</plugin.surefire>
 
     <!-- Dependency Versions -->
-    <dependency.javax-inject>1.0.3</dependency.javax-inject>
+    <dependency.javax-inject>2.0.1</dependency.javax-inject>
     <dependency.junit>4.12</dependency.junit>
-    <dependency.testng>6.8.8</dependency.testng>
-    <dependency.commons-lang3>3.7</dependency.commons-lang3>
-    <dependency.commons-collections4>4.2</dependency.commons-collections4>
+    <dependency.testng>7.8.0</dependency.testng>
+    <dependency.classgraph>4.8.165</dependency.classgraph>
+    <dependency.commons-lang3>3.14.0</dependency.commons-lang3>
+    <dependency.commons-collections4>4.4</dependency.commons-collections4>
+    <dependency.commons-csv>1.10.0</dependency.commons-csv>
     <dependency.guice>4.1.0</dependency.guice>
     <dependency.jsr305>3.0.2</dependency.jsr305>
   </properties>
@@ -86,6 +93,10 @@
     <module>airline-examples</module>
     <module>airline-io</module>
     <module>airline-help</module>
+    <module>airline-prompts</module>
+    <module>airline-backcompat-javaxinject</module>
+    <module>airline-jpms-debug</module>
+      <module>airline-jpms-resources</module>
   </modules>
 
   <dependencyManagement>
@@ -120,6 +131,12 @@
         <version>${dependency.guice}</version>
       </dependency>
 
+      <dependency>
+        <groupId>io.github.classgraph</groupId>
+        <artifactId>classgraph</artifactId>
+        <version>${dependency.classgraph}</version>
+      </dependency>
+
       <!-- for testing -->
       <dependency>
         <groupId>org.testng</groupId>
@@ -138,7 +155,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${plugin.compiler}</version>
         <configuration>
-          <source>1.7</source>
+          <source>11</source>
           <target>${jdk.target}</target>
           <encoding>UTF-8</encoding>
         </configuration>
@@ -172,7 +189,7 @@
         <version>${plugin.enforcer}</version>
         <executions>
           <execution>
-            <id>enforce-jdk7</id>
+            <id>enforce-required-jdk</id>
             <goals>
               <goal>enforce</goal>
             </goals>
@@ -199,11 +216,13 @@
           <useDefaultMapping>true</useDefaultMapping>
           <strictCheck>true</strictCheck>
           <excludes>
-            <exclude>license.txt</exclude>
+            <exclude>*.txt</exclude>
+            <exclude>**/*.txt</exclude>
+            <exclude>.github/**</exclude>
             <exclude>pom.xml</exclude>
             <exclude>**/pom.xml</exclude>
-	    <exclude>**/*.config</exclude>
-	    <exclude>**/*.bat</exclude>
+	        <exclude>**/*.config</exclude>
+	        <exclude>**/*.bat</exclude>
 
             <!-- Integration Tests -->
             <exclude>**/verify.bsh</exclude>
@@ -314,36 +333,8 @@
       </plugin>
     </plugins>
 
-    <!-- M2E Configuration -->
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings
-          only. It has no influence on the Maven build itself. -->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>com.mycila</groupId>
-                    <artifactId>license-maven-plugin</artifactId>
-                    <versionRange>[2.11,)</versionRange>
-                    <goals>
-                      <goal>check</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>
@@ -381,7 +372,7 @@
                 </goals>
                 <configuration>
                   <timestampFormat>yyyy-MM-dd HH:mm:ss</timestampFormat>
-                  <repoToken>gZC1X240fX8YXEo2T5Sgofe00S1bSaGdV</repoToken>
+                  <repoToken>${coveralls.token}</repoToken>
                   <scanForSources>true</scanForSources>
                   <sourceDirectories>
                     <sourceDirectory>airline-maven-plugin/target/generated-sources/</sourceDirectory>
@@ -389,9 +380,17 @@
                   <jacocoReports>
                     <jacocoReport>airline-maven-plugin/target/jacoco-it/jacoco.xml</jacocoReport>
                   </jacocoReports>
+                  <skip>${coveralls.skip}</skip>
                 </configuration>
               </execution>
             </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${plugin.coveralls.jaxb}</version>
+              </dependency>
+            </dependencies>
           </plugin>
         </plugins>
       </build>
@@ -403,9 +402,6 @@
         <module>airline-maven-plugin</module>
         <module>docs</module>
       </modules>
-      <properties>
-        <jdk.enforced>1.8</jdk.enforced>
-      </properties>
       <build>
         <plugins>
           <!-- Release Plugin -->
@@ -450,49 +446,7 @@
               </execution>
             </executions>
           </plugin>
-        </plugins>
-      </build>
-    </profile>
 
-    <profile>
-      <id>javadoc-jdk7</id>
-      <activation>
-        <jdk>(,1.7]</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <!-- Javadoc Plugin -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${plugin.javadoc}</version>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <javadocVersion>${jdk.target}</javadocVersion>
-              <quiet>true</quiet>
-              <encoding>UTF-8</encoding>
-              <charset>UTF-8</charset>
-              <docencoding>UTF-8</docencoding>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>javadoc-jdk8</id>
-      <activation>
-        <jdk>1.8</jdk>
-      </activation>
-      <build>
-        <plugins>
           <!-- Javadoc Plugin -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -516,154 +470,22 @@
                 <option>-Xdoclint:none</option>
               </additionalOptions>
             </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>javadoc-jdk10-plus</id>
-      <activation>
-        <jdk>10</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <!-- Javadoc Plugin -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${plugin.javadoc}</version>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <javadocVersion>${jdk.target}</javadocVersion>
-              <quiet>true</quiet>
-              <encoding>UTF-8</encoding>
-              <charset>UTF-8</charset>
-              <docencoding>UTF-8</docencoding>
-              <additionalOptions>
-                <option>-Xdoclint:none</option>
-              </additionalOptions>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>moditect-jdk8-plus</id>
-      <activation>
-        <jdk>[1.8,)</jdk>
-        <file>
-          <exists>${basedir}/src/main/moditect/module-info.java</exists>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.moditect</groupId>
-            <artifactId>moditect-maven-plugin</artifactId>
-            <version>${plugin.moditect}</version>
-            <executions>
-              <execution>
-                <id>add-module-infos</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>add-module-info</goal>
-                </goals>
-                <configuration>
-                  <jvmVersion>9</jvmVersion>
-                  <overwriteExistingFiles>true</overwriteExistingFiles>
-                  <module>
-                    <moduleInfoFile>
-                      ${basedir}/src/main/moditect/module-info.java
-                    </moduleInfoFile>
-                  </module>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>automatic-module-name</id>
-      <activation>
-        <property>
-          <name>moditect.skip</name>
-          <value>true</value>
-        </property>
-        <file>
-          <exists>${basedir}/src/main/moditect/module-info.java</exists>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <version>${plugin.jar}</version>
-            <configuration>
-              <archive>
-                <manifestEntries>
-                  <Automatic-Module-Name>${moditect.moduleName}</Automatic-Module-Name>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>generate-module-info</id>
-      <properties>
-        <jdk.enforced>9</jdk.enforced>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.moditect</groupId>
-            <artifactId>moditect-maven-plugin</artifactId>
-            <version>${plugin.moditect}</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>generate-module-info</goal>
-                </goals>
-                <configuration>
-                  <modules>
-                    <module>
-                      <artifact>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>${project.artifactId}</artifactId>
-                        <version>${project.version}</version>
-                      </artifact>
-                      <moduleInfo>
-                        <name>${moditect.moduleName}</name>
-                        <exports>
-                            *;
-                        </exports>
-                        <requires>
-                            *;
-                        </requires>
-                        <addServiceUses>true</addServiceUses>
-                      </moduleInfo>
-                    </module>
-                  </modules>
-                </configuration>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
     </profile>
   </profiles>
+
+  <repositories>
+    <repository>
+      <id>apache-repo-snapshots</id>
+      <url>https://repository.apache.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>

@@ -24,6 +24,7 @@ import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
+import com.github.rvesse.airline.utils.predicates.parser.CommandFinder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.apache.commons.collections4.IterableUtils;
 
 public class CliGlobalUsageSummaryGenerator<T> extends AbstractPrintedGlobalUsageGenerator<T> {
     
@@ -107,9 +110,13 @@ public class CliGlobalUsageSummaryGenerator<T> extends AbstractPrintedGlobalUsag
      * @throws IOException
      */
     protected void outputFooter(UsagePrinter out, GlobalMetadata<T> global) throws IOException {
-        out.newline();
-        out.append("See").append("'" + global.getName())
-                .append("help <command>' for more information on a specific command.").newline();
+        boolean hasHelpCommand = IterableUtils.find(global.getDefaultGroupCommands(), new CommandFinder("help")) != null;
+
+        if (hasHelpCommand) {
+            out.newline();
+            out.append("See").append("'" + global.getName())
+                    .append("help <command>' for more information on a specific command.").newline();
+        }
     }
 
     /**

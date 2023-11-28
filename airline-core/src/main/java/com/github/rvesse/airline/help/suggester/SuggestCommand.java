@@ -17,6 +17,7 @@ package com.github.rvesse.airline.help.suggester;
 
 import com.github.rvesse.airline.Channels;
 import com.github.rvesse.airline.Context;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.model.CommandGroupMetadata;
@@ -29,16 +30,9 @@ import com.github.rvesse.airline.model.SuggesterMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.suggester.SuggestionParser;
 import com.github.rvesse.airline.utils.AirlineUtils;
-
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 import static com.github.rvesse.airline.parser.ParserUtil.createInstance;
@@ -53,7 +47,7 @@ public class SuggestCommand<T> implements Runnable, Callable<Void> {
         BUILTIN_SUGGESTERS.put(Context.COMMAND, CommandSuggester.class);
     }
 
-    @Inject
+    @AirlineModule
     public GlobalMetadata<T> metadata;
 
     @Arguments
@@ -65,7 +59,9 @@ public class SuggestCommand<T> implements Runnable, Callable<Void> {
 
         Class<? extends Suggester> suggesterClass = BUILTIN_SUGGESTERS.get(state.getLocation());
         if (suggesterClass != null) {
-            SuggesterMetadata suggesterMetadata = MetadataLoader.loadSuggester(suggesterClass);
+            SuggesterMetadata suggesterMetadata =
+                    MetadataLoader.loadSuggester(suggesterClass, MetadataLoader.loadParser(
+                            this.getClass()));
 
             if (suggesterMetadata != null) {
                 Map<Class<?>, Object> bindings = new HashMap<Class<?>, Object>();
@@ -80,9 +76,9 @@ public class SuggestCommand<T> implements Runnable, Callable<Void> {
                 }
 
                 Suggester suggester = createInstance(suggesterMetadata.getSuggesterClass(),
-                        Collections.<OptionMetadata> emptyList(), null,
-                        Collections.<PositionalArgumentMetadata> emptyList(), null, null, null,
-                        suggesterMetadata.getMetadataInjections(), AirlineUtils.unmodifiableMapCopy(bindings));
+                                                     Collections.emptyList(), null,
+                                                     Collections.emptyList(), null, null, null,
+                                                     suggesterMetadata.getMetadataInjections(), AirlineUtils.unmodifiableMapCopy(bindings));
 
                 return suggester.suggest();
             }

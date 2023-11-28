@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.github.rvesse.airline.annotations.help.bash","l":"BashCompletion"},{"p":"com.github.rvesse.airline.help.cli.bash","l":"BashCompletionGenerator"},{"p":"com.github.rvesse.airline.help.cli.bash","l":"CompletionBehaviour"}]

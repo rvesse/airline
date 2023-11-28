@@ -20,9 +20,6 @@ import com.github.rvesse.airline.types.numerics.NumericCandidate;
 
 /**
  * A type converter that supports binary numbers
- * 
- * @author rvesse
- *
  */
 public class Binary extends ComplexNumericTypeConverter {
 

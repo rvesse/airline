@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>airline-parent</artifactId>
+        <groupId>com.github.rvesse</groupId>
+        <version>4.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>airline-backcompat-javaxinject</artifactId>
+
+    <name>Airline - Backwards Compatibility - javax.inject</name>
+    <description>Provides a pointer to the old javax.inject dependency. This is an intentional level of indirection
+        within the dependency tree to make it clear that this dependency is only needed for backwards compatibility.
+    </description>
+
+    <properties>
+        <license.header.path>${project.parent.basedir}</license.header.path>
+        <coveralls.skip>true</coveralls.skip>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -15,6 +15,9 @@
  */
 package com.github.rvesse.airline.types.numerics;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import com.github.rvesse.airline.parser.errors.ParseOptionConversionException;
 import com.github.rvesse.airline.types.ConvertResult;
 
@@ -32,6 +35,14 @@ public abstract class ComplexNumericTypeConverter extends DefaultNumericConverte
 
     protected NumericCandidate parse(String value) {
         return new NumericCandidate(value);
+    }
+    
+    protected BigDecimal getBigDecimal(NumericCandidate candidate) {
+        return new BigDecimal(candidate.getValue());
+    }
+    
+    protected BigInteger getBigInteger(NumericCandidate candidate) {
+        return new BigInteger(candidate.getValue(), getRadix(candidate));
     }
 
     protected Long getLong(NumericCandidate candidate) {
@@ -52,6 +63,16 @@ public abstract class ComplexNumericTypeConverter extends DefaultNumericConverte
 
     protected int getRadix(NumericCandidate candidate) {
         return 10;
+    }
+    
+    @Override
+    protected ConvertResult tryConvertBigDecimal(String name, String value) {
+        NumericCandidate candidate = parse(value);
+        BigDecimal base = getBigDecimal(candidate);
+        long multiplier = getMultiplier(candidate);
+        BigDecimal result = multiplier != 1l ? base.multiply(BigDecimal.valueOf(multiplier)) : base;
+        
+        return new ConvertResult(result);
     }
 
     @Override
@@ -82,6 +103,16 @@ public abstract class ComplexNumericTypeConverter extends DefaultNumericConverte
                     name, value, Float.class.getSimpleName()), name, value, Float.class.getSimpleName());
 
         return new ConvertResult((float) result);
+    }
+    
+    @Override
+    protected ConvertResult tryConvertBigInteger(String name, String value) {
+        NumericCandidate candidate = parse(value);
+        BigInteger base = getBigInteger(candidate);
+        long multiplier = getMultiplier(candidate);
+        BigInteger result = multiplier != 1l ? base.multiply(BigInteger.valueOf(multiplier)) : base;
+        
+        return new ConvertResult(result);
     }
 
     @Override

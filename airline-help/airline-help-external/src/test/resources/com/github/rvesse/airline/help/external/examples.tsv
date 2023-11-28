@@ -1,0 +1,2 @@
+args-examples-tabular -v 7	Runs with high verbosity
+args-examples-tabular -debug	Runs in debug mode

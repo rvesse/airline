@@ -24,7 +24,6 @@ import com.github.rvesse.airline.Context;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseOptionMissingValueException;
-import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 
 /**
  * An options parser that expects the name and value(s) to be white space
@@ -53,10 +52,6 @@ public class StandardOptionParser<T> extends AbstractOptionParser<T> {
                     && StringUtils.startsWith(optionName, state.getParserConfiguration().getFlagNegationPrefix())
                             ? Boolean.FALSE.toString() : Boolean.TRUE.toString();
             state = state.withOptionValue(option, rawBooleanValue).popContext();
-        } else if (option.getArity() == 1) {
-            if (tokens.hasNext()) {
-                state = state.withOptionValue(option, tokens.next()).popContext();
-            }
         } else {
             int count = 0;
 

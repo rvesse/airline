@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"com.github.rvesse.airline.parser.resources.jpms","c":"JpmsResourceLocator","l":"JpmsResourceLocator()","url":"%3Cinit%3E()"},{"p":"com.github.rvesse.airline.parser.resources.jpms","c":"JpmsResourceLocator","l":"open(String, String)","url":"open(java.lang.String,java.lang.String)"}]

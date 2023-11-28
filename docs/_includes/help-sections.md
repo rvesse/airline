@@ -1,8 +1,8 @@
 - The [`@Copyright`]({{ include.path }}copyright.html) annotation adds a copyright statement
-- The [`@Discussion`]({{ include.path }}discussion.html) annotation adds extended discussion 
-- The [`@ExitCodes`]({{ include.path }}exit-codes.html) annotation adds documentation on exit codes
-- The [`@Examples`]({{ include.path }}examples.html) annotation adds usage examples
+- The [`@Discussion`/`@ExternalDiscussion`]({{ include.path }}discussion.html) annotations add extended discussion 
+- The [`@ExitCodes`/`@ExternalExitCodes`]({{ include.path }}exit-codes.html) annotations adds documentation on exit codes
+- The [`@Examples`/`@ExternalExamples`/`@ExternalTabularExamples`]({{ include.path }}examples.html) annotations add usage examples
 - The [`@HideSection`]({{ include.path }}hide-section.html) annotation is used to hide an inherited help section
 - The [`@License`]({{ include.path }}license.html) annotation adds a license statement
-- The [`@ProseSection`]({{ include.path }}prose-section.html) annotation adds an custom titled text section
+- The [`@ProseSection`/`@ExternalProse`]({{ include.path }}prose-section.html) annotations adds custom titled text sections
 - The [`@Version`]({{ include.path }}version.html) annotation adds a version statement

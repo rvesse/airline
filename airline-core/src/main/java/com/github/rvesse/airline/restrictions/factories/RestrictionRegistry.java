@@ -16,10 +16,8 @@
 package com.github.rvesse.airline.restrictions.factories;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 
 import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.GlobalRestriction;
@@ -30,9 +28,12 @@ import com.github.rvesse.airline.restrictions.OptionRestriction;
  */
 public class RestrictionRegistry {
 
-    private static final Map<Class<? extends Annotation>, OptionRestrictionFactory> OPTION_RESTRICTION_FACTORIES = new HashMap<>();
-    private static final Map<Class<? extends Annotation>, ArgumentsRestrictionFactory> ARGUMENT_RESTRICTION_FACTORIES = new HashMap<>();
-    private static final Map<Class<? extends Annotation>, GlobalRestrictionFactory> GLOBAL_RESTRICTION_FACTORIES = new HashMap<>();
+    private static final Map<Class<? extends Annotation>, OptionRestrictionFactory> OPTION_RESTRICTION_FACTORIES =
+            new HashMap<>();
+    private static final Map<Class<? extends Annotation>, ArgumentsRestrictionFactory> ARGUMENT_RESTRICTION_FACTORIES =
+            new HashMap<>();
+    private static final Map<Class<? extends Annotation>, GlobalRestrictionFactory> GLOBAL_RESTRICTION_FACTORIES =
+            new HashMap<>();
 
     private static volatile boolean init = false;
 
@@ -40,36 +41,37 @@ public class RestrictionRegistry {
         init();
     }
 
+    static <T> void loadRestrictions(Class<T> cls, Function<T, List<Class<? extends Annotation>>> annotationsSelector,
+                                     Map<Class<? extends Annotation>, T> registry) {
+        try {
+            ServiceLoader<T> factories = ServiceLoader.load(cls);
+            Iterator<T> iter = factories.iterator();
+            while (iter.hasNext()) {
+                T factory = iter.next();
+                for (Class<? extends Annotation> annotationClass : annotationsSelector.apply(factory)) {
+                    registry.put(annotationClass, factory);
+                }
+            }
+        } catch (Throwable e) {
+            System.err.println("Failed to load " + cls.getSimpleName() + ": " + e.getMessage());
+        }
+    }
+
     /**
-     * Initializes the base set of restrictions using the {@link ServiceLoader}
-     * mechanism
+     * Initializes the base set of restrictions using the {@link ServiceLoader} mechanism
      */
     static synchronized void init() {
-        if (init)
+        if (init) {
             return;
+        }
 
         // Use ServerLoader to obtain restrictions
-        ServiceLoader<OptionRestrictionFactory> optionRestrictionFactories = ServiceLoader
-                .load(OptionRestrictionFactory.class);
-        for (OptionRestrictionFactory factory : optionRestrictionFactories) {
-            for (Class<? extends Annotation> cls : factory.supportedOptionAnnotations()) {
-                OPTION_RESTRICTION_FACTORIES.put(cls, factory);
-            }
-        }
-        ServiceLoader<ArgumentsRestrictionFactory> argumentsRestrictionFactories = ServiceLoader
-                .load(ArgumentsRestrictionFactory.class);
-        for (ArgumentsRestrictionFactory factory : argumentsRestrictionFactories) {
-            for (Class<? extends Annotation> cls : factory.supportedArgumentsAnnotations()) {
-                ARGUMENT_RESTRICTION_FACTORIES.put(cls, factory);
-            }
-        }
-        ServiceLoader<GlobalRestrictionFactory> globalRestrictionFactories = ServiceLoader
-                .load(GlobalRestrictionFactory.class);
-        for (GlobalRestrictionFactory factory : globalRestrictionFactories) {
-            for (Class<? extends Annotation> cls : factory.supportedGlobalAnnotations()) {
-                GLOBAL_RESTRICTION_FACTORIES.put(cls, factory);
-            }
-        }
+        loadRestrictions(OptionRestrictionFactory.class, x -> x.supportedOptionAnnotations(),
+                         OPTION_RESTRICTION_FACTORIES);
+        loadRestrictions(ArgumentsRestrictionFactory.class, x -> x.supportedArgumentsAnnotations(),
+                         ARGUMENT_RESTRICTION_FACTORIES);
+        loadRestrictions(GlobalRestrictionFactory.class, x -> x.supportedGlobalAnnotations(),
+                         GLOBAL_RESTRICTION_FACTORIES);
 
         init = true;
     }
@@ -90,22 +92,25 @@ public class RestrictionRegistry {
     }
 
     public static void addOptionRestriction(Class<? extends Annotation> cls, OptionRestrictionFactory factory) {
-        if (cls == null)
+        if (cls == null) {
             throw new NullPointerException("cls cannot be null");
+        }
         OPTION_RESTRICTION_FACTORIES.put(cls, factory);
     }
 
     public static <T extends Annotation> OptionRestriction getOptionRestriction(Class<? extends Annotation> cls,
-            T annotation) {
+                                                                                T annotation) {
         OptionRestrictionFactory factory = OPTION_RESTRICTION_FACTORIES.get(cls);
-        if (factory != null)
+        if (factory != null) {
             return factory.createOptionRestriction(annotation);
+        }
         return null;
     }
 
     public static void addArgumentsRestriction(Class<? extends Annotation> cls, ArgumentsRestrictionFactory factory) {
-        if (cls == null)
+        if (cls == null) {
             throw new NullPointerException("cls cannot be null");
+        }
         ARGUMENT_RESTRICTION_FACTORIES.put(cls, factory);
     }
 
@@ -114,10 +119,11 @@ public class RestrictionRegistry {
     }
 
     public static <T extends Annotation> ArgumentsRestriction getArgumentsRestriction(Class<? extends Annotation> cls,
-            T annotation) {
+                                                                                      T annotation) {
         ArgumentsRestrictionFactory factory = ARGUMENT_RESTRICTION_FACTORIES.get(cls);
-        if (factory != null)
+        if (factory != null) {
             return factory.createArgumentsRestriction(annotation);
+        }
         return null;
     }
 
@@ -126,16 +132,18 @@ public class RestrictionRegistry {
     }
 
     public static void addGlobalRestriction(Class<? extends Annotation> cls, GlobalRestrictionFactory factory) {
-        if (cls == null)
+        if (cls == null) {
             throw new NullPointerException("cls cannot be null");
+        }
         GLOBAL_RESTRICTION_FACTORIES.put(cls, factory);
     }
 
     public static <T extends Annotation> GlobalRestriction getGlobalRestriction(Class<? extends Annotation> cls,
-            T annotation) {
+                                                                                T annotation) {
         GlobalRestrictionFactory factory = GLOBAL_RESTRICTION_FACTORIES.get(cls);
-        if (factory != null)
+        if (factory != null) {
             return factory.createGlobalRestriction(annotation);
+        }
         return null;
     }
 }

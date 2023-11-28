@@ -20,7 +20,6 @@ import com.github.rvesse.airline.types.numerics.NumericCandidate;
 
 /**
  * A type converter that supports octal numbers
- * @author rvesse
  *
  */
 public class Octal extends ComplexNumericTypeConverter {

@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.github.rvesse</groupId>
     <artifactId>airline-parent</artifactId>
-    <version>3.0.0-alpha-2-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>airline-io</artifactId>
   <name>Airline - IO Library</name>
@@ -12,7 +12,6 @@
   <properties>
     <license.header.path>${project.parent.basedir}</license.header.path>
     <coveralls.skip>true</coveralls.skip>
-    <moditect.moduleName>com.github.rvesse.airline.io</moditect.moduleName>
   </properties>
 
   <dependencies>

@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR=$(cd `dirname $0` && pwd)
+
+JAR_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout=true 2>/dev/null)
+if [ -z "${JAR_VERSION}" ]; then
+  # Try just grepping it out of the pom.xml instead
+  JAR_VERSION=$(grep "<version>" pom.xml | head -n 1 | awk -F '>' '{print $2}' | awk -F '<' '{print $1}')
+  if [ -z "${JAR_VERSION}" ]; then
+    echo "Failed to detect examples version from pom.xml"
+    exit 1
+  fi
+fi
+JAR_FILE="${SCRIPT_DIR}/target/airline-examples-${JAR_VERSION}.jar"
+
+EXAMPLE=$1
+shift
+if [ -z "${EXAMPLE}" ]; then
+  echo "No example specified to run"
+  echo "Usage is ./runExample ExampleClass [Command [Options]]"
+  exit 1
+fi
+
+# Strip .class/.java if specified
+EXAMPLE="${EXAMPLE%.class}"
+EXAMPLE="${EXAMPLE%.java}"
+
+# Locate the example class name
+CLASS=$(find ${SCRIPT_DIR}/src/main/java/com/github/rvesse/airline/examples -name ${EXAMPLE}.java)
+if [ -z "${CLASS}" ]; then
+  echo "${EXAMPLE} does not appear to be an example that can be run"
+  exit 1
+fi
+
+# Convert filename to Java class name
+# Remove leading src/main/java
+# Replace / with .
+# Remove trailing .java
+CLASS="${CLASS#${SCRIPT_DIR}/src/main/java/}"
+CLASS="${CLASS//\//.}"
+CLASS="${CLASS%.java}"
+
+JAVA_MAJOR_VERSION=$(java -version 2>&1 | awk -F '"' '{print $2}' | awk -F '.' '{print $1}')
+if [ ${JAVA_MAJOR_VERSION} -lt 9 ]; then
+  echo "This script requires using Java 9 or later, please set JAVA_HOME to point to a newer JRE"
+  exit 1
+fi
+
+if [ ! -f "${JAR_FILE}" ]; then
+  echo "Examples JAR ${JAR_FILE} does not yet exist, please run mvn package to build"
+  exit 1
+fi
+
+java --module-path "${SCRIPT_DIR}/target/modules:${JAR_FILE}" -m "com.github.rvesse.airline.examples/${CLASS}" "$@"

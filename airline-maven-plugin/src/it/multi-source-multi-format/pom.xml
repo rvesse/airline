@@ -37,7 +37,7 @@
           <sources>
             <source>
               <classes>
-                <class>com.github.rvesse.airline.args.Args1</class>
+                <class>com.github.rvesse.airline.tests.args.Args1</class>
                 <class>com.github.rvesse.airline.examples.userguide.BasicCli</class>
               </classes>
             </source>

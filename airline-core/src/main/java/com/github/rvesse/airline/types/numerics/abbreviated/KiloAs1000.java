@@ -17,6 +17,11 @@ package com.github.rvesse.airline.types.numerics.abbreviated;
 
 import java.util.Collections;
 
+/**
+ * A numeric type converter that supports standard using suffixes - {@code k m b t} - to abbreviate numbers expressed in
+ * terms of thousands, millions, billions or trillions
+ *
+ */
 public class KiloAs1000 extends SequenceAbbreviatedNumericTypeConverter {
 
     public KiloAs1000() {

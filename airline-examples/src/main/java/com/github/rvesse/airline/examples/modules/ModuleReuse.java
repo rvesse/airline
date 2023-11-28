@@ -15,18 +15,16 @@
  */
 package com.github.rvesse.airline.examples.modules;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.rvesse.airline.HelpOption;
+import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.examples.ExampleExecutor;
 import com.github.rvesse.airline.examples.ExampleRunnable;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Here we have another command which reuses module classes we've defined and
@@ -38,13 +36,13 @@ import com.github.rvesse.airline.examples.ExampleRunnable;
 @Command(name = "module-reuse", description = "A command that demonstrates re-use of modules and composition with locally defined options")
 public class ModuleReuse implements ExampleRunnable {
 
-    @Inject
+    @AirlineModule
     private HelpOption<ExampleRunnable> help;
 
     /**
-     * A field marked with {@link Inject} will also be scanned for options
+     * A field marked with {@link AirlineModule} will also be scanned for options
      */
-    @Inject
+    @AirlineModule
     private VerbosityModule verbosity = new VerbosityModule();
 
     @Arguments

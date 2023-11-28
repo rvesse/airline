@@ -5,7 +5,7 @@ title: License Annotation
 
 ## `@License`
 
-The `@License` annotation may be applied to classes and provides a copyright statement that will be included in [Help](../help/) as an additional section.
+The `@License` annotation may be applied to classes and provides a license statement that will be included in [Help](../help/) as an additional section.
 
 To use it simply add it like so:
 

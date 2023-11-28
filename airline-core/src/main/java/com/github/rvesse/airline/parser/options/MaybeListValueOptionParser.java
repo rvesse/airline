@@ -20,39 +20,38 @@ import org.apache.commons.collections4.iterators.PeekingIterator;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.rvesse.airline.Context;
+import com.github.rvesse.airline.annotations.Arguments;
+import com.github.rvesse.airline.annotations.DefaultOption;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseOptionMissingValueException;
 import com.github.rvesse.airline.parser.errors.ParseOptionUnexpectedException;
-import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 
 /**
- * An options parser that expects the name and value(s) to be white space
- * separated e.g. {@code --name value} but which allows for the values to be a
- * non-whitespace separated list
+ * An options parser that expects the name and value(s) to be white space separated e.g. {@code --name value}
+ * <strong>but</strong> which allows for the values to be a non-whitespace separated list
  * <p>
- * This is less strict than {@link ListValueOptionParser} which requires that
- * values be non-whitespace separated
+ * This is less strict than {@link ListValueOptionParser} which requires that values be non-whitespace separated
  * </p>
  * <p>
- * So for example {@code --name foo,bar} would be treated as the values
- * {@code foo} and {@code bar} passed to the {@code --name} option. This parser
- * differs from the {@link StandardOptionParser} in that the standard parser
- * would treat {@code foo,bar} as a single value passed to the name option. This
- * parser expects that the list it receives contains the correct number of items
- * for the arity of the option, or an exact multiple thereof and if not produces
- * an error
+ * So for example {@code --name foo,bar} would be treated as the values {@code foo} and {@code bar} passed to the
+ * {@code --name} option. Equally {@code --name foo bar} would do the same thing.
  * </p>
  * <p>
- * You can also omit the whitespace between the name and the value list when
- * using a single character name of the option similar to how the
- * {@link ClassicGetOptParser} works. For example {@code -nfoo,bar} is
- * equivalent to our previous example assuming that {@code -n} is an alternative
- * name for the same option as {@code --name}.
+ * Note that this parser is non-greedy so if the command also uses {@link Arguments} or {@link DefaultOption} then it
+ * will stop as soon as it sees enough values to satisfy the arity of the option it is parsing.
+ * </p>
+ * This parser differs from the {@link StandardOptionParser} in that the standard parser would treat {@code foo,bar} as
+ * a single value passed to the name option. This parser expects that the list it receives contains the correct number
+ * of items for the arity of the option, or an exact multiple thereof and if not produces an error
  * </p>
  * <p>
- * The default separator for values is {@code ,} but this can be configured as
- * desired.
+ * You can also omit the whitespace between the name and the value list when using a single character name of the option
+ * similar to how the {@link ClassicGetOptParser} works. For example {@code -nfoo,bar} is equivalent to our previous
+ * example assuming that {@code -n} is an alternative name for the same option as {@code --name}.
+ * </p>
+ * <p>
+ * The default separator for values is {@code ,} but this can be configured as desired.
  * </p>
  *
  */
@@ -105,6 +104,13 @@ public class MaybeListValueOptionParser<T> extends ListValueOptionParser<T> {
                 if (!tokens.hasNext())
                     return state;
 
+                // Can't parse list value if the next value is another option/arguments separator
+                if (isSeparatorOrOption(state, allowedOptions, state.getParserConfiguration().getArgumentsSeparator(),
+                        false, tokens.peek())) {
+                    noValueForOption(state, option);
+                    return state;
+                }
+
                 // Consume the value immediately, this option parser will now
                 // either succeed to parse the option or will error
                 list = tokens.next();
@@ -112,22 +118,21 @@ public class MaybeListValueOptionParser<T> extends ListValueOptionParser<T> {
 
             // Parse value as a list
             List<String> listValues = getValues(list);
-            
+
             // Parse additional values until we hit another option, the end
             // of values or the correct number of values
-            // Whether we can search greedily depends on whether or not there are arguments/default option in play
-            boolean greedySearch = state.getCommand().getArguments() == null && state.getCommand().getDefaultOption() == null;
+            boolean greedySearch = canGreedySearch(state);
             while (tokens.hasNext()) {
                 // If not a greedy search abort as soon as we hit the right number of values
                 if (!greedySearch) {
                     if (listValues.size() % option.getArity() == 0) {
                         break;
                     }
-                        
+
                 }
-                
+
                 String nextValue = tokens.peek();
-             
+
                 // Check we haven't reached an option
                 OptionMetadata nextOption = findOption(state, allowedOptions, nextValue);
                 if (nextOption == null) {
@@ -144,7 +149,7 @@ public class MaybeListValueOptionParser<T> extends ListValueOptionParser<T> {
                 if (nextOption != null) {
                     break;
                 }
-                
+
                 // Might hit an arguments separator
                 if (StringUtils.equals(nextValue, state.getParserConfiguration().getArgumentsSeparator())) {
                     break;
@@ -162,8 +167,8 @@ public class MaybeListValueOptionParser<T> extends ListValueOptionParser<T> {
                 // Too few arguments
                 state.getParserConfiguration().getErrorHandler().handleError(new ParseOptionMissingValueException(
                         "Too few option values received for option %s in list value '%s' (%d values expected but only found %d)",
-                        option.getOptions().iterator().next(), option.getOptions().iterator().next(), list, option.getArity(),
-                        listValues.size()));
+                        option.getOptions().iterator().next(), option.getOptions().iterator().next(), list,
+                        option.getArity(), listValues.size()));
                 return state;
             }
             if (listValues.size() > option.getArity() && listValues.size() % option.getArity() != 0) {
@@ -183,6 +188,18 @@ public class MaybeListValueOptionParser<T> extends ListValueOptionParser<T> {
 
         }
         return state;
+    }
+
+    /**
+     * Gets whether we can do a greedy search for list value(s)
+     * 
+     * @param state
+     *            Parser State
+     * @return True if a greedy search is permitted, false otherwise
+     */
+    protected boolean canGreedySearch(ParseState<T> state) {
+        // Whether we can search greedily depends on whether or not there are arguments/default option in play
+        return state.getCommand().getArguments() == null && state.getCommand().getDefaultOption() == null;
     }
 
 }
