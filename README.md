@@ -1,4 +1,4 @@
-# Airline 2
+# Airline
 
 Airline is a Java library providing an annotation-based framework for parsing command line interfaces.
 
