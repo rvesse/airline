@@ -23,7 +23,10 @@ import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.model.ParserMetadata;
 import com.github.rvesse.airline.parser.aliases.AliasResolver;
+import com.github.rvesse.airline.parser.errors.ParseException;
 import com.github.rvesse.airline.parser.options.OptionParser;
+import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
+import com.github.rvesse.airline.restrictions.OptionRestriction;
 import com.github.rvesse.airline.utils.AirlineUtils;
 import com.github.rvesse.airline.utils.predicates.parser.AbbreviatedCommandFinder;
 import com.github.rvesse.airline.utils.predicates.parser.AbbreviatedGroupFinder;
@@ -292,5 +295,44 @@ public abstract class AbstractCommandParser<T> extends AbstractParser<T> {
             state = state.withUnparsedInput(tokens.next());
         }
         return state;
+    }
+
+    /**
+     * Applies final validation to options and arguments
+     * @param state Parser state
+     */
+    protected void applyFinalOptionAndArgumentValidation(ParseState<T> state) {
+        CommandMetadata command = state.getCommand();
+        if (command != null) {
+
+            // Argument restrictions
+            ArgumentsMetadata arguments = command.getArguments();
+            if (arguments != null) {
+                for (ArgumentsRestriction restriction : arguments.getRestrictions()) {
+                    if (restriction == null)
+                        continue;
+                    try {
+                        restriction.finalValidate(state, arguments);
+                    } catch (ParseException e) {
+                        state.getParserConfiguration().getErrorHandler().handleError(e);
+                    }
+                }
+            }
+
+            // Option restrictions
+            for (OptionMetadata option : command.getAllOptions()) {
+                if (option == null)
+                    continue;
+                for (OptionRestriction restriction : option.getRestrictions()) {
+                    if (restriction == null)
+                        continue;
+                    try {
+                        restriction.finalValidate(state, option);
+                    } catch (ParseException e) {
+                        state.getParserConfiguration().getErrorHandler().handleError(e);
+                    }
+                }
+            }
+        }
     }
 }

@@ -19,12 +19,14 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.rvesse.airline.annotations.restrictions.DefaultsFrom;
 import com.github.rvesse.airline.annotations.restrictions.Required;
 import com.github.rvesse.airline.annotations.restrictions.Unrestricted;
 import com.github.rvesse.airline.restrictions.AbstractCommonRestriction;
 import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.None;
 import com.github.rvesse.airline.restrictions.OptionRestriction;
+import com.github.rvesse.airline.restrictions.common.DefaultsRestriction;
 import com.github.rvesse.airline.restrictions.common.IsRequiredRestriction;
 
 public class SimpleRestrictionsFactory implements OptionRestrictionFactory, ArgumentsRestrictionFactory {
@@ -39,6 +41,8 @@ public class SimpleRestrictionsFactory implements OptionRestrictionFactory, Argu
             return new IsRequiredRestriction();
         } else if (annotation instanceof Unrestricted) {
             return new None();
+        } else if (annotation instanceof DefaultsFrom) {
+            return new DefaultsRestriction(((DefaultsFrom) annotation).value());
         }
         return null;
     }
@@ -52,6 +56,7 @@ public class SimpleRestrictionsFactory implements OptionRestrictionFactory, Argu
         List<Class<? extends Annotation>> supported = new ArrayList<>();
         supported.add(Required.class);
         supported.add(Unrestricted.class);
+        supported.add(DefaultsFrom.class);
         return supported;
     }
 

@@ -31,6 +31,7 @@ module com.github.rvesse.airline.tests
   exports com.github.rvesse.airline.tests.command;
   exports com.github.rvesse.airline.tests.parser;
   exports com.github.rvesse.airline.tests.parser.aliases;
+  exports com.github.rvesse.airline.tests.parser.defaults;
   exports com.github.rvesse.airline.tests.parser.errors.handlers;
   exports com.github.rvesse.airline.tests.restrictions;
   exports com.github.rvesse.airline.tests.restrictions.partial;

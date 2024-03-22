@@ -26,8 +26,8 @@ public abstract class AbstractOptionRestrictionBasedFinder implements Predicate<
     protected abstract Predicate<OptionRestriction> getRestrictionPredicate();
 
     @Override
-    public final boolean evaluate(OptionMetadata arg0) {
-        return CollectionUtils.exists(arg0.getRestrictions(), getRestrictionPredicate());
+    public final boolean evaluate(OptionMetadata option) {
+        return CollectionUtils.exists(option.getRestrictions(), getRestrictionPredicate());
     }
 
 }

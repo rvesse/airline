@@ -15,23 +15,20 @@
  */
 package com.github.rvesse.airline.parser.command;
 
-import com.github.rvesse.airline.model.ArgumentsMetadata;
-import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
-import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.parser.AbstractCommandParser;
 import com.github.rvesse.airline.parser.ParseResult;
 import com.github.rvesse.airline.parser.ParseState;
 import com.github.rvesse.airline.parser.errors.ParseException;
-import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.GlobalRestriction;
-import com.github.rvesse.airline.restrictions.OptionRestriction;
 
 public class CliParser<T> extends AbstractCommandParser<T> {
 
     public ParseResult<T> parseWithResult(GlobalMetadata<T> metadata, Iterable<String> args) {
         if (args == null)
             throw new NullPointerException("args cannot be null");
+
+        // TODO Future Plugin Extension Point, allow the metadata to be extended prior to beginning parsing
 
         ParseState<T> state = tryParse(metadata, args);
 
@@ -44,6 +41,8 @@ public class CliParser<T> extends AbstractCommandParser<T> {
                 state = state.withCommand(metadata.getDefaultCommand());
             }
         }
+
+        // TODO Future Plugin Extension Point, allow the state to be modified by plugins prior to final validation
 
         validate(state);
         return metadata.getParserConfiguration().getErrorHandler().finished(state);
@@ -75,37 +74,7 @@ public class CliParser<T> extends AbstractCommandParser<T> {
                 state.getParserConfiguration().getErrorHandler().handleError(e);
             }
         }
-        CommandMetadata command = state.getCommand();
-        if (command != null) {
-
-            // Argument restrictions
-            ArgumentsMetadata arguments = command.getArguments();
-            if (arguments != null) {
-                for (ArgumentsRestriction restriction : arguments.getRestrictions()) {
-                    if (restriction == null)
-                        continue;
-                    try {
-                        restriction.finalValidate(state, arguments);
-                    } catch (ParseException e) {
-                        state.getParserConfiguration().getErrorHandler().handleError(e);
-                    }
-                }
-            }
-
-            // Option restrictions
-            for (OptionMetadata option : command.getAllOptions()) {
-                if (option == null)
-                    continue;
-                for (OptionRestriction restriction : option.getRestrictions()) {
-                    if (restriction == null)
-                        continue;
-                    try {
-                        restriction.finalValidate(state, option);
-                    } catch (ParseException e) {
-                        state.getParserConfiguration().getErrorHandler().handleError(e);
-                    }
-                }
-            }
-        }
+        applyFinalOptionAndArgumentValidation(state);
     }
+
 }

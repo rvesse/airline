@@ -30,6 +30,8 @@ import com.github.rvesse.airline.parser.options.ClassicGetOptParser;
 import com.github.rvesse.airline.parser.options.LongGetOptParser;
 import com.github.rvesse.airline.parser.options.OptionParser;
 import com.github.rvesse.airline.parser.options.StandardOptionParser;
+import com.github.rvesse.airline.parser.plugins.PostParsePlugin;
+import com.github.rvesse.airline.parser.plugins.PreParsePlugin;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
 import com.github.rvesse.airline.types.DefaultTypeConverter;
 import com.github.rvesse.airline.types.TypeConverter;
@@ -46,6 +48,9 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
     protected TypeConverter typeConverter = new DefaultTypeConverter();
     protected NumericTypeConverter numericTypeConverter = new DefaultNumericConverter();
     protected final Map<String, AliasBuilder<C>> aliases = new HashMap<>();
+    protected List<PreParsePlugin<C>> preParsePlugins = new ArrayList<>();
+    protected List<PostParsePlugin<C>> postParsePlugins = new ArrayList<>();
+
     protected CommandFactory<C> commandFactory = new DefaultCommandFactory<C>();
     protected boolean allowAbbreviatedCommands, allowAbbreviatedOptions, aliasesOverrideBuiltIns, aliasesMayChain;
     private char forceBuiltInPrefix = '!';
@@ -73,6 +78,30 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
      */
     public static <T> ParserMetadata<T> defaultConfiguration() {
         return new ParserBuilder<T>().build();
+    }
+
+    public ParserBuilder<C> withPreParserPlugin(PreParsePlugin<C> plugin) {
+        if (plugin != null) {
+            this.preParsePlugins.add(plugin);
+        }
+        return this;
+    }
+
+    public ParserBuilder<C> withoutPreParserPlugins() {
+        this.preParsePlugins.clear();
+        return this;
+    }
+
+    public ParserBuilder<C> withPostParserPlugin(PostParsePlugin<C> plugin) {
+        if (plugin != null) {
+            this.postParsePlugins.add(plugin);
+        }
+        return this;
+    }
+
+    public ParserBuilder<C> withoutPostParserPlugins() {
+        this.postParsePlugins.clear();
+        return this;
     }
 
     /**
@@ -599,7 +628,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
             try {
                 userAliases = this.userAliasesBuilder.build();
                 for (AliasMetadata alias : userAliases.load()) {
-                    aliases.put(alias.getName(), new AliasBuilder<C>(this, alias.getName()).withArguments(
+                    aliases.put(alias.getName(), new AliasBuilder<>(this, alias.getName()).withArguments(
                             alias.getArguments().toArray(new String[alias.getArguments().size()])));
                 }
             } catch (IOException e) {
@@ -610,7 +639,7 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
         // Build aliases
         List<AliasMetadata> aliasData;
         if (aliases != null) {
-            aliasData = new ArrayList<AliasMetadata>();
+            aliasData = new ArrayList<>();
             for (AliasBuilder<C> aliasBuilder : aliases.values()) {
                 aliasData.add(aliasBuilder.build());
             }
@@ -623,9 +652,9 @@ public class ParserBuilder<C> extends AbstractBuilder<ParserMetadata<C>> {
         }
         typeConverter.setNumericConverter(this.numericTypeConverter);
 
-        return new ParserMetadata<C>(commandFactory, injectionAnnotationClasses, optionParsers, typeConverter,
-                                     errorHandler, allowAbbreviatedCommands, allowAbbreviatedOptions, aliasData,
-                                     userAliases, aliasesOverrideBuiltIns, aliasesMayChain, forceBuiltInPrefix,
-                                     argsSeparator, flagNegationPrefix);
+        return new ParserMetadata<C>(preParsePlugins, postParsePlugins, commandFactory, injectionAnnotationClasses,
+                                     optionParsers, typeConverter, errorHandler, allowAbbreviatedCommands,
+                                     allowAbbreviatedOptions, aliasData, userAliases, aliasesOverrideBuiltIns,
+                                     aliasesMayChain, forceBuiltInPrefix, argsSeparator, flagNegationPrefix);
     }
 }

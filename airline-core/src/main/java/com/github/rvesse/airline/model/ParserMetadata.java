@@ -18,8 +18,11 @@ package com.github.rvesse.airline.model;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.github.rvesse.airline.annotations.AirlineModule;
+import com.github.rvesse.airline.parser.plugins.PostParsePlugin;
+import com.github.rvesse.airline.parser.plugins.PreParsePlugin;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.rvesse.airline.CommandFactory;
@@ -43,6 +46,9 @@ public class ParserMetadata<T> {
     public static final String DEFAULT_ARGUMENTS_SEPARATOR = "--";
 
     private final boolean allowAbbreviatedCommands, allowAbbreviatedOptions, aliasesOverrideBuiltIns, aliasesMayChain;
+
+    private final List<PreParsePlugin<T>> preParsePlugins;
+    private final List<PostParsePlugin<T>> postParsePlugins;
     private final List<OptionParser<T>> optionParsers;
     private final List<AliasMetadata> aliases;
     private final UserAliasesSource<T> userAliases;
@@ -53,7 +59,9 @@ public class ParserMetadata<T> {
     private final char forceBuiltInPrefix;
     private final Set<String> compositionAnnotationClasses;
 
-    public ParserMetadata(CommandFactory<T> commandFactory, Collection<String> compositionAnnotationClasses,
+    public ParserMetadata(Collection<PreParsePlugin<T>> preParsePlugins,
+                          Collection<PostParsePlugin<T>> postParsePlugins, CommandFactory<T> commandFactory,
+                          Collection<String> compositionAnnotationClasses,
                           Collection<OptionParser<T>> optionParsers,
                           TypeConverter typeConverter, ParserErrorHandler errorHandler, boolean allowAbbreviateCommands,
                           boolean allowAbbreviatedOptions, Collection<AliasMetadata> aliases,
@@ -69,6 +77,10 @@ public class ParserMetadata<T> {
 
         // Error handling
         this.errorHandler = errorHandler != null ? errorHandler : new FailFast();
+
+        // Plugins
+        this.preParsePlugins = AirlineUtils.listCopy(preParsePlugins);
+        this.postParsePlugins = AirlineUtils.listCopy(postParsePlugins);
 
         // Command parsing
         this.commandFactory = commandFactory != null ? commandFactory : new DefaultCommandFactory<T>();
@@ -102,6 +114,24 @@ public class ParserMetadata<T> {
     }
 
     /**
+     * Gets the pre-parse plugins, these are plugins that run prior to the main parsing logic
+     *
+     * @return Pre-parse plugins
+     */
+    public Collection<PreParsePlugin<T>> getPreParsePlugins() {
+        return this.preParsePlugins;
+    }
+
+    /**
+     * Gets the post-parse plugins, these are plugins that run after the main parsing logic but before final validation
+     *
+     * @return Post-parse plugins
+     */
+    public Collection<PostParsePlugin<T>> getPostParsePlugins() {
+        return this.postParsePlugins;
+    }
+
+    /**
      * Gets the command factory to use
      *
      * @return Command factory
@@ -112,8 +142,8 @@ public class ParserMetadata<T> {
 
     /**
      * Gets the set of annotation class names to follow when building the metadata for commands i.e. these are the
-     * annotations like {@link AirlineModule} that indicate that a field has a type that should be inspected for
-     * further metadata used to build up a commands options and arguments.
+     * annotations like {@link AirlineModule} that indicate that a field has a type that should be inspected for further
+     * metadata used to build up a commands options and arguments.
      * <p>
      * This configuration point was introduced in <strong>2.9.0</strong> along with the {@link AirlineModule} annotation
      * to allow better integrating Airline with a dependency injection framework, and to ultimately enable removing its
@@ -249,7 +279,13 @@ public class ParserMetadata<T> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ParserMetadata {");
-        sb.append("commandFactory=").append(commandFactory.getClass().getCanonicalName());
+        sb.append(", preParsePlugins={")
+          .append(preParsePlugins.stream().map(p -> p.getClass().getCanonicalName()).collect(
+                  Collectors.joining(", "))).append("}");
+        sb.append(", postParsePlugins={")
+          .append(postParsePlugins.stream().map(p -> p.getClass().getCanonicalName()).collect(
+                  Collectors.joining(", "))).append("}");
+        sb.append(", commandFactory=").append(commandFactory.getClass().getCanonicalName());
         sb.append(", allowAbbreviatedCommands=").append(allowAbbreviatedCommands);
         sb.append(", optionParsers=").append(optionParsers);
         sb.append(", typeConverter=").append(typeConverter.getClass().getCanonicalName());

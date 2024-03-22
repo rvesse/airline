@@ -72,36 +72,6 @@ public class SingleCommandParser<T> extends AbstractCommandParser<T> {
                 state.getParserConfiguration().getErrorHandler().handleError(e);
             }
         }
-        CommandMetadata command = state.getCommand();
-        if (command != null) {
-            // Arguments restrictions
-            ArgumentsMetadata arguments = command.getArguments();
-            if (arguments != null) {
-                for (ArgumentsRestriction restriction : arguments.getRestrictions()) {
-                    if (restriction == null)
-                        continue;
-                    try {
-                        restriction.finalValidate(state, arguments);
-                    } catch (ParseException e) {
-                        state.getParserConfiguration().getErrorHandler().handleError(e);
-                    }
-                }
-            }
-
-            // Option restrictions
-            for (OptionMetadata option : command.getAllOptions()) {
-                if (option == null)
-                    continue;
-                for (OptionRestriction restriction : option.getRestrictions()) {
-                    if (restriction == null)
-                        continue;
-                    try {
-                        restriction.finalValidate(state, option);
-                    } catch (ParseException e) {
-                        state.getParserConfiguration().getErrorHandler().handleError(e);
-                    }
-                }
-            }
-        }
+        this.applyFinalOptionAndArgumentValidation(state);
     }
 }

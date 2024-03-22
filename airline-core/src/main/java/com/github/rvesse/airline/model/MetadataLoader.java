@@ -28,6 +28,7 @@ import com.github.rvesse.airline.help.suggester.Suggester;
 import com.github.rvesse.airline.parser.ParserUtil;
 import com.github.rvesse.airline.parser.errors.handlers.FailFast;
 import com.github.rvesse.airline.parser.options.OptionParser;
+import com.github.rvesse.airline.parser.plugins.PluginsRegistry;
 import com.github.rvesse.airline.parser.resources.ResourceLocator;
 import com.github.rvesse.airline.restrictions.ArgumentsRestriction;
 import com.github.rvesse.airline.restrictions.GlobalRestriction;
@@ -78,20 +79,38 @@ public class MetadataLoader {
 
     public static <C> ParserMetadata<C> loadParser(Class<?> cliClass) {
         if (cliClass == null) {
-            return ParserBuilder.<C>defaultConfiguration();
+            return ParserBuilder.defaultConfiguration();
         }
 
         Annotation annotation = cliClass.getAnnotation(Parser.class);
         if (annotation == null) {
-            return ParserBuilder.<C>defaultConfiguration();
+            return ParserBuilder.defaultConfiguration();
         }
 
-        return loadParser((Parser) annotation);
+        return loadParser(cliClass, (Parser) annotation);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static <C> ParserMetadata<C> loadParser(Parser parserConfig) {
-        ParserBuilder<C> builder = new ParserBuilder<C>();
+    private static <C> ParserMetadata<C> loadParser(Class<?> cliClass, Parser parserConfig) {
+        ParserBuilder<C> builder = new ParserBuilder<>();
+
+        // Plugins
+        if (cliClass != null) {
+            for (Class<? extends Annotation> annotationClass : PluginsRegistry.getPreParsePluginAnnotationClasses()) {
+                Annotation pluginAnnotation = cliClass.getAnnotation(annotationClass);
+                if (pluginAnnotation != null) {
+                    builder = builder.withPreParserPlugin(
+                            PluginsRegistry.getPreParsePlugin(annotationClass, pluginAnnotation));
+                }
+            }
+            for (Class<? extends Annotation> annotationClass : PluginsRegistry.getPostParsePluginAnnotationClasses()) {
+                Annotation pluginAnnotation = cliClass.getAnnotation(annotationClass);
+                if (pluginAnnotation != null) {
+                    builder = builder.withPostParserPlugin(
+                            PluginsRegistry.getPostParsePlugin(annotationClass, pluginAnnotation));
+                }
+            }
+        }
 
         // Factory and converter options
         if (!parserConfig.typeConverter().equals(DefaultTypeConverter.class)) {
@@ -208,7 +227,7 @@ public class MetadataLoader {
 
         // Find help sections defined at the CLI level
         Map<String, HelpSection> baseHelpSections = loadHelpSections(cliClass,
-                                                                     Collections.<String, HelpSection>emptyMap());
+                                                                     Collections.emptyMap());
 
         // Prepare parser configuration
         //@formatter:off
@@ -216,8 +235,8 @@ public class MetadataLoader {
                 = parserConfigOverride != null
                   ? parserConfigOverride
                   : (cliConfig.parserConfiguration() != null
-                     ? MetadataLoader.<C>loadParser(cliConfig.parserConfiguration())
-                     : MetadataLoader.<C>loadParser(cliClass));
+                     ? MetadataLoader.loadParser(cliClass, cliConfig.parserConfiguration())
+                     : MetadataLoader.loadParser(cliClass));
         //@formatter:on
 
         // Prepare commands

@@ -15,84 +15,89 @@
  */
 module com.github.rvesse.airline
 {
-  // Required dependencies
-  requires com.github.rvesse.airline.io;
-  requires org.apache.commons.lang3;
-  requires org.apache.commons.collections4;
+    // Required dependencies
+    requires com.github.rvesse.airline.io;
+    requires org.apache.commons.lang3;
+    requires org.apache.commons.collections4;
 
-  // Exported packages
-  exports com.github.rvesse.airline;
-  exports com.github.rvesse.airline.annotations;
-  exports com.github.rvesse.airline.annotations.help;
-  exports com.github.rvesse.airline.annotations.restrictions;
-  exports com.github.rvesse.airline.annotations.restrictions.global;
-  exports com.github.rvesse.airline.annotations.restrictions.ranges;
-  exports com.github.rvesse.airline.builder;
-  exports com.github.rvesse.airline.help;
-  exports com.github.rvesse.airline.help.cli;
-  exports com.github.rvesse.airline.help.common;
-  exports com.github.rvesse.airline.help.sections;
-  exports com.github.rvesse.airline.help.sections.common;
-  exports com.github.rvesse.airline.help.sections.factories;
-  exports com.github.rvesse.airline.help.suggester;
-  exports com.github.rvesse.airline.model;
-  exports com.github.rvesse.airline.parser;
-  exports com.github.rvesse.airline.parser.aliases;
-  exports com.github.rvesse.airline.parser.command;
-  exports com.github.rvesse.airline.parser.errors;
-  exports com.github.rvesse.airline.parser.errors.handlers;
-  exports com.github.rvesse.airline.parser.options;
-  exports com.github.rvesse.airline.parser.resources;
-  exports com.github.rvesse.airline.parser.suggester;
-  exports com.github.rvesse.airline.restrictions;
-  exports com.github.rvesse.airline.restrictions.common;
-  exports com.github.rvesse.airline.restrictions.factories;
-  exports com.github.rvesse.airline.restrictions.global;
-  exports com.github.rvesse.airline.restrictions.options;
-  exports com.github.rvesse.airline.types;
-  exports com.github.rvesse.airline.types.numerics;
-  exports com.github.rvesse.airline.types.numerics.abbreviated;
-  exports com.github.rvesse.airline.types.numerics.bases;
-  exports com.github.rvesse.airline.utils;
-  exports com.github.rvesse.airline.utils.comparators;
-  exports com.github.rvesse.airline.utils.predicates;
-  exports com.github.rvesse.airline.utils.predicates.parser;
-  exports com.github.rvesse.airline.utils.predicates.restrictions;
+    // Exported packages
+    exports com.github.rvesse.airline;
+    exports com.github.rvesse.airline.annotations;
+    exports com.github.rvesse.airline.annotations.help;
+    exports com.github.rvesse.airline.annotations.restrictions;
+    exports com.github.rvesse.airline.annotations.restrictions.global;
+    exports com.github.rvesse.airline.annotations.restrictions.ranges;
+    exports com.github.rvesse.airline.builder;
+    exports com.github.rvesse.airline.help;
+    exports com.github.rvesse.airline.help.cli;
+    exports com.github.rvesse.airline.help.common;
+    exports com.github.rvesse.airline.help.sections;
+    exports com.github.rvesse.airline.help.sections.common;
+    exports com.github.rvesse.airline.help.sections.factories;
+    exports com.github.rvesse.airline.help.suggester;
+    exports com.github.rvesse.airline.model;
+    exports com.github.rvesse.airline.parser;
+    exports com.github.rvesse.airline.parser.aliases;
+    exports com.github.rvesse.airline.parser.command;
+    exports com.github.rvesse.airline.parser.defaults;
+    exports com.github.rvesse.airline.parser.errors;
+    exports com.github.rvesse.airline.parser.errors.handlers;
+    exports com.github.rvesse.airline.parser.plugins;
+    exports com.github.rvesse.airline.parser.options;
+    exports com.github.rvesse.airline.parser.resources;
+    exports com.github.rvesse.airline.parser.suggester;
+    exports com.github.rvesse.airline.restrictions;
+    exports com.github.rvesse.airline.restrictions.common;
+    exports com.github.rvesse.airline.restrictions.factories;
+    exports com.github.rvesse.airline.restrictions.global;
+    exports com.github.rvesse.airline.restrictions.options;
+    exports com.github.rvesse.airline.types;
+    exports com.github.rvesse.airline.types.numerics;
+    exports com.github.rvesse.airline.types.numerics.abbreviated;
+    exports com.github.rvesse.airline.types.numerics.bases;
+    exports com.github.rvesse.airline.utils;
+    exports com.github.rvesse.airline.utils.comparators;
+    exports com.github.rvesse.airline.utils.predicates;
+    exports com.github.rvesse.airline.utils.predicates.parser;
+    exports com.github.rvesse.airline.utils.predicates.restrictions;
 
-  provides com.github.rvesse.airline.help.sections.factories.HelpSectionFactory with
-      com.github.rvesse.airline.help.sections.factories.CommonSectionsFactory;
+    provides com.github.rvesse.airline.parser.plugins.ParserPluginFactory with
+            com.github.rvesse.airline.parser.defaults.DefaultsPluginFactory;
 
-  provides com.github.rvesse.airline.restrictions.factories.ArgumentsRestrictionFactory with
-      com.github.rvesse.airline.restrictions.factories.AllowedValuesRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.OccurrencesRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.PathRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.PortRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.RangeRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.RequireFromRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.SimpleRestrictionsFactory,
-      com.github.rvesse.airline.restrictions.factories.StringRestrictionFactory;
+    provides com.github.rvesse.airline.help.sections.factories.HelpSectionFactory with
+            com.github.rvesse.airline.help.sections.factories.CommonSectionsFactory;
 
-  provides com.github.rvesse.airline.restrictions.factories.GlobalRestrictionFactory with
-      com.github.rvesse.airline.restrictions.factories.StandardGlobalRestrictionsFactory;
+    provides com.github.rvesse.airline.restrictions.factories.ArgumentsRestrictionFactory with
+            com.github.rvesse.airline.restrictions.factories.AllowedValuesRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.OccurrencesRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.PathRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.PortRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.RangeRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.RequireFromRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.SimpleRestrictionsFactory,
+            com.github.rvesse.airline.restrictions.factories.StringRestrictionFactory;
 
-  provides com.github.rvesse.airline.restrictions.factories.OptionRestrictionFactory with
-      com.github.rvesse.airline.restrictions.factories.AllowedValuesRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.OccurrencesRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.PathRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.PortRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.RangeRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.RequiredOnlyIfRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.RequireFromRestrictionFactory,
-      com.github.rvesse.airline.restrictions.factories.SimpleRestrictionsFactory,
-      com.github.rvesse.airline.restrictions.factories.StringRestrictionFactory;
-  
-  provides com.github.rvesse.airline.ChannelFactory with
-      com.github.rvesse.airline.SystemChannelFactory;
+    provides com.github.rvesse.airline.restrictions.factories.GlobalRestrictionFactory with
+            com.github.rvesse.airline.restrictions.factories.StandardGlobalRestrictionsFactory;
 
-  uses com.github.rvesse.airline.ChannelFactory;
-  uses com.github.rvesse.airline.help.sections.factories.HelpSectionFactory;
-  uses com.github.rvesse.airline.restrictions.factories.ArgumentsRestrictionFactory;
-  uses com.github.rvesse.airline.restrictions.factories.GlobalRestrictionFactory;
-  uses com.github.rvesse.airline.restrictions.factories.OptionRestrictionFactory;
+    provides com.github.rvesse.airline.restrictions.factories.OptionRestrictionFactory with
+            com.github.rvesse.airline.restrictions.factories.AllowedValuesRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.OccurrencesRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.PathRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.PortRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.RangeRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.RequiredOnlyIfRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.RequireFromRestrictionFactory,
+            com.github.rvesse.airline.restrictions.factories.SimpleRestrictionsFactory,
+            com.github.rvesse.airline.restrictions.factories.StringRestrictionFactory;
+
+    provides com.github.rvesse.airline.ChannelFactory with
+            com.github.rvesse.airline.SystemChannelFactory;
+
+    uses com.github.rvesse.airline.ChannelFactory;
+    uses com.github.rvesse.airline.help.sections.factories.HelpSectionFactory;
+    uses com.github.rvesse.airline.restrictions.factories.ArgumentsRestrictionFactory;
+    uses com.github.rvesse.airline.restrictions.factories.GlobalRestrictionFactory;
+    uses com.github.rvesse.airline.restrictions.factories.OptionRestrictionFactory;
 
 }

@@ -127,13 +127,7 @@ public class ParseState<T> {
             return new ParseState<T>(global, parserConfig, group, command, newOptions, newOptionsCount, locationStack,
                     parsedArguments, currentOption, unparsedInput);
         } catch (ParseException e) {
-            this.parserConfig.getErrorHandler().handleError(e);
-
-            List<String> newUnparsed = AirlineUtils.listCopy(unparsedInput);
-            newUnparsed.add(rawValue);
-
-            return new ParseState<T>(global, parserConfig, group, command, parsedOptions, optionsCount, locationStack,
-                    parsedArguments, currentOption, newUnparsed);
+            return withParsingError(rawValue, e);
         }
     }
 
@@ -192,14 +186,18 @@ public class ParseState<T> {
             return new ParseState<T>(global, parserConfig, group, command, parsedOptions, optionsCount, locationStack,
                     newArguments, currentOption, unparsedInput);
         } catch (ParseException e) {
-            this.parserConfig.getErrorHandler().handleError(e);
-
-            List<String> newUnparsed = AirlineUtils.listCopy(unparsedInput);
-            newUnparsed.add(rawValue);
-
-            return new ParseState<T>(global, parserConfig, group, command, parsedOptions, optionsCount, locationStack,
-                    parsedArguments, currentOption, newUnparsed);
+            return withParsingError(rawValue, e);
         }
+    }
+
+    private ParseState<T> withParsingError(String rawValue, ParseException e) {
+        this.parserConfig.getErrorHandler().handleError(e);
+
+        List<String> newUnparsed = AirlineUtils.listCopy(unparsedInput);
+        newUnparsed.add(rawValue);
+
+        return new ParseState<T>(global, parserConfig, group, command, parsedOptions, optionsCount, locationStack,
+                                 parsedArguments, currentOption, newUnparsed);
     }
 
     public ParseState<T> withUnparsedInput(String input) {
