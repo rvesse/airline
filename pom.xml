@@ -36,13 +36,9 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <id>central</id>
+      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
     </snapshotRepository>
-    <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
   </distributionManagement>
 
   <properties>
@@ -61,6 +57,7 @@
     <plugin.antrun>3.1.0</plugin.antrun>
     <plugin.assembly>3.4.2</plugin.assembly>
     <plugin.buildnumber>3.0.0</plugin.buildnumber>
+    <plugin.central>0.7.0</plugin.central>
     <plugin.compiler>3.10.1</plugin.compiler>
     <plugin.coveralls>4.3.0</plugin.coveralls>
     <plugin.coveralls.jaxb>2.3.3-b02</plugin.coveralls.jaxb>
@@ -93,7 +90,7 @@
     <module>airline-prompts</module>
     <module>airline-backcompat-javaxinject</module>
     <module>airline-jpms-debug</module>
-      <module>airline-jpms-resources</module>
+    <module>airline-jpms-resources</module>
   </modules>
 
   <dependencyManagement>
@@ -454,6 +451,19 @@
               <additionalOptions>
                 <option>-Xdoclint:none</option>
               </additionalOptions>
+            </configuration>
+          </plugin>
+
+          <!-- Central Publishing Plugin -->
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>${plugin.central}</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>true</autoPublish>
+              <waitUntil>published</waitUntil>
             </configuration>
           </plugin>
         </plugins>
