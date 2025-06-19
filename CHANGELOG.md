@@ -7,6 +7,17 @@ positional argument support, better DI framework integration, that are not possi
 breaking changes.  You can see progress on 4.x by following the `4x` branch and its `CHANGELOG.md` and `Migrating.md`
 files.
 
+### 3.1.0
+
+This is a maintenance release to bring dependencies up to date and switch over to the new Maven Central publishing 
+process due to Sonatype sunsetting support for the old OSSRH publishing process.
+
+- Dependency Updates
+    - Apache Commons Collections upgraded to 4.5.0
+    - Apache Commons Lang upgraded to 3.17.0
+    - Classgraph upgraded to 4.8.179
+    - Various build and test dependencies upgraded to latest available
+
 ## 3.0.0
 
 - Core Improvements
