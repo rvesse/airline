@@ -55,30 +55,29 @@
 
     <!-- Plugin Versions -->
     <plugin.antrun>3.1.0</plugin.antrun>
-    <plugin.assembly>3.4.2</plugin.assembly>
-    <plugin.buildnumber>3.0.0</plugin.buildnumber>
+    <plugin.assembly>3.7.1</plugin.assembly>
+    <plugin.buildnumber>3.2.1</plugin.buildnumber>
     <plugin.central>0.7.0</plugin.central>
-    <plugin.compiler>3.10.1</plugin.compiler>
+    <plugin.compiler>3.14.0</plugin.compiler>
     <plugin.coveralls>4.3.0</plugin.coveralls>
     <plugin.coveralls.jaxb>2.3.3-b02</plugin.coveralls.jaxb>
-    <plugin.enforcer>3.1.0</plugin.enforcer>
+    <plugin.enforcer>3.5.0</plugin.enforcer>
     <plugin.license>2.11</plugin.license>
-    <plugin.jacoco>0.8.8</plugin.jacoco>
-    <plugin.jar>3.2.2</plugin.jar>
+    <plugin.jacoco>0.8.13</plugin.jacoco>
+    <plugin.jar>3.4.2</plugin.jar>
     <plugin.source>3.2.1</plugin.source>
     <plugin.javadoc>3.6.2</plugin.javadoc>
     <plugin.release>3.0.1</plugin.release>
     <plugin.gpg>3.1.0</plugin.gpg>
     <plugin.shade>3.1.1</plugin.shade>
-    <plugin.surefire>3.0.0-M7</plugin.surefire>
+    <plugin.surefire>3.5.3</plugin.surefire>
 
     <!-- Dependency Versions -->
     <dependency.javax-inject>2.0.1</dependency.javax-inject>
-    <dependency.junit>4.12</dependency.junit>
-    <dependency.testng>7.8.0</dependency.testng>
-    <dependency.classgraph>4.8.165</dependency.classgraph>
-    <dependency.commons-lang3>3.14.0</dependency.commons-lang3>
-    <dependency.commons-collections4>4.4</dependency.commons-collections4>
+    <dependency.testng>7.11.0</dependency.testng>
+    <dependency.classgraph>4.8.179</dependency.classgraph>
+    <dependency.commons-lang3>3.17.0</dependency.commons-lang3>
+    <dependency.commons-collections4>4.5.0</dependency.commons-collections4>
     <dependency.commons-csv>1.10.0</dependency.commons-csv>
   </properties>
 
