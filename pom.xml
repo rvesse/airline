@@ -5,7 +5,7 @@
   <groupId>com.github.rvesse</groupId>
   <artifactId>airline-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.1.1-SNAPSHOT</version>
   <name>Airline - Parent</name>
   <description>Java annotation-based framework for parsing Git like command line structures</description>
   <url>https://github.com/rvesse/airline</url>
@@ -57,7 +57,7 @@
     <plugin.antrun>3.1.0</plugin.antrun>
     <plugin.assembly>3.7.1</plugin.assembly>
     <plugin.buildnumber>3.2.1</plugin.buildnumber>
-    <plugin.central>0.7.0</plugin.central>
+    <plugin.central>0.8.0</plugin.central>
     <plugin.compiler>3.14.0</plugin.compiler>
     <plugin.coveralls>4.3.0</plugin.coveralls>
     <plugin.coveralls.jaxb>2.3.3-b02</plugin.coveralls.jaxb>
