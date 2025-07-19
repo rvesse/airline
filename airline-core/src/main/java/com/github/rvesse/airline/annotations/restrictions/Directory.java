@@ -34,26 +34,26 @@ public @interface Directory {
      * 
      * @return True if it must exist, false otherwise
      */
-    public boolean mustExist() default false;
+    boolean mustExist() default false;
 
     /**
      * Gets/Sets whether the given directory must be writable
      * 
      * @return True if must be writable, false otherwise
      */
-    public boolean writable() default true;
+    boolean writable() default true;
 
     /**
      * Gets/Sets whether the given directory must be readable
      * 
      * @return True if must be readable, false otherwise
      */
-    public boolean readable() default true;
+    boolean readable() default true;
 
     /**
      * Gets/Sets whether the given directory must be executable
      * 
      * @return True if must be executable, false otherwise
      */
-    public boolean executable() default false;
+    boolean executable() default false;
 }

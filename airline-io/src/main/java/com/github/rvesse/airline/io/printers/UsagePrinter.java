@@ -15,14 +15,14 @@
  */
 package com.github.rvesse.airline.io.printers;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Helper for printing out usage information
@@ -105,25 +105,18 @@ public class UsagePrinter {
             }
             out.append(spaces(indent)).append(trimEnd(line.toString())).append("\n");
 
-            for (int i = 0; i < rowSpacing; i++) {
-                out.append('\n');
-            }
+            out.append("\n".repeat(rowSpacing));
         }
 
         return this;
     }
 
     public static String trimEnd(final String str) {
-        if (StringUtils.isEmpty(str)) {
+        if (str.isEmpty()) {
             return str;
         }
 
-        int end = str.length();
-        while ((end != 0) && Character.isWhitespace(str.charAt(end - 1))) {
-            end--;
-        }
-
-        return str.substring(0, end);
+        return str.stripTrailing();
     }
 
     public UsagePrinter append(String value)  {
@@ -216,10 +209,6 @@ public class UsagePrinter {
     }
 
     private static String spaces(int count) {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < count; i++) {
-            result.append(" ");
-        }
-        return result.toString();
+        return " ".repeat(count);
     }
 }

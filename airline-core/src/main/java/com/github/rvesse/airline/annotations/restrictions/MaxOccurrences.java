@@ -43,5 +43,5 @@ public @interface MaxOccurrences {
      * 
      * @return Max occurrences (inclusive)
      */
-    public int occurrences() default 0;
+    int occurrences() default 0;
 }

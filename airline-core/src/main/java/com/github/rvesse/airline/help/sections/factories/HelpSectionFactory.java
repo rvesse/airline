@@ -34,12 +34,12 @@ public interface HelpSectionFactory {
      *            Annotation
      * @return Help section or {@code null} if the annotation is not supported
      */
-    public abstract HelpSection createSection(Annotation annotation);
+    HelpSection createSection(Annotation annotation);
 
     /**
      * Gets a list of the supported annotations
      * 
      * @return Supported annotations
      */
-    public abstract List<Class<? extends Annotation>> supportedAnnotations();
+    List<Class<? extends Annotation>> supportedAnnotations();
 }

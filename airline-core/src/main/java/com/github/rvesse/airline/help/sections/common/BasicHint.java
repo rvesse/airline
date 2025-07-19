@@ -16,6 +16,8 @@
 package com.github.rvesse.airline.help.sections.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.github.rvesse.airline.help.sections.HelpFormat;
@@ -25,14 +27,13 @@ public class BasicHint implements HelpHint {
     
     private final String preamble;
     private final HelpFormat format;
-    private List<String[]> blocks = new ArrayList<String[]>();
+    private final List<String[]> blocks;
     
     public BasicHint(String preamble, HelpFormat format, String[]... blocks) {
         this.preamble = preamble;
         this.format = format != null ? format : HelpFormat.UNKNOWN;
-        for (String[] block : blocks) {
-            this.blocks.add(block);
-        }
+        this.blocks = new ArrayList<>(blocks.length);
+        Collections.addAll(this.blocks, blocks);
     }
 
     @Override

@@ -91,7 +91,7 @@ public class MetadataLoader {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static <C> ParserMetadata<C> loadParser(Parser parserConfig) {
-        ParserBuilder<C> builder = new ParserBuilder<C>();
+        ParserBuilder<C> builder = new ParserBuilder<>();
 
         // Factory and converter options
         if (!parserConfig.typeConverter().equals(DefaultTypeConverter.class)) {
@@ -216,8 +216,8 @@ public class MetadataLoader {
                 = parserConfigOverride != null
                   ? parserConfigOverride
                   : (cliConfig.parserConfiguration() != null
-                     ? MetadataLoader.<C>loadParser(cliConfig.parserConfiguration())
-                     : MetadataLoader.<C>loadParser(cliClass));
+                     ? MetadataLoader.loadParser(cliConfig.parserConfiguration())
+                     : MetadataLoader.loadParser(cliClass));
         //@formatter:on
 
         // Prepare commands
@@ -225,7 +225,7 @@ public class MetadataLoader {
         if (!cliConfig.defaultCommand().equals(com.github.rvesse.airline.annotations.Cli.NO_DEFAULT.class)) {
             defaultCommand = loadCommand(cliConfig.defaultCommand(), new HashMap<>(baseHelpSections), parserConfig);
         }
-        List<CommandMetadata> defaultGroupCommands = new ArrayList<CommandMetadata>();
+        List<CommandMetadata> defaultGroupCommands = new ArrayList<>();
         for (Class<?> cls : cliConfig.commands()) {
             defaultGroupCommands.add(loadCommand(cls, new HashMap<>(baseHelpSections), parserConfig));
         }
@@ -236,7 +236,7 @@ public class MetadataLoader {
         // 2 - Those declared via the restrictions field of the @Cli annotation
         // 3 - Standard restrictions if the includeDefaultRestrictions field of
         // the @Cli annotation is true
-        List<GlobalRestriction> restrictions = new ArrayList<GlobalRestriction>();
+        List<GlobalRestriction> restrictions = new ArrayList<>();
         for (Class<? extends Annotation> annotationClass : RestrictionRegistry
                 .getGlobalRestrictionAnnotationClasses()) {
             annotation = cliClass.getAnnotation(annotationClass);
@@ -259,9 +259,9 @@ public class MetadataLoader {
         // We sort sub-groups by name length then lexically
         // This means that when we build the groups hierarchy we'll ensure we
         // build the parent groups first wherever possible
-        Map<String, CommandGroupMetadata> subGroups = new TreeMap<String, CommandGroupMetadata>(
+        Map<String, CommandGroupMetadata> subGroups = new TreeMap<>(
                 new StringHierarchyComparator());
-        List<CommandGroupMetadata> groups = new ArrayList<CommandGroupMetadata>();
+        List<CommandGroupMetadata> groups = new ArrayList<>();
         for (Group groupAnno : cliConfig.groups()) {
             String groupName = groupAnno.name();
             String subGroupPath = null;
@@ -319,9 +319,8 @@ public class MetadataLoader {
                 allCommands.add(group.getDefaultCommand());
             }
 
-            Queue<CommandGroupMetadata> subGroupsQueue = new LinkedList<CommandGroupMetadata>();
-            subGroupsQueue.addAll(group.getSubGroups());
-            while (subGroupsQueue.size() > 0) {
+            Queue<CommandGroupMetadata> subGroupsQueue = new LinkedList<>(group.getSubGroups());
+            while (!subGroupsQueue.isEmpty()) {
                 CommandGroupMetadata subGroup = subGroupsQueue.poll();
                 allCommands.addAll(subGroup.getCommands());
                 if (subGroup.getDefaultCommand() != null) {
@@ -370,9 +369,8 @@ public class MetadataLoader {
             }
 
             // Remember to also search sub-groups for global options
-            Queue<CommandGroupMetadata> subGroups = new LinkedList<CommandGroupMetadata>();
-            subGroups.addAll(group.getSubGroups());
-            while (subGroups.size() > 0) {
+            Queue<CommandGroupMetadata> subGroups = new LinkedList<>(group.getSubGroups());
+            while (!subGroups.isEmpty()) {
                 CommandGroupMetadata subGroup = subGroups.poll();
                 for (CommandMetadata command : subGroup.getCommands()) {
                     globalOptions.addAll(command.getGlobalOptions());
@@ -381,7 +379,7 @@ public class MetadataLoader {
             }
         }
         globalOptions = ListUtils.unmodifiableList(mergeOptionSet(globalOptions));
-        return new GlobalMetadata<C>(name, description, globalOptions, defaultCommand, defaultGroupCommands, groups,
+        return new GlobalMetadata<>(name, description, globalOptions, defaultCommand, defaultGroupCommands, groups,
                                      restrictions, baseHelpSections, parserConfig);
     }
 
@@ -405,7 +403,7 @@ public class MetadataLoader {
             name = names[names.length - 1];
         }
 
-        List<OptionMetadata> groupOptions = new ArrayList<OptionMetadata>();
+        List<OptionMetadata> groupOptions = new ArrayList<>();
         if (defaultCommand != null) {
             groupOptions.addAll(defaultCommand.getGroupOptions());
         }
@@ -425,7 +423,7 @@ public class MetadataLoader {
     public static <T> List<CommandMetadata> loadCommands(Iterable<Class<? extends T>> defaultCommands,
                                                          Map<String, HelpSection> baseHelpSections,
                                                          ParserMetadata<?> parserConfig) {
-        List<CommandMetadata> commandMetadata = new ArrayList<CommandMetadata>();
+        List<CommandMetadata> commandMetadata = new ArrayList<>();
         Iterator<Class<? extends T>> iter = defaultCommands.iterator();
         while (iter.hasNext()) {
             commandMetadata.add(loadCommand(iter.next(), baseHelpSections, parserConfig));
@@ -440,7 +438,7 @@ public class MetadataLoader {
      * @return Command meta-data
      */
     public static CommandMetadata loadCommand(Class<?> commandType, ParserMetadata<?> parserConfig) {
-        return loadCommand(commandType, new HashMap<String, HelpSection>(), parserConfig);
+        return loadCommand(commandType, new HashMap<>(), parserConfig);
     }
 
     /**
@@ -722,7 +720,7 @@ public class MetadataLoader {
 
                             if (defaultOptionAnnotation != null) {
                                 // Can't have both @DefaultOption and @Arguments
-                                if (injectionMetadata.arguments.size() > 0) {
+                                if (!injectionMetadata.arguments.isEmpty()) {
                                     throw new IllegalArgumentException(String.format(
                                             "Field %s cannot be annotated with @DefaultOption because there are fields with @Arguments annotations present",
                                             field));
@@ -865,11 +863,7 @@ public class MetadataLoader {
     }
 
     private static void collectPartial(Map<Class<? extends Annotation>, Set<Integer>> partials, Partial partial) {
-        Set<Integer> indices = partials.get(partial.restriction());
-        if (indices == null) {
-            indices = new HashSet<>();
-            partials.put(partial.restriction(), indices);
-        }
+        Set<Integer> indices = partials.computeIfAbsent(partial.restriction(), k -> new HashSet<>());
         indices.addAll(Arrays.asList(ArrayUtils.toObject(partial.appliesTo())));
     }
 
@@ -878,13 +872,13 @@ public class MetadataLoader {
         for (OptionMetadata option : options) {
             List<OptionMetadata> list = metadataIndex.get(option);
             if (list == null) {
-                list = new ArrayList<OptionMetadata>();
+                list = new ArrayList<>();
                 metadataIndex.put(option, list);
             }
             list.add(option);
         }
 
-        options = new ArrayList<OptionMetadata>();
+        options = new ArrayList<>();
         for (List<OptionMetadata> ops : metadataIndex.values()) {
             options.add(new OptionMetadata(ops));
         }
@@ -921,7 +915,7 @@ public class MetadataLoader {
                 // of names, this is considered an illegal override
                 for (Set<String> existingNames : optionIndex.keySet()) {
                     Set<String> intersection = AirlineUtils.intersection(names, existingNames);
-                    if (intersection.size() > 0) {
+                    if (!intersection.isEmpty()) {
                         throw new IllegalArgumentException(String.format(
                                 "Fields %s and %s have overlapping definitions of option %s, options can only be overridden if they have precisely the same set of option names",
                                 option.getAccessors().iterator().next(),
@@ -1211,7 +1205,7 @@ public class MetadataLoader {
             }
 
             if (arguments.size() > 1) {
-                arguments = ListUtils.unmodifiableList(Collections.singletonList(new ArgumentsMetadata(arguments)));
+                arguments = List.of(new ArgumentsMetadata(arguments));
             }
         }
     }

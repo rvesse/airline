@@ -25,18 +25,14 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class Accessor
 {
@@ -45,25 +41,17 @@ public class Accessor
     private final List<Field> path;
     private boolean multiValued;
 
-    public Accessor(Field... path)
-    {
-        this(Arrays.asList(path));
-    }
-    
     public Accessor(Iterable<Field> path) {
-        this(path.iterator());
+        this(StreamSupport
+                .stream(path.spliterator(), false)
+                .collect(Collectors.toList()));
     }
 
-    public Accessor(Iterator<Field> path)
-    {
-        this(IteratorUtils.toList(path));
-    }
-    
     public Accessor(List<Field> path) {
         if(path == null) throw new NullPointerException("path is null");
-        if (path.size() == 0) throw new IllegalArgumentException("path is empty");
+        if (path.isEmpty()) throw new IllegalArgumentException("path is empty");
         
-        this.path = ListUtils.unmodifiableList(path);
+        this.path = List.copyOf(path);
         StringBuilder nameBuilder = new StringBuilder();
         
         // Build the name for the accessor
@@ -135,7 +123,7 @@ public class Accessor
         field.setAccessible(true);
         if (Collection.class.isAssignableFrom(field.getType())) {
             Collection<Object> collection = getOrCreateCollectionField(name, instance, field);
-            CollectionUtils.addAll(collection, values);
+            collection.addAll((Collection<?>) values);
         }
         else {
             try {
@@ -187,10 +175,10 @@ public class Accessor
     private static Collection<Object> newCollection(Class<?> type)
     {
         if (Collection.class.equals(type) || List.class.equals(type)) {
-            return new ArrayList<Object>();
+            return new ArrayList<>();
         }
         if (Set.class.equals(type)) {
-            return new HashSet<Object>();
+            return new HashSet<>();
         }
         if (SortedSet.class.equals(type)) {
             return new TreeSet();

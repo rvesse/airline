@@ -15,16 +15,15 @@
  */
 package com.github.rvesse.airline;
 
-import java.util.Arrays;
-
-import org.apache.commons.collections4.ListUtils;
-
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.model.ParserMetadata;
 import com.github.rvesse.airline.parser.ParseResult;
 import com.github.rvesse.airline.parser.command.CliParser;
+import org.apache.commons.collections4.ListUtils;
+
+import java.util.Arrays;
 
 /**
  * Class for encapsulating and parsing CLIs
@@ -47,7 +46,7 @@ public class Cli<C> {
     public static <T> CliBuilder<T> builder(String name) {
         if (name == null)
             throw new NullPointerException("name cannot be null");
-        return new CliBuilder<T>(name);
+        return new CliBuilder<>(name);
     }
 
     private final GlobalMetadata<C> metadata;
@@ -123,7 +122,7 @@ public class Cli<C> {
      * @return Command instance
      */
     private C parse(Iterable<String> args) {
-        CliParser<C> parser = new CliParser<C>();
+        CliParser<C> parser = new CliParser<>();
         return parser.parse(metadata, args);
     }
 
@@ -154,7 +153,7 @@ public class Cli<C> {
      * @return Parse result
      */
     public ParseResult<C> parseWithResult(Iterable<String> args) {
-        CliParser<C> parser = new CliParser<C>();
+        CliParser<C> parser = new CliParser<>();
         return parser.parseWithResult(metadata, args);
     }
 }
