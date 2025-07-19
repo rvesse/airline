@@ -17,14 +17,13 @@ package com.github.rvesse.airline;
 
 import java.util.Arrays;
 
-import org.apache.commons.collections4.ListUtils;
-
 import com.github.rvesse.airline.builder.CliBuilder;
 import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.model.ParserMetadata;
 import com.github.rvesse.airline.parser.ParseResult;
 import com.github.rvesse.airline.parser.command.CliParser;
+import java.util.List;
 
 /**
  * Class for encapsulating and parsing CLIs
@@ -110,7 +109,7 @@ public class Cli<C> {
      * @return Command instance
      */
     public C parse(String... args) {
-        return parse(ListUtils.unmodifiableList(Arrays.asList(args)));
+        return parse(List.of(args));
     }
 
     /**
