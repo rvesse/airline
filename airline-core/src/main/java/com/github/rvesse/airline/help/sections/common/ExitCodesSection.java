@@ -17,6 +17,8 @@ package com.github.rvesse.airline.help.sections.common;
 
 import com.github.rvesse.airline.help.sections.HelpFormat;
 
+import java.util.Arrays;
+
 public class ExitCodesSection extends BasicSection {
 
     public ExitCodesSection(int[] exitCodes, String[] exitCodeDescriptions) {
@@ -26,11 +28,10 @@ public class ExitCodesSection extends BasicSection {
     }
 
     private static String[] toStrings(int[] is) {
-        String[] data = new String[is.length];
-        for (int i = 0; i < is.length; i++) {
-            data[i] = Integer.toString(is[i]);
-        }
-        return data;
+        return Arrays.stream(is)
+                .boxed()
+                .map(Object::toString)
+                .toArray(String[]::new);
     }
 
 }

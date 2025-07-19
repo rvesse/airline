@@ -35,12 +35,12 @@ public @interface SeeAlso {
      * 
      * @return External commands
      */
-    public String[] externalCommands() default {};
+    String[] externalCommands() default {};
 
     /**
      * An array listing one or more internal commands, i.e. commands providing by this application, that are relevant
      * 
      * @return Internal commands
      */
-    public String[] internalCommands() default {};
+    String[] internalCommands() default {};
 }

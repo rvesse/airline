@@ -43,5 +43,5 @@ public @interface MinOccurrences {
      * 
      * @return Min occurrences
      */
-    public int occurrences() default 0;
+    int occurrences() default 0;
 }

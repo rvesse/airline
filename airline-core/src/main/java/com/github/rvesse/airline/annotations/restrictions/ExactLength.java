@@ -43,5 +43,5 @@ public @interface ExactLength {
      * 
      * @return Exact length
      */
-    public int length();
+    int length();
 }

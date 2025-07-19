@@ -25,14 +25,14 @@ public interface HelpHint {
      * 
      * @return Preamble text
      */
-    public String getPreamble();
+    String getPreamble();
 
     /**
      * Gets the format of the provided help information
      * 
      * @return Help format
      */
-    public HelpFormat getFormat();
+    HelpFormat getFormat();
 
     /**
      * Gets the number of content blocks provided
@@ -44,7 +44,7 @@ public interface HelpHint {
      * 
      * @return Number of content blocks
      */
-    public int numContentBlocks();
+    int numContentBlocks();
 
     /**
      * Gets the content block with the given number
@@ -53,5 +53,5 @@ public interface HelpHint {
      *            Block number
      * @return Content Block
      */
-    public String[] getContentBlock(int blockNumber);
+    String[] getContentBlock(int blockNumber);
 }

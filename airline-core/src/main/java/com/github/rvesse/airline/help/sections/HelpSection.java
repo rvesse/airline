@@ -25,7 +25,7 @@ public interface HelpSection extends HelpHint {
      * 
      * @return Section title
      */
-    public String getTitle();
+    String getTitle();
 
     /**
      * Gets the post-amble text that should be included at the end of the
@@ -33,7 +33,7 @@ public interface HelpSection extends HelpHint {
      * 
      * @return
      */
-    public String getPostamble();
+    String getPostamble();
 
     /**
      * Gets an integer indicating the suggested order that a help generator
@@ -48,6 +48,6 @@ public interface HelpSection extends HelpHint {
      * 
      * @return Suggested order
      */
-    public int suggestedOrder();
+    int suggestedOrder();
 
 }
