@@ -105,19 +105,19 @@ public class AirlineUtils {
     public static <T> List<T> unmodifiableListCopy(Collection<T> collection) {
         if (collection == null)
             return Collections.emptyList();
-        return ListUtils.unmodifiableList(new ArrayList<T>(collection));
+        return List.copyOf(collection);
     }
 
     public static <T> List<T> unmodifiableListCopy(Iterable<T> iterable) {
         if (iterable == null)
             return Collections.emptyList();
-        return ListUtils.unmodifiableList(IteratorUtils.toList(iterable.iterator()));
+        return List.copyOf(IteratorUtils.toList(iterable.iterator()));
     }
 
     public static <T> List<T> unmodifiableListCopy(T[] array) {
         if (array == null)
             return Collections.emptyList();
-        return ListUtils.unmodifiableList(Arrays.asList(array));
+        return List.copyOf(Arrays.asList(array));
     }
 
     public static <K, V> Map<K, V> unmodifiableMapCopy(Map<K, V> map) {

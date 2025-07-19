@@ -20,7 +20,6 @@ import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.GlobalMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
-import org.apache.commons.collections4.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +43,6 @@ public class GlobalSuggester<T>
         for (OptionMetadata option : metadata.getOptions()) {
             suggestions.addAll(option.getOptions());
         }
-        return ListUtils.unmodifiableList(suggestions);
+        return List.copyOf(suggestions);
     }
 }

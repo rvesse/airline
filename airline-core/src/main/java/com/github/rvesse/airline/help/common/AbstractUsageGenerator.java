@@ -178,7 +178,7 @@ public class AbstractUsageGenerator {
                 continue;
             synopsisOptions.add(toUsage(option));
         }
-        return ListUtils.unmodifiableList(synopsisOptions);
+        return List.copyOf(synopsisOptions);
     }
 
     protected String toUsage(ArgumentsMetadata arguments) {

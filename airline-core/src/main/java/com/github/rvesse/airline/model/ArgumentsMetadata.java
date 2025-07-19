@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -55,7 +54,7 @@ public class ArgumentsMetadata {
         if (!path.iterator().hasNext())
             throw new IllegalArgumentException("path cannot be empty");
 
-        this.titles = ListUtils.unmodifiableList(IteratorUtils.toList(titles.iterator()));
+        this.titles = List.copyOf(IteratorUtils.toList(titles.iterator()));
         this.description = description;
         this.restrictions = restrictions != null ? AirlineUtils.unmodifiableListCopy(restrictions)
                 : Collections.<ArgumentsRestriction> emptyList();

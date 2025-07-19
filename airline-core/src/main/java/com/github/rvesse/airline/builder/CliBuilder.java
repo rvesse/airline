@@ -17,7 +17,6 @@ package com.github.rvesse.airline.builder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +26,6 @@ import java.util.Queue;
 
 import com.github.rvesse.airline.model.*;
 import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
 
 import com.github.rvesse.airline.Cli;
 import com.github.rvesse.airline.help.sections.HelpSection;
@@ -77,12 +75,12 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
     public CliBuilder<C> withCommands(Class<? extends C> command, Class<? extends C>... moreCommands) {
         this.defaultCommandGroupCommands.add(command);
         this.defaultCommandGroupCommands
-                .addAll(ListUtils.unmodifiableList(IteratorUtils.toList(IteratorUtils.arrayIterator(moreCommands))));
+                .addAll(List.copyOf(IteratorUtils.toList(IteratorUtils.arrayIterator(moreCommands))));
         return this;
     }
 
     public CliBuilder<C> withCommands(Iterable<Class<? extends C>> commands) {
-        this.defaultCommandGroupCommands.addAll(ListUtils.unmodifiableList(IteratorUtils.toList(commands.iterator())));
+        this.defaultCommandGroupCommands.addAll(List.copyOf(IteratorUtils.toList(commands.iterator())));
         return this;
     }
 
@@ -214,8 +212,8 @@ public class CliBuilder<C> extends AbstractBuilder<Cli<C>> {
 
         // Build metadata objects
         GlobalMetadata<C> metadata = MetadataLoader.<C> loadGlobal(name, description, defaultCommandMetadata,
-                                                                   ListUtils.unmodifiableList(defaultCommandGroup), ListUtils.unmodifiableList(commandGroups),
-                                                                   ListUtils.unmodifiableList(restrictions), Collections.unmodifiableCollection(baseHelpSections.values()),
+                                                                   List.copyOf(defaultCommandGroup), List.copyOf(commandGroups),
+                                                                   List.copyOf(restrictions), List.copyOf(baseHelpSections.values()),
                                                                    parserConfig);
 
         return new Cli<C>(metadata);

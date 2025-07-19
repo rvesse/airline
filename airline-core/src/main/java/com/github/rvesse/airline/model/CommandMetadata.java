@@ -23,7 +23,6 @@ import com.github.rvesse.airline.utils.AirlineUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class CommandMetadata {
@@ -99,7 +98,7 @@ public class CommandMetadata {
         allOptions.addAll(globalOptions);
         allOptions.addAll(groupOptions);
         allOptions.addAll(commandOptions);
-        return ListUtils.unmodifiableList(allOptions);
+        return List.copyOf(allOptions);
     }
 
     /**
