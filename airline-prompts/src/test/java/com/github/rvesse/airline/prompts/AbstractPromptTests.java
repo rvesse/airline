@@ -567,7 +567,7 @@ public abstract class AbstractPromptTests {
         //@formatter:on
 
         Integer value = prompt.promptForOption(false);
-        Assert.assertEquals(value, new Integer(100));
+        Assert.assertEquals(value, 100);
     }
 
     @Test
@@ -588,7 +588,7 @@ public abstract class AbstractPromptTests {
         // As numeric option selection is disabled we should get the actual
         // value 1
         Integer value = prompt.promptForOption(false);
-        Assert.assertEquals(value, new Integer(1));
+        Assert.assertEquals(value, 1);
     }
 
     @Test
@@ -609,7 +609,7 @@ public abstract class AbstractPromptTests {
         // As numeric option selection is enabled we should get the value 100
         // because thats the value at index 1
         Integer value = prompt.promptForOption(false);
-        Assert.assertEquals(value, new Integer(100));
+        Assert.assertEquals(value, 100);
     }
 
     @Test
