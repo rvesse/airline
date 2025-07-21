@@ -20,8 +20,7 @@ import com.github.rvesse.airline.help.sections.HelpSection;
 
 public class BasicSection extends BasicHint implements HelpSection {
     
-    private final String title;
-    private final String postamble;
+    private final String title, postamble;
     private final int order;
 
     public BasicSection(String title, int suggestedOrder, String preamble, String postamble, HelpFormat format, String[]... blocks) {
