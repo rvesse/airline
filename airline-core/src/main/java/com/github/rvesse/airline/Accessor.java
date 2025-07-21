@@ -36,7 +36,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
 
 public class Accessor
 {
@@ -63,7 +62,7 @@ public class Accessor
         if(path == null) throw new NullPointerException("path is null");
         if (path.size() == 0) throw new IllegalArgumentException("path is empty");
         
-        this.path = ListUtils.unmodifiableList(path);
+        this.path = List.copyOf(path);
         StringBuilder nameBuilder = new StringBuilder();
         
         // Build the name for the accessor

@@ -43,7 +43,6 @@ import com.github.rvesse.airline.utils.predicates.parser.CommandTypeFinder;
 import com.github.rvesse.airline.utils.predicates.parser.GroupFinder;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -380,7 +379,7 @@ public class MetadataLoader {
                 subGroups.addAll(subGroup.getSubGroups());
             }
         }
-        globalOptions = ListUtils.unmodifiableList(mergeOptionSet(globalOptions));
+        globalOptions = List.copyOf(mergeOptionSet(globalOptions));
         return new GlobalMetadata<C>(name, description, globalOptions, defaultCommand, defaultGroupCommands, groups,
                                      restrictions, baseHelpSections, parserConfig);
     }
@@ -412,7 +411,7 @@ public class MetadataLoader {
         for (CommandMetadata command : commands) {
             groupOptions.addAll(command.getGroupOptions());
         }
-        groupOptions = ListUtils.unmodifiableList(mergeOptionSet(groupOptions));
+        groupOptions = List.copyOf(mergeOptionSet(groupOptions));
         return new CommandGroupMetadata(name, description, hidden, groupOptions, subGroups, defaultCommand, commands);
     }
 
@@ -888,7 +887,7 @@ public class MetadataLoader {
         for (List<OptionMetadata> ops : metadataIndex.values()) {
             options.add(new OptionMetadata(ops));
         }
-        options = ListUtils.unmodifiableList(options);
+        options = List.copyOf(options);
 
         Map<String, OptionMetadata> optionIndex = new LinkedHashMap<>();
         for (OptionMetadata option : options) {
@@ -907,7 +906,7 @@ public class MetadataLoader {
     }
 
     private static List<OptionMetadata> overrideOptionSet(List<OptionMetadata> options) {
-        options = ListUtils.unmodifiableList(options);
+        options = List.copyOf(options);
 
         Map<Set<String>, OptionMetadata> optionIndex = new HashMap<>();
         for (OptionMetadata option : options) {
@@ -933,7 +932,7 @@ public class MetadataLoader {
             }
         }
 
-        return ListUtils.unmodifiableList(IteratorUtils.toList(optionIndex.values().iterator()));
+        return List.copyOf(IteratorUtils.toList(optionIndex.values().iterator()));
     }
 
     private static void tryOverrideOptions(Map<Set<String>, OptionMetadata> optionIndex, Set<String> names,
@@ -1211,7 +1210,7 @@ public class MetadataLoader {
             }
 
             if (arguments.size() > 1) {
-                arguments = ListUtils.unmodifiableList(Collections.singletonList(new ArgumentsMetadata(arguments)));
+                arguments = List.of(new ArgumentsMetadata(arguments));
             }
         }
     }

@@ -19,7 +19,6 @@ import com.github.rvesse.airline.annotations.AirlineModule;
 import com.github.rvesse.airline.model.CommandGroupMetadata;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.OptionMetadata;
-import org.apache.commons.collections4.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +36,6 @@ public class GroupSuggester implements Suggester {
         for (OptionMetadata option : group.getOptions()) {
             suggestions.addAll(option.getOptions());
         }
-        return ListUtils.unmodifiableList(suggestions);
+        return List.copyOf(suggestions);
     }
 }

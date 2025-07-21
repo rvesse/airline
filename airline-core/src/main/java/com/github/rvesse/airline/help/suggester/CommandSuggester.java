@@ -20,7 +20,6 @@ import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.model.OptionMetadata;
 import com.github.rvesse.airline.model.ParserMetadata;
-import org.apache.commons.collections4.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +44,6 @@ public class CommandSuggester
             suggestions.add(parserConfig.getArgumentsSeparator());
         }
 
-        return ListUtils.unmodifiableList(suggestions);
+        return List.copyOf(suggestions);
     }
 }
