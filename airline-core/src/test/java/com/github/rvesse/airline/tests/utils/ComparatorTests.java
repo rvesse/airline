@@ -31,7 +31,7 @@ public class ComparatorTests {
         FloatComparator comparator = new FloatComparator();
 
         Assert.assertTrue(-1f < 0f);
-        Assert.assertTrue(new Float(-1f) < new Float(0f));
+        Assert.assertTrue(-1f < 0f);
         Assert.assertEquals(comparator.compare(-1f, 0f), -1);
     }
     
@@ -40,7 +40,7 @@ public class ComparatorTests {
         FloatComparator comparator = new FloatComparator();
 
         Assert.assertTrue(1f > 0f);
-        Assert.assertTrue(new Float(1f) > new Float(0f));
+        Assert.assertTrue(1f > 0f);
         Assert.assertEquals(comparator.compare(1f, 0f), 1);
     }
     
@@ -62,7 +62,7 @@ public class ComparatorTests {
         DoubleComparator comparator = new DoubleComparator();
 
         Assert.assertTrue(-1d < 0d);
-        Assert.assertTrue(new Double(-1d) < new Double(0d));
+        Assert.assertTrue(-1d < 0d);
         Assert.assertEquals(comparator.compare(-1d, 0d), -1);
     }
     
@@ -71,7 +71,7 @@ public class ComparatorTests {
         DoubleComparator comparator = new DoubleComparator();
 
         Assert.assertTrue(1d > 0d);
-        Assert.assertTrue(new Double(1d) > new Double(0d));
+        Assert.assertTrue(1d > 0d);
         Assert.assertEquals(comparator.compare(1d, 0d), 1);
     }
     
