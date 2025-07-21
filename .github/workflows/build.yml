@@ -28,13 +28,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ "11", "17" ]
+        java: [ "11", "17", "21" ]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up JDK ${{ matrix.java }}
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: ${{ matrix.java }}
         distribution: 'temurin'
@@ -45,4 +45,4 @@ jobs:
 
     - name: Run ITs and coverage
       if: matrix.java == '11'
-      run: mvn -B -e verify -Dcoveralls.token=${{ secrets.COVERALLS_TOKEN }} -Pcoveralls
+      run: mvn -B -e verify
