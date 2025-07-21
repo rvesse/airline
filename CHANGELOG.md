@@ -7,6 +7,13 @@ positional argument support, better DI framework integration, that are not possi
 breaking changes.  You can see progress on 4.x by following the `4x` branch and its `CHANGELOG.md` and `Migrating.md`
 files.
 
+### 3.1.1
+
+- Code Modernisation
+    - Applied a variety of code modernisation PRs (#136, #138, #140, #143) (thanks to @khmarbaise)
+- Dependency Updates
+    - Apache Commons Lang upgraded to 3.18.0 
+
 ### 3.1.0
 
 This is a maintenance release to bring dependencies up to date and switch over to the new Maven Central publishing 
