@@ -23,8 +23,9 @@ import com.github.rvesse.airline.model.OptionMetadata;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.Function;
 
-public class UsageHelper {
+public interface UsageHelper {
 
     /**
      * Default comparator for help hints
@@ -34,17 +35,9 @@ public class UsageHelper {
      * compares by identity hash codes of the instances.
      * </p>
      */
-    public static final Comparator<HelpHint> DEFAULT_HINT_COMPARATOR = new Comparator<HelpHint>() {
-
-        @Override
-        public int compare(HelpHint o1, HelpHint o2) {
-            int c = o1.getClass().getName().compareTo(o2.getClass().getName());
-            if (c == 0) {
-                c = Integer.compare(System.identityHashCode(o1), System.identityHashCode(o2));
-            }
-            return c;
-        }
-    };
+    Comparator<HelpHint> DEFAULT_HINT_COMPARATOR = Comparator
+        .comparing(HelpHint::getClass, Comparator.comparing(Class::getName))
+        .thenComparing(Function.identity(), Comparator.comparingInt(System::identityHashCode));
 
     /**
      * Default comparator for options
@@ -53,25 +46,9 @@ public class UsageHelper {
      * any leading {@code -} characters
      * </p>
      */
-    public static final Comparator<OptionMetadata> DEFAULT_OPTION_COMPARATOR = new Comparator<OptionMetadata>() {
-        @Override
-        public int compare(OptionMetadata o1, OptionMetadata o2) {
-            String option1 = o1.getOptions().iterator().next();
-            option1 = option1.replaceFirst("^-+", "");
-
-            String option2 = o2.getOptions().iterator().next();
-            option2 = option2.replaceFirst("^-+", "");
-
-            int c = option1.toLowerCase().compareTo(option2.toLowerCase());
-            if (c == 0) {
-                c = option2.compareTo(option1);
-                if (c == 0) {
-                    c = Integer.compare(System.identityHashCode(option1), System.identityHashCode(option2));
-                }
-            }
-            return c;
-        }
-    };
+    Comparator<OptionMetadata> DEFAULT_OPTION_COMPARATOR = Comparator
+            .comparing((OptionMetadata o) -> o.getOptions().iterator().next().replaceFirst("^-+", ""), String.CASE_INSENSITIVE_ORDER.thenComparing(Comparator.reverseOrder())
+            .thenComparingInt(System::identityHashCode));
 
     /**
      * Default comparator for commands
@@ -79,33 +56,15 @@ public class UsageHelper {
      * Compares by alphabetical ordering
      * </p>
      */
-    public static final Comparator<CommandMetadata> DEFAULT_COMMAND_COMPARATOR = new Comparator<CommandMetadata>() {
-        @Override
-        public int compare(CommandMetadata command1, CommandMetadata command2) {
-            int c = command1.getName().toLowerCase().compareTo(command2.getName().toLowerCase());
-            if (c == 0) {
-                c = command2.getName().compareTo(command1.getName());
-                if (c == 0) {
-                    c = Integer.compare(System.identityHashCode(command1), System.identityHashCode(command2));
-                }
-            }
-            return c;
-        }
-    };
+    Comparator<CommandMetadata> DEFAULT_COMMAND_COMPARATOR = Comparator
+        .comparing(CommandMetadata::getName, String.CASE_INSENSITIVE_ORDER)
+        .thenComparing(CommandMetadata::getName, Comparator.reverseOrder())
+        .thenComparing(Function.identity(), Comparator.comparingInt(System::identityHashCode));
 
-    public static final Comparator<CommandGroupMetadata> DEFAULT_COMMAND_GROUP_COMPARATOR = new Comparator<CommandGroupMetadata>() {
-        @Override
-        public int compare(CommandGroupMetadata group1, CommandGroupMetadata group2) {
-            int c = group1.getName().toLowerCase().compareTo(group2.getName().toLowerCase());
-            if (c == 0) {
-                c = group2.getName().compareTo(group1.getName());
-                if (c == 0) {
-                    c = Integer.compare(System.identityHashCode(group1), System.identityHashCode(group2));
-                }
-            }
-            return c;
-        }
-    };
+    Comparator<CommandGroupMetadata> DEFAULT_COMMAND_GROUP_COMPARATOR = Comparator
+            .comparing(CommandGroupMetadata::getName, String::compareToIgnoreCase)
+            .thenComparing(CommandGroupMetadata::getName, Comparator.reverseOrder())
+            .thenComparing(Function.identity(), Comparator.comparingInt(System::identityHashCode));
 
     /**
      * Default comparator for exit codes
@@ -114,25 +73,14 @@ public class UsageHelper {
      * sorting on the descriptions
      * </p>
      */
-    public static final Comparator<Entry<Integer, String>> DEFAULT_EXIT_CODE_COMPARATOR = new Comparator<Entry<Integer, String>>() {
-        @Override
-        public int compare(Entry<Integer, String> o1, Entry<Integer, String> o2) {
-            int c = Integer.compare(o1.getKey(), o2.getKey());
-            if (c == 0) {
-                c = o1.getValue().compareTo(o2.getValue());
-                if (c == 0) {
-                    c = Integer.compare(System.identityHashCode(o1), System.identityHashCode(o2));
-                }
-            }
-            return c;
-        }
-    };
+    Comparator<Entry<Integer, String>> DEFAULT_EXIT_CODE_COMPARATOR = Comparator
+            .comparingInt(Entry<Integer, String>::getKey)
+            .thenComparing(Entry::getValue)
+            .thenComparing(Function.identity(), Comparator.comparingInt(System::identityHashCode));
 
-    public static String[] toGroupNames(List<CommandGroupMetadata> groupPath) {
-        String[] groupNames = new String[groupPath.size()];
-        for (int i = 0; i < groupPath.size(); i++) {
-            groupNames[i] = groupPath.get(i).getName();
-        }
-        return groupNames;
+    static String[] toGroupNames(List<CommandGroupMetadata> groupPath) {
+        return groupPath.stream()
+                .map(CommandGroupMetadata::getName)
+                .toArray(String[]::new);
     }
 }
