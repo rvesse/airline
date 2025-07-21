@@ -74,12 +74,11 @@ public class VersionSection implements HelpSection {
             }
         }
 
-        if (this.versions.size() == 0) {
-            if (!suppressErrors)
+        if (this.versions.isEmpty() && !suppressErrors)
                 throw new IllegalArgumentException(
                         String.format("@Version annotation specifies no valid version information sources - %s",
                                 StringUtils.join(dataSources, ',')));
-        }
+
     }
 
     private void sourceNotFound(String dataSource) {
@@ -112,8 +111,9 @@ public class VersionSection implements HelpSection {
 
     @Override
     public HelpFormat getFormat() {
-        if (this.versions.size() == 0)
+        if (this.versions.isEmpty()) {
             return HelpFormat.NONE_PRINTABLE;
+        }
         return this.tabular ? HelpFormat.TABLE_WITH_HEADERS : HelpFormat.LIST;
 
     }
@@ -199,7 +199,7 @@ public class VersionSection implements HelpSection {
                 items.add(String.format("%s: %s", kvp.getKey(), kvp.getValue()));
             }
 
-            return items.toArray(new String[items.size()]);
+            return items.toArray(new String[0]);
         }
 
         private void fillColumn(String[] column, int row, String value) {

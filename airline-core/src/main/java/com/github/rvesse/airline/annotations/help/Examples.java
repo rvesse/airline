@@ -39,7 +39,7 @@ public @interface Examples {
      * 
      * @return Examples
      */
-    public String[] examples() default {};
+    String[] examples() default {};
 
     /**
      * An array of paragraphs of text where each paragraph described the
@@ -48,5 +48,5 @@ public @interface Examples {
      * 
      * @return Descriptions
      */
-    public String[] descriptions() default {};
+    String[] descriptions() default {};
 }

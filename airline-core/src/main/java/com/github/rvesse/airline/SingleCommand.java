@@ -19,8 +19,8 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.commons.collections4.IteratorUtils;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import com.github.rvesse.airline.model.CommandMetadata;
 import com.github.rvesse.airline.model.MetadataLoader;
 import com.github.rvesse.airline.model.ParserMetadata;
@@ -46,7 +46,7 @@ public class SingleCommand<C> {
      * @return Single command parser
      */
     public static <C> SingleCommand<C> singleCommand(Class<C> command) {
-        return new SingleCommand<C>(command, null, null);
+        return new SingleCommand<>(command, null, null);
     }
 
     /**
@@ -62,7 +62,7 @@ public class SingleCommand<C> {
      * @return Single command parser
      */
     public static <C> SingleCommand<C> singleCommand(Class<C> command, ParserMetadata<C> parserConfig) {
-        return new SingleCommand<C>(command, null, parserConfig);
+        return new SingleCommand<>(command, null, parserConfig);
     }
 
     private final ParserMetadata<C> parserConfig;
@@ -72,7 +72,7 @@ public class SingleCommand<C> {
     private SingleCommand(Class<C> command, Iterable<GlobalRestriction> restrictions, ParserMetadata<C> parserConfig) {
         if (command == null)
             throw new NullPointerException("command is null");
-        this.parserConfig = parserConfig != null ? parserConfig : MetadataLoader.<C> loadParser(command);
+        this.parserConfig = parserConfig != null ? parserConfig : MetadataLoader.loadParser(command);
         
         // Dynamically obtain restrictions if annotated onto the class
         this.restrictions = createRestrictions(command, restrictions);
@@ -81,11 +81,13 @@ public class SingleCommand<C> {
     }
     
     private List<GlobalRestriction> createRestrictions(Class<C> commandClass, Iterable<GlobalRestriction> restrictions) {
-        List<GlobalRestriction> foundRestrictions = new ArrayList<GlobalRestriction>();
+        List<GlobalRestriction> foundRestrictions = new ArrayList<>();
         
         // If any were explicitly provided use those
         if (restrictions != null && restrictions.iterator().hasNext()) {
-            foundRestrictions.addAll(IteratorUtils.toList(restrictions.iterator()));
+            foundRestrictions.addAll(StreamSupport
+                            .stream(restrictions.spliterator(), false)
+                            .collect(Collectors.toList()));
         }
         
         // Look for annotation declared restrictions
@@ -144,7 +146,7 @@ public class SingleCommand<C> {
      * @return Command instance
      */
     public C parse(Iterable<String> args) {
-        SingleCommandParser<C> parser = new SingleCommandParser<C>();
+        SingleCommandParser<C> parser = new SingleCommandParser<>();
         return parser.parse(parserConfig, commandMetadata, restrictions, args);
     }
 
@@ -171,7 +173,7 @@ public class SingleCommand<C> {
      * @return Parse result
      */
     public ParseResult<C> parseWithResult(Iterable<String> args) {
-        SingleCommandParser<C> parser = new SingleCommandParser<C>();
+        SingleCommandParser<C> parser = new SingleCommandParser<>();
         return parser.parseWithResult(parserConfig, commandMetadata, restrictions, args);
     }
 }

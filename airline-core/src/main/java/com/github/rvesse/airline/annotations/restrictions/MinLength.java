@@ -43,5 +43,5 @@ public @interface MinLength {
      * 
      * @return Minimum length (inclusive)
      */
-    public int length() default 0;
+    int length() default 0;
 }

@@ -15,11 +15,11 @@
  */
 package com.github.rvesse.airline.annotations.help;
 
-import static java.lang.annotation.ElementType.TYPE;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
 
 /**
  * Annotation that provides a discussion section for a commands help
@@ -41,5 +41,5 @@ public @interface Discussion {
      * 
      * @return Command discussion
      */
-    public String[]paragraphs() default {};
+    String[]paragraphs() default {};
 }

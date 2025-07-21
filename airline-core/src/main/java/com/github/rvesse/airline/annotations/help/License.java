@@ -35,12 +35,12 @@ public @interface License {
      * 
      * @return License description
      */
-    public String[] paragraphs() default {};
+    String[] paragraphs() default {};
 
     /**
      * Gets/Sets a URL for the license
      * 
      * @return License URL
      */
-    public String url() default "";
+    String url() default "";
 }

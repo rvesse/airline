@@ -42,5 +42,5 @@ public @interface MaxLength {
      * 
      * @return Maximum length (inclusive)
      */
-    public int length() default Integer.MAX_VALUE;
+    int length() default Integer.MAX_VALUE;
 }

@@ -37,14 +37,14 @@ public @interface ProseSection {
      * 
      * @return Title
      */
-    public String title();
+    String title();
 
     /**
      * An array of paragraphs of text that provides prose for the help section
      * 
      * @return Paragraphs
      */
-    public String[] paragraphs() default {};
+    String[] paragraphs() default {};
 
     /**
      * Suggested order in which the help section should be placed relative to

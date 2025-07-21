@@ -21,7 +21,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.rvesse.airline.annotations.help.Copyright;
@@ -117,11 +116,11 @@ public class CommonSectionsFactory implements HelpSectionFactory {
             // See Also section
             SeeAlso seeAlso = (SeeAlso) annotation;
             Set<String> cmds = new LinkedHashSet<>();
-            CollectionUtils.addAll(cmds, seeAlso.internalCommands());
-            CollectionUtils.addAll(cmds, seeAlso.externalCommands());
-            if (cmds.size() > 0) {
+            cmds.addAll(Arrays.asList(seeAlso.internalCommands()));
+            cmds.addAll(Arrays.asList(seeAlso.externalCommands()));
+            if (!cmds.isEmpty()) {
                 return new com.github.rvesse.airline.help.sections.common.ProseSection(CommonSections.TITLE_SEE_ALSO,
-                        CommonSections.ORDER_SEE_ALSO, new String[] { StringUtils.join(cmds, ", ") });
+                        CommonSections.ORDER_SEE_ALSO, new String[] { String.join(", ", cmds) });
             }
         }
         return null;

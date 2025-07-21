@@ -3,8 +3,6 @@ package com.github.rvesse.airline.examples.userguide;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.rvesse.airline.SingleCommand;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
@@ -28,7 +26,7 @@ public class GettingStarted {
     private void run() {
         System.out.println("Flag was " + (this.flag ? "set" : "not set"));
         if (args != null)
-            System.out.println("Arguments were " + StringUtils.join(args, ","));
+            System.out.println("Arguments were " + String.join(",", args));
     }
 }
 ```

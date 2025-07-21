@@ -26,31 +26,30 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-@Target({ TYPE })
+@Target({TYPE})
 @Documented
 public @interface Copyright {
 
     /**
      * Gets/Sets the start year
-     * 
      * @return Start year
      */
-    public int startYear();
+    int startYear();
 
     /**
      * Gets/Sets the end year
      * <p>
      * If less than the start year this is ignored
      * </p>
-     * 
+     *
      * @return End year
      */
-    public int endYear() default -1;
+    int endYear() default -1;
 
     /**
      * Gets/Sets the copyright holder
-     * 
+     *
      * @return Copyright holder
      */
-    public String holder();
+    String holder();
 }

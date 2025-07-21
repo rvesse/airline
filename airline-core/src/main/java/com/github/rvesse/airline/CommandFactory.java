@@ -29,5 +29,5 @@ public interface CommandFactory<T> {
      *            Type
      * @return Instance
      */
-    public abstract T createInstance(Class<?> type);
+    T createInstance(Class<?> type);
 }
