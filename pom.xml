@@ -76,7 +76,7 @@
     <dependency.javax-inject>2.0.1</dependency.javax-inject>
     <dependency.testng>7.11.0</dependency.testng>
     <dependency.classgraph>4.8.179</dependency.classgraph>
-    <dependency.commons-lang3>3.17.0</dependency.commons-lang3>
+    <dependency.commons-lang3>3.18.0</dependency.commons-lang3>
     <dependency.commons-collections4>4.5.0</dependency.commons-collections4>
     <dependency.commons-csv>1.10.0</dependency.commons-csv>
   </properties>
