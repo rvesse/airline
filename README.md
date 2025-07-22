@@ -114,8 +114,11 @@ Snapshot artifacts of the latest source are also available using the version `3.
 
 ## Build Status
 
-CI builds are run on [Travis CI](http://travis-ci.org/) ![Build Status](https://travis-ci.org/rvesse/airline.png), see 
-build information and history at https://travis-ci.org/rvesse/airline
+[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/rvesse/airline.svg?label=License)](https://www.apache.org/licenses/)
+[![Maven Central Version](https://img.shields.io/maven-central/v/com.github.rvesse/airline)](https://central.sonatype.com/artifact/com.github.rvesse/airline)
+![Main](https://github.com/rvesse/airline/workflows/Build/badge.svg)
+
+For more detailed information [GitHub Actions](https://docs.github.com/en/actions)
 
 # Historical Information
 
