@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>airline-parent</artifactId>
         <groupId>com.github.rvesse</groupId>
         <version>3.1.1-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
     <artifactId>airline-jpms-resources</artifactId>
     <name>Airline - JPMS - Resource Locator</name>
     <description>Provides an Airline ResourceLocator that is able to locate resources when Airline is used in JPMS

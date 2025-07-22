@@ -45,7 +45,8 @@
     <jdk.target>11</jdk.target>
     <jdk.enforced>11</jdk.enforced>
     <license.header.path>${project.basedir}</license.header.path>
-    <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <!-- Coveralls API Token - MUST be injected into build via Maven properties -->
     <coveralls.token />
@@ -421,8 +422,8 @@
                 <id>attach-sources</id>
                 <phase>package</phase>
                 <goals>
-                  <goal>jar</goal>
-                  <goal>test-jar</goal>
+                  <goal>jar-no-fork</goal>
+                  <goal>test-jar-no-fork</goal>
                 </goals>
               </execution>
             </executions>
@@ -444,9 +445,6 @@
             <configuration>
               <javadocVersion>${jdk.target}</javadocVersion>
               <quiet>true</quiet>
-              <encoding>UTF-8</encoding>
-              <charset>UTF-8</charset>
-              <docencoding>UTF-8</docencoding>
               <additionalOptions>
                 <option>-Xdoclint:none</option>
               </additionalOptions>
