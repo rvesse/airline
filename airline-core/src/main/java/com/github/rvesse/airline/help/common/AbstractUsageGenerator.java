@@ -15,13 +15,12 @@
  */
 package com.github.rvesse.airline.help.common;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.rvesse.airline.help.UsageHelper;
@@ -80,37 +79,41 @@ public class AbstractUsageGenerator {
      * @return Sorted options
      */
     protected List<OptionMetadata> sortOptions(List<OptionMetadata> options) {
-        if (optionComparator != null) {
-            options = new ArrayList<OptionMetadata>(options);
-            Collections.sort(options, optionComparator);
+        if (optionComparator == null) {
+            return options;
         }
-        return options;
+
+        return options.stream()
+                .sorted(optionComparator)
+                .collect(Collectors.toList());
     }
 
     protected List<HelpHint> sortOptionRestrictions(List<OptionRestriction> restrictions) {
-        List<HelpHint> hints = new ArrayList<>();
-        for (OptionRestriction restriction : restrictions) {
-            if (restriction instanceof HelpHint) {
-                hints.add((HelpHint)restriction);
-            }
+        var hints = restrictions.stream()
+            .filter(HelpHint.class::isInstance)
+            .map(HelpHint.class::cast);
+
+        if (hintComparator == null) {
+            return hints.collect(Collectors.toList());
         }
-        if (hintComparator != null) {
-            Collections.sort(hints, hintComparator);
-        }
-        return hints;
+
+        return hints
+                .sorted(hintComparator)
+                .collect(Collectors.toList());
     }
-    
+
     protected List<HelpHint> sortArgumentsRestrictions(List<ArgumentsRestriction> restrictions) {
-        List<HelpHint> hints = new ArrayList<>();
-        for (ArgumentsRestriction restriction : restrictions) {
-            if (restriction instanceof HelpHint) {
-                hints.add((HelpHint)restriction);
-            }
+        var hints = restrictions.stream()
+                .filter(HelpHint.class::isInstance)
+                .map(HelpHint.class::cast);
+
+        if (hintComparator == null) {
+            return hints.collect(Collectors.toList());
         }
-        if (hintComparator != null) {
-            Collections.sort(hints, hintComparator);
-        }
-        return hints;
+
+        return hints
+                .sorted(hintComparator)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -122,11 +125,13 @@ public class AbstractUsageGenerator {
      * @return Sorted commands
      */
     protected List<CommandMetadata> sortCommands(List<CommandMetadata> commands) {
-        if (commandComparator != null) {
-            commands = new ArrayList<>(commands);
-            Collections.sort(commands, commandComparator);
+        if (commandComparator == null) {
+            return commands;
         }
-        return commands;
+
+        return commands.stream()
+                .sorted(commandComparator)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -172,13 +177,11 @@ public class AbstractUsageGenerator {
      * @return Option synopses
      */
     protected List<String> toSynopsisUsage(List<OptionMetadata> options) {
-        List<String> synopsisOptions = new ArrayList<String>();
-        for (OptionMetadata option : options) {
-            if (option.isHidden() && !includeHidden)
-                continue;
-            synopsisOptions.add(toUsage(option));
-        }
-        return List.copyOf(synopsisOptions);
+        Predicate<OptionMetadata> noHidden = o -> o.isHidden() && !includeHidden;
+        return options.stream()
+                .filter(noHidden.negate())
+                .map(this::toUsage)
+                .collect(Collectors.toList());
     }
 
     protected String toUsage(ArgumentsMetadata arguments) {
