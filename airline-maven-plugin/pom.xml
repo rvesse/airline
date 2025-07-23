@@ -15,7 +15,6 @@
     <url>http://rvesse.github.io/airline/</url>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <license.header.path>${project.parent.basedir}</license.header.path>
         <coveralls.skip>true</coveralls.skip>
 

@@ -5,11 +5,9 @@
     <groupId>com.github.rvesse</groupId>
     <artifactId>airline-parent</artifactId>
     <version>3.1.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>airline</artifactId>
-  <packaging>jar</packaging>
 
   <name>Airline - Library</name>
   <description>Java library provided an annotation-based framework for parsing Git like command line structures</description>
