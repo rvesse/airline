@@ -116,7 +116,7 @@ Snapshot artifacts of the latest source are also available using the version `3.
 
 [![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/rvesse/airline.svg?label=License)](https://www.apache.org/licenses/)
 [![Maven Central Version](https://img.shields.io/maven-central/v/com.github.rvesse/airline)](https://central.sonatype.com/artifact/com.github.rvesse/airline)
-![Main](https://github.com/rvesse/airline/workflows/Build/badge.svg)
+[![Main](https://github.com/rvesse/airline/workflows/Build/badge.svg)](https://github.com/rvesse/airline/actions?query=branch%3Amain)
 
 For more detailed information [GitHub Actions](https://docs.github.com/en/actions)
 
