@@ -52,6 +52,13 @@ More generally Airline supports any Java class that meets one of the following c
 - Provides a static `fromString(String)` method
 - Provides a constructor which takes a single `String` argument
 
+#### `CharSequence` overloads
+
+{% include req-ver.md version="3.2.0" %}
+
+From `3.2.0` onwards overloads of the above methods and/or constructors that take a `CharSequence` argument are also
+supported.
+
 ### Collections
 
 Airline also supports any type which is a `Collection` of another supported type.
