@@ -7,10 +7,17 @@ positional argument support, better DI framework integration, that are not possi
 breaking changes.  You can see progress on 4.x by following the `4x` branch and its `CHANGELOG.md` and `Migrating.md`
 files.
 
-### 3.1.1
+### 3.2.0
 
+- Type Conversion improvements:
+    - When converting to types `DefaultTypeConverter` now considers overloads of `valueOf()`, `fromString()` and
+      constructors that take a `CharSequence` argument
 - Code Modernisation
     - Applied a variety of code modernisation PRs (#136, #138, #140, #143) (thanks to @khmarbaise)
+- Build Cleanup
+    - The Maven Plugin build dependencies were updated to avoid warnings during the build process (#152) (thanks to
+      @khmarbaise)
+    - Various other build warnings eliminated (thanks to @khmarbaise)
 - Dependency Updates
     - Apache Commons Lang upgraded to 3.18.0 
 

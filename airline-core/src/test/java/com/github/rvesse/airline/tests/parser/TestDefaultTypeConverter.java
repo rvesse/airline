@@ -25,7 +25,7 @@ import com.github.rvesse.airline.types.TypeConverter;
 public class TestDefaultTypeConverter {
 
     private static final String OPTION_NAME = "--test";
-    private TypeConverter converter = new DefaultTypeConverter();
+    private final TypeConverter converter = new DefaultTypeConverter();
 
     @Test(expectedExceptions = NullPointerException.class)
     public void convert_null_value() {
@@ -190,5 +190,36 @@ public class TestDefaultTypeConverter {
             ConversionEnum converted = testConvert(ConversionEnum.class, value);
             Assert.assertEquals(converted, item);
         }
+    }
+
+    public static class FromCharSequence extends ConversionExample {
+
+        private FromCharSequence(CharSequence value) {
+            super((String)value);
+        }
+
+        public static FromCharSequence fromString(CharSequence value) {
+            return new FromCharSequence(value);
+        }
+    }
+
+    @Test
+    public void convert_static_fromCharSequence() {
+        String value = "test";
+        FromCharSequence converted = testConvert(FromCharSequence.class, value);
+        Assert.assertEquals(converted.value, value);
+    }
+
+    public static class CharSequenceConstructor extends ConversionExample {
+        public CharSequenceConstructor(CharSequence value) {
+            super((String)value);
+        }
+    }
+
+    @Test
+    public void convert_constructor_fromCharSequence() {
+        String value = "test";
+        CharSequenceConstructor converted = testConvert(CharSequenceConstructor.class, value);
+        Assert.assertEquals(converted.value, value);
     }
 }
