@@ -1,0 +1,5 @@
+module:com.github.rvesse.airline.help.external
+com.github.rvesse.airline.annotations.help.external
+com.github.rvesse.airline.help.external.factories
+com.github.rvesse.airline.help.external.parsers
+com.github.rvesse.airline.help.external.parsers.defaults

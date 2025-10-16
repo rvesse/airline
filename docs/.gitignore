@@ -21,6 +21,7 @@ release.properties
 *.ipr
 
 # Bundle/Jekyll Artifacts
+.gems/
 Gemfile.lock
 _site/
 scripts/*.jar
