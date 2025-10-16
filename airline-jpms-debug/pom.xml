@@ -4,7 +4,7 @@
     <parent>
         <artifactId>airline-parent</artifactId>
         <groupId>com.github.rvesse</groupId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.2.0</version>
     </parent>
     <artifactId>airline-jpms-debug</artifactId>
     <name>Airline - JPMS - Resource Visibility Debugging Utility</name>
