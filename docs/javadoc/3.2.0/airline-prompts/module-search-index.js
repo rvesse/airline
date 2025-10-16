@@ -1,0 +1,1 @@
+moduleSearchIndex = [{"l":"com.github.rvesse.airline.prompts"}]
