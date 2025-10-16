@@ -5,7 +5,7 @@
   <groupId>com.github.rvesse</groupId>
   <artifactId>airline-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.2.0</version>
+  <version>3.2.1-SNAPSHOT</version>
   <name>Airline - Parent</name>
   <description>Java annotation-based framework for parsing Git like command line structures</description>
   <url>https://github.com/rvesse/airline</url>
@@ -16,7 +16,7 @@
     <connection>scm:git:git@github.com:rvesse/airline.git</connection>
     <developerConnection>scm:git:git@github.com:rvesse/airline.git</developerConnection>
     <url>git:git@github.com:rvesse/airline.git</url>
-    <tag>3.2.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <developers>

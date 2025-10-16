@@ -4,7 +4,7 @@
     <parent>
         <artifactId>airline-parent</artifactId>
         <groupId>com.github.rvesse</groupId>
-        <version>3.2.0</version>
+        <version>3.2.1-SNAPSHOT</version>
     </parent>
     <artifactId>airline-jpms-resources</artifactId>
     <name>Airline - JPMS - Resource Locator</name>
