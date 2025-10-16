@@ -1,0 +1,7 @@
+module:com.github.rvesse.airline.prompts
+com.github.rvesse.airline.prompts
+com.github.rvesse.airline.prompts.builders
+com.github.rvesse.airline.prompts.console
+com.github.rvesse.airline.prompts.errors
+com.github.rvesse.airline.prompts.formatters
+com.github.rvesse.airline.prompts.matchers
