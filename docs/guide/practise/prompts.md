@@ -304,8 +304,8 @@ properly.
 
 ### Prompts Helper
 
-The `Prompts` helper class provides `PromptBuilder`'s with some basic's preconfigured that you can use as a starting
-point for further configuration:
+The `Prompts` helper class provides [`PromptBuilder`](#prompt-builder)'s with some basics preconfigured for you that you
+can use as a starting point for further configuration:
 
 - `Prompts.defaultPrompt()` - A builder with the [provider](#provider) set to the default for your runtime environment
   and no [timeout](#timeouts).
