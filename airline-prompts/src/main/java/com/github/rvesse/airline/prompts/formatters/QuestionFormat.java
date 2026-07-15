@@ -23,15 +23,14 @@ import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.builders.ListFormatBuilder;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Prompt format for simple questions with either a free-form response or with a limited number of options
  *
- * @param <TOption> Option type
  */
-public class QuestionFormat<TOption> implements PromptFormatter {
-
-    private final int columns;
+public class QuestionFormat extends AbstractPromptFormat {
 
     /**
      * Creates a new question format with default columns
@@ -46,7 +45,7 @@ public class QuestionFormat<TOption> implements PromptFormatter {
      * @param columns Columns
      */
     public QuestionFormat(int columns) {
-        this.columns = columns;
+        super(columns);
     }
 
     @Override
@@ -66,11 +65,12 @@ public class QuestionFormat<TOption> implements PromptFormatter {
         writer.flush();
     }
 
-    private static <T> String formatOptions(Prompt<T> prompt) {
+    private <T> String formatOptions(Prompt<T> prompt) {
+        String optionsString = prompt.getOptions().stream().map(this::formatOption).collect(Collectors.joining("/"));
         if (prompt.getDefaultOption() == null) {
-            return StringUtils.join(prompt.getOptions(), "/");
+            return optionsString;
         } else {
-            return StringUtils.join(prompt.getOptions(), "/") + " [" + prompt.getDefaultOption() + "]";
+            return optionsString + " [" + prompt.getDefaultOption() + "]";
         }
     }
 

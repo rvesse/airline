@@ -765,7 +765,7 @@ public abstract class AbstractPromptTests {
         //@formatter:off
         Prompt<String> prompt = new PromptBuilder<String>()
                 .withPromptProvider(this.getProvider(input, output))
-                .withFormatter(new QuestionFormat<>())
+                .withFormatter(new QuestionFormat())
                 .withOptions("alpha", "beta")
                 .withPromptMessage("Which option?")
                 .withTimeout(100, TimeUnit.MILLISECONDS)
@@ -787,7 +787,7 @@ public abstract class AbstractPromptTests {
         //@formatter:off
         Prompt<String> prompt = new PromptBuilder<String>()
                 .withPromptProvider(this.getProvider(input, output))
-                .withFormatter(new QuestionFormat<>())
+                .withFormatter(new QuestionFormat())
                 .withPromptMessage("How much memory would you like?")
                 .withTypeConverter(new DefaultTypeConverter(new KiloAs1024()))
                 .withTimeout(100, TimeUnit.MILLISECONDS)
@@ -807,7 +807,7 @@ public abstract class AbstractPromptTests {
         //@formatter:off
         Prompt<String> prompt = new PromptBuilder<String>()
                 .withPromptProvider(this.getProvider(input, output))
-                .withFormatter(new QuestionFormat<>())
+                .withFormatter(new QuestionFormat())
                 .withPromptMessage("How much memory would you like?")
                 .withTypeConverter(new DefaultTypeConverter(new KiloAs1024()))
                 .withTimeout(100, TimeUnit.MILLISECONDS)
@@ -827,7 +827,7 @@ public abstract class AbstractPromptTests {
         //@formatter:off
         Prompt<String> prompt = new PromptBuilder<String>()
                 .withPromptProvider(this.getProvider(input, output))
-                .withFormatter(new QuestionFormat<>())
+                .withFormatter(new QuestionFormat())
                 .withPromptMessage("How much memory would you like?")
                 .withTypeConverter(new DefaultTypeConverter(new KiloAs1000()))
                 .withTimeout(100, TimeUnit.MILLISECONDS)
@@ -991,7 +991,7 @@ public abstract class AbstractPromptTests {
         //@formatter:off
         Prompt<String> prompt = new PromptBuilder<String>()
                 .withPromptProvider(this.getProvider(input, output))
-                .withFormatter(new QuestionFormat<>())
+                .withFormatter(new QuestionFormat())
                 .withPromptMessage("How much memory would you like?")
                 .withTypeConverter(new DefaultTypeConverter(new KiloAs1024()))
                 .withTimeout(100, TimeUnit.MILLISECONDS)
@@ -1011,7 +1011,7 @@ public abstract class AbstractPromptTests {
         //@formatter:off
         Prompt<String> prompt = new PromptBuilder<String>()
                 .withPromptProvider(this.getProvider(input, output))
-                .withFormatter(new QuestionFormat<>())
+                .withFormatter(new QuestionFormat())
                 .withPromptMessage("How much memory would you like?")
                 .withTypeConverter(new DefaultTypeConverter(new KiloAs1024()))
                 .withTimeout(100, TimeUnit.MILLISECONDS)

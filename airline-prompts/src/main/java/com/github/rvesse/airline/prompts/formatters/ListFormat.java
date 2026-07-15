@@ -26,26 +26,22 @@ import java.util.Objects;
  * <p>
  * This will format the options as a list, using columns
  * </p>
- *
- * @param <TOption> Option type
  */
-public class ListFormat<TOption> implements PromptFormatter {
-
-    private final int columns;
-
+public class ListFormat extends AbstractPromptFormat {
     /**
      * Creates a new list format with default columns
      */
     public ListFormat() {
-        this(ListFormatBuilder.DEFAULT_COLUMNS);
+        super(ListFormatBuilder.DEFAULT_COLUMNS);
     }
 
     /**
      * Creates a new list format with the specified number of columns
-     * @param columns
+     *
+     * @param columns Desired number of output columns
      */
     public ListFormat(int columns) {
-        this.columns = columns;
+        super(columns);
     }
 
     @Override
@@ -62,15 +58,13 @@ public class ListFormat<TOption> implements PromptFormatter {
             String defaultMarker = prompt.getDefaultOption() != null ?
                                    (Objects.equals(prompt.getDefaultOption(), option) ? "[Default]" : "") : "";
             if (prompt.allowsNumericOptionSelection()) {
-                optionPrinter.append(String.format("- %d) %s " + defaultMarker, ++index, option.toString()));
+                optionPrinter.append(String.format("- %d) %s " + defaultMarker, ++index, formatOption(option)));
             } else {
-                optionPrinter.append(String.format("- %s " + defaultMarker, option.toString()));
+                optionPrinter.append(String.format("- %s " + defaultMarker, formatOption(option)));
             }
             optionPrinter.newline();
         }
         optionPrinter.flush();
         printer.flush();
-
     }
-
 }

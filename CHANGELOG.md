@@ -19,6 +19,8 @@ files.
       underlying Airline parser exception
     - Built-in `PromptFormatter` will now indicate the default option if that is configured for a prompt
     - Applies some code modernisation to various parts of the `airline-prompts` module
+    - **BREAKING** - Internal `ListFormat` and `QuestionFormat` types no longer require class level type parameters,
+      most usage of these classes should be indirect and this change should be transparent to most users
 
 ### 3.2.0
 

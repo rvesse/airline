@@ -27,7 +27,7 @@ import com.github.rvesse.airline.prompts.formatters.ListFormat;
  * @param <TOption> Option type
  */
 public abstract class PromptFormatBuilder<TOption>
-        extends AbstractChildBuilder<ListFormat<TOption>, Prompt<TOption>, PromptBuilder<TOption>> {
+        extends AbstractChildBuilder<ListFormat, Prompt<TOption>, PromptBuilder<TOption>> {
 
     protected PromptFormatBuilder(PromptBuilder<TOption> parentBuilder) {
         super(parentBuilder);

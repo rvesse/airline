@@ -316,7 +316,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
      */
     public PromptBuilder<TOption> withQuestionFormatter() {
         this.formatBuilder = null;
-        this.formatter = new QuestionFormat<>();
+        this.formatter = new QuestionFormat();
         return this;
     }
 
@@ -360,7 +360,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
                 promptFormatter = this.formatBuilder.build();
             } else {
                 promptFormatter =
-                        CollectionUtils.isNotEmpty(this.options) ? new ListFormat<>() : new QuestionFormat<>();
+                        CollectionUtils.isNotEmpty(this.options) ? new ListFormat() : new QuestionFormat();
             }
         }
         return new Prompt<>(this.provider, promptFormatter, this.timeout, this.timeoutUnit, this.message, this.options,
