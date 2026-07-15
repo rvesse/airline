@@ -32,6 +32,9 @@ import java.io.InputStream;
 public class JpmsResourceLocator implements ResourceLocator {
 
     @Override
+    // NB - We use the ScanResultInputStream wrapper to ensure the scan is closed so resource leak warnings are not
+    //      valid here
+    @SuppressWarnings("resource")
     public InputStream open(String searchLocation, String filename) throws IOException {
         if (searchLocation == null) {
             return null;
