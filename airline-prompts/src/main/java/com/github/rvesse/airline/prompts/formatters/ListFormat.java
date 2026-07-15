@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.rvesse.airline.prompts.formatters;
 
 import com.github.rvesse.airline.io.printers.UsagePrinter;
 import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.builders.ListFormatBuilder;
+
+import java.util.Objects;
 
 /**
  * A prompt formatter that presents a list of options
@@ -29,16 +30,16 @@ import com.github.rvesse.airline.prompts.builders.ListFormatBuilder;
  * @param <TOption> Option type
  */
 public class ListFormat<TOption> implements PromptFormatter {
-    
+
     private final int columns;
-    
+
     /**
      * Creates a new list format with default columns
      */
     public ListFormat() {
         this(ListFormatBuilder.DEFAULT_COLUMNS);
     }
-    
+
     /**
      * Creates a new list format with the specified number of columns
      * @param columns
@@ -50,24 +51,26 @@ public class ListFormat<TOption> implements PromptFormatter {
     @Override
     public <T> void displayPrompt(Prompt<T> prompt) {
         UsagePrinter printer = new UsagePrinter(prompt.getProvider().getPromptWriter(), this.columns);
-        printer.append(String.format("%s: ", prompt.getMessage()));
+        printer.append(String.format("%s:", prompt.getMessage()));
         printer.newline();
         printer.flush();
-        
+
         UsagePrinter optionPrinter = printer.newIndentedPrinter(2).newPrinterWithHangingIndent(2);
-        
+
         int index = 0;
         for (T option : prompt.getOptions()) {
+            String defaultMarker = prompt.getDefaultOption() != null ?
+                                   (Objects.equals(prompt.getDefaultOption(), option) ? "[Default]" : "") : "";
             if (prompt.allowsNumericOptionSelection()) {
-                optionPrinter.append(String.format("- %d) %s", ++index, option.toString()));
+                optionPrinter.append(String.format("- %d) %s " + defaultMarker, ++index, option.toString()));
             } else {
-                optionPrinter.append(String.format("- %s", option.toString()));
+                optionPrinter.append(String.format("- %s " + defaultMarker, option.toString()));
             }
             optionPrinter.newline();
         }
         optionPrinter.flush();
         printer.flush();
-        
+
     }
 
 }

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.rvesse.airline.prompts.builders;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -37,8 +37,7 @@ import com.github.rvesse.airline.types.TypeConverter;
 /**
  * A prompt builder is used to define a prompt in a Fluent API style
  *
- * @param <TOption>
- *            Option
+ * @param <TOption> Option
  */
 public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
@@ -48,7 +47,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
     private long timeout = 0;
     private TimeUnit timeoutUnit = TimeUnit.SECONDS;
     private boolean allowsNumericOptionSelection = true;
-    private List<TOption> options = new ArrayList<TOption>();
+    private final List<TOption> options = new ArrayList<TOption>();
+    private TOption defaultOption = null;
     private PromptOptionMatcher<TOption> optionMatcher = new DefaultMatcher<>();
     private String message = null;
     private TypeConverter converter = new DefaultTypeConverter();
@@ -58,7 +58,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies that the default prompt provider should be used
-     * 
+     *
      * @return Builder
      */
     public PromptBuilder<TOption> withDefaultPromptProvider() {
@@ -68,9 +68,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies that the given prompt provider should be used
-     * 
-     * @param provider
-     *            Prompt provider
+     *
+     * @param provider Prompt provider
      * @return Builder
      */
     public PromptBuilder<TOption> withPromptProvider(PromptProvider provider) {
@@ -80,9 +79,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies the time unit used to apply timeouts to prompts
-     * 
-     * @param unit
-     *            Time Unit
+     *
+     * @param unit Time Unit
      * @return Builder
      */
     public PromptBuilder<TOption> withTimeoutUnit(TimeUnit unit) {
@@ -92,9 +90,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies the timeout
-     * 
-     * @param timeout
-     *            Timeout
+     *
+     * @param timeout Timeout
      * @return Builder
      */
     public PromptBuilder<TOption> withTimeout(long timeout) {
@@ -104,11 +101,9 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies the timeout
-     * 
-     * @param timeout
-     *            Timeout
-     * @param unit
-     *            Time Unit
+     *
+     * @param timeout Timeout
+     * @param unit    Time Unit
      * @return Builder
      */
     public PromptBuilder<TOption> withTimeout(long timeout, TimeUnit unit) {
@@ -119,7 +114,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies that no timeout should be used
-     * 
+     *
      * @return Builder
      */
     public PromptBuilder<TOption> withoutTimeout() {
@@ -129,9 +124,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies one/more options for the prompt
-     * 
-     * @param options
-     *            Options
+     *
+     * @param options Options
      * @return Builder
      */
     @SuppressWarnings("unchecked")
@@ -143,10 +137,20 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
     }
 
     /**
+     * Specifies one/more options for the prompt
+     *
+     * @param options Options
+     * @return Builder
+     */
+    public PromptBuilder<TOption> withOptions(Collection<TOption> options) {
+        this.options.addAll(options);
+        return this;
+    }
+
+    /**
      * Specifies an option for the prompt
-     * 
-     * @param option
-     *            Option
+     *
+     * @param option Option
      * @return Builder
      */
     public PromptBuilder<TOption> withOption(TOption option) {
@@ -155,8 +159,29 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
     }
 
     /**
+     * Specifies a default option for the prompt
+     *
+     * @param defaultOption Default option
+     * @return Builder
+     */
+    public PromptBuilder<TOption> withDefaultOption(TOption defaultOption) {
+        this.defaultOption = defaultOption;
+        return this;
+    }
+
+    /**
+     * Specifies that there is no default option for the prompt
+     *
+     * @return Builder
+     */
+    public PromptBuilder<TOption> withoutDefaultOption() {
+        this.defaultOption = null;
+        return this;
+    }
+
+    /**
      * Clears all previously specified options
-     * 
+     *
      * @return Builder
      */
     public PromptBuilder<TOption> clearOptions() {
@@ -166,7 +191,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Enables numeric option selection
-     * 
+     *
      * @return Builder
      */
     public PromptBuilder<TOption> withNumericOptionSelection() {
@@ -176,7 +201,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Disables numeric option selection
-     * 
+     *
      * @return Builder
      */
     public PromptBuilder<TOption> withoutNumericOptionSelection() {
@@ -186,9 +211,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies the option matcher to use
-     * 
-     * @param matcher
-     *            Option matcher
+     *
+     * @param matcher Option matcher
      * @return Builder
      */
     public PromptBuilder<TOption> withOptionMatcher(PromptOptionMatcher<TOption> matcher) {
@@ -198,7 +222,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies that the default option matcher be used
-     * 
+     *
      * @return Builder
      */
     public PromptBuilder<TOption> withDefaultOptionMatcher() {
@@ -208,9 +232,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies the prompt message to display
-     * 
-     * @param message
-     *            Message
+     *
+     * @param message Message
      * @return Builder
      */
     public PromptBuilder<TOption> withPromptMessage(String message) {
@@ -220,9 +243,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies the prompt formatter to use
-     * 
-     * @param formatter
-     *            Formatter
+     *
+     * @param formatter Formatter
      * @return Builder
      */
     public PromptBuilder<TOption> withFormatter(PromptFormatter formatter) {
@@ -233,9 +255,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies the prompt formatter builder to use
-     * 
-     * @param formatBuilder
-     *            Format Builder
+     *
+     * @param formatBuilder Format Builder
      * @return Builder
      */
     public PromptBuilder<TOption> withFormatBuilder(PromptFormatBuilder<TOption> formatBuilder) {
@@ -246,7 +267,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Switches to a child builder for the prompt format
-     * 
+     *
      * @return Prompt Format Builder
      */
     public PromptFormatBuilder<TOption> withFormatBuilder() {
@@ -259,7 +280,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Switches to a child builder for the list formatter
-     * 
+     *
      * @return List Format Builder
      */
     public ListFormatBuilder<TOption> withListFormatBuilder() {
@@ -279,7 +300,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies that a list formatter should be used
-     * 
+     *
      * @return Builder
      */
     public PromptBuilder<TOption> withListFormatter() {
@@ -290,7 +311,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies that a question formatter should be used
-     * 
+     *
      * @return Builder
      */
     public PromptBuilder<TOption> withQuestionFormatter() {
@@ -301,7 +322,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies that the default formatter should be used, this is the list formatter
-     * 
+     *
      * @return Builder
      */
     public PromptBuilder<TOption> withDefaultFormatter() {
@@ -312,9 +333,8 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies the type converter to use
-     * 
-     * @param converter
-     *            Type Converter
+     *
+     * @param converter Type Converter
      * @return Builder
      */
     public PromptBuilder<TOption> withTypeConverter(TypeConverter converter) {
@@ -324,7 +344,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
 
     /**
      * Specifies that the default type converter be used
-     * 
+     *
      * @return
      */
     public PromptBuilder<TOption> withDefaultTypeConverter() {
@@ -339,12 +359,12 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
             if (this.formatBuilder != null) {
                 promptFormatter = this.formatBuilder.build();
             } else {
-                promptFormatter = CollectionUtils.isNotEmpty(this.options) ? new ListFormat<>()
-                        : new QuestionFormat<>();
+                promptFormatter =
+                        CollectionUtils.isNotEmpty(this.options) ? new ListFormat<>() : new QuestionFormat<>();
             }
         }
-        return new Prompt<TOption>(this.provider, promptFormatter, this.timeout, this.timeoutUnit, this.message,
-                this.options, this.optionMatcher, this.allowsNumericOptionSelection, this.converter);
+        return new Prompt<>(this.provider, promptFormatter, this.timeout, this.timeoutUnit, this.message, this.options,
+                            this.optionMatcher, this.allowsNumericOptionSelection, this.converter, this.defaultOption);
     }
 
 }

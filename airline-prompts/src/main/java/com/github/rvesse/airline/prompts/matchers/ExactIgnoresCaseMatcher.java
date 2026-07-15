@@ -16,7 +16,7 @@
 
 package com.github.rvesse.airline.prompts.matchers;
 
-import org.apache.commons.collections4.Predicate;
+import java.util.function.Predicate;
 
 public class ExactIgnoresCaseMatcher<TOption> extends ExactMatcher<TOption> {
 

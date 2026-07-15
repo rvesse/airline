@@ -16,13 +16,13 @@
 
 package com.github.rvesse.airline.prompts.matchers;
 
-import org.apache.commons.collections4.Predicate;
+import java.util.function.Predicate;
 
 public class ExactMatcher<TOption> extends DefaultMatcher<TOption> {
 
     @Override
     protected Predicate<TOption> getExactOrPartialMatcher(String response) {
-        return new MatcherUtils.Exact<TOption>(response);
+        return new MatcherUtils.Exact<>(response);
     }
 
 }

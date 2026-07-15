@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.rvesse.airline.prompts.formatters;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,11 +22,12 @@ import com.github.rvesse.airline.io.printers.UsagePrinter;
 import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.builders.ListFormatBuilder;
 
+import java.io.PrintWriter;
+
 /**
  * Prompt format for simple questions with either a free-form response or with a limited number of options
  *
- * @param <TOption>
- *            Option type
+ * @param <TOption> Option type
  */
 public class QuestionFormat<TOption> implements PromptFormatter {
 
@@ -42,9 +42,8 @@ public class QuestionFormat<TOption> implements PromptFormatter {
 
     /**
      * Creates a new question format with the specified columns
-     * 
-     * @param columns
-     *            Columns
+     *
+     * @param columns Columns
      */
     public QuestionFormat(int columns) {
         this.columns = columns;
@@ -52,13 +51,27 @@ public class QuestionFormat<TOption> implements PromptFormatter {
 
     @Override
     public <T> void displayPrompt(Prompt<T> prompt) {
-        UsagePrinter printer = new UsagePrinter(prompt.getProvider().getPromptWriter(), this.columns);
+        PrintWriter writer = prompt.getProvider().getPromptWriter();
+        UsagePrinter printer = new UsagePrinter(writer, this.columns);
         if (CollectionUtils.isNotEmpty(prompt.getOptions())) {
-            printer.append(String.format("%s? [%s] ", prompt.getMessage(), StringUtils.join(prompt.getOptions(), "/")));
+            printer.append(
+                    String.format("%s? [%s]", prompt.getMessage(), formatOptions(prompt)));
         } else {
-            printer.append(String.format("%s? ", prompt.getMessage()));
+            printer.append(String.format("%s?", prompt.getMessage()));
         }
         printer.flush();
+        // NB - UsagePrinter strips trailing whitespace so have to explicitly add the whitespace after the question
+        //      prompt otherwise the prompt looks a bit clunky in the console
+        writer.print(' ');
+        writer.flush();
+    }
+
+    private static <T> String formatOptions(Prompt<T> prompt) {
+        if (prompt.getDefaultOption() == null) {
+            return StringUtils.join(prompt.getOptions(), "/");
+        } else {
+            return StringUtils.join(prompt.getOptions(), "/") + " [" + prompt.getDefaultOption() + "]";
+        }
     }
 
 }
