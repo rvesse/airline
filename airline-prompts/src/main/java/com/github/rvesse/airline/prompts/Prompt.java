@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.rvesse.airline.prompts;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -35,12 +33,12 @@ import com.github.rvesse.airline.prompts.matchers.DefaultMatcher;
 import com.github.rvesse.airline.prompts.matchers.PromptOptionMatcher;
 import com.github.rvesse.airline.types.DefaultTypeConverter;
 import com.github.rvesse.airline.types.TypeConverter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Represents a prompt
  *
- * @param <TOption>
- *            Option type
+ * @param <TOption> Option type
  */
 public class Prompt<TOption> {
 
@@ -51,50 +49,46 @@ public class Prompt<TOption> {
     private final TimeUnit timeoutUnit;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final List<TOption> options;
+    private final TOption defaultOption;
     private final PromptOptionMatcher<TOption> optionMatcher;
     private final String message;
     private final TypeConverter converter;
 
     /**
      * Creates a new prompt
-     * 
-     * @param provider
-     *            Prompt Provider
-     * @param formatter
-     *            Prompt Formatter
-     * @param timeout
-     *            Timeout
-     * @param timeoutUnit
-     *            Timeout Unit
-     * @param promptMessage
-     *            Prompt Message
-     * @param options
-     *            Options
-     * @param optionMatcher
-     *            Option matcher
-     * @param allowNumericOptionSelection
-     *            Whether numeric option selection is allowed
-     * @param converter
-     *            Type converter
+     * <p>
+     * It may be easier to use {@link com.github.rvesse.airline.prompts.builders.PromptBuilder}, or the {@link Prompts}
+     * helpers to construct the desired prompt without needing to provide every constructor parameter.
+     * </p>
+     *
+     * @param provider                    Prompt Provider
+     * @param formatter                   Prompt Formatter
+     * @param timeout                     Timeout
+     * @param timeoutUnit                 Timeout Unit
+     * @param promptMessage               Prompt Message
+     * @param options                     Options
+     * @param optionMatcher               Option matcher
+     * @param allowNumericOptionSelection Whether numeric option selection is allowed
+     * @param converter                   Type converter
      */
     public Prompt(PromptProvider provider, PromptFormatter formatter, long timeout, TimeUnit timeoutUnit,
-            String promptMessage, Collection<TOption> options, PromptOptionMatcher<TOption> optionMatcher,
-            boolean allowNumericOptionSelection, TypeConverter converter) {
+                  String promptMessage, Collection<TOption> options, PromptOptionMatcher<TOption> optionMatcher,
+                  boolean allowNumericOptionSelection, TypeConverter converter, TOption defaultOption) {
         this.provider = provider;
         this.formatter = formatter;
         this.timeout = timeout > 0 ? timeout : 0;
         this.timeoutUnit = timeoutUnit;
         this.message = promptMessage;
-        this.options = options == null ? Collections.<TOption> emptyList()
-                : Collections.unmodifiableList(new ArrayList<TOption>(options));
-        this.optionMatcher = optionMatcher != null ? optionMatcher : new DefaultMatcher<TOption>();
+        this.options = options == null ? Collections.emptyList() : List.copyOf(options);
+        this.defaultOption = defaultOption;
+        this.optionMatcher = optionMatcher != null ? optionMatcher : new DefaultMatcher<>();
         this.allowNumericOptionSelection = allowNumericOptionSelection;
         this.converter = converter != null ? converter : new DefaultTypeConverter();
     }
 
     /**
      * Gets the prompt provider
-     * 
+     *
      * @return Provider
      */
     public PromptProvider getProvider() {
@@ -103,7 +97,7 @@ public class Prompt<TOption> {
 
     /**
      * Gets the prompt message
-     * 
+     *
      * @return Message
      */
     public String getMessage() {
@@ -112,7 +106,7 @@ public class Prompt<TOption> {
 
     /**
      * Gets whether options can be selected numerically when using {@link #promptForOption(boolean)}
-     * 
+     *
      * @return True if numeric selection enabled, false otherwise
      */
     public boolean allowsNumericOptionSelection() {
@@ -121,7 +115,7 @@ public class Prompt<TOption> {
 
     /**
      * Gets the available options (if any)
-     * 
+     *
      * @return Options
      */
     public List<TOption> getOptions() {
@@ -134,7 +128,7 @@ public class Prompt<TOption> {
 
     /**
      * Gets the configured type converter
-     * 
+     *
      * @return Type converter
      */
     public TypeConverter getTypeConverter() {
@@ -143,7 +137,7 @@ public class Prompt<TOption> {
 
     /**
      * Gets the configured timeout
-     * 
+     *
      * @return Configured timeout or 0 if no timeout
      */
     public long getTimeout() {
@@ -152,7 +146,7 @@ public class Prompt<TOption> {
 
     /**
      * Gets the timeout unit
-     * 
+     *
      * @return Timeout unit
      */
     public TimeUnit getTimeoutUnit() {
@@ -168,13 +162,11 @@ public class Prompt<TOption> {
 
     /**
      * Wait for a prompt response
-     * 
-     * @param <T>
-     *            Response type
-     * @param future
-     *            Future
+     *
+     * @param <T>    Response type
+     * @param future Future
      * @return Response type
-     * @throws PromptException
+     * @throws PromptException Thrown if the prompt does not return in a timely manner
      */
     protected <T> T waitForPromptResponse(Future<T> future) throws PromptException {
         try {
@@ -190,9 +182,9 @@ public class Prompt<TOption> {
 
     /**
      * Prompts for a single key
-     * 
+     *
      * @return Key code
-     * @throws PromptException
+     * @throws PromptException Thrown if no key input is received within the timeout
      */
     public int promptForKey() throws PromptException {
         this.displayPrompt();
@@ -205,28 +197,31 @@ public class Prompt<TOption> {
                 }
             };
             Future<Integer> future = this.executor.submit(bgPrompt);
-            return waitForPromptResponse(future).intValue();
+            return waitForPromptResponse(future);
         } else {
             return this.provider.readKey();
         }
     }
 
     /**
-     * Prompts for a line of input
-     * 
+     * Prompts for a line of input without any interpretation thereof
+     * <p>
+     * If the input should be secure use {@link #promptForSecure()} instead, if you only need a single key use
+     * {@link #promptForKey()} instead.
+     * </p>
+     * <p>
+     * See {@link #promptForValue(Class, boolean)} or {@link #promptForOption(boolean)} if you wish to prompt for
+     * strongly typed values.
+     * </p>
+     *
      * @return Input line
-     * @throws PromptException
+     * @throws PromptException Thrown if prompt input is not received
      */
     public String promptForLine() throws PromptException {
         this.displayPrompt();
 
         if (this.timeout > 0) {
-            Callable<String> bgPrompt = new Callable<String>() {
-                @Override
-                public String call() throws Exception {
-                    return provider.readLine();
-                }
-            };
+            Callable<String> bgPrompt = provider::readLine;
             Future<String> future = this.executor.submit(bgPrompt);
             return waitForPromptResponse(future);
         } else {
@@ -235,62 +230,97 @@ public class Prompt<TOption> {
     }
 
     /**
-     * Prompts for option
-     * 
-     * @param secure
-     *            Does the response need to be secure?
+     * Prompts for option selecting a strongly typed option based upon the prompt input
+     * <p>
+     * This requires that the prompt was configured with the available options up front, if not then a
+     * {@link PromptException} will be thrown.  If empty input is received from the prompt then either the
+     * {@link #getDefaultOption()} is returned if set, or a {@link PromptException} is thrown.
+     * </p>
+     *
+     * @param secure Does the response need to be secure?
      * @return Option value
-     * @throws PromptException
+     * @throws PromptException May be thrown if there is a problem prompting for input, or if
      */
     public TOption promptForOption(boolean secure) throws PromptException {
-        if (this.options.isEmpty())
+        if (this.options.isEmpty()) {
             throw new PromptException("Cannot prompt for options as no options were configured");
+        }
 
         final String value = secure ? new String(this.promptForSecure()) : this.promptForLine();
+
+        if (StringUtils.isBlank(value)) {
+            if (this.defaultOption != null) {
+                return this.defaultOption;
+            } else {
+                throw new PromptException(
+                        "No input provided, unable to determine which option should be selected");
+            }
+        }
 
         return this.optionMatcher.match(this, value);
     }
 
     /**
      * Prompts for a value
-     * 
-     * @param <T>
-     *            Value type
-     * @param cls
-     *            Value type class
-     * @param secure
-     *            Does the response need to be secure?
+     *
+     * @param <T>    Value type
+     * @param cls    Value type class
+     * @param secure Does the response need to be secure?
      * @return Value
-     * @throws PromptException
+     * @throws PromptException Thrown if the prompt fails to receive valid input, or the input cannot be converted to
+     *                         the target type
+     */
+    public <T> T promptForValue(Class<T> cls, boolean secure) throws PromptException {
+        return promptForValue(cls, secure, null);
+    }
+
+    /**
+     * Prompts for a value
+     *
+     * @param <T>          Value type
+     * @param cls          Value type class
+     * @param secure       Does the response need to be secure?
+     * @param defaultValue Default value to return if prompt receives empty input
+     * @return Value
+     * @throws PromptException Thrown if the prompt fails to receive valid input, or the input cannot be converted to
+     *                         the target type
      */
     @SuppressWarnings("unchecked")
-    public <T> T promptForValue(Class<T> cls, boolean secure) throws PromptException {
+    public <T> T promptForValue(Class<T> cls, boolean secure, T defaultValue) throws PromptException {
         String value = secure ? new String(this.promptForSecure()) : this.promptForLine();
 
-        return (T) this.converter.convert("", cls, value);
+        if (StringUtils.isBlank(value)) {
+            if (defaultValue != null) {
+                return defaultValue;
+            } else {
+                throw new PromptException("Received empty input when non-empty input was expected");
+            }
+        }
+
+        try {
+            return (T) this.converter.convert("", cls, value);
+        } catch (Throwable t) {
+            throw new PromptException(
+                    String.format("User provided prompt response '%s' which cannot be converted to the target type %s",
+                                  value, cls.getCanonicalName()));
+        }
     }
 
     /**
      * Prompts for a secure input line
-     * 
+     *
      * @return Input line
-     * @throws PromptException
-     *             Thrown if the underlying prompt provider does not support secure reads
+     * @throws PromptException Thrown if the underlying prompt provider does not support secure reads
      */
     public char[] promptForSecure() throws PromptException {
-        if (!this.provider.supportsSecureReads())
+        if (!this.provider.supportsSecureReads()) {
             throw new PromptException("Underlying prompt provider does not support secure reads");
+        }
 
         this.displayPrompt();
 
         if (this.timeout > 0) {
-            Callable<char[]> bgPrompt = new Callable<char[]>() {
-
-                @Override
-                public char[] call() throws Exception {
-                    return provider.readSecureLine();
-                }
-            };
+            Callable<char[]> bgPrompt = provider::readSecureLine;
             Future<char[]> future = this.executor.submit(bgPrompt);
             return waitForPromptResponse(future);
         } else {
@@ -298,4 +328,12 @@ public class Prompt<TOption> {
         }
     }
 
+    /**
+     * Gets the default option (if any)
+     *
+     * @return Default option or {@code null}
+     */
+    public TOption getDefaultOption() {
+        return this.defaultOption;
+    }
 }

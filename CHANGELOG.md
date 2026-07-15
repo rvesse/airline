@@ -7,6 +7,21 @@ positional argument support, better DI framework integration, that are not possi
 breaking changes.  You can see progress on 4.x by following the `4x` branch and its `CHANGELOG.md` and `Migrating.md`
 files.
 
+### 3.3.0
+
+- Prompt improvements
+    - Fixes a formatting bug where space between prompt message and user input was not reliably generated
+    - Adds ability to configure a default option that is returned by `promptForOption()` when empty input is received
+      from the prompt
+    - Adds new overload of `promptForValue()` that allows supplying a default fallback value to return when empty input
+      is received
+    - `promptForValue()` now throws `PromptException` in the case of type conversion failure rather than throwing the
+      underlying Airline parser exception
+    - Built-in `PromptFormatter` will now indicate the default option if that is configured for a prompt
+    - Applies some code modernisation to various parts of the `airline-prompts` module
+    - **BREAKING** - Internal `ListFormat` and `QuestionFormat` types no longer require class level type parameters,
+      most usage of these classes should be indirect and this change should be transparent to most users
+
 ### 3.2.0
 
 - Type Conversion improvements:

@@ -70,7 +70,7 @@ public class ValueMatcher<TOption> implements PromptOptionMatcher<TOption> {
                 foundOptions.add(option);
         }
 
-        if (foundOptions.size() == 0)
+        if (foundOptions.isEmpty())
             throw MatcherUtils.invalidResponse(response);
         if (foundOptions.size() > 1)
             throw MatcherUtils.ambiguousResponse(response);

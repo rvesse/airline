@@ -84,10 +84,8 @@ public class Prompts {
      */
     public static PromptBuilder<String> newYesNoPrompt(String question) {
         //@formatter:off
-        return Prompts.<String>defaultPrompt()
-                    .withPromptMessage(question)
-                    .withOptions("Yes", "No")
-                    .withQuestionFormatter();
+        return Prompts.<String>newFreeFormPrompt(question)
+                      .withOptions("Yes", "No");
         //@formatter:on
     }
 
@@ -100,10 +98,8 @@ public class Prompts {
      */
     public static PromptBuilder<String> newYesNoAbortPrompt(String question) {
         //@formatter:off
-        return Prompts.<String>defaultPrompt()
-                    .withPromptMessage(question)
-                    .withOptions("Yes", "No", "Abort")
-                    .withQuestionFormatter();
+        return Prompts.<String>newFreeFormPrompt(question)
+                      .withOptions("Yes", "No", "Abort");
         //@formatter:on
     }
 
@@ -116,10 +112,8 @@ public class Prompts {
      */
     public static PromptBuilder<String> newYesNoCancelPrompt(String question) {
         //@formatter:off
-        return Prompts.<String>defaultPrompt()
-                    .withPromptMessage(question)
-                    .withOptions("Yes", "No", "Cancel")
-                    .withQuestionFormatter();
+        return Prompts.<String>newFreeFormPrompt(question)
+                      .withOptions("Yes", "No", "Cancel");
         //@formatter:on
     }
 

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.rvesse.airline.prompts;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +22,8 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.Test;
@@ -43,7 +44,7 @@ import com.github.rvesse.airline.types.numerics.abbreviated.KiloAs1024;
  * Abstract suite of tests for prompts
  * <p>
  * This test suite is designed to cover all the functionality provided by a {@link PromptProvider} implementation,
- * implementors should create sub-classes of this class and implement the
+ * implementors should create subclasses of this class and implement the
  * {@link #getProvider(InputStream, OutputStream)} method in order to test their implementations.
  * </p>
  *
@@ -52,7 +53,7 @@ public abstract class AbstractPromptTests {
 
     /**
      * Gets the prompt provider to test
-     * 
+     *
      * @return Prompt provider
      */
     protected abstract PromptProvider getProvider(InputStream input, OutputStream output);
@@ -334,7 +335,7 @@ public abstract class AbstractPromptTests {
         String option = prompt.promptForOption(false);
         Assert.assertEquals(option, "aardvark");
     }
-    
+
     @Test(expectedExceptions = PromptTimeoutException.class, expectedExceptionsMessageRegExp = ".*timeout.*")
     public void option_10() throws PromptException {
         byte[] data = "Aardvark".getBytes(StandardCharsets.UTF_8);
@@ -353,7 +354,7 @@ public abstract class AbstractPromptTests {
         String option = prompt.promptForOption(false);
         Assert.assertEquals(option, "aardvark");
     }
-    
+
     @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*unambiguously.*")
     public void option_ambiguous_01() throws PromptException {
         byte[] data = "an".getBytes(StandardCharsets.UTF_8);
@@ -371,7 +372,7 @@ public abstract class AbstractPromptTests {
 
         prompt.promptForOption(false);
     }
-    
+
     @Test
     public void option_ambiguous_02() throws PromptException {
         byte[] data = "ant".getBytes(StandardCharsets.UTF_8);
@@ -390,7 +391,7 @@ public abstract class AbstractPromptTests {
         String option = prompt.promptForOption(false);
         Assert.assertEquals(option, "anteater");
     }
-    
+
     @Test
     public void option_ambiguous_03() throws PromptException {
         byte[] data = "ano".getBytes(StandardCharsets.UTF_8);
@@ -409,7 +410,7 @@ public abstract class AbstractPromptTests {
         String option = prompt.promptForOption(false);
         Assert.assertEquals(option, "another");
     }
-    
+
     @Test
     public void option_duplicates_01() throws PromptException {
         byte[] data = "aardvark".getBytes(StandardCharsets.UTF_8);
@@ -427,7 +428,7 @@ public abstract class AbstractPromptTests {
         String option = prompt.promptForOption(false);
         Assert.assertEquals(option, "aardvark");
     }
-    
+
     @Test
     public void option_duplicates_02() throws PromptException {
         byte[] data = "ant".getBytes(StandardCharsets.UTF_8);
@@ -445,7 +446,7 @@ public abstract class AbstractPromptTests {
         String option = prompt.promptForOption(false);
         Assert.assertEquals(option, "anteater");
     }
-    
+
     @Test
     public void option_duplicates_03() throws PromptException {
         byte[] data = "1".getBytes(StandardCharsets.UTF_8);
@@ -613,6 +614,47 @@ public abstract class AbstractPromptTests {
     }
 
     @Test
+    public void givenDefaultOption_whenOptionPromptReceivesNoInput_thenDefaultReturned() throws PromptException {
+        byte[] data = new byte[0];
+        InputStream input = new ByteArrayInputStream(data);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("a", "b", "c")
+                .withDefaultOption("c")
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+
+        String option = prompt.promptForOption(false);
+        Assert.assertEquals(option, "c");
+        Assert.assertTrue(Strings.CS.contains(output.toString(StandardCharsets.UTF_8), "c [Default]"));
+    }
+
+    @Test
+    public void givenDefaultOptionInQuestionFormat_whenOptionPromptReceivesNoInput_thenDefaultReturned() throws PromptException {
+        byte[] data = new byte[0];
+        InputStream input = new ByteArrayInputStream(data);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withOptions("a", "b", "c")
+                .withDefaultOption("c")
+                .withQuestionFormatter()
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+
+        String option = prompt.promptForOption(false);
+        Assert.assertEquals(option, "c");
+        Assert.assertTrue(Strings.CS.contains(output.toString(StandardCharsets.UTF_8), "[a/b/c [c]]"));
+    }
+
+    @Test
     public void question_01() throws PromptException {
         byte[] data = "Y".getBytes(StandardCharsets.UTF_8);
         InputStream input = new ByteArrayInputStream(data);
@@ -723,7 +765,7 @@ public abstract class AbstractPromptTests {
         //@formatter:off
         Prompt<String> prompt = new PromptBuilder<String>()
                 .withPromptProvider(this.getProvider(input, output))
-                .withFormatter(new QuestionFormat<>())
+                .withFormatter(new QuestionFormat())
                 .withOptions("alpha", "beta")
                 .withPromptMessage("Which option?")
                 .withTimeout(100, TimeUnit.MILLISECONDS)
@@ -745,7 +787,7 @@ public abstract class AbstractPromptTests {
         //@formatter:off
         Prompt<String> prompt = new PromptBuilder<String>()
                 .withPromptProvider(this.getProvider(input, output))
-                .withFormatter(new QuestionFormat<>())
+                .withFormatter(new QuestionFormat())
                 .withPromptMessage("How much memory would you like?")
                 .withTypeConverter(new DefaultTypeConverter(new KiloAs1024()))
                 .withTimeout(100, TimeUnit.MILLISECONDS)
@@ -765,7 +807,7 @@ public abstract class AbstractPromptTests {
         //@formatter:off
         Prompt<String> prompt = new PromptBuilder<String>()
                 .withPromptProvider(this.getProvider(input, output))
-                .withFormatter(new QuestionFormat<>())
+                .withFormatter(new QuestionFormat())
                 .withPromptMessage("How much memory would you like?")
                 .withTypeConverter(new DefaultTypeConverter(new KiloAs1024()))
                 .withTimeout(100, TimeUnit.MILLISECONDS)
@@ -785,7 +827,7 @@ public abstract class AbstractPromptTests {
         //@formatter:off
         Prompt<String> prompt = new PromptBuilder<String>()
                 .withPromptProvider(this.getProvider(input, output))
-                .withFormatter(new QuestionFormat<>())
+                .withFormatter(new QuestionFormat())
                 .withPromptMessage("How much memory would you like?")
                 .withTypeConverter(new DefaultTypeConverter(new KiloAs1000()))
                 .withTimeout(100, TimeUnit.MILLISECONDS)
@@ -814,7 +856,7 @@ public abstract class AbstractPromptTests {
         OptionType value = prompt.promptForValue(OptionType.class, false);
         Assert.assertEquals(value, OptionType.GROUP);
     }
-    
+
     @Test
     public void value_matching_01() throws PromptException {
         byte[] data = "4".getBytes(StandardCharsets.UTF_8);
@@ -835,7 +877,7 @@ public abstract class AbstractPromptTests {
         Double value = prompt.promptForOption(false);
         Assert.assertEquals(value, 4.0);
     }
-    
+
     @Test
     public void value_matching_02() throws PromptException {
         byte[] data = "4.0".getBytes(StandardCharsets.UTF_8);
@@ -856,7 +898,7 @@ public abstract class AbstractPromptTests {
         Double value = prompt.promptForOption(false);
         Assert.assertEquals(value, 4.0);
     }
-    
+
     @Test
     public void value_matching_03() throws PromptException {
         byte[] data = "4.0E0".getBytes(StandardCharsets.UTF_8);
@@ -877,7 +919,7 @@ public abstract class AbstractPromptTests {
         Double value = prompt.promptForOption(false);
         Assert.assertEquals(value, 4.0);
     }
-    
+
     @Test
     public void value_matching_04() throws PromptException {
         byte[] data = "4.0e0".getBytes(StandardCharsets.UTF_8);
@@ -898,7 +940,7 @@ public abstract class AbstractPromptTests {
         Double value = prompt.promptForOption(false);
         Assert.assertEquals(value, 4.0);
     }
-    
+
     @Test
     public void value_matching_05() throws PromptException {
         byte[] data = "0.4e1".getBytes(StandardCharsets.UTF_8);
@@ -919,7 +961,7 @@ public abstract class AbstractPromptTests {
         Double value = prompt.promptForOption(false);
         Assert.assertEquals(value, 4.0);
     }
-    
+
     @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = ".*'32'.*not a valid option.*")
     public void value_matching_06() throws PromptException {
         byte[] data = "32".getBytes(StandardCharsets.UTF_8);
@@ -939,7 +981,47 @@ public abstract class AbstractPromptTests {
 
         prompt.promptForOption(false);
     }
-    
+
+    @Test
+    public void givenPrompt_whenPromptingForValueWithDefaultAndEmptyInput_thenDefaultReturned() throws PromptException {
+        byte[] data = new byte[0];
+        InputStream input = new ByteArrayInputStream(data);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withFormatter(new QuestionFormat())
+                .withPromptMessage("How much memory would you like?")
+                .withTypeConverter(new DefaultTypeConverter(new KiloAs1024()))
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+
+        Long value = prompt.promptForValue(Long.class, false, 16L * 1024L);
+        Assert.assertEquals(value.longValue(), 16L * 1024L);
+    }
+
+    @Test(expectedExceptions = PromptException.class, expectedExceptionsMessageRegExp = "Received empty input.*")
+    public void givenPrompt_whenPromptingForValueWithEmptyInput_thenErrors() throws PromptException {
+        byte[] data = new byte[0];
+        InputStream input = new ByteArrayInputStream(data);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        //@formatter:off
+        Prompt<String> prompt = new PromptBuilder<String>()
+                .withPromptProvider(this.getProvider(input, output))
+                .withFormatter(new QuestionFormat())
+                .withPromptMessage("How much memory would you like?")
+                .withTypeConverter(new DefaultTypeConverter(new KiloAs1024()))
+                .withTimeout(100, TimeUnit.MILLISECONDS)
+                .build();
+        //@formatter:on
+
+        Long value = prompt.promptForValue(Long.class, false);
+        Assert.assertEquals(value.longValue(), 16L * 1024L);
+    }
+
     @Test(timeOut = 2500)
     public void blocking_01() throws PromptException {
         byte[] data = "b".getBytes(StandardCharsets.UTF_8);
@@ -956,7 +1038,7 @@ public abstract class AbstractPromptTests {
         String option = prompt.promptForOption(false);
         Assert.assertEquals(option, "b");
     }
-    
+
     @Test(timeOut = 2500)
     public void blocking_02() throws PromptException {
         byte[] data = "b".getBytes(StandardCharsets.UTF_8);
@@ -973,7 +1055,7 @@ public abstract class AbstractPromptTests {
         char key = (char) prompt.promptForKey();
         Assert.assertEquals(key, 'b');
     }
-    
+
     @Test(timeOut = 2500)
     public void blocking_03() throws PromptException {
         byte[] data = "4".getBytes(StandardCharsets.UTF_8);

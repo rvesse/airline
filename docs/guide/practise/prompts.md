@@ -65,6 +65,8 @@ be the type parameter used for the prompt and the configured options.
 String option = prompt.promptForOption(false);
 ```
 
+From `3.3.0` onwards you can configure a [default option](#default-option) for option prompts when building your prompt.
+
 ### Prompting for a Value
 
 You can also prompt for any strongly typed value assuming that your configured [Type Converter](types.html) 
@@ -72,6 +74,17 @@ supports it e.g.
 
 ```java
 MyCustomType value = prompt.promptForValue(MyCustomType.class, false);
+```
+
+### Prompting for a Value with Default
+
+{% include req-ver.md version="3.3.0" module="airline-prompts" %}
+
+From `3.3.0` onwards you can also prompt for any strongly typed value assuming that your configured [Type
+Converter](types.html) supports it and supply a default value to return if the prompt receives empty input e.g.
+
+```java
+MyCustomType value = prompt.promptForValue(MyCustomType.class, false, new MyCustomType("parameter", 45));
 ```
 
 ## Example
@@ -185,6 +198,23 @@ Here we configure three string options and we can then use `promptForOption()` t
 those options.  Note that we also use `withListFormatter()` which applies a formatter that will display those options 
 to the user in a list.  We'll discuss formatters more later in this page.
 
+#### Default Option
+
+{% include req-ver.md version="3.3.0" module="airline-prompts" %}
+
+You can use the `withDefaultOption()` method on the builder to specify the default option for a prompt, if the user
+provides empty input then this option will be returned rather than a `PromptException` thrown as would normally be the
+case e.g.
+
+```java
+Prompt<String> prompt 
+  = Prompts.<String>newOptionsPrompt("What's your favourite animal?", "Aardvark", "Badger", "Cougar")
+           .withDefaultOption("Aardvark")
+           .build();
+
+String faveAnimal = prompt.promptForOption();
+```
+
 #### Type Conversion
 
 As with the rest of Airline we use our standard [Type Converter](types.html) API to control how options and input 
@@ -265,3 +295,24 @@ Prompt<String> prompt
 If no formatter is explicitly specified then the builder selects one of the two default formats depending on whether 
 any options have been specified.  If options have been specified then the list formatter is used, if no options then 
 the question formatter is used.
+
+{% include alert.html %}
+Note that when implementing your own formatter if your prompt does not terminate in a newline character you **MUST**
+explicitly call `prompt.getPromptWriter().flush()` after printing your prompt otherwise it may not be displayed
+properly.
+{% include end-alert.html %}
+
+### Prompts Helper
+
+The `Prompts` helper class provides `PromptBuilder`'s with some basic's preconfigured that you can use as a starting
+point for further configuration:
+
+- `Prompts.defaultPrompt()` - A builder with the [provider](#provider) set to the default for your runtime environment
+  and no [timeout](#timeouts).
+- `Prompts.newFreeFormPrompt(String)` - A builder using `defaultPrompt()` settings plus prompt message set to the given
+  string and the [formatter](#formatters) set to `QuestionFormat`.
+- `Prompts.newYesNoPrompt(String)` - A builder using `newFreeFormPrompt()` settings plus `Yes`/`No` options configured.
+- `Prompts.newYesNoAbortPrompt(String)` and `Prompts.newYesNoCancelPrompt(String)` - A builder using
+  `newFreeFormPrompt()` settings plus `Yes`, `No` and `Abort`/`Cancel` options configured.
+- `Prompts.newOptionsPrompt(String, TOption...)` - A builder using `defaultPrompt()` settings plus prompt message set to
+  given string and the options set to the given options.

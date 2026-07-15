@@ -18,10 +18,9 @@ package com.github.rvesse.airline.prompts.matchers;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.collections4.Predicate;
 
 import com.github.rvesse.airline.prompts.Prompt;
 import com.github.rvesse.airline.prompts.errors.PromptException;
@@ -50,15 +49,15 @@ public class DefaultMatcher<TOption> implements PromptOptionMatcher<TOption> {
         }
 
         Set<TOption> foundOptions = new HashSet<>(prompt.getOptions());
-        CollectionUtils.filter(foundOptions, getExactOrPartialMatcher(response));
+        foundOptions.removeIf(Predicate.not(getExactOrPartialMatcher(response)));
 
-        if (foundOptions.size() == 0) {
+        if (foundOptions.isEmpty()) {
             // No matches
             throw MatcherUtils.invalidResponse(response);
         } else if (foundOptions.size() > 1) {
             // Multiple possible matches
             // Was there instead a single exact match?
-            CollectionUtils.<TOption> filter(foundOptions, getExactMatcher(response));
+            foundOptions.removeIf(Predicate.not(getExactMatcher(response)));
             if (foundOptions.size() == 1) {
                 // One exact match
                 return IterableUtils.first(foundOptions);
@@ -80,7 +79,7 @@ public class DefaultMatcher<TOption> implements PromptOptionMatcher<TOption> {
      * @return Exact matcher
      */
     protected Predicate<TOption> getExactMatcher(final String response) {
-        return new MatcherUtils.Exact<TOption>(response);
+        return new MatcherUtils.Exact<>(response);
     }
 
     /**
@@ -91,7 +90,7 @@ public class DefaultMatcher<TOption> implements PromptOptionMatcher<TOption> {
      * @return Exact or partial matcher
      */
     protected Predicate<TOption> getExactOrPartialMatcher(final String response) {
-        return new MatcherUtils.ExactOrStartsWith<TOption>(response);
+        return new MatcherUtils.ExactOrStartsWith<>(response);
     }
 
 }

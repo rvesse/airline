@@ -19,7 +19,7 @@ package com.github.rvesse.airline.prompts.builders;
 import com.github.rvesse.airline.prompts.formatters.ListFormat;
 
 /**
- * A builder that helps building list formats
+ * A builder that helps to build list formats
  *
  * @param <TOption>
  *            Option type
@@ -58,8 +58,8 @@ public class ListFormatBuilder<TOption> extends PromptFormatBuilder<TOption> {
     }
 
     @Override
-    public ListFormat<TOption> build() {
-        return new ListFormat<>(columns);
+    public ListFormat build() {
+        return new ListFormat(columns);
     }
 
 }
