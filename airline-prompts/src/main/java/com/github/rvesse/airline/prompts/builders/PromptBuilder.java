@@ -16,6 +16,7 @@
 package com.github.rvesse.airline.prompts.builders;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -128,11 +129,9 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
      * @param options Options
      * @return Builder
      */
-    @SuppressWarnings("unchecked")
-    public PromptBuilder<TOption> withOptions(TOption... options) {
-        for (TOption opt : options) {
-            this.options.add(opt);
-        }
+    @SafeVarargs
+    public final PromptBuilder<TOption> withOptions(TOption... options) {
+        this.options.addAll(Arrays.asList(options));
         return this;
     }
 
@@ -345,7 +344,7 @@ public class PromptBuilder<TOption> extends AbstractBuilder<Prompt<TOption>> {
     /**
      * Specifies that the default type converter be used
      *
-     * @return
+     * @return Builder
      */
     public PromptBuilder<TOption> withDefaultTypeConverter() {
         this.converter = new DefaultTypeConverter();

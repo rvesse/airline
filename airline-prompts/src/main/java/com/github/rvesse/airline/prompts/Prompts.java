@@ -16,11 +16,12 @@
 
 package com.github.rvesse.airline.prompts;
 
-import java.util.concurrent.TimeUnit;
-
 import com.github.rvesse.airline.prompts.builders.PromptBuilder;
 import com.github.rvesse.airline.prompts.console.ConsolePrompt;
 import com.github.rvesse.airline.prompts.console.StdIOPrompt;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Provides builds for some common
@@ -128,13 +129,33 @@ public class Prompts {
      *            Options
      * @return Prompt builder
      */
-    @SuppressWarnings("unchecked")
+    @SafeVarargs
     public static <TOption> PromptBuilder<TOption> newOptionsPrompt(String message, TOption... options) {
         //@formatter:off
         return Prompts.<TOption>defaultPrompt()
                     .withPromptMessage(message)
                     .withOptions(options)
                     .withListFormatter();
+        //@formatter:on
+    }
+
+    /**
+     * Creates a new list prompt
+     *
+     * @param <TOption>
+     *            Option type
+     * @param message
+     *            Prompt message
+     * @param options
+     *            Options
+     * @return Prompt builder
+     */
+    public static <TOption> PromptBuilder<TOption> newOptionsPrompt(String message, Collection<TOption> options) {
+        //@formatter:off
+        return Prompts.<TOption>defaultPrompt()
+                      .withPromptMessage(message)
+                      .withOptions(options)
+                      .withListFormatter();
         //@formatter:on
     }
 }

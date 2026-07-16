@@ -55,17 +55,17 @@
     <coveralls.skip>false</coveralls.skip>
 
     <!-- Plugin Versions -->
-    <plugin.antrun>3.1.0</plugin.antrun>
-    <plugin.assembly>3.7.1</plugin.assembly>
-    <plugin.buildnumber>3.2.1</plugin.buildnumber>
+    <plugin.antrun>3.2.0</plugin.antrun>
+    <plugin.assembly>3.8.0</plugin.assembly>
+    <plugin.buildnumber>3.3.0</plugin.buildnumber>
     <plugin.central>0.8.0</plugin.central>
-    <plugin.compiler>3.14.0</plugin.compiler>
+    <plugin.compiler>3.15.0</plugin.compiler>
     <plugin.coveralls>4.3.0</plugin.coveralls>
     <plugin.coveralls.jaxb>2.3.3-b02</plugin.coveralls.jaxb>
-    <plugin.enforcer>3.5.0</plugin.enforcer>
+    <plugin.enforcer>3.6.3</plugin.enforcer>
     <plugin.license>2.11</plugin.license>
-    <plugin.jacoco>0.8.13</plugin.jacoco>
-    <plugin.jar>3.4.2</plugin.jar>
+    <plugin.jacoco>0.8.15</plugin.jacoco>
+    <plugin.jar>3.5.0</plugin.jar>
     <plugin.source>3.2.1</plugin.source>
     <plugin.javadoc>3.6.2</plugin.javadoc>
     <plugin.release>3.0.1</plugin.release>
@@ -75,9 +75,9 @@
 
     <!-- Dependency Versions -->
     <dependency.javax-inject>2.0.1</dependency.javax-inject>
-    <dependency.testng>7.11.0</dependency.testng>
-    <dependency.classgraph>4.8.179</dependency.classgraph>
-    <dependency.commons-lang3>3.18.0</dependency.commons-lang3>
+    <dependency.testng>7.12.0</dependency.testng>
+    <dependency.classgraph>4.8.184</dependency.classgraph>
+    <dependency.commons-lang3>3.20.0</dependency.commons-lang3>
     <dependency.commons-collections4>4.5.0</dependency.commons-collections4>
     <dependency.commons-csv>1.10.0</dependency.commons-csv>
   </properties>

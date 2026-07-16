@@ -316,3 +316,5 @@ can use as a starting point for further configuration:
   `newFreeFormPrompt()` settings plus `Yes`, `No` and `Abort`/`Cancel` options configured.
 - `Prompts.newOptionsPrompt(String, TOption...)` - A builder using `defaultPrompt()` settings plus prompt message set to
   given string and the options set to the given options.
+- `Prompts.newOptionsPrompt(String, Collection<TOption>)` - An overload of the above helper method that supplies options
+  as a `Collection` rather than an varargs array.

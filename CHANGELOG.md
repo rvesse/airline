@@ -18,9 +18,14 @@ files.
     - `promptForValue()` now throws `PromptException` in the case of type conversion failure rather than throwing the
       underlying Airline parser exception
     - Built-in `PromptFormatter` will now indicate the default option if that is configured for a prompt
+    - `PromptBuilder`, and some `Prompts` helper methods now allow specifying options via a `Collection`
     - Applies some code modernisation to various parts of the `airline-prompts` module
     - **BREAKING** - Internal `ListFormat` and `QuestionFormat` types no longer require class level type parameters,
       most usage of these classes should be indirect and this change should be transparent to most users
+- Build improvements:
+    - Apache Commons Lang upgraded to 3.20.0
+    - Classgraph upgraded to 4.8.184
+    - Various build and test dependencies upgraded to latest available
 
 ### 3.2.0
 
