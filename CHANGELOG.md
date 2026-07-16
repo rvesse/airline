@@ -23,6 +23,7 @@ files.
     - **BREAKING** - Internal `ListFormat` and `QuestionFormat` types no longer require class level type parameters,
       most usage of these classes should be indirect and this change should be transparent to most users
 - Build improvements:
+    - Apache Commons CSV upgraded to 1.14.1
     - Apache Commons Lang upgraded to 3.20.0
     - Classgraph upgraded to 4.8.184
     - Various build and test dependencies upgraded to latest available

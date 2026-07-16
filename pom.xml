@@ -79,7 +79,7 @@
     <dependency.classgraph>4.8.184</dependency.classgraph>
     <dependency.commons-lang3>3.20.0</dependency.commons-lang3>
     <dependency.commons-collections4>4.5.0</dependency.commons-collections4>
-    <dependency.commons-csv>1.10.0</dependency.commons-csv>
+    <dependency.commons-csv>1.14.1</dependency.commons-csv>
   </properties>
 
   <modules>
